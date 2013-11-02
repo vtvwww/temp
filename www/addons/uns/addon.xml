@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+<addon scheme="2.0">
+	<id>uns</id>
+	<name>UNS</name>
+	<description>База данных Укрнасоссервис</description>
+	<version>1.0</version>
+	<priority>100</priority>
+	<position>1</position>
+	<status>active</status>
+    <language_variables>
+        <!-- Единицы измерения -->
+        <item lang="RU" id="uns">УНС</item>
+        <item lang="EN" id="uns">УНС</item>
+
+        <!-- Единицы измерения -->
+        <item lang="RU" id="uns_new_unit">Новая Единица измерения</item>
+        <item lang="EN" id="uns_new_unit">Новая Единица измерения</item>
+        <item lang="RU" id="uns_add_unit">Добавить Единицу измерения</item>
+        <item lang="EN" id="uns_add_unit">Добавить Единицу измерения</item>
+        <item lang="RU" id="uns_units">Единицы измерения</item>
+        <item lang="EN" id="uns_units">Единицы измерения</item>
+        <item lang="RU" id="uns_units_short">Ед. изм.</item>
+        <item lang="EN" id="uns_units_short">Ед. изм.</item>
+        <item lang="RU" id="uns_unit_categories">Категории Единиц измерения</item>
+        <item lang="EN" id="uns_unit_categories">Категории Единиц измерения</item>
+
+        <item lang="RU" id="uns_new_unit_category">Новая Категория единиц измерения</item>
+        <item lang="EN" id="uns_new_unit_category">Новая Категория единиц измерения</item>
+        <item lang="RU" id="uns_add_unit_category">Добавить Категорию единиц измерения</item>
+        <item lang="EN" id="uns_add_unit_category">Добавить Категория единиц измерения</item>
+        <item lang="RU" id="uns_unit_category">Категория Единиц измерения</item>
+        <item lang="EN" id="uns_unit_category">Категория Единиц измерения</item>
+
+        <!-- Характеристики -->
+        <item lang="RU" id="uns_feature">Характеристика</item>
+        <item lang="EN" id="uns_feature">Характеристика</item>
+        <item lang="RU" id="uns_new_feature">Новая характеристика</item>
+        <item lang="EN" id="uns_new_feature">Новая характеристика</item>
+        <item lang="RU" id="uns_add_feature">Добавить характеристику</item>
+        <item lang="EN" id="uns_add_feature">Добавить характеристику</item>
+        <item lang="RU" id="uns_features">Характеристики</item>
+        <item lang="EN" id="uns_features">Характеристики</item>
+
+        <!-- Параметры -->
+        <item lang="RU" id="uns_option">Параметр</item>
+        <item lang="EN" id="uns_option">Параметр</item>
+        <item lang="RU" id="uns_new_option">Новый параметр</item>
+        <item lang="EN" id="uns_new_option">Новый параметр</item>
+        <item lang="RU" id="uns_add_option">Добавить параметр</item>
+        <item lang="EN" id="uns_add_option">Добавить параметр</item>
+        <item lang="RU" id="uns_options">Параметры</item>
+        <item lang="EN" id="uns_options">Параметры</item>
+
+        <!-- Материалы -->
+        <item lang="RU" id="uns_materials">Материалы</item>
+        <item lang="EN" id="uns_materials">Материалы</item>
+        <item lang="RU" id="uns_material">Материал</item>
+        <item lang="EN" id="uns_material">Материал</item>
+        <item lang="RU" id="uns_add_material">Добавить материал</item>
+        <item lang="EN" id="uns_add_material">Добавить материал</item>
+        <item lang="RU" id="uns_new_material">Новый материал</item>
+        <item lang="EN" id="uns_new_material">Новый материал</item>
+
+        <item lang="RU" id="uns_material_categories">Категории материалов</item>
+        <item lang="EN" id="uns_material_categories">Категории материалов</item>
+        <item lang="RU" id="uns_material_category">Категория материалов</item>
+        <item lang="EN" id="uns_material_category">Категория материалов</item>
+        <item lang="RU" id="uns_material_category_short">Категория</item>
+        <item lang="EN" id="uns_material_category_short">Категория</item>
+        <item lang="RU" id="uns_add_material_category">Добавить категорию материалов</item>
+        <item lang="EN" id="uns_add_material_category">Добавить категорию материалов</item>
+        <item lang="RU" id="uns_new_material_category">Новая категория материалов</item>
+        <item lang="EN" id="uns_new_material_category">Новая категория материалов</item>
+
+        <item lang="RU" id="uns_material_classes">Классы материалов</item>
+        <item lang="EN" id="uns_material_classes">Классы материалов</item>
+        <item lang="RU" id="uns_material_class">Класс материалов</item>
+        <item lang="EN" id="uns_material_class">Класс материалов</item>
+        <item lang="RU" id="uns_material_class_short">Класс</item>
+        <item lang="EN" id="uns_material_class_short">Класс материалов</item>
+        <item lang="RU" id="uns_add_material_class">Добавить класс материалов</item>
+        <item lang="EN" id="uns_add_material_class">Добавить класс материалов</item>
+        <item lang="RU" id="uns_new_material_class">Новый класс материалов</item>
+        <item lang="EN" id="uns_new_material_class">Новый класс материалов</item>
+
+        <item lang="RU" id="uns_accounting">Учет</item>
+        <item lang="RU" id="uns_accounting_main_unit">Основная единица учета</item>
+        <item lang="EN" id="uns_accounting_main_unit">Основная единица учета</item>
+
+        <item lang="RU" id="uns_accounting_extra_unit">Дополнительные единицы учета</item>
+        <item lang="EN" id="uns_accounting_extra_unit">Дополнительные единицы учета</item>
+
+        <!-- Детали -->
+        <item lang="RU" id="uns_details">Детали</item>
+        <item lang="EN" id="uns_details">Детали</item>
+        <item lang="RU" id="uns_detail">Деталь</item>
+        <item lang="EN" id="uns_detail">Деталь</item>
+        <item lang="RU" id="uns_add_detail">Добавить деталь</item>
+        <item lang="EN" id="uns_add_detail">Добавить деталь</item>
+        <item lang="RU" id="uns_new_detail">Новая деталь</item>
+        <item lang="EN" id="uns_new_detail">Новая деталь</item>
+
+        <item lang="RU" id="uns_detail_categories">Категории деталей</item>
+        <item lang="EN" id="uns_detail_categories">Категории деталей</item>
+        <item lang="RU" id="uns_detail_category">Категория детали</item>
+        <item lang="EN" id="uns_detail_category">Категория детали</item>
+        <item lang="RU" id="uns_detail_category_short">Категория</item>
+        <item lang="EN" id="uns_detail_category_short">Категория</item>
+        <item lang="RU" id="uns_add_detail_category">Добавить категорию деталей</item>
+        <item lang="EN" id="uns_add_detail_category">Добавить категорию деталей</item>
+        <item lang="RU" id="uns_new_detail_category">Новая категория деталей</item>
+        <item lang="EN" id="uns_new_detail_category">Новая категория деталей</item>
+
+        <!-- Насосы -->
+        <item lang="RU" id="uns_pumps">Насосы</item>
+        <item lang="EN" id="uns_pumps">Насосы</item>
+        <item lang="RU" id="uns_pump">Насос</item>
+        <item lang="EN" id="uns_pump">Насос</item>
+        <item lang="RU" id="uns_add_pump">Добавить насоса</item>
+        <item lang="EN" id="uns_add_pump">Добавить насоса</item>
+        <item lang="RU" id="uns_new_pump">Новый насос</item>
+        <item lang="EN" id="uns_new_pump">Новый насос</item>
+
+        <item lang="RU" id="uns_pump_types">Типы насосов</item>
+        <item lang="EN" id="uns_pump_types">Типы насосов</item>
+        <item lang="RU" id="uns_pump_type">Тип насоса</item>
+        <item lang="EN" id="uns_pump_type">Тип насоса</item>
+        <item lang="RU" id="uns_add_pump_types">Добавить тип насоса</item>
+        <item lang="EN" id="uns_add_pump_types">Добавить тип насоса</item>
+        <item lang="RU" id="uns_new_pump_types">Новый тип насоса</item>
+        <item lang="EN" id="uns_new_pump_types">Новый тип насоса</item>
+
+        <item lang="RU" id="uns_pump_series">Серии насосов</item>
+        <item lang="EN" id="uns_pump_series">Серии насосов</item>
+        <item lang="RU" id="uns_pump_series">Серия насосов</item>
+        <item lang="EN" id="uns_pump_series">Серия насосов</item>
+        <item lang="RU" id="uns_add_pump_series">Добавить серию насосов</item>
+        <item lang="EN" id="uns_add_pump_series">Добавить серию насосов</item>
+        <item lang="RU" id="uns_new_pump_series">Новая серия насосов</item>
+        <item lang="EN" id="uns_new_pump_series">Новая серия насосов</item>
+
+        <item lang="RU" id="uns_packing_list">Комплектация</item>
+        <item lang="EN" id="uns_packing_list">Комплектация</item>
+        <item lang="RU" id="uns_packing_part__pump">Насос</item>
+        <item lang="EN" id="uns_packing_part__pump">Насос</item>
+        <item lang="RU" id="uns_packing_part__frame">Рама</item>
+        <item lang="EN" id="uns_packing_part__frame">Рама</item>
+        <item lang="RU" id="uns_packing_part__motor">Двигатель</item>
+        <item lang="EN" id="uns_packing_part__motor">Двигатель</item>
+
+
+    </language_variables>
+
+</addon>

@@ -1,0 +1,24 @@
+<uns>
+	<item title="uns_units"     dispatch="uns_units.manage"/>
+        <subitem item="uns_units"   title="uns_units"           href="%INDEX_SCRIPT?dispatch=uns_units.manage" />
+        <subitem item="uns_units"   title="uns_unit_categories" href="%INDEX_SCRIPT?dispatch=uns_unit_categories.manage" />
+
+    <item title="uns_features"  dispatch="uns_features.manage"/>
+
+    <item title="uns_options"   dispatch="uns_options.manage"/>
+
+    <item title="uns_materials"   dispatch="uns_materials.manage"/>
+        <subitem item="uns_materials" title="uns_materials" href="%INDEX_SCRIPT?dispatch=uns_materials.manage" />
+        <subitem item="uns_materials" title="uns_material_categories" href="%INDEX_SCRIPT?dispatch=uns_material_categories.manage" />
+        <subitem item="uns_materials" title="uns_material_classes" href="%INDEX_SCRIPT?dispatch=uns_material_classes.manage" />
+
+    <item title="uns_details"   dispatch="uns_details.manage"/>
+        <subitem item="uns_details" title="uns_details" href="%INDEX_SCRIPT?dispatch=uns_details.manage" />
+        <subitem item="uns_details" title="uns_detail_categories" href="%INDEX_SCRIPT?dispatch=uns_detail_categories.manage" />
+
+    <item title="uns_pumps"   dispatch="uns_pumps.manage"/>
+        <subitem item="uns_pumps" title="uns_pumps" href="%INDEX_SCRIPT?dispatch=uns_pumps.manage" />
+        <subitem item="uns_pumps" title="uns_pump_series" href="%INDEX_SCRIPT?dispatch=uns_pump_series.manage" />
+        <subitem item="uns_pumps" title="uns_pump_types" href="%INDEX_SCRIPT?dispatch=uns_pump_types.manage" />
+
+</uns>

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<addon scheme="2.0">
+	<id>uns_reports</id>
+	<name>UNS_REPORTS</name>
+	<description>Отчеты</description>
+	<version>1.0</version>
+	<priority>110</priority>
+	<position>2</position>
+	<status>active</status>
+    <language_variables>
+        <item lang="RU" id="uns_reports">Отчеты</item>
+        <item lang="EN" id="uns_reports">Отчеты</item>
+    </language_variables>
+</addon>

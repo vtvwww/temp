@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<addon scheme="2.0">
+	<id>uns_mech</id>
+	<name>UNS_MECH</name>
+	<description>Мех. цех</description>
+	<version>1.0</version>
+	<priority>110</priority>
+	<position>2</position>
+	<status>active</status>
+    <language_variables>
+
+        <item lang="RU" id="uns_mech">Мех. цех</item>
+        <item lang="EN" id="uns_mech">Мех. цех</item>
+
+        <item lang="RU" id="uns_mech_task">Задание</item>
+        <item lang="EN" id="uns_mech_task">Задание</item>
+
+        <item lang="RU" id="uns_mech_tasks">Задания</item>
+        <item lang="EN" id="uns_mech_tasks">Задания</item>
+
+    </language_variables>
+</addon>

@@ -1,0 +1,340 @@
+body:before {
+  content: "";
+  position: fixed;
+  top: -10px;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  z-index: 100;
+  -webkit-box-shadow: 0 0 10px rgba(0,0,0,.8);
+  -moz-box-shadow: 0px 0px 10px rgba(0,0,0,.8);
+  box-shadow: 0px 0px 10px rgba(0,0,0,.8);
+  }
+
+
+.form-field, .search-field{
+    padding: 3px 5px 3px 189px;
+}
+
+.subheader{
+    border: 1px solid #DFDFDF;
+    border-top-width: 7px;
+    clear: both;
+    color: #000000;
+    font-size: 18px;
+    margin: 20px 0 0;
+    padding: 0 0 3px 10px;
+}
+
+div.subheader_block{
+    border: 1px solid #DFDFDF;
+    border-top-width: 0;
+    padding: 3px 0 8px 10px;
+}
+
+.ajax-loading-box{
+    background: none;
+    background-color: #FECFCF;
+    border: 2px solid #D97F7F;
+    border-top: none;
+    z-index: 12000;
+    padding: 5px 20px;
+    margin-right: -40px;
+    box-shadow: 0 5px 31px #7D2525;
+}
+
+.ajax-inner-loading-box{
+    font-size: 16px;
+    color: #9C3535;
+}
+
+/* Фформатирование таблицы */
+.table, .sortable{
+    background-position: center -12px;
+}
+
+.table tr.table-row td, .search-advanced table.table tr.table-row td, .table-tree tr td, .form-field .table td{
+    padding: 3px;
+}
+
+.table tr:hover td{
+    padding: 3px;
+}
+
+.table td, .search-advanced table.table td, .table-tree tr.multiple-table-row td{
+    padding: 3px;
+}
+
+.table th{
+    height: 27px;
+    padding: 0 5px;
+    font-weight: bold;
+}
+
+a.uns-num-items{
+    background-color: #078DB9;
+    border: 1px solid #097B9F;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 0 5px #003C4F;
+    color: white;
+    display: block;
+    font-weight: normal;
+    padding: 0 4px;
+    text-align: center;
+    text-decoration: none;
+}
+
+a.uns-num-items.zero{
+    color: #078DB9;
+    background: none;
+}
+
+/*.table td, .search-advanced table.table td, .table-tree tr.multiple-table-row td,*/
+/*.table tr:hover td {*/
+/*padding: 4px 10px;*/
+/*}*/
+/**/
+
+/* Новые стили */
+span.date{
+    font-family: monospace;
+}
+
+tbody .cm-row-item.hide-row{
+    opacity: 0.5;
+}
+
+
+.info_warning_block{
+    background-color: #FF898E;
+    border: 1px solid #FF0000;
+    border-radius: 5px;
+    font-weight: bold;
+    padding: 0 8px;
+}
+
+.info_warning, span.info_warning{
+    font-weight: bold;
+    color: red;
+    font-size: 11px;
+}
+
+span.uns_title_1{
+    font-size: 14px;
+    font-weight: bold;
+}
+
+span.uns_info{
+    font-size: 12px;
+    color: gray;
+}
+
+span.uns_comment{
+    font-size: 12px;
+    color: gray;
+    font-weight: bold;
+}
+
+span.series_item_D{
+    text-decoration: line-through;
+}
+
+span.series_item_R{
+    text-decoration: line-through;
+
+}
+
+/*******************************************************************************/
+/*******************************************************************************/
+.b_t{
+    border-top: 2px solid #000000;
+}
+
+.b_r{
+    border-right: 2px solid #000000;
+}
+
+.b_b{
+    border-bottom: 2px solid #000000;
+}
+
+.b_l{
+    border-left: 2px solid #000000;
+}
+
+/* BORDER 1 px */
+.b1_t{
+    border-top: 2px solid #808080;
+}
+
+.b1_r{
+    border-right: 1px solid #808080;
+}
+
+.b1_b{
+    border-bottom: 1px solid #808080;
+}
+
+.b1_l{
+    border-left: 1px solid #808080;
+}
+
+
+/*******************************************************************************/
+/*******************************************************************************/
+a.uns-tool{
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
+a.uns-tool.edit{
+    background: url("../images/edit-icon.png") no-repeat scroll 0 0 transparent;
+}
+
+a.uns-tool.view_list{
+    background: url("../images/view-list-icon.png") no-repeat scroll 0 0 transparent;
+}
+
+table.table tr.table-row td.mark_item{
+    border-left: 10px solid #FF9D1F;
+}
+
+td.mark{
+    background-color: #FFD6C7;
+}
+
+/*******************************************************************************
+/* ИНФОРМАЦИОННАЯ ТАБЛИЦА
+/******************************************************************************/
+table.info{
+}
+
+table.info td{
+    padding: 4px;
+}
+
+table.info span.h{
+    font-size: 12px;
+    font-weight: bold;
+}
+
+table.info span.t{
+    font-size: 12px;
+}
+
+span.zero{
+    color: #d3d3d3;
+}
+
+span.bold{
+    font-weight: bold;
+}
+
+span.blue{
+    color: #6c6cf8;
+}
+
+span.status_D{
+    text-decoration: line-through;
+}
+
+span.monospace{
+    font-family: monospace;
+}
+
+a.black{
+    color: #000000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+/*ПРОСТАЯ ТАБЛИЦА*/
+table.simple{
+    border-collapse: collapse;
+}
+
+table.simple th{
+    background-color: #D4D0C8;
+    border: 1px solid #A9A9A9;
+    font-weight: bold;
+    text-align: center;
+    font-size: 11px;
+    padding: 1px 3px;
+
+}
+
+table.simple td{
+    border: 1px solid #A9A9A9;
+    padding: 1px 3px;
+}
+
+/**/
+div.data-block{
+    background-color: #F9F9F9;
+    border: 1px solid #DFDFDF;
+    border-top: none;
+}
+div.data-block.top{
+    border: 1px solid #DFDFDF;
+}
+
+
+/******************************************************************************/
+/* TOOLTIP*/
+/******************************************************************************/
+.tooltip{
+    max-width: 300px;
+}
+
+/******************************************************************************/
+/* PRINT */
+/******************************************************************************/
+@media print{
+    body {
+        margin-top: 30px;
+        background: none;
+        box-shadow: none;
+    }
+    body:before{
+        box-shadow: none;
+    }
+
+    .side-menu
+    , .header-wrap
+    , .buttons-container
+    , .mainbox-breadcrumbs
+    {
+        display: none;
+    }
+
+}
+
+/******************************************************************************
+/*******************************************************************************/
+.profiler{
+    background-color: #D4D0C8;
+    border: 1px solid grey;
+    border-radius: 12px 12px 12px 12px;
+    bottom: 0;
+    box-shadow: 0 0 10px grey;
+    display: block;
+    font-family: monospace;
+    font-size: 12px;
+    left: 0;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    padding: 5px;
+    position: fixed;
+    opacity: 1;
+    transition: 0.5s opacity;
+    z-index: 1000;
+}
+
+.profiler:hover{
+    opacity: 1;
+    transition: 0.5s;
+
+}
+

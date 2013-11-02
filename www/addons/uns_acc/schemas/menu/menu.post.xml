@@ -1,0 +1,7 @@
+<uns_acc>
+	<item title="acc_objects"     dispatch="acc_objects.manage"/>
+        <subitem item="acc_objects"   title="acc_objects"           href="%INDEX_SCRIPT?dispatch=acc_objects.manage" />
+        <subitem item="acc_objects"   title="acc_ostatki"           href="%INDEX_SCRIPT?dispatch=acc_ostatki.manage" />
+        <subitem item="acc_objects"   title="acc_book_documents"    href="%INDEX_SCRIPT?dispatch=acc_book_documents.manage" />
+    <!--<item title="acc_documents"     dispatch="acc_documents.manage"/>-->
+</uns_acc>

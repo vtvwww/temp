@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<addon scheme="2.0">
+	<id>uns_foundry</id>
+	<name>UNS_FOUNDRY</name>
+	<description>Литейный цех</description>
+	<version>1.0</version>
+	<priority>110</priority>
+	<position>2</position>
+	<status>active</status>
+    <language_variables>
+
+        <item lang="RU" id="uns_foundry">Литейный цех</item>
+        <item lang="EN" id="uns_foundry">Литейный цех</item>
+
+        <item lang="RU" id="uns_foundry_balance">Баланс по Складу Литья</item>
+        <item lang="RU" id="uns_foundry_report">Выпуск Литейного цеха</item>
+
+    </language_variables>
+</addon>

@@ -1,0 +1,1 @@
+{script src="`$smarty.const.UNS_ACC_DIR_JS`/form_documents.js"}

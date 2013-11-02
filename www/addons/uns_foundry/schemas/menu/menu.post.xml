@@ -1,0 +1,5 @@
+<uns_foundry>
+	<item title="uns_foundry_balance"   dispatch="foundry_get_balance.manage"/>
+	<item title="uns_foundry_report"    dispatch="foundry_get_report.manage"/>
+    <item title="acc_documents"         dispatch="acc_documents.manage"/>
+</uns_foundry>

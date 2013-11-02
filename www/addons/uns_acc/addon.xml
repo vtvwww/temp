@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<addon scheme="2.0">
+	<id>uns_acc</id>
+	<name>UNS_ACC</name>
+	<description>Учет Укрнасоссервис</description>
+	<version>1.0</version>
+	<priority>110</priority>
+	<position>2</position>
+	<status>active</status>
+    <language_variables>
+        <!-- Единицы измерения -->
+        <item lang="RU" id="uns_acc">УНС УЧЕТ</item>
+        <item lang="EN" id="uns_acc">УНС УЧЕТ</item>
+    </language_variables>
+</addon>
