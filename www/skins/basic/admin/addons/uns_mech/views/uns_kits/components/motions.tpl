@@ -1,5 +1,4 @@
 {include file="common_templates/subheader.tpl" title="Движения"}
-<br>
 &nbsp;
 <span class="action-add">
     {include    file="common_templates/table_tools_list.tpl"
@@ -63,7 +62,6 @@
                     tools_list=$smarty.capture.tools_items}
     </span>
 {/if}
-<br>
 <br>
 
 <div style="margin: 10px;">
@@ -133,7 +131,14 @@
                 {* Детали *}
                 <td>
                     {foreach from=$d.items item="i" name="i"}
-                        {$i.item_info.detail_name}{if $i.item_info.detail_no} [{$i.item_info.detail_no}]{/if}&nbsp;&nbsp;&nbsp;{if $i.change_type == "NEG"}-{/if}{$i.quantity|fn_fvalue} шт.
+                        {if $i.item_type != "P" and $i.item_type != "PF"}
+                            {$i.item_info.detail_name}{if $i.item_info.detail_no} [{$i.item_info.detail_no}]{/if}&nbsp;&nbsp;&nbsp;{if $i.change_type == "NEG"}-{/if}{$i.quantity|fn_fvalue} шт.
+                        {else}
+                            {if $i.item_type == "P" or $i.item_type == "PF"}
+                                <hr>
+                                <b>{$pumps_simple[$i.item_id].p_name}{if $i.item_type == "PF"} на раме{/if} - {$i.quantity|fn_fvalue} шт.</b>
+                            {/if}
+                        {/if}
                         {if !$smarty.foreach.last}<br>{/if}
                     {/foreach}
                 </td>

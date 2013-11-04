@@ -251,7 +251,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 
 if($mode == 'manage' or $mode == 'update' or $mode == 'add'){
-    fn_uns_add_sections($controller);
+//    fn_uns_add_sections($controller);
 
     // только при редактировании
     if($mode == 'update' or $mode == 'add'){
@@ -325,6 +325,8 @@ if($mode == 'update' or $mode == 'view'){
 if($mode == 'add'){
     list($document_types) = fn_uns__get_document_types();
     $view->assign('document_types', $document_types);
+    $document_types_enabled = array('VLC', 'RO', 'AIO', 'AS_VLC');
+    $view->assign('document_types_enabled', $document_types_enabled);
 }
 
 

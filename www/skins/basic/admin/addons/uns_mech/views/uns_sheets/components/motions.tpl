@@ -119,9 +119,9 @@
                 <tr>
                     <td align="center">
                         {if $m.status == "A"}
-                            <img border="0" title="Вкл" src="/skins/basic/admin/addons/uns_acc/images/circle_green.png">
+                            <img border="0" title="Вкл" src="skins/basic/admin/addons/uns_acc/images/circle_green.png">
                         {elseif $m.status == "D"}
-                            <img border="0" title="Выкл" src="/skins/basic/admin/addons/uns_acc/images/circle_gray.png">
+                            <img border="0" title="Выкл" src="skins/basic/admin/addons/uns_acc/images/circle_gray.png">
                         {/if}
                     </td>
                     <td align="center">
@@ -182,7 +182,7 @@
                     </td>
                     <td>
                         <a class="cm-confirm block" href="{"`$controller`.motion.delete?document_id=`$m_id`&sheet_id=`$sheet.sheet_id`"|fn_url}">
-                            <img border="0" src="/skins/basic/admin/addons/uns_acc/images/delete.png">
+                            <img border="0" src="skins/basic/admin/addons/uns_acc/images/delete.png">
                         </a>
                     </td>
                 </tr>

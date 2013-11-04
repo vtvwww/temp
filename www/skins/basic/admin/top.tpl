@@ -62,7 +62,7 @@
 		{include file="common_templates/ajax_select_object.tpl" data_url="companies.get_companies_list?show_all=Y&action=href" text=$company_name id="top_company_id"}
 	{else}
 			{*{$lang.vendor}: <a href="{"companies.update?company_id=`$s_company`"|fn_url}">{$s_companies.$s_company.company}</a>*}
-			{$lang.user}: {$s_companies.$s_company.company}
+			{*{$lang.user}: *}<b>{$s_companies.$s_company.company}</b>
 	{/if}
 	</div>
 {/if}

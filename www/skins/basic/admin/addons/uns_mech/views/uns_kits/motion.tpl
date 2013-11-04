@@ -1,4 +1,12 @@
 {assign var="m_mode" value=$action}
+{literal}
+    <script type="text/javascript">
+        function multi_select(s){
+            var v = s.val();
+            var ss = s.parent().parent().parent().parent().find("tbody select[name*='quantity']").val(v);
+        }
+    </script>
+{/literal}
 <form action="{""|fn_url}" method="post" name="update_{$controller}_form_{$id}" class="cm-form-highlight">
     <div class="data-block top">
         <input type="hidden" name="kit_id" value="{$kit.kit_id}" />
@@ -121,20 +129,28 @@
                 <thead>
                     <tr>
                         <th>
-                            <input checked type="checkbox" name="check_all" value="Y" title="{$lang.check_uncheck_all}" class="checkbox cm-check-items-{$document_type_name}_{$document_id}" />
+                            <input checked type="checkbox" name="check_all" value="Y" title="{$lang.check_uncheck_all}" class="checkbox cm-check-items-{$document_type_name}_{$document_id}" id="cm-check-items-{$document_type_name}_{$document_id}" />
                         </th>
                         <th>№</th>
-                        <th>Наименование</th>
-                        <th>Кол-во</th>
+                        <th><label style="padding: 0; margin: 0; color: #000000; float: none;" for="cm-check-items-{$document_type_name}_{$document_id}">Наименование</label></th>
+                        <th>
+                            Кол-во<br>
+                            {include file="addons/uns/views/components/get_form_field.tpl"
+                                f_type="select_range"
+                                f_onchange="multi_select($(this))"
+                                f_from=0
+                                f_to=200
+                                f_simple=true
+                            }
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     {foreach from=$kit.details item="d" name="d"}
-                        {assign var="index"     value=$smarty.foreach.d.iteration}
+                        {assign var="index"     value=$d.pd_id}
                         {assign var="e_n"       value="motion[document_items][`$index`]"}
-
                         {assign var="d_a"       value=""} {* Уже добавленная деталь в документ *}
-
+                        {* Проверка добавлена ли уже деталь?*}
                         {foreach from=$motion.items item="i"}
                             {if $i.item_id == $d.detail_id and $i.item_type == "D"}
                                 {assign var="d_a"   value=$i}
@@ -142,12 +158,11 @@
                         {/foreach}
                         <tr>
                             <td>
-                                <input type="hidden"    name="{$e_n}[state]" value="N"/>
-                                <input type="checkbox"  name="{$e_n}[state]" value="Y" id="detail_id_{$index}" {if $d_a|is__array}checked{/if} class="checkbox cm-item-{$document_type_name}_{$document_id}" />
-
-                                <input type="hidden"    name="{$e_n}[item_id]"        value="{$d.detail_id}"/>
-                                <input type="hidden"    name="{$e_n}[item_type]"      value="D"/>
-                                <input type="hidden"    name="{$e_n}[processing]"     value="C"/>
+                                <input type="hidden"    name="{$e_n}[state]"            value="N"/>
+                                <input type="checkbox"  name="{$e_n}[state]"            value="Y" id="detail_{$document_type_name}_{$d.detail_id}" {if $d_a|is__array}checked{/if} class="checkbox cm-item-{$document_type_name}_{$document_id}" />
+                                <input type="hidden"    name="{$e_n}[item_id]"          value="{$d.detail_id}"/>
+                                <input type="hidden"    name="{$e_n}[item_type]"        value="D"/>
+                                <input type="hidden"    name="{$e_n}[processing]"       value="C"/>
 
                                 {if $document_type_name == "VN"}
                                     <input type="hidden"    name="{$e_n}[motion_type]"  value="{$smarty.const.UNS_MOTION_TYPE__O}"/>
@@ -160,8 +175,8 @@
                                     <input type="hidden"    name="{$e_n}[weight]"       value="{$d_a.weight}"/>
                                 {/if}
                             </td>
-                            <td align="center"><b>{$index}</b></td>
-                            <td><label style="padding: 0; margin: 0; color: #000000; float: none;" for="detail_id_{$index}">{$d.detail_name}{if $d.detail_no} [{$d.detail_no}]{/if}</label></td>
+                            <td align="center"><b>{$smarty.foreach.d.iteration}</b></td>
+                            <td><label style="padding: 0; margin: 0; color: #000000; float: none;" for="detail_{$document_type_name}_{$d.detail_id}">{$d.detail_name}{if $d.detail_no} [{$d.detail_no}]{/if}</label></td>
                             <td>
                                 {assign var="q_min" value=0}
                                 {assign var="q_max" value=200}
@@ -176,7 +191,7 @@
                                 {include file="addons/uns/views/components/get_form_field.tpl"
                                     f_type="select_range"
                                     f_name="`$e_n`[quantity]"
-                                    f_id="quantity_`$add_index`"
+                                    f_id=""
                                     f_from=$q_min
                                     f_to=$q_max
                                     f_value=$q
@@ -189,8 +204,10 @@
             </table>
         </div>
 
+        {* ******************************************************************* *}
+        {* НАСОС ************************************************************* *}
+        {* ******************************************************************* *}
         {if $document_type_name == "VN"}
-        {* НАСОС *}
         <div class="form-field">
             <label for="pump_id" class="cm-required cm-integer-more-0">Насос:</label>
             <table class="simple">
@@ -205,19 +222,21 @@
                     </tr>
                 </thead>
                 <tbody>
+
+                {assign var="index"     value="add_0"}
                 {foreach from=$motion.items item="i" name="i"}
                     {if $i.item_type == "P" or $i.item_type == "PF"}
-                        {assign var="index"     value=$smarty.foreach.i.iteration}
-                        {assign var="e_n"       value="motion[document_items][p_`$index`]"}
+                        {assign var="index"     value=$i.di_id}
+                        {assign var="e_n"       value="motion[document_items][`$i.item_type`_`$index`]"}
                         <tr>
                             <td>
                                 <input type="hidden"    name="{$e_n}[state]" value="N"/>
                                 <input type="checkbox"  name="{$e_n}[state]" value="Y" checked class="checkbox cm-item-{$document_type_name}_{$document_id}_P" />
 
-                                <input type="hidden"    name="{$e_n}[di_id]"        value="{$d_a.di_id}"/>
-                                <input type="hidden"    name="{$e_n}[typesize]"     value="{$d_a.typesize}"/>
-                                <input type="hidden"    name="{$e_n}[u_id]"         value="{$d_a.u_id}"/>
-                                <input type="hidden"    name="{$e_n}[weight]"       value="{$d_a.weight}"/>
+                                <input type="hidden"    name="{$e_n}[di_id]"        value="{$i.di_id}"/>
+                                <input type="hidden"    name="{$e_n}[typesize]"     value="{$i.typesize}"/>
+                                <input type="hidden"    name="{$e_n}[u_id]"         value="{$i.u_id}"/>
+                                <input type="hidden"    name="{$e_n}[weight]"       value="{$i.weight}"/>
                                 <input type="hidden"    name="{$e_n}[motion_type]"  value="{$smarty.const.UNS_MOTION_TYPE__I}"/>
                             </td>
                             <td align="center">
@@ -250,7 +269,7 @@
                                 {include file="addons/uns/views/components/get_form_field.tpl"
                                     f_type="select_range"
                                     f_name="`$e_n`[quantity]"
-                                    f_id="quantity_`$add_index`"
+                                    f_id="quantity_`$index`"
                                     f_from=$q_min
                                     f_to=$q_max
                                     f_value=$q
@@ -262,50 +281,52 @@
                 {/foreach}
 
                     {* empty *}
-                    {assign var="e_n"       value="motion[document_items][p_0]"}
-                    <tr>
-                        <td>
-                            <input type="hidden"    name="{$e_n}[state]" value="N"/>
-                            <input type="checkbox"  name="{$e_n}[state]" value="Y" class="checkbox cm-item-{$document_type_name}_{$document_id}_P" />
-                        </td>
-                        <td align="center">
-                            {include file="addons/uns/views/components/get_form_field.tpl"
-                                f_id="kit_pump"
-                                f_type="select_by_group"
-                                f_name="`$e_n`[item_id]"
-                                f_required=true f_integer_more_0=true
-                                f_options="pumps"
-                                f_option_id="p_id"
-                                f_option_value="p_name"
-                                f_option_target_id=$kit.p_id|default:"0"
-                                f_optgroups=$pumps
-                                f_optgroup_label="ps_name"
-                                f_blank=true
-                                f_simple=true
-                            }
-                        </td>
-                        <td>
-                            <select name="{$e_n}[item_type]">
-                                <option value="P">Насос</option>
-                                <option value="PF">Насос на раме</option>
-                            </select>
-                        </td>
-                        <td>
-                            {assign var="q_min" value=0}
-                            {assign var="q_max" value=200}
-                            {assign var="q"     value=0}
+                {assign var="index"     value="add_0"}
+                {assign var="e_n"       value="motion[document_items][P_PF_`$index`]"}
+                <tr>
+                    <td>
+                        <input type="hidden"    name="{$e_n}[state]" value="N"/>
+                        <input type="checkbox"  name="{$e_n}[state]" value="Y" class="checkbox cm-item-{$document_type_name}_{$document_id}_P" />
+                        <input type="hidden"    name="{$e_n}[motion_type]"  value="{$smarty.const.UNS_MOTION_TYPE__I}"/>
+                    </td>
+                    <td align="center">
+                        {include file="addons/uns/views/components/get_form_field.tpl"
+                            f_id="kit_pump"
+                            f_type="select_by_group"
+                            f_name="`$e_n`[item_id]"
+                            f_required=true f_integer_more_0=true
+                            f_options="pumps"
+                            f_option_id="p_id"
+                            f_option_value="p_name"
+                            f_option_target_id=$kit.p_id|default:"0"
+                            f_optgroups=$pumps
+                            f_optgroup_label="ps_name"
+                            f_blank=true
+                            f_simple=true
+                        }
+                    </td>
+                    <td>
+                        <select name="{$e_n}[item_type]">
+                            <option value="P">Насос</option>
+                            <option value="PF">Насос на раме</option>
+                        </select>
+                    </td>
+                    <td>
+                        {assign var="q_min" value=0}
+                        {assign var="q_max" value=200}
+                        {assign var="q"     value=0}
 
-                            {include file="addons/uns/views/components/get_form_field.tpl"
-                                f_type="select_range"
-                                f_name="`$e_n`[quantity]"
-                                f_id="quantity_`$add_index`"
-                                f_from=$q_min
-                                f_to=$q_max
-                                f_value=$q
-                                f_simple=true
-                            }
-                        </td>
-                    </tr>
+                        {include file="addons/uns/views/components/get_form_field.tpl"
+                            f_type="select_range"
+                            f_name="`$e_n`[quantity]"
+                            f_id="quantity_`$index`"
+                            f_from=$q_min
+                            f_to=$q_max
+                            f_value=$q
+                            f_simple=true
+                        }
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>

@@ -121,7 +121,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 // KIT
 //**************************************************************************
 if($mode == 'manage' or $mode == 'update' or $mode == 'add'){
-    fn_uns_add_sections($controller);
+//    fn_uns_add_sections($controller);
 
     // только при редактировании
     if($mode == 'update' or $mode == 'add'){
@@ -135,11 +135,20 @@ if($mode == 'manage'){
     if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "M"; // Текущий месяц
     list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
     $p = array();
+    $p = array(
+        "with_details" => true,
+    );
     $p = array_merge($_REQUEST, $p);
     list($kits, $search) = fn_acc__get_kits($p, UNS_ITEMS_PER_PAGE);
-//    fn_print_r($kits);
     $view->assign('kits', $kits);
     $view->assign('search', $search);
+
+    list($pumps) = fn_uns__get_pumps();
+    $view->assign('pumps', $pumps);
+
+//    fn_print_r($kits);
+//    fn_print_r($pumps);
+
 }
 
 
@@ -196,6 +205,9 @@ if($mode == 'update'){
     //PUMPS ********************************************************************
     list($pumps) = fn_uns__get_pumps(array("group_by_series"=>true));
     $view->assign('pumps', $pumps);
+
+    list($pumps_simple) = fn_uns__get_pumps();
+    $view->assign('pumps_simple', $pumps_simple);
 
 }
 

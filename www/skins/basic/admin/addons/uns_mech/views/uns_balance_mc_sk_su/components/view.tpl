@@ -55,8 +55,8 @@
         {if $mode_report != "P"} {* список всех материалов *}
         <tr  m_id={$m.id}>
             <td style="background-color: #d3d3d3;">
-                <img width="14" category_items="{$id}" height="9" border="0" title="Расширить список" class="hand {$id} plus {if !$expand_all} hidden {/if}" alt="Расширить список" src="/skins/basic/admin/images/plus.gif">
-                <img width="14" category_items="{$id}" height="9" border="0" title="Свернуть список" class="hand {$id} minus {if $expand_all} hidden {/if}" alt="Свернуть список" src="/skins/basic/admin/images/minus.gif">
+                <img width="14" category_items="{$id}" height="9" border="0" title="Расширить список" class="hand {$id} plus {if !$expand_all} hidden {/if}" alt="Расширить список" src="skins/basic/admin/images/plus.gif">
+                <img width="14" category_items="{$id}" height="9" border="0" title="Свернуть список" class="hand {$id} minus {if $expand_all} hidden {/if}" alt="Свернуть список" src="skins/basic/admin/images/minus.gif">
                 &nbsp;<span style="color: #000000; font-weight: bold; font-size: 14px;">{$item.group}</span></td>
             <td style="background-color: #d3d3d3;" align="center">&nbsp;</td>
             <td style="background-color: #d3d3d3;" align="right">&nbsp;</td>

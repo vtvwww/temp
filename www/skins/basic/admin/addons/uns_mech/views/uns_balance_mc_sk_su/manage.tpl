@@ -28,8 +28,8 @@
             <thead>
                 <tr>
                     <th rowspan="3" style="text-align: center; " width="300px">
-                        <img id="on_cat" class="hand cm-combinations hidden" width="13" height="12" border="0" title="Расширить / сократить список элементов" alt="Расширить / сократить список элементов" src="/skins/basic/admin/images/plus_minus.gif">
-                        <img id="off_cat" class="hand cm-combinations" width="13" height="12" border="0" title="Расширить / сократить список элементов" alt="Расширить / сократить список элементов" src="/skins/basic/admin/images/minus_plus.gif">
+                        <img id="on_cat" class="hand cm-combinations hidden" width="13" height="12" border="0" title="Расширить / сократить список элементов" alt="Расширить / сократить список элементов" src="skins/basic/admin/images/plus_minus.gif">
+                        <img id="off_cat" class="hand cm-combinations" width="13" height="12" border="0" title="Расширить / сократить список элементов" alt="Расширить / сократить список элементов" src="skins/basic/admin/images/minus_plus.gif">
                         &nbsp;Наименование</th>
                     <th rowspan="3" style="border-left: 1px solid #808080;">{include file="common_templates/tooltip.tpl" tooltip="Номер клейма" tooltip_mark="<b>№</b>"}</th>
                     <th rowspan="3" style="border-right: 1px solid #808080;">&nbsp;</th>
@@ -76,8 +76,8 @@
             <thead>
                 <tr>
                     <th style="text-align: center;" width="300px">
-                        <img id="on_cat" class="hand cm-combinations hidden" width="13" height="12" border="0" title="Расширить / сократить список элементов" alt="Расширить / сократить список элементов" src="/skins/basic/admin/images/plus_minus.gif">
-                        <img id="off_cat" class="hand cm-combinations" width="13" height="12" border="0" title="Расширить / сократить список элементов" alt="Расширить / сократить список элементов" src="/skins/basic/admin/images/minus_plus.gif">
+                        <img id="on_cat" class="hand cm-combinations hidden" width="13" height="12" border="0" title="Расширить / сократить список элементов" alt="Расширить / сократить список элементов" src="skins/basic/admin/images/plus_minus.gif">
+                        <img id="off_cat" class="hand cm-combinations" width="13" height="12" border="0" title="Расширить / сократить список элементов" alt="Расширить / сократить список элементов" src="skins/basic/admin/images/minus_plus.gif">
                         &nbsp;Наименование</th>
                     <th style="text-align: center;" width="80px">{include file="common_templates/tooltip.tpl" tooltip='Общее требуемое кол-во литейных заготовок на изготовление одной единицы насоса'  tooltip_mark="Кол."}</th>
                     <th style="text-align: center;" width="40px">Вес<br><span style="font-size: 9px; padding: 0; text-transform: none;">в кг 1 шт.</span></th>
@@ -107,8 +107,8 @@
             <thead>
                 <tr>
                     <th style="text-align: center;" width="300px">
-                        <img id="on_cat" class="hand cm-combinations hidden" width="13" height="12" border="0" title="Расширить / сократить список элементов" alt="Расширить / сократить список элементов" src="/skins/basic/admin/images/plus_minus.gif">
-                        <img id="off_cat" class="hand cm-combinations" width="13" height="12" border="0" title="Расширить / сократить список элементов" alt="Расширить / сократить список элементов" src="/skins/basic/admin/images/minus_plus.gif">
+                        <img id="on_cat" class="hand cm-combinations hidden" width="13" height="12" border="0" title="Расширить / сократить список элементов" alt="Расширить / сократить список элементов" src="skins/basic/admin/images/plus_minus.gif">
+                        <img id="off_cat" class="hand cm-combinations" width="13" height="12" border="0" title="Расширить / сократить список элементов" alt="Расширить / сократить список элементов" src="skins/basic/admin/images/minus_plus.gif">
                         &nbsp;Наименование</th>
                     <th>&nbsp;</th>
                     <th style="text-align: center;" width="40px">Вес<br><span style="font-size: 9px; padding: 0; text-transform: none;">в кг 1 шт.</span></th>

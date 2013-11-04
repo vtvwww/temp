@@ -34,7 +34,7 @@
     {else}
         <div class="form-field">
              <label class="{if $f_required}cm-required{/if} {if $f_integer_more_0}cm-integer-more-0{/if}" {if $f_id}for="{$f_id}"{/if}>{$f_description}:</label>
-             <input {if $f_autocomplete}autocomplete="{$f_autocomplete}"{/if} type="text" {if $f_disabled}disabled="disabled"{/if} {if $f_id}id="{$f_id}"{/if} {if $f_name}name="{$f_name}"{/if} {if $f_size}size="{$f_size}"{else}size="35"{/if} value="{if (strlen($f_default) && !strlen($f_value))}{$f_default}{else}{$f_value}{/if}" {if $f_class}class="{$f_class}"{else}class="input-text-large"{/if} />
+             <input {if $f_autocomplete}autocomplete="{$f_autocomplete}"{/if} type="{if $f_number}number{else}text{/if}" {if $f_disabled}disabled="disabled"{/if} {if $f_id}id="{$f_id}"{/if} {if $f_name}name="{$f_name}"{/if} {if $f_size}size="{$f_size}"{else}size="35"{/if} value="{if (strlen($f_default) && !strlen($f_value))}{$f_default}{else}{$f_value}{/if}" {if $f_class}class="{$f_class}"{else}class="input-text-large"{/if} />
          </div>
     {/if}
 {/if}
@@ -550,7 +550,7 @@
 {******************************************************************************}
 {if $f_type == "select_range"}
     {if $f_simple}
-        <select autocomplete="off" {if $f_name}name="{$f_name}"{/if} {if $f_id} id="{$f_id}"{/if} {if $f_disabled}disabled="disabled"{/if} {if $f_style}style="{$f_style}"{/if} >
+        <select autocomplete="off" {if $f_name}name="{$f_name}"{/if} {if $f_id} id="{$f_id}"{/if} {if $f_disabled}disabled="disabled"{/if} {if $f_style}style="{$f_style}"{/if} {if $f_onchange}onchange="{$f_onchange}"{/if} >
             {if $f_blank}
                 <option {if $f_value == 0}  selected="selected" {/if} value="0">---</option>
             {/if}

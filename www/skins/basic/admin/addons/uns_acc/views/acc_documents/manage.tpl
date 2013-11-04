@@ -82,7 +82,7 @@
    </form>
 
    {capture name="tools"}
-       {include file="common_templates/tools.tpl" tool_href="`$controller`.add" prefix="top" link_text="Добавить документ"  hide_tools=true}
+       {include file="common_templates/tools.tpl" tool_href="`$controller`.add" prefix="top" link_text="Добавить документ движения по Складу литья"  hide_tools=true}
    {/capture}
 
 

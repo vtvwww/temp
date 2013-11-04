@@ -25,6 +25,7 @@
         f_id="sheet_no"
         f_name="`$e_n`[no]"
         f_type="input_2"
+        f_number=true
         f_integer_more_0=true
         f_required=true
         f_autocomplete="off"

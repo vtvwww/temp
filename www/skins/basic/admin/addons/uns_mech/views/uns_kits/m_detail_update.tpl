@@ -1,7 +1,31 @@
 <div id="content_group">
+    {literal}
+        <script type="text/javascript">
+            function multi_select_multiplication(s){
+                var v = s.val();
+                var ss = s.parent().parent().parent().parent().find("tbody select[name*='quantity']");
+                ss.each(function(){
+                    var tv = v;
+                    if ($(this).val() > 0){
+                        tv = $(this).val()*v;
+                    }
+                    $(this).val(tv);
+                });
+            }
+        </script>
+    {/literal}
     <form action="{""|fn_url}" method="post" name="update_{$controller}_form_{$id}" class="cm-form-highlight">
         <div id="content_general">
-            <span style="display: block; font-size: 15px; font-weight: bold; margin: 0 0 10px; padding: 0; ">Насос {$pump.p_name}</span>
+            <span style="font-size: 15px; font-weight: bold; margin: 0 0 10px; padding: 0; ">Насос {$pump.p_name}</span>
+            &nbsp; &nbsp;
+            {include file="addons/uns/views/components/get_form_field.tpl"
+                f_type="select_range"
+                f_onchange="multi_select_multiplication($(this))"
+                f_from=0
+                f_to=200
+                f_simple=true
+            }
+
             <input type="hidden" name="kit_id" value="{$kit.kit_id}"/>
             <table class="simple">
                 <thead>

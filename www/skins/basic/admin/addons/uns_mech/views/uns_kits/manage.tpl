@@ -20,8 +20,10 @@
                <th width="1px">&nbsp;</th>
                <th width="10px">№</th>
                <th width="10px">Тип</th>
-               <th width="150px">Сроки выполнения</th>
-               <th width="120px">Статус</th>
+               <th width="10px">(?)</th>
+               {*<th width="150px">Сроки выполнения</th>*}
+               <th width="20px">Статус</th>
+               <th>Описание</th>
                <th>&nbsp;</th>
            </tr>
            {foreach from=$kits item=i}
@@ -44,28 +46,41 @@
                            Нас.
                        {/if}
                    </td>
-                   <td> {* Сроки выполнения *}
-                       <b>{$i.date_begin|date_format:"%d/%m/%y"} - {$i.date_end|date_format:"%d/%m/%y"}</b>
+                   {*<td> Сроки выполнения *}
+                       {*<b>{$i.date_begin|date_format:"%d/%m/%y"} - {$i.date_end|date_format:"%d/%m/%y"}</b>*}
+                   {*</td>*}
+                   <td class="nowrap">
+                       {include file="common_templates/tooltip.tpl" tooltip="`$i.description`"}
                    </td>
                    <td> {* Статус *}
                        <b>
                        {if      $i.status == "O"}
                            В ожидании
                        {elseif  $i.status == "K"}
-                           Комплектуется
+                           <img border="0" title="Комплектуется" src="skins/basic/admin/addons/uns_acc/images/circle_yellow.png">
                        {elseif  $i.status == "U"}
                            Укомплектована
                        {elseif  $i.status == "Z"}
-                           Закрыта
+                           <img border="0" title="Закрыт" src="skins/basic/admin/addons/uns_acc/images/done.png">
                        {elseif  $i.status == "A"}
                            Аннулирована
                        {/if}
                        </b>
                    </td>
+                   <td>
+                       {if $i.kit_type == "P"}
+                           {$pumps[$i.p_id].p_name} - {$i.p_quantity|fn_fvalue} шт.
+                       {elseif $i.kit_type == "D"}
+                           {foreach from=$i.details item="d" name="d"}
+                               {$smarty.foreach.d.iteration}. {$d.detail_name}{if $d.detail_no} {$d.detail_no}{/if} - {$d.quantity|fn_fvalue} шт.
+                               {if $smarty.foreach.d.last}{else}<br>{/if}
+                           {/foreach}
+                       {/if}
+                   </td>
                    <td class="nowrap right">
                        {capture name="tools_items"}
                            <li><a class="cm-confirm" href="{"`$controller`.delete?`$value`=`$id`"|fn_url}">
-                                   <img border="0" src="/skins/basic/admin/addons/uns_acc/images/delete.png">
+                                   <img border="0" src="skins/basic/admin/addons/uns_acc/images/delete.png">
                                </a>
                            </li>
                        {/capture}

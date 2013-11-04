@@ -38,6 +38,7 @@
         f_with_id=true
         f_target=$d.type
         f_disabled=$disabled
+        f_enabled_items=$document_types_enabled
         f_blank=true
         f_description="Тип документа"
     }

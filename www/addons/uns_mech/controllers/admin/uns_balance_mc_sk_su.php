@@ -12,7 +12,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 
 if($mode == 'manage' or $mode == 'update' or $mode == 'add'){
-    fn_uns_add_sections($controller);
+//    fn_uns_add_sections($controller);
     fn_uns_navigation_tabs(array('general' => fn_get_lang_var('general'),));
 }
 

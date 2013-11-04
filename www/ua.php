@@ -23,7 +23,9 @@ require dirname(__FILE__) . '/prepare.php';
 require dirname(__FILE__) . '/init.php';
 
 define('INDEX_SCRIPT',  Registry::get('config.admin_index'));
-define('PROFILER',  1);
+if (in_array($_SESSION["auth"]["user_id"], array(1,9))){
+    define('PROFILER',  1);
+}
 
 fn_dispatch();
 

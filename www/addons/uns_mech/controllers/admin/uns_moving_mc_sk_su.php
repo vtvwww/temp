@@ -251,7 +251,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 
 if($mode == 'manage' or $mode == 'update' or $mode == 'add'){
-    fn_uns_add_sections($controller);
+//    fn_uns_add_sections($controller);
 
     // только при редактировании
     if($mode == 'update' or $mode == 'add'){

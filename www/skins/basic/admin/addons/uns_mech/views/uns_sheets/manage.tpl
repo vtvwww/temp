@@ -35,11 +35,11 @@
                    </td>
                    <td> {*Статус*}
                        {if $i.status == "OP"}
-                           <img border="0" title="Открыт" src="/skins/basic/admin/addons/uns_acc/images/circle_yellow.png">
+                           <img border="0" title="Открыт" src="skins/basic/admin/addons/uns_acc/images/circle_yellow.png">
                        {elseif $i.status == "CL"}
-                           <img border="0" title="Закрыт" src="/skins/basic/admin/addons/uns_acc/images/done.png">
+                           <img border="0" title="Закрыт" src="skins/basic/admin/addons/uns_acc/images/done.png">
                        {elseif $i.status == "CN"}
-                           <img border="0" title="Отменен" src="/skins/basic/admin/addons/uns_acc/images/circle_red.png">
+                           <img border="0" title="Отменен" src="skins/basic/admin/addons/uns_acc/images/circle_red.png">
                        {/if}
                    </td>
                    <td> {*Исходный материал*}
@@ -57,7 +57,7 @@
                    <td class="nowrap right">
                        {capture name="tools_items"}
                            <li><a class="cm-confirm" href="{"`$controller`.delete?`$value`=`$id`"|fn_url}" title="Удалить сопроводительный лист: {$i.no} - {$i.date_open|date_format:"%d/%m/%y"}">
-                                   <img border="0" src="/skins/basic/admin/addons/uns_acc/images/delete.png">
+                                   <img border="0" src="skins/basic/admin/addons/uns_acc/images/delete.png">
                                </a>
                            </li>
                        {/capture}
