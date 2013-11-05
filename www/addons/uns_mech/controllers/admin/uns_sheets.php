@@ -99,12 +99,13 @@ if($mode == 'manage'){
     if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "M"; // Текущий месяц
     list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
     $p = array(
-        "with_details" =>   true,
+        "with_details"  =>   true,
     );
 
     $p = array_merge($_REQUEST, $p);
 
     list($sheets, $search) = fn_acc__get_sheets($p, UNS_ITEMS_PER_PAGE);
+//    fn_print_r($sheets);
     $view->assign('sheets', $sheets);
     $view->assign('search', $search);
 

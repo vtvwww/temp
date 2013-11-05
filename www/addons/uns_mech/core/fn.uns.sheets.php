@@ -231,8 +231,8 @@ function fn_acc__get_sheet_details($params = array(), $items_per_page = 0){
     // 1. УСЛОВИЯ ОТБОРА
     // *************************************************************************
     // По ID
-    if ($params["{$m_key}_array"] = to__array($params[$m_key])){
-        $condition .= db_quote(" AND $m_tbl.$m_key in (?n)", $params["{$m_key}_array"]);
+    if ($params["sheet_id_array"] = to__array($params["sheet_id"])){
+        $condition .= db_quote(" AND $m_tbl.sheet_id in (?n)", $params["sheet_id_array"]);
     }
 
     // *************************************************************************
@@ -258,10 +258,9 @@ function fn_acc__get_sheet_details($params = array(), $items_per_page = 0){
     }
 
     $sql = UNS_DB_PREFIX . "SELECT " . implode(", ", $fields) . " FROM $m_tbl $join WHERE 1 $condition $sorting $limit";
-    $data = db_get_hash_array($sql, "detail_id");
-    //  fn_print_r(str_replace(array(UNS_DB_PREFIX,"?:"), array("", "uns_"), $sql));
+    $data = db_get_array($sql);
+//      fn_print_r(str_replace(array(UNS_DB_PREFIX,"?:"), array("", "uns_"), $sql));
     if (!is__array($data)) return array(array(), $params);
-
     if ($params["with_weight"]){
         foreach ($data as $k=>$v){
             $w = fn_uns__get_accounting_item_weights("D", $v['detail_id']);
@@ -270,11 +269,14 @@ function fn_acc__get_sheet_details($params = array(), $items_per_page = 0){
     }
     $data = fn_group_data_by_field($data, 'sheet_id');
 
-
     // *************************************************************************
     // 6. ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ
     // *************************************************************************
-    //foreach ($data as $k_data=>$v_data){}
+    foreach ($data as $k_data=>$v_data){
+        $v = array_shift($v_data);
+        $d[$k_data][$v["detail_id"]] = $v;
+    }
+    $data = $d;
 
     return array($data, $params);
 }
