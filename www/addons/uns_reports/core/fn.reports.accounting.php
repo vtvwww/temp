@@ -159,8 +159,7 @@ function fn_report_get_name ($item, $rules){
 
 
 // РАСЧЕТ ВЫСОТЫ СТРОКИ ДЛЯ ЕЕ ЛУЧШЕГО ЗАПОЛНЕНИЯ
-function fn_report_calc_height_row ($length){
-    $msize = 30;
+function fn_report_calc_height_row ($length, $msize = 30){
     if (($length > (1*$msize)) and ($length <= (2*$msize))){
         $h          = 9;
         $maxh       = $h;

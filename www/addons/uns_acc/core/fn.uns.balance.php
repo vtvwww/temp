@@ -168,6 +168,13 @@ function fn_uns__get_balance($params = array()){
         $cond__items .= db_quote(" AND uns__acc_documents.package_type = ?s ", $params['package_type']);
     }
 
+    // Категории деталей
+    if (is__array($params['dcat_id'])){
+        $cond__tables = " , uns_details ";
+        $cond__items .= db_quote(" AND uns__acc_document_items.item_id = uns_details.detail_id ");
+        $cond__items .= db_quote(" AND uns_details.dcat_id in (?n) ", $params['dcat_id']);
+    }
+
     // =========================================================================
     // JOINS
     // =========================================================================
@@ -179,6 +186,7 @@ function fn_uns__get_balance($params = array()){
                    , uns__acc_documents
                    , uns__acc_motions
                    , uns__acc_document_types
+                   {$cond__tables}
                  WHERE 1 {$cond__items}
                        {$cond_prih}
                        #UNS__ACC_DOCUMENTS
@@ -205,6 +213,7 @@ function fn_uns__get_balance($params = array()){
                    , uns__acc_documents
                    , uns__acc_motions
                    , uns__acc_document_types
+                   {$cond__tables}
                  WHERE 1 {$cond__items}
                        {$cond_rash}
                        #UNS__ACC_DOCUMENTS
@@ -232,6 +241,7 @@ function fn_uns__get_balance($params = array()){
                    , uns__acc_documents
                    , uns__acc_motions
                    , uns__acc_document_types
+                   {$cond__tables}
                  WHERE 1 {$cond__items}
                        {$cond_prih}
                        #UNS__ACC_DOCUMENTS
@@ -258,6 +268,7 @@ function fn_uns__get_balance($params = array()){
                    , uns__acc_documents
                    , uns__acc_motions
                    , uns__acc_document_types
+                   {$cond__tables}
                  WHERE 1 {$cond__items}
                        {$cond_rash}
                        #UNS__ACC_DOCUMENTS
@@ -414,6 +425,10 @@ function fn_uns__get_balance($params = array()){
         if (is__more_0($params['dcat_id'])){
             $p["dcat_id"] = $params['dcat_id'];
             $p["dcat_include_target"] = true;
+        }
+
+        if (is__array($params['dcat_id'])){
+            $p["item_ids"] = $params['dcat_id'];
         }
 
         if (strlen($params['detail_name'])){
@@ -694,7 +709,7 @@ function fn_uns__get_balance_mc_sk_su($params, $mc=true, $sk=true, $su=false){
 
     $p = array_merge($p, $params);
     if ($p["check_dcat_id"]){
-        if (!is__more_0($p["dcat_id"])) return $res;
+        if (!($p["dcat_id"] = to__array($p["dcat_id"]))) return false;
     }
     // ЗАПРОСИТЬ БАЛАНС МЕХ. ЦЕХА
     if ($mc == true){
