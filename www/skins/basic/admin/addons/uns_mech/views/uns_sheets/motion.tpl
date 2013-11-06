@@ -27,7 +27,7 @@
 
         <div class="form-field">
             {if $m_mode == 'add'}
-                {assign var="motion_date" value=$smarty.const.TIME}
+                {assign var="motion_date" value=$sheet.date_open}
             {else}
                 {assign var="motion_date" value=$motion.date}
             {/if}
