@@ -154,7 +154,7 @@
         {if $f_blank}<option value="0">---</option>{/if}
         {if is__array($f_options)}
         {foreach from=$f_options item="j"}
-            <option {if $j.material_status == "D"} title="Заготовка больше не используется в производстве" style="text-decoration: line-through; color: red;" {/if} value="{$j.$f_option_id}" {if $j.$f_option_id == $f_option_target_id} selected="selected" {/if}>{if $f_value_prefix}{$f_value_prefix}{/if}{$j.$f_option_value}{if $f_option_value_add && $j.$f_option_value_add} ({$j.$f_option_value_add}) {/if}{if $f_value_suffix}{$f_value_suffix}{/if}{if $f_add_value}&nbsp;&nbsp;&nbsp;({$j.$f_add_value}){/if}</option>
+            <option {if $j.material_status == "D"} title="Заготовка больше не используется в производстве" style="text-decoration: line-through; color: red;" {/if} value="{$j.$f_option_id}" {if $j.$f_option_id == $f_option_target_id} selected="selected" {/if}>{if $f_value_prefix}{$f_value_prefix}{/if}{$j.$f_option_value}{if $f_option_value_add && $j.$f_option_value_add} ({$j.$f_option_value_add}) {/if}{if $f_value_suffix}{$f_value_suffix}{/if}{if $f_add_value and strlen($j.$f_add_value)}&nbsp;&nbsp;&nbsp;({$j.$f_add_value}){/if}</option>
         {/foreach}
         {/if}
     {else}

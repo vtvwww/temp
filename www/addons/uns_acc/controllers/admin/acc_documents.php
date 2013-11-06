@@ -133,15 +133,17 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                 if(in_array($_REQUEST['item_type'], array('D', 'M')) && is__more_0($_REQUEST['item_cat_id'])){
                     $options = "<option value='0'>---</option>";
                     if($_REQUEST['item_type'] == "D"){
-                        $p = array('dcat_id'         => $_REQUEST['item_cat_id'],
-                                   'with_accounting' => true,
-                                   'with_materials'  => true,
-                                   'format_name'     => true);
+                        $p = array('dcat_id'            => $_REQUEST['item_cat_id'],
+                                   'with_accounting'    => true,
+                                   'with_materials'     => true,
+                                   'with_material_info' => true,
+                                   'format_name'        => true);
                         list ($details) = fn_uns__get_details($p);
                         $view->assign('f_type', 'select');
                         $view->assign('f_options', $details);
                         $view->assign('f_option_id', 'detail_id');
                         $view->assign('f_option_value', 'format_name');
+                        $view->assign('f_add_value', 'material_no');
                         $view->assign('f_simple_2', true);
                         $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
                     } else{
