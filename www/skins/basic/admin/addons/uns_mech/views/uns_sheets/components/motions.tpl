@@ -26,59 +26,66 @@
 
     </style>
 {/literal}
-<ul>
-    <li><b>1.</b>
+&nbsp;
+<span class="action-add">
         {include    file="common_templates/table_tools_list.tpl"
                     popup=true
                     id="add_PVP"
                     text="Передать в производство [10]"
                     act="edit"
-                    link_text="Передать в производство [10]"
+                    link_text="В производство"
                     href="`$controller`.motion.add?document_type=10&sheet_id=`$sheet.sheet_id`"
                     link_class="cm-dialog-auto-size"
                     tools_list=$smarty.capture.tools_items}
-    </li>
-    <li><b>2.</b>
+</span>
+&nbsp;&nbsp;
+<span class="action-add">
         {include    file="common_templates/table_tools_list.tpl"
                 popup=true
                 id="add_BRAK"
-                text="Списать в брак [11]"
+                text="В брак [11]"
                 act="edit"
-                link_text="Списать в брак [11]"
+                link_text="В брак"
                 href="`$controller`.motion.add?document_type=11&sheet_id=`$sheet.sheet_id`"
                 link_class="cm-dialog-auto-size"
                 tools_list=$smarty.capture.tools_items}</li>
-    <li><b>3.</b>
+</span>
+&nbsp;&nbsp;
+<span class="action-add">
         {include    file="common_templates/table_tools_list.tpl"
                 popup=true
                 id="add_VCP"
                 text="Добавить перемещение МЦ1 <-> МЦ2 [3]"
                 act="edit"
-                link_text="Добавить перемещение МЦ1 <-> МЦ2 [3]"
+                link_text="МЦ1 <-> МЦ2"
                 href="`$controller`.motion.add?document_type=3&sheet_id=`$sheet.sheet_id`"
                 link_class="cm-dialog-auto-size"
                 tools_list=$smarty.capture.tools_items}</li>
-    <li><b>4.</b>
+</span>
+&nbsp;&nbsp;
+<span class="action-add">
         {include    file="common_templates/table_tools_list.tpl"
                 popup=true
                 id="add_VCP_COMPLETE"
                 text="Завершение обработки [12]"
                 act="edit"
-                link_text="Завершение обработки [12]"
+                link_text="Завершено"
                 href="`$controller`.motion.add?document_type=12&sheet_id=`$sheet.sheet_id`"
                 link_class="cm-dialog-auto-size"
                 tools_list=$smarty.capture.tools_items}</li>
-    <li><b>5.</b>
+</span>
+&nbsp;&nbsp;
+<span class="action-add">
         {include    file="common_templates/table_tools_list.tpl"
                 popup=true
                 id="add_MCP"
                 text="Сдать на Склад Комплектующих [2]"
                 act="edit"
-                link_text="Сдать на Склад Комплектующих [2]"
+                link_text="Сдать на Скл. КМП"
                 href="`$controller`.motion.add?document_type=2&sheet_id=`$sheet.sheet_id`"
                 link_class="cm-dialog-auto-size"
                 tools_list=$smarty.capture.tools_items}</li>
-</ul>
+</span>
 
 <br>
 <br>
