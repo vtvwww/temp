@@ -35,7 +35,7 @@
                     <th rowspan="3" style="border-right: 1px solid #808080;">&nbsp;</th>
                     <th colspan="4" style=" text-align: center;" width="110px">Мех. цех</th>
                     <th rowspan="3" style="border-left: 1px solid #808080; text-align: center;" width="0">Скл<br>КМП</th>
-                    <th rowspan="3" style="border-left: 1px solid #808080; text-align: center; font-size: 35px; font-weight: normal;" width="0">&Sigma;</th>
+                    {*<th rowspan="3" style="border-left: 1px solid #808080; text-align: center; font-size: 35px; font-weight: normal;" width="0">&Sigma;</th>*}
                     <th rowspan="3" style="border-left: 1px solid #808080; text-align: center;" width="0">Сб.<br>Уч.</th>
                     {if $search.accessory_pumps == "Y"}
                         <th rowspan="3" style="border-left: 1px solid #808080; text-align: center;">Принадлежность к насосам</th>

@@ -14,7 +14,7 @@
                     <td style="background-color: #d3d3d3;" align="center"></td>
                     <td style="background-color: #d3d3d3;" align="center"></td>
                     <td style="background-color: #d3d3d3;" align="center"></td>
-                    <td style="background-color: #d3d3d3;" align="center"></td>
+                    {*<td style="background-color: #d3d3d3;" align="center"></td>*}
                     <td style="background-color: #d3d3d3;" align="center"></td>
                     <td style="background-color: #d3d3d3;" align="center"></td>
                     <td style="background-color: #d3d3d3;" align="center"></td>
@@ -48,7 +48,7 @@
                     <td align="center" style="border-left: 1px solid  black;"><span class="{if $q_obj_14_P<0}info_warning_block{elseif $q_obj_14_P==0}zero{/if}">{$q_obj_14_P|fn_fvalue:2}</span></td>
                     <td align="center" style="border-left: 1px dashed #808080;"><span class="{if $q_obj_14_C<0}info_warning_block{elseif $q_obj_14_C==0}zero{/if}">{$q_obj_14_C|fn_fvalue:2}</span></td>
                     <td align="center" style="border-left: 1px solid  black;"><span class="{if $q_obj_17<0}info_warning_block{elseif $q_obj_17==0}zero{/if}">{$q_obj_17|fn_fvalue:2}</span></td>
-                    <td align="center" style="border-left: 1px solid  black; background-color: #DDF3FA;"><span class="{if $q_obj_total<0}info_warning_block{elseif $q_obj_total==0}zero{/if}"><b>{$q_obj_total|fn_fvalue:2}</b></span></td>
+                    {*<td align="center" style="border-left: 1px solid  black; background-color: #DDF3FA;"><span class="{if $q_obj_total<0}info_warning_block{elseif $q_obj_total==0}zero{/if}"><b>{$q_obj_total|fn_fvalue:2}</b></span></td>*}
                     <td align="center" style="border-left: 1px solid  black;"><span class="{if $q_obj_18<0}info_warning_block{elseif $q_obj_18==0}zero{/if}"><b>{$q_obj_18|fn_fvalue:2}</b></span></td>
                     {if $search.accessory_pumps == "Y"}
                     <td align="left" style="border-left: 1px solid #808080;">
