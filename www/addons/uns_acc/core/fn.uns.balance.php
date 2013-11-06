@@ -683,7 +683,18 @@ function fn_uns__get_motions($params){
                   )
             ORDER BY uns__acc_documents.date ASC
     ";
-    $data = db_get_array($sql);
+    $data = db_get_hash_array($sql, "document_id");
+
+    // Добавить привязку к СЛ
+    if (is__array($data)){
+        $keys = array();
+        foreach ($data as $k=>$v){
+            if ($v["package_type"] == UNS_PACKAGE_TYPE__SL){
+                $data[$k]["sheet_no"] = db_get_field(UNS_DB_PREFIX . "SELECT uns__acc_sheets.no FROM uns__acc_sheets WHERE sheet_id=?i", $v["package_id"]);
+            }
+        }
+    }
+
     return (!is__array($data))?false:$data;
 }
 
