@@ -2,7 +2,7 @@
 <div id="header">
 	<div id="logo">
 		{assign var="name" value=$settings.Company.company_name|truncate:40:"...":true}
-		<span style="border: 2px solid white; color: #FFFFFF; font-weight: bold; padding: 0 4px 1px 5px; text-transform: uppercase;">{$smarty.const.PROJECT_NAME}</span>
+		<span style="border: 2px solid white; color: #FFFFFF; font-weight: bold; padding: 0 4px 1px 5px; text-transform: uppercase; {if $smarty.const.PROJECT_NAME == "temp"}background-color: #FF0000{/if} ">{$smarty.const.PROJECT_NAME}</span>
 		<a href="{$index_script|fn_url}">{$name}</a><a href="{$config.http_location|fn_url|escape}" class="view-storefront-icon" target="_blank" title="{$lang.view_storefront}">&nbsp;</a>
 	</div>
 

@@ -119,7 +119,7 @@ tbody .cm-row-item.hide-row{
     border: 1px solid #FF0000;
     border-radius: 5px;
     font-weight: bold;
-    padding: 0 8px;
+    padding: 0 0px;
 }
 
 .info_warning, span.info_warning{

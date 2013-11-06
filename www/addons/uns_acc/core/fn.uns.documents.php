@@ -752,8 +752,8 @@ function fn_uns__upd_document_info($id = 0, $doc){;
                     $d["object_from"]   = $doc["object_from"];
                 }
             }elseif($operation == "update"){
-                $d["object_to"]     = $doc["object_to"];
-                $d["object_from"]   = $doc["object_from"];
+                if (is__more_0($doc["object_to"]))      $d["object_to"]     = $doc["object_to"];
+                if (is__more_0($doc["object_from"]))    $d["object_from"]   = $doc["object_from"];
             }
         break;
 
