@@ -17,7 +17,7 @@
     {if $f_simple_text}
         <span {if $f_class}class="{$f_class}"{/if}>{if (strlen($f_default) && !strlen($f_value))}{$f_default}{else}{$f_value}{/if}</span>
     {elseif $f_simple}
-        <input type="text" {if $f_id} id="{$f_id}" {/if} {if $f_name}name="{$f_name}"{/if} size="35" value="{if (strlen($f_default) && !strlen($f_value))}{$f_default}{else}{$f_value}{/if}" {if $f_class}class="{$f_class}"{else}class="input-text-short{*medium*} main-input {$f_add_class} "{/if} {if $f_style} style="{$f_style}" {/if}  {if $f_disabled}disabled="disabled"{/if}  {if $f_readonly}readonly="readonly"{/if}  />
+        <input type="{if $f_number}number{else}text{/if}" {if $f_id} id="{$f_id}" {/if} {if $f_name}name="{$f_name}"{/if} size="35" value="{if (strlen($f_default) && !strlen($f_value))}{$f_default}{else}{$f_value}{/if}" {if $f_class}class="{$f_class}"{else}class="input-text-short{*medium*} main-input {$f_add_class} "{/if} {if $f_style} style="{$f_style}" {/if}  {if $f_disabled}disabled="disabled"{/if}  {if $f_readonly}readonly="readonly"{/if} {if $f_autocomplete}autocomplete="{$f_autocomplete}"{/if} />
     {else}
         <div class="form-field">
              <label class="{if $f_required}cm-required{/if}{if $f_integer} cm-integer{/if}" for="{$f_name}_{$f_id}">{$f_description}:</label>

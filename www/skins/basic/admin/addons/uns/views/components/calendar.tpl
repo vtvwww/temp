@@ -1,4 +1,4 @@
-<input type="text" id="{$date_id}" name="{$date_name}" {if $date_style} style="{$date_style}" {/if} class="input-text{if $date_meta} {$date_meta}{/if} cm-calendar" value="{if $date_val}{$date_val|fn_parse_date|date_format:"%d/%m/%Y"}{/if}" {$extra} size="10" {if $date_disabled} disabled="disabled" {/if} />{if !$date_disabled} &nbsp;<img src="{$images_dir}/icons/calendar.png" class="cm-external-focus calendar-but" rev="{$date_id}" title="{$lang.calendar}" alt="{$lang.calendar}" /> {/if}
+<input autocomplete="off" type="text" id="{$date_id}" name="{$date_name}" {if $date_style} style="{$date_style}" {/if} class="input-text{if $date_meta} {$date_meta}{/if} cm-calendar" value="{if $date_val}{$date_val|fn_parse_date|date_format:"%d/%m/%Y"}{/if}" {$extra} size="10" {if $date_disabled} disabled="disabled" {/if} />{if !$date_disabled} &nbsp;<img src="{$images_dir}/icons/calendar.png" class="cm-external-focus calendar-but" rev="{$date_id}" title="{$lang.calendar}" alt="{$lang.calendar}" /> {/if}
 
 <script type="text/javascript">
 var calendar_config = {$ldelim}{$rdelim};
