@@ -169,10 +169,10 @@ function fn_uns__get_balance($params = array()){
     }
 
     // Категории деталей
-    if (is__array($params['dcat_id'])){
+    if (is__array($params['dcat_id_array'] = to__array($params['dcat_id']))){
         $cond__tables = " , uns_details ";
         $cond__items .= db_quote(" AND uns__acc_document_items.item_id = uns_details.detail_id ");
-        $cond__items .= db_quote(" AND uns_details.dcat_id in (?n) ", $params['dcat_id']);
+        $cond__items .= db_quote(" AND uns_details.dcat_id in (?n) ", $params['dcat_id_array']);
     }
 
     // =========================================================================
@@ -720,7 +720,7 @@ function fn_uns__get_balance_mc_sk_su($params, $mc=true, $sk=true, $su=false){
 
     $p = array_merge($p, $params);
     if ($p["check_dcat_id"]){
-        if (!($p["dcat_id"] = to__array($p["dcat_id"]))) return false;
+        if (!is__more_0($p["dcat_id"])) return false;
     }
     // ЗАПРОСИТЬ БАЛАНС МЕХ. ЦЕХА
     if ($mc == true){
