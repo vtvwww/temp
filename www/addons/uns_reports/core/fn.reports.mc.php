@@ -167,7 +167,7 @@ function fn_rpt__mc($data){
         $pdf->ln(10);
     }
 
-    $pdf->Output('example_001.pdf', 'I');
+    $pdf->Output(str_replace(array('fn.reports.', '.php'), '', basename(__FILE__)) . "_" . strftime("%Y-%m-%d_%H-%M", time()) . ".pdf", 'I');
     return true;
 }
 

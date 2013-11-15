@@ -230,6 +230,6 @@ function fn_rpt__sl($data){
         $pdf->Cell(0, 5, '', 0, 1, 'L', 0, '', 0);
     }
 
-    $pdf->Output('example_001.pdf', 'I');
+    $pdf->Output(str_replace(array('fn.reports.', '.php'), '', basename(__FILE__)) . "_" . strftime("%Y-%m-%d_%H-%M", time()) . ".pdf", 'I');
     return true;
 }

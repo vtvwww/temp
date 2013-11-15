@@ -486,6 +486,7 @@ function fn_uns__get_balance($params = array()){
                             $dcat_items[$dcats_k]["items"][$details_k]["material_id"]             = $details_v["material_id"];
                             $dcat_items[$dcats_k]["items"][$details_k]["material_no"]             = $details_v["material_no"];
                             $dcat_items[$dcats_k]["items"][$details_k]["material_name"]           = $details_v["material_name"];
+                            $dcat_items[$dcats_k]["items"][$details_k]["checked"]                 = $details_v["checked"];
 
                             if (is__array($data[$details_k])){
                                 $dcat_items[$dcats_k]["items"][$details_k]["nach"]        = fn_fvalue($data[$details_k]["no"], 2);
@@ -720,7 +721,7 @@ function fn_uns__get_balance_mc_sk_su($params, $mc=true, $sk=true, $su=false){
 
     $p = array_merge($p, $params);
     if ($p["check_dcat_id"]){
-        if (!is__more_0($p["dcat_id"])) return false;
+//        if (!is__more_0($p["dcat_id"]) and !is__array($p["dcat_id"])) return false;
     }
     // ЗАПРОСИТЬ БАЛАНС МЕХ. ЦЕХА
     if ($mc == true){

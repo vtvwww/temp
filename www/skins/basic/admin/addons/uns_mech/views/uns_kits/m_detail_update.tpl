@@ -17,14 +17,14 @@
     <form action="{""|fn_url}" method="post" name="update_{$controller}_form_{$id}" class="cm-form-highlight">
         <div id="content_general">
             <span style="font-size: 15px; font-weight: bold; margin: 0 0 10px; padding: 0; ">Насос {$pump.p_name}</span>
-            &nbsp; &nbsp;
-            {include file="addons/uns/views/components/get_form_field.tpl"
-                f_type="select_range"
-                f_onchange="multi_select_multiplication($(this))"
-                f_from=0
-                f_to=200
-                f_simple=true
-            }
+            {*&nbsp; &nbsp;*}
+            {*{include file="addons/uns/views/components/get_form_field.tpl"*}
+                {*f_type="select_range"*}
+                {*f_onchange="multi_select_multiplication($(this))"*}
+                {*f_from=0*}
+                {*f_to=200*}
+                {*f_simple=true*}
+            {*}*}
 
             <input type="hidden" name="kit_id" value="{$kit.kit_id}"/>
             <table class="simple">

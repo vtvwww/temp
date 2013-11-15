@@ -99,7 +99,9 @@ if($mode == 'manage'){
     if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "M"; // Текущий месяц
     list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
     $p = array(
-        "with_details"  =>   true,
+        "with_details"                  => true,
+        "with_material_quantity_PVP"    => true, // Кол*во выданного литья по СЛ
+        "with_material_quantity_BRAK"   => true, // Кол*во выданного литья по СЛ
     );
 
     $p = array_merge($_REQUEST, $p);
@@ -109,6 +111,12 @@ if($mode == 'manage'){
     $view->assign('sheets', $sheets);
     $view->assign('search', $search);
 
+    // Запрос категорий
+    list($mcategories_plain) = fn_uns__get_materials_categories(array('plain' => true, "with_q_ty"=>false));
+    $view->assign('mcategories_plain', $mcategories_plain);
+
+    list($dcategories_plain) = fn_uns__get_details_categories(array("plain" => true, "with_q_ty"=>false));
+    $view->assign('dcategories_plain', $dcategories_plain);
 }
 
 
@@ -214,6 +222,12 @@ function fn_uns_sheets__search ($controller){
         'period',
         'time_from',
         'time_to',
+
+        'status',
+        'material_type',
+        'target_object',
+        'mcat_id',
+        'dcat_id',
     );
     fn_uns_search_set_get_params($controller, $params);
     return true;

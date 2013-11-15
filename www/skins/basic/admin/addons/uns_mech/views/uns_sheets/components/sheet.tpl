@@ -85,6 +85,25 @@
         </select>
     </div>
 
+    {*Тип исходного материала*}
+    <div class="form-field">
+        <label for="material_type">Тип исх. материал:</label>
+        <select name="{$e_n}[material_type]" id="material_type">
+              <option {if $sheet.material_type == "O"}selected="selected"{/if} value="O">Отливка</option>
+              <option {if $sheet.material_type == "M"}selected="selected"{/if} value="M">Металлопрокат</option>
+        </select>
+    </div>
+
+    {*Объект назначения*}
+    <div class="form-field">
+        <label for="target_object">Местоположение:</label>
+        <select name="{$e_n}[target_object]" id="target_object">
+              <option {if $sheet.target_object == "10"}selected="selected"{/if} value="10">Мех. цех 1</option>
+              <option {if $sheet.target_object == "14"}selected="selected"{/if} value="14">Мех. цех 2</option>
+              <option {if $sheet.target_object == "17"}selected="selected"{/if} value="17">Скл. КМП</option>
+        </select>
+    </div>
+
     {*Комментарий СЛ*}
     {include file="addons/uns/views/components/get_form_field.tpl"
         f_type="textarea"
