@@ -89,8 +89,8 @@ function fn_rpt__accounting($data){
                 if ($pdf->GetY() >= 280)  $pdf->AddPage();
 
                 // ЗАЛИВКА СТРОВКИ
-                if (++$m % 2) $pdf->SetFillColor(255, 255, 255);
-                else $pdf->SetFillColor(245, 245, 245);
+                if (++$m % 2) $pdf->SetFillColor(255);    // нечет 0 - черный
+                else $pdf->SetFillColor(240);           // чет
 
                 // ВЫСОТА СТРОКИ
                 list($h, $maxh) = fn_report_calc_height_row(strlen(iconv("utf-8", "windows-1251", $item_name)));
@@ -104,7 +104,10 @@ function fn_rpt__accounting($data){
                 $pdf->MultiCell($col_sizes[$k++],  $h, fn_fvalue($i['weight']), $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
 
                 $pdf->uns_SetFont("B", $font_sizes['big']);
+
+                if ($i['nach'] == 0){$pdf->SetTextColor(255, 255, 255);}
                 $pdf->MultiCell($col_sizes[$k++],  $h, $i['nach'],              $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+                if ($i['nach'] == 0){$pdf->SetTextColor();}
                 $pdf->MultiCell($col_sizes[$k++],  $h, "",                      $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
                 $pdf->MultiCell($col_sizes[$k++],  $h, "",                      $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
                 $pdf->MultiCell($col_sizes[$k++],  $h, "",                      $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
@@ -127,7 +130,7 @@ function fn_rpt__accounting($data){
         $pdf->Cell($col_sizes[7], 0, '', 1, 1, 'C', 0, '', 1);
     }
 
-    $pdf->Output('example_001.pdf', 'I');
+    $pdf->Output(str_replace(array('fn.reports.', '.php'), '', basename(__FILE__)) . "_" . strftime("%Y-%m-%d_%H-%M", time()) . ".pdf", 'I');
     return true;
 }
 
@@ -159,8 +162,7 @@ function fn_report_get_name ($item, $rules){
 
 
 // РАСЧЕТ ВЫСОТЫ СТРОКИ ДЛЯ ЕЕ ЛУЧШЕГО ЗАПОЛНЕНИЯ
-function fn_report_calc_height_row ($length){
-    $msize = 30;
+function fn_report_calc_height_row ($length, $msize = 30){
     if (($length > (1*$msize)) and ($length <= (2*$msize))){
         $h          = 9;
         $maxh       = $h;

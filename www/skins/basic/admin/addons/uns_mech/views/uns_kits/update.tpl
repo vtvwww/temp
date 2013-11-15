@@ -39,4 +39,5 @@
 {include file="common_templates/mainbox.tpl" title=$title content=$smarty.capture.mainbox}
 
 {*<hr>*}
-{*<pre>{$kit|print_r}</pre>*}
+{*<pre>{$documents|print_r}</pre>*}
+{*<pre>{$pumps|print_r}</pre>*}

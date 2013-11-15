@@ -38,7 +38,7 @@
 {if $id > 0}
     {assign var="title" value="Редактирование: `$name`"}
 {else}
-    {assign var="title" value="Добавить новый документ"}
+    {assign var="title" value="Добавить документ движения по Складу литья"}
 {/if}
 
 {include file="common_templates/mainbox.tpl" title=$title content=$smarty.capture.mainbox}

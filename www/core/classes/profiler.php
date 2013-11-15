@@ -74,13 +74,17 @@ class Profiler {
 
 		foreach (self::$checkpoints as $name => $c) {
             if ($c['display']){
-    			echo '<b>' . $name . '</b><br />';
-    			echo '-------------------<br />';
+                echo "<table><tr>";
+    			echo "<td><b>$name:</b></td>";
+
+//    			echo '<b>' . $name . '</b><br />';
+//    			echo '-------------------<br />';
             }
 			if ($first == false) {
 				if ($c['display']){
-                    echo '&nbsp;&nbsp;Queries: <b>' . ($c['queries'] - $previous['queries']) . '</b><br />';
-                    echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Time: ' . sprintf("%.4f", $c['time'] - $previous['time']) . '<br />';
+                    echo  "<td>" . ($c['queries'] - $previous['queries']) . "/" . sprintf("%.3f", $c['time'] - $previous['time']) . "</td>";
+//                    echo  "<td>Queries: " . ($c['queries'] - $previous['queries']) . "</td>"
+//                        . "<td>Time: " . sprintf("%.4f", $c['time'] - $previous['time']) . "</td>";
 //                    echo '&nbsp;&nbsp;&nbsp;&nbsp;Files:   ' . ($c['included_files'] - $previous['included_files']) . '<br />';
 //                    echo '&nbsp;&nbsp;&nbsp;Memory:  ' . (self::formatBytes($c['memory'] - $previous['memory'])) . '<br />';
                 }
@@ -98,10 +102,10 @@ class Profiler {
 
 		}
         // Total BEGIN
-        echo '<br /><br /><b> TOTAL</b><br />';
-        echo '-------------------<br />';
-        echo '&nbsp;&nbsp;Queries: <b>' . $previous['queries'] . '</b><br />';
-        echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Time:    ' . sprintf("%.4f", $previous['time']-$cummulative['time']) . '<br />';
+        echo "<td><b>Total:</b></td>";
+        echo  "<td>" . $previous['queries'] . "/" . sprintf("%.3f", $previous['time']-$cummulative['time']) . "</td>";
+//        echo  "<td>Queries: " . $previous['queries'] . "</td>"
+//            . "<td>Time: " . sprintf("%.4f", $previous['time']-$cummulative['time']) . "</td>";
 //        echo 'Queries T: ' . sprintf("%.4f", array_sum(self::$queries_time)) . '<br />';
 //        echo '&nbsp;&nbsp;&nbsp;&nbsp;Files:   ' . $previous['included_files'] . '<br />';
 //        echo '&nbsp;&nbsp;&nbsp;Memory:  ' . self::formatBytes($previous['memory']) . '<br />';

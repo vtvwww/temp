@@ -12,7 +12,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 
 if($mode == 'manage' or $mode == 'update' or $mode == 'add'){
-    fn_uns_add_sections($controller);
+//    fn_uns_add_sections($controller);
     fn_uns_navigation_tabs(array('general' => fn_get_lang_var('general'),));
 }
 
@@ -20,18 +20,10 @@ if($mode == 'manage' or $mode == 'update' or $mode == 'add'){
 if($mode == 'manage'){
     if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "M"; // Текущий месяц
     list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
-    if (!isset($_REQUEST["total_balance_of_details"])) $_REQUEST["total_balance_of_details"] = "Y";
 
-//    fn_uns__get_balance_mc(10, $_REQUEST);
-//    fn_uns__get_balance_mc(14, $_REQUEST);
-
-
-    if ($_REQUEST["total_balance_of_details"] == "Y"){
-        $balances = array();
-        list($balances, $search) = fn_uns__get_balance_mc_sk_su($_REQUEST, true, true, true);
-        $view->assign('balances',    $balances);
-//        fn_print_r($balances);
-    }
+    $balances = array();
+    list($balances, $search) = fn_uns__get_balance_mc_sk_su($_REQUEST, true, true, true);
+    $view->assign('balances',    $balances);
 
     $view->assign('search',     $search);
     $view->assign('expand_all', false);
@@ -101,7 +93,6 @@ function fn_uns_balance_mc_sk_su__search($controller) {
 
         'item_type',
         'dcat_id',
-        'type_casting',
         'detail_name',
         'detail_no',
         'accessory_pumps',

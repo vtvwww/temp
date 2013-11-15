@@ -52,6 +52,11 @@ define("UNS_STATUS_SHEET__CL",    "CL");       // Close
 define("UNS_STATUS_SHEET__CN",    "CN");       // Cancel
 define("UNS_STATUS_SHEET",      "|OP|CL|CN|");
 
+// Тип материала СЛ: O - отливка, M - металлопрокат
+define("UNS_SHEET_MTYPE__O",    "O");
+define("UNS_SHEET_MTYPE__M",    "M");
+define("UNS_SHEET_MTYPES",      "|O|M|");
+
 // Статус KIT
 define("UNS_KIT_STATUS__O",    "O");
 define("UNS_KIT_STATUS__K",    "K");

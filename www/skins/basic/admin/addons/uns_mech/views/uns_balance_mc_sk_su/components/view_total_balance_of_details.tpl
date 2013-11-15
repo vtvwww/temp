@@ -6,15 +6,15 @@
             <tbody>
                 <tr  m_id={$m.id}>
                     <td style="background-color: #d3d3d3; ">
-                        <img width="14" category_items="{$id}" height="9" border="0" title="Расширить список" class="hand {$id} plus {if !$expand_all} hidden {/if}" alt="Расширить список" src="/skins/basic/admin/images/plus.gif">
-                        <img width="14" category_items="{$id}" height="9" border="0" title="Свернуть список" class="hand {$id} minus {if $expand_all} hidden {/if}" alt="Свернуть список" src="/skins/basic/admin/images/minus.gif">
-                        &nbsp;<span style="color: #000000; font-weight: bold; font-size: 14px;">{$item.group}{if $item.group_comment} <span class="info_warning">({$item.group_comment})</span>{/if}</span>
+                        <img width="14" category_items="{$id}" height="9" border="0" title="Расширить список" class="hand {$id} plus {if !$expand_all} hidden {/if}" alt="Расширить список" src="skins/basic/admin/images/plus.gif">
+                        <img width="14" category_items="{$id}" height="9" border="0" title="Свернуть список" class="hand {$id} minus {if $expand_all} hidden {/if}" alt="Свернуть список" src="skins/basic/admin/images/minus.gif">
+                        &nbsp;<span style="color: #000000; font-weight: bold; font-size: 14px;">{$item.group} [{$item.group_id}] {if $item.group_comment} <span class="info_warning">({$item.group_comment})</span>{/if}</span>
                     </td>
                     <td style="background-color: #d3d3d3;" align="right">&nbsp;</td>
                     <td style="background-color: #d3d3d3;" align="center"></td>
                     <td style="background-color: #d3d3d3;" align="center"></td>
                     <td style="background-color: #d3d3d3;" align="center"></td>
-                    <td style="background-color: #d3d3d3;" align="center"></td>
+                    {*<td style="background-color: #d3d3d3;" align="center"></td>*}
                     <td style="background-color: #d3d3d3;" align="center"></td>
                     <td style="background-color: #d3d3d3;" align="center"></td>
                     <td style="background-color: #d3d3d3;" align="center"></td>
@@ -25,11 +25,12 @@
                 </tr>
             {foreach from=$item.items  item=m key=k_m}
                 <tr class="category_items {$id} {if $expand_all} hidden {/if}" m_id={$m.id}>
-                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <td {if $m.checked == "N"}style="border-right: 2px solid red;"{/if}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         {assign var="n" value=$m.name}
                         {if $m.no != ""}
                             {assign var="n" value="`$n` [`$m.no`]"}
                         {/if}
+                        {assign var="href" value="uns_balance_mc_sk_su.motions?item_type=D&item_id=`$m.id`&period=`$search.period`&time_from=`$search.time_from`&time_to=`$search.time_to`"}
                         {assign var="href" value="uns_balance_mc_sk_su.motions?item_type=D&item_id=`$m.id`&period=`$search.period`&time_from=`$search.time_from`&time_to=`$search.time_to`"}
                         <a  rev="content_item_{$m.id}" id="opener_item_{$m_id}" href="{$href|fn_url}" class="cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black" onclick="mark_item($(this));">{$n}</a>
                         <div id="content_item_{$m.id}" class="hidden" title="Движение по {$n}"></div>
@@ -48,7 +49,7 @@
                     <td align="center" style="border-left: 1px solid  black;"><span class="{if $q_obj_14_P<0}info_warning_block{elseif $q_obj_14_P==0}zero{/if}">{$q_obj_14_P|fn_fvalue:2}</span></td>
                     <td align="center" style="border-left: 1px dashed #808080;"><span class="{if $q_obj_14_C<0}info_warning_block{elseif $q_obj_14_C==0}zero{/if}">{$q_obj_14_C|fn_fvalue:2}</span></td>
                     <td align="center" style="border-left: 1px solid  black;"><span class="{if $q_obj_17<0}info_warning_block{elseif $q_obj_17==0}zero{/if}">{$q_obj_17|fn_fvalue:2}</span></td>
-                    <td align="center" style="border-left: 1px solid  black; background-color: #DDF3FA;"><span class="{if $q_obj_total<0}info_warning_block{elseif $q_obj_total==0}zero{/if}"><b>{$q_obj_total|fn_fvalue:2}</b></span></td>
+                    {*<td align="center" style="border-left: 1px solid  black; background-color: #DDF3FA;"><span class="{if $q_obj_total<0}info_warning_block{elseif $q_obj_total==0}zero{/if}"><b>{$q_obj_total|fn_fvalue:2}</b></span></td>*}
                     <td align="center" style="border-left: 1px solid  black;"><span class="{if $q_obj_18<0}info_warning_block{elseif $q_obj_18==0}zero{/if}"><b>{$q_obj_18|fn_fvalue:2}</b></span></td>
                     {if $search.accessory_pumps == "Y"}
                     <td align="left" style="border-left: 1px solid #808080;">
@@ -125,8 +126,8 @@
         {if $mode_report != "P"}
         <tr  m_id={$m.id}>
             <td style="background-color: #d3d3d3;">
-                <img width="14" category_items="{$id}" height="9" border="0" title="Расширить список" class="hand {$id} plus {if !$expand_all} hidden {/if}" alt="Расширить список" src="/skins/basic/admin/images/plus.gif">
-                <img width="14" category_items="{$id}" height="9" border="0" title="Свернуть список" class="hand {$id} minus {if $expand_all} hidden {/if}" alt="Свернуть список" src="/skins/basic/admin/images/minus.gif">
+                <img width="14" category_items="{$id}" height="9" border="0" title="Расширить список" class="hand {$id} plus {if !$expand_all} hidden {/if}" alt="Расширить список" src="skins/basic/admin/images/plus.gif">
+                <img width="14" category_items="{$id}" height="9" border="0" title="Свернуть список" class="hand {$id} minus {if $expand_all} hidden {/if}" alt="Свернуть список" src="skins/basic/admin/images/minus.gif">
                 &nbsp;<span style="color: #000000; font-weight: bold; font-size: 14px;">{$item.group}</span></td>
             <td style="background-color: #d3d3d3;" align="center">&nbsp;</td>
             <td style="background-color: #d3d3d3;" align="right">&nbsp;</td>

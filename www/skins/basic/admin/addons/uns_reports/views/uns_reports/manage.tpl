@@ -59,6 +59,11 @@
             <tr>
                 <td colspan="2"><hr style="border: 1px solid #000000;"></td>
             </tr>
+            <tr>
+                <td>
+                    {include file="buttons/button.tpl" but_text="Баланс по мех. цеху" but_name="dispatch[`$controller`.get_report.mc]" but_role="submit"}
+                </td>
+            </tr>
         </table>
     </form>
 {/capture}

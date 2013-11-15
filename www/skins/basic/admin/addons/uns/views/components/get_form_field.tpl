@@ -17,7 +17,7 @@
     {if $f_simple_text}
         <span {if $f_class}class="{$f_class}"{/if}>{if (strlen($f_default) && !strlen($f_value))}{$f_default}{else}{$f_value}{/if}</span>
     {elseif $f_simple}
-        <input type="text" {if $f_id} id="{$f_id}" {/if} {if $f_name}name="{$f_name}"{/if} size="35" value="{if (strlen($f_default) && !strlen($f_value))}{$f_default}{else}{$f_value}{/if}" {if $f_class}class="{$f_class}"{else}class="input-text-short{*medium*} main-input {$f_add_class} "{/if} {if $f_style} style="{$f_style}" {/if}  {if $f_disabled}disabled="disabled"{/if}  {if $f_readonly}readonly="readonly"{/if}  />
+        <input type="{if $f_number}number{else}text{/if}" {if $f_id} id="{$f_id}" {/if} {if $f_name}name="{$f_name}"{/if} size="35" value="{if (strlen($f_default) && !strlen($f_value))}{$f_default}{else}{$f_value}{/if}" {if $f_class}class="{$f_class}"{else}class="input-text-short{*medium*} main-input {$f_add_class} "{/if} {if $f_style} style="{$f_style}" {/if}  {if $f_disabled}disabled="disabled"{/if}  {if $f_readonly}readonly="readonly"{/if} {if $f_autocomplete}autocomplete="{$f_autocomplete}"{/if} />
     {else}
         <div class="form-field">
              <label class="{if $f_required}cm-required{/if}{if $f_integer} cm-integer{/if}" for="{$f_name}_{$f_id}">{$f_description}:</label>
@@ -34,7 +34,7 @@
     {else}
         <div class="form-field">
              <label class="{if $f_required}cm-required{/if} {if $f_integer_more_0}cm-integer-more-0{/if}" {if $f_id}for="{$f_id}"{/if}>{$f_description}:</label>
-             <input {if $f_autocomplete}autocomplete="{$f_autocomplete}"{/if} type="text" {if $f_disabled}disabled="disabled"{/if} {if $f_id}id="{$f_id}"{/if} {if $f_name}name="{$f_name}"{/if} {if $f_size}size="{$f_size}"{else}size="35"{/if} value="{if (strlen($f_default) && !strlen($f_value))}{$f_default}{else}{$f_value}{/if}" {if $f_class}class="{$f_class}"{else}class="input-text-large"{/if} />
+             <input {if $f_autocomplete}autocomplete="{$f_autocomplete}"{/if} type="{if $f_number}number{else}text{/if}" {if $f_disabled}disabled="disabled"{/if} {if $f_id}id="{$f_id}"{/if} {if $f_name}name="{$f_name}"{/if} {if $f_size}size="{$f_size}"{else}size="35"{/if} value="{if (strlen($f_default) && !strlen($f_value))}{$f_default}{else}{$f_value}{/if}" {if $f_class}class="{$f_class}"{else}class="input-text-large"{/if} />
          </div>
     {/if}
 {/if}
@@ -154,7 +154,7 @@
         {if $f_blank}<option value="0">---</option>{/if}
         {if is__array($f_options)}
         {foreach from=$f_options item="j"}
-            <option {if $j.material_status == "D"} title="Заготовка больше не используется в производстве" style="text-decoration: line-through; color: red;" {/if} value="{$j.$f_option_id}" {if $j.$f_option_id == $f_option_target_id} selected="selected" {/if}>{if $f_value_prefix}{$f_value_prefix}{/if}{$j.$f_option_value}{if $f_option_value_add && $j.$f_option_value_add} ({$j.$f_option_value_add}) {/if}{if $f_value_suffix}{$f_value_suffix}{/if}{if $f_add_value}&nbsp;&nbsp;&nbsp;({$j.$f_add_value}){/if}</option>
+            <option {if $j.material_status == "D"} title="Заготовка больше не используется в производстве" style="text-decoration: line-through; color: red;" {/if} value="{$j.$f_option_id}" {if $j.$f_option_id == $f_option_target_id} selected="selected" {/if}>{if $f_value_prefix}{$f_value_prefix}{/if}{$j.$f_option_value}{if $f_option_value_add && $j.$f_option_value_add} ({$j.$f_option_value_add}) {/if}{if $f_value_suffix}{$f_value_suffix}{/if}{if $f_add_value and strlen($j.$f_add_value)}&nbsp;&nbsp;&nbsp;({$j.$f_add_value}){/if}</option>
         {/foreach}
         {/if}
     {else}
@@ -550,7 +550,7 @@
 {******************************************************************************}
 {if $f_type == "select_range"}
     {if $f_simple}
-        <select autocomplete="off" {if $f_name}name="{$f_name}"{/if} {if $f_id} id="{$f_id}"{/if} {if $f_disabled}disabled="disabled"{/if} {if $f_style}style="{$f_style}"{/if} >
+        <select autocomplete="off" {if $f_name}name="{$f_name}"{/if} {if $f_id} id="{$f_id}"{/if} {if $f_disabled}disabled="disabled"{/if} {if $f_style}style="{$f_style}"{/if} {if $f_onchange}onchange="{$f_onchange}"{/if} >
             {if $f_blank}
                 <option {if $f_value == 0}  selected="selected" {/if} value="0">---</option>
             {/if}

@@ -1,8 +1,7 @@
 {include file="common_templates/subheader.tpl" title="Комплектность"}
-
 {*Добавить деталь*}
-<ol>
-    <li>
+&nbsp;
+<span class="action-add">
         {include    file="common_templates/table_tools_list.tpl"
                     popup=true
                     id="detail_add"
@@ -12,22 +11,21 @@
                     href="`$controller`.detail_update?mode=add&kit_id=`$kit.kit_id`"
                     link_class="cm-dialog-auto-size"
                     tools_list=$smarty.capture.tools_items}
-    </li>
-    {if $kit.kit_type == "P"}
-        {*Насос*}
-        <li>
-            {include    file="common_templates/table_tools_list.tpl"
-                        popup=true
-                        id="details_add"
-                        text="Добавить комплектацию насоса"
-                        act="edit"
-                        link_text="Добавить комплектацию насоса"
-                        href="`$controller`.m_detail_update?kit_id=`$kit.kit_id`"
-                        link_class="cm-dialog-auto-size"
-                        tools_list=$smarty.capture.tools_items}
-        </li>
-    {/if}
-</ol>
+</span>
+{if $kit.kit_type == "P"}{*Насос*}
+&nbsp;&nbsp;&nbsp;
+<span class="action-add">
+        {include    file="common_templates/table_tools_list.tpl"
+                    popup=true
+                    id="details_add"
+                    text="Добавить комплектацию насоса"
+                    act="edit"
+                    link_text="Добавить комплектацию насоса"
+                    href="`$controller`.m_detail_update?kit_id=`$kit.kit_id`"
+                    link_class="cm-dialog-auto-size"
+                    tools_list=$smarty.capture.tools_items}
+</span>
+{/if}
 
 <div style="margin: 10px;">
     {if $i.details|is__array}
@@ -102,7 +100,7 @@
                     {foreach from=$b_group.items item="b_item"}
                         {if $b_item.detail_id == $d.detail_id}
                             {math equation="-140+70*x/y" x=$b_item.konech y=$k_q assign="pos"}
-                            <td align="center" style="font-weight: bold; background-image: url('/images/uns/bar.png'); background-position: {$pos}px center;">
+                            <td align="center" style="font-weight: bold; background-image: url('images/uns/bar.png'); background-position: {$pos}px center;">
                                 {$b_item.konech}
                             </td>
                         {/if}
@@ -134,7 +132,7 @@
                                             f_style="min-width: 55px;"
                                             f_simple=true
                                         }
-                                        <input type="image" src="/images/uns/add-green.png" name="dispatch[uns_kits.detail_mcp]" />
+                                        <input type="image" src="images/uns/add-green.png" name="dispatch[uns_kits.detail_mcp]" />
                                     </form>
                                 {else}
                                     {assign var="v" value=$b_item.complete}
@@ -169,7 +167,7 @@
                                             f_style="min-width: 55px;"
                                             f_simple=true
                                         }
-                                        <input type="image" src="/images/uns/add-green.png" name="dispatch[uns_kits.detail_mcp]" />
+                                        <input type="image" src="images/uns/add-green.png" name="dispatch[uns_kits.detail_mcp]" />
                                     </form>
                                 {else}
                                     {assign var="v" value=$b_item.complete}
@@ -200,7 +198,7 @@
                                             f_style="min-width: 55px;"
                                             f_simple=true
                                         }
-                                        <input type="image" src="/images/uns/add-green.png" name="dispatch[uns_kits.detail_mcp]" />
+                                        <input type="image" src="images/uns/add-green.png" name="dispatch[uns_kits.detail_mcp]" />
                                     </form>
                                 {else}
                                     {assign var="v" value=$b_item.konech}

@@ -11,6 +11,15 @@ body:before {
   box-shadow: 0px 0px 10px rgba(0,0,0,.8);
   }
 
+.content-table{
+    max-width: 1020px;
+    min-width: 960px;
+}
+
+#header{
+    max-width: 1020px;
+    min-width: 960px;
+}
 
 .form-field, .search-field{
     padding: 3px 5px 3px 189px;
@@ -110,7 +119,7 @@ tbody .cm-row-item.hide-row{
     border: 1px solid #FF0000;
     border-radius: 5px;
     font-weight: bold;
-    padding: 0 8px;
+    padding: 0 0px;
 }
 
 .info_warning, span.info_warning{
@@ -316,20 +325,21 @@ div.data-block.top{
 .profiler{
     background-color: #D4D0C8;
     border: 1px solid grey;
-    border-radius: 12px 12px 12px 12px;
+    border-radius: 8px;
     bottom: 0;
     box-shadow: 0 0 10px grey;
     display: block;
     font-family: monospace;
     font-size: 12px;
-    left: 0;
-    margin-bottom: 20px;
-    margin-left: 20px;
+    right: 0;
+    margin-bottom: 5px;
+    margin-right: 5px;
     padding: 5px;
-    position: fixed;
+    position: static;
     opacity: 1;
     transition: 0.5s opacity;
-    z-index: 1000;
+    float: right;
+    /*z-index: 300;*/
 }
 
 .profiler:hover{

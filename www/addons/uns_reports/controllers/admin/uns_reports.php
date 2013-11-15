@@ -87,16 +87,15 @@ if ($mode == 'get_report'){
             $exclude_items = array(412, 414, 426, // кольца сальника из болванок
                 428, // крышка патрубка 10
                 226, // крышка улитки 9
-                226, // крышка улитки 9
 
                 490, // Кольцо сальника [III]
                 523, // Кольцо сальника [Д8]
                 524, // Кольцо уплотняющее [IIII]
-                529, // Крышка подшипника [Д8]
-                530, // Крышка подшипника [Д8]
+                //529, // Крышка подшипника [Д8]
+                //530, // Крышка подшипника [Д8]
                 527, // Крышка подшипника пяты [Д8]
                 528, // Крышка сальника [Д8]
-                525, // Стакан подшипника [Д8]
+                //525, // Стакан подшипника [Д8]
 
                 437, // Кольцо сальника [б/к]
 
@@ -157,6 +156,27 @@ if ($mode == 'get_report'){
 
             fn_rpt__accounting(array('period'=>$_REQUEST['period'], 'time_from'=>$_REQUEST['time_from'], 'time_to'=>$_REQUEST['time_to'], 'balance'=>$balance, 'exclude_items'=>$exclude_items, 'rules'=>$rules));
         break;
+
+
+        case "mc":
+            if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "M"; // Текущий месяц
+            list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
+            $balances = array();
+            $_REQUEST["dcat_id"] = array(7,6,4,2,15,9,8,36,5);
+            $_REQUEST["accessory_pumps"] = "Y";
+            list($balances, $search) = fn_uns__get_balance_mc_sk_su($_REQUEST, true, true, true);
+            // Запрос категорий
+            list($dcategories_plain) = fn_uns__get_details_categories(array("plain" => true, "with_q_ty"=>false));
+
+            fn_rpt__mc(array(   'period'        =>$_REQUEST['period'],
+                                'time_from'     =>$_REQUEST['time_from'],
+                                'time_to'       =>$_REQUEST['time_to'],
+                                'balance'       =>$balances,
+                                'exclude_items' =>$exclude_items,
+                                'rules'         =>$rules));
+
+        break;
+
     }
     exit;
 }

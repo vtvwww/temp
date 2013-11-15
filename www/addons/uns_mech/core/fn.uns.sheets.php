@@ -16,8 +16,10 @@ function fn_acc__upd_sheet_info($id = 0, $data){;
 
     $data = trim__data($data);
     $d = array();
-    $d["comment"]       = $data["comment"];
     $d["status"]        = (fn_check_type($data["status"], UNS_STATUS_SHEET))?$data["status"]:UNS_STATUS_SHEET__OP;
+    $d["comment"]       = $data["comment"];
+    $d["material_type"] = $data["material_type"];
+    $d["target_object"] = $data["target_object"];
 
 
     if ($operation == "update"){
@@ -112,12 +114,11 @@ function fn_acc__get_sheets($params = array(), $items_per_page = 0){
         "$m_tbl.$m_key",
         "$m_tbl.no",
         "$m_tbl.date_open",
-        "$m_tbl.date_update",
-        "$m_tbl.date_close",
-        "$m_tbl.date_canceled",
         "$m_tbl.material_id",
         "$m_tbl.status",
         "$m_tbl.comment",
+        "$m_tbl.material_type",
+        "$m_tbl.target_object",
         "$j_tbl_1.material_no",
         "$j_tbl_1.material_name",
         "$j_tbl_1.mcat_id",
@@ -140,7 +141,27 @@ function fn_acc__get_sheets($params = array(), $items_per_page = 0){
     }
 
     if ($params["time_from"]>=0 and $params["time_to"]>0){
-        $condition .= db_quote(" AND ($m_tbl.date_open between ?i and ?i OR $m_tbl.date_update between ?i and ?i OR $m_tbl.date_close between ?i and ?i )", $params['time_from'], $params['time_to'], $params['time_from'], $params['time_to'], $params['time_from'], $params['time_to']);
+        $condition .= db_quote(" AND ($m_tbl.date_open between ?i and ?i) ", $params['time_from'], $params['time_to']);
+    }
+
+    // Статус
+    if (fn_check_type($params["status"], UNS_STATUS_SHEET)){
+        $condition .= db_quote(" AND ($m_tbl.status = ?s) ", $params['status']);
+    }
+
+    // Тип материала
+    if (fn_check_type($params["material_type"], UNS_SHEET_MTYPES)){
+        $condition .= db_quote(" AND ($m_tbl.material_type = ?s) ", $params['material_type']);
+    }
+
+    // Местоположение
+    if (fn_check_type($params["target_object"], "|10|14|17|")){
+        $condition .= db_quote(" AND ($m_tbl.target_object = ?s) ", $params['target_object']);
+    }
+
+    // Категория исходного материала
+    if (is__array($params["mcat_id_array"] = to__array($params["mcat_id"]))){
+        $condition .= db_quote(" AND ($j_tbl_1.mcat_id in (?n)) ", $params['mcat_id_array']);
     }
 
     // *************************************************************************
@@ -190,6 +211,54 @@ function fn_acc__get_sheets($params = array(), $items_per_page = 0){
         }
     }
 
+    // СУММА ВЫДАННОГО ЛИТЬЯ ПО СЛ
+    if ($params['with_material_quantity_PVP']){
+        $sql = db_quote(UNS_DB_PREFIX . "
+            SELECT
+              ?:_acc_documents.package_id as sheet_id,
+              sum(?:_acc_document_items.quantity) as m_quantity
+            FROM ?:_acc_document_items
+              LEFT JOIN ?:_acc_documents
+                ON (?:_acc_documents.document_id = ?:_acc_document_items.document_id)
+              LEFT JOIN ?:_acc_document_types
+                ON (?:_acc_document_types.dt_id = ?:_acc_documents.type)
+            WHERE ?:_acc_document_items.item_type = 'M'
+                  AND ?:_acc_document_items.motion_type LIKE '%O%'
+                  AND ?:_acc_document_types.type = 'PVP'
+                  AND ?:_acc_documents.package_type = 'SL'
+                  AND ?:_acc_documents.package_id in (?n)
+                  AND ?:_acc_documents.status = 'A'
+            GROUP BY ?:_acc_documents.package_id", array_keys($data));
+        $data_mq = db_get_hash_array($sql, "sheet_id");
+        foreach ($data as $k_d=>$v_d){
+            $data[$k_d]["material_quantity_by_PVP"] = $data_mq[$k_d]["m_quantity"];
+        }
+    }
+
+    // СУММА БРАКА ПО СЛ
+    if ($params['with_material_quantity_BRAK']){
+        $sql = db_quote(UNS_DB_PREFIX . "
+            SELECT
+              ?:_acc_documents.package_id as sheet_id,
+              sum(?:_acc_document_items.quantity) as d_quantity
+            FROM ?:_acc_document_items
+              LEFT JOIN ?:_acc_documents
+                ON (?:_acc_documents.document_id = ?:_acc_document_items.document_id)
+              LEFT JOIN ?:_acc_document_types
+                ON (?:_acc_document_types.dt_id = ?:_acc_documents.type)
+            WHERE ?:_acc_document_items.item_type = 'D'
+                  AND ?:_acc_document_items.motion_type LIKE '%O%'
+                  AND ?:_acc_document_types.type = 'BRAK'
+                  AND ?:_acc_documents.package_type = 'SL'
+                  AND ?:_acc_documents.package_id in (?n)
+                  AND ?:_acc_documents.status = 'A'
+            GROUP BY ?:_acc_documents.package_id", array_keys($data));
+        $data_mq = db_get_hash_array($sql, "sheet_id");
+        foreach ($data as $k_d=>$v_d){
+            $data[$k_d]["material_quantity_by_BRAK"] = $data_mq[$k_d]["d_quantity"];
+        }
+    }
+
     return array($data, $params);
 }
 
@@ -231,8 +300,8 @@ function fn_acc__get_sheet_details($params = array(), $items_per_page = 0){
     // 1. УСЛОВИЯ ОТБОРА
     // *************************************************************************
     // По ID
-    if ($params["{$m_key}_array"] = to__array($params[$m_key])){
-        $condition .= db_quote(" AND $m_tbl.$m_key in (?n)", $params["{$m_key}_array"]);
+    if ($params["sheet_id_array"] = to__array($params["sheet_id"])){
+        $condition .= db_quote(" AND $m_tbl.sheet_id in (?n)", $params["sheet_id_array"]);
     }
 
     // *************************************************************************
@@ -258,10 +327,9 @@ function fn_acc__get_sheet_details($params = array(), $items_per_page = 0){
     }
 
     $sql = UNS_DB_PREFIX . "SELECT " . implode(", ", $fields) . " FROM $m_tbl $join WHERE 1 $condition $sorting $limit";
-    $data = db_get_hash_array($sql, "detail_id");
-    //  fn_print_r(str_replace(array(UNS_DB_PREFIX,"?:"), array("", "uns_"), $sql));
+    $data = db_get_array($sql);
+//      fn_print_r(str_replace(array(UNS_DB_PREFIX,"?:"), array("", "uns_"), $sql));
     if (!is__array($data)) return array(array(), $params);
-
     if ($params["with_weight"]){
         foreach ($data as $k=>$v){
             $w = fn_uns__get_accounting_item_weights("D", $v['detail_id']);
@@ -270,11 +338,14 @@ function fn_acc__get_sheet_details($params = array(), $items_per_page = 0){
     }
     $data = fn_group_data_by_field($data, 'sheet_id');
 
-
     // *************************************************************************
     // 6. ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ
     // *************************************************************************
-    //foreach ($data as $k_data=>$v_data){}
+    foreach ($data as $k_data=>$v_data){
+        $v = array_shift($v_data);
+        $d[$k_data][$v["detail_id"]] = $v;
+    }
+    $data = $d;
 
     return array($data, $params);
 }
@@ -313,6 +384,3 @@ function fn_uns__del_sheet($id){
     }
     return true;
 }
-
-
-

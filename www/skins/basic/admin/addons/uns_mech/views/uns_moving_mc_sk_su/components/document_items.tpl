@@ -156,6 +156,8 @@
                                 f_required=true f_integer=false
                                 f_name="`$e_n`[quantity]"
                                 f_value=$q|fn_fvalue
+                                f_autocomplete="off"
+                                f_number=true
                                 f_simple=true
                             }
                             <div class="balance" style="display:block; float:right;"></div>
@@ -261,6 +263,8 @@
                     f_required=true f_integer=false
                     f_name="`$e_n`[quantity]"
                     f_value=""
+                    f_autocomplete="off"
+                    f_number=true
                     f_simple=true
                 }
                 <div class="balance" style="display:block; float:right;"></div>

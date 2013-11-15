@@ -17,7 +17,6 @@
 
             {foreach from=$motions item=m}
                 {assign var="document_href" value="acc_documents.update&document_id=`$m.document_id`"|fn_url}
-                {assign var="doc_name" value="<a target='_blank' href='`$document_href`' title='`$document_types[$m.dt_id].name`' ><b>№`$m.document_id`</b> - `$document_types[$m.dt_id].name_short`</a>" }
 
                 {* РАСЧЕТ ДВИЖЕНИЯ *}
                 {assign var="no"    value=$ko}
@@ -40,9 +39,11 @@
                 {assign var="ko"    value=$no+$p-$r}
                 <tr>
                     <td>
-                        {$m.date|fn_parse_date|date_format:"%a %d/%m/%Y"}&nbsp;&nbsp;{$doc_name}
+                        {$m.date|fn_parse_date|date_format:"%a %d/%m/%Y"}&nbsp;&nbsp;
                         {if $m.type == "PVP" and $m.package_type == "SL"}
-                            &nbsp;&nbsp;&nbsp;&nbsp;<a target='_blank' href="{"uns_sheets.update&sheet_id=`$m.package_id`"|fn_url}">СЛ №{$m.package_id}</a>
+                            <a target='_blank' href="{"uns_sheets.update&sheet_id=`$m.package_id`"|fn_url}"><b>СЛ №{$m.sheet_no}</b></a>
+                        {else}
+                            <a target='_blank' href='{$document_href}' title='{$document_types[$m.dt_id].name}' ><b>№{$m.document_id}</b> - {$document_types[$m.dt_id].name_short}</a>
                         {/if}
                     </td>
                     <td align="center"><span class="{if $no<0}info_warning_block{elseif $no==0}zero{/if}">{$no|fn_fvalue}</span></td>

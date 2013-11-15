@@ -2,7 +2,7 @@
 <div id="header">
 	<div id="logo">
 		{assign var="name" value=$settings.Company.company_name|truncate:40:"...":true}
-		<span style="border: 2px solid white; color: #FFFFFF; font-weight: bold; padding: 0 4px 1px 5px; text-transform: uppercase;">{$smarty.const.PROJECT_NAME}</span>
+		<span style="border: 2px solid white; color: #FFFFFF; font-weight: bold; padding: 0 4px 1px 5px; text-transform: uppercase; {if $smarty.const.PROJECT_NAME == "temp"}background-color: #FF0000{/if} ">{$smarty.const.PROJECT_NAME}</span>
 		<a href="{$index_script|fn_url}">{$name}</a><a href="{$config.http_location|fn_url|escape}" class="view-storefront-icon" target="_blank" title="{$lang.view_storefront}">&nbsp;</a>
 	</div>
 
@@ -62,7 +62,7 @@
 		{include file="common_templates/ajax_select_object.tpl" data_url="companies.get_companies_list?show_all=Y&action=href" text=$company_name id="top_company_id"}
 	{else}
 			{*{$lang.vendor}: <a href="{"companies.update?company_id=`$s_company`"|fn_url}">{$s_companies.$s_company.company}</a>*}
-			{$lang.user}: {$s_companies.$s_company.company}
+			{*{$lang.user}: *}<b>{$s_companies.$s_company.company}</b>
 	{/if}
 	</div>
 {/if}

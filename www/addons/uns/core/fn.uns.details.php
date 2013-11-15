@@ -325,6 +325,7 @@ function fn_uns__get_details($params = array(), $items_per_page = 0){
         "$m_table.detail_comment",
         "$m_table.accessory_view",
         "$m_table.accessory_manual",
+        "$m_table.checked",
 
         "$j_table_detail_categories.dcat_name",
         "$j_table_detail_categories.dcat_status",

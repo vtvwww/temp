@@ -168,6 +168,13 @@ function fn_uns__get_balance($params = array()){
         $cond__items .= db_quote(" AND uns__acc_documents.package_type = ?s ", $params['package_type']);
     }
 
+    // Категории деталей
+    if (is__array($params['dcat_id_array'] = to__array($params['dcat_id']))){
+        $cond__tables = " , uns_details ";
+        $cond__items .= db_quote(" AND uns__acc_document_items.item_id = uns_details.detail_id ");
+        $cond__items .= db_quote(" AND uns_details.dcat_id in (?n) ", $params['dcat_id_array']);
+    }
+
     // =========================================================================
     // JOINS
     // =========================================================================
@@ -179,6 +186,7 @@ function fn_uns__get_balance($params = array()){
                    , uns__acc_documents
                    , uns__acc_motions
                    , uns__acc_document_types
+                   {$cond__tables}
                  WHERE 1 {$cond__items}
                        {$cond_prih}
                        #UNS__ACC_DOCUMENTS
@@ -205,6 +213,7 @@ function fn_uns__get_balance($params = array()){
                    , uns__acc_documents
                    , uns__acc_motions
                    , uns__acc_document_types
+                   {$cond__tables}
                  WHERE 1 {$cond__items}
                        {$cond_rash}
                        #UNS__ACC_DOCUMENTS
@@ -232,6 +241,7 @@ function fn_uns__get_balance($params = array()){
                    , uns__acc_documents
                    , uns__acc_motions
                    , uns__acc_document_types
+                   {$cond__tables}
                  WHERE 1 {$cond__items}
                        {$cond_prih}
                        #UNS__ACC_DOCUMENTS
@@ -258,6 +268,7 @@ function fn_uns__get_balance($params = array()){
                    , uns__acc_documents
                    , uns__acc_motions
                    , uns__acc_document_types
+                   {$cond__tables}
                  WHERE 1 {$cond__items}
                        {$cond_rash}
                        #UNS__ACC_DOCUMENTS
@@ -416,6 +427,10 @@ function fn_uns__get_balance($params = array()){
             $p["dcat_include_target"] = true;
         }
 
+        if (is__array($params['dcat_id'])){
+            $p["item_ids"] = $params['dcat_id'];
+        }
+
         if (strlen($params['detail_name'])){
             $p["detail_name"] = $params['detail_name'];
         }
@@ -471,6 +486,7 @@ function fn_uns__get_balance($params = array()){
                             $dcat_items[$dcats_k]["items"][$details_k]["material_id"]             = $details_v["material_id"];
                             $dcat_items[$dcats_k]["items"][$details_k]["material_no"]             = $details_v["material_no"];
                             $dcat_items[$dcats_k]["items"][$details_k]["material_name"]           = $details_v["material_name"];
+                            $dcat_items[$dcats_k]["items"][$details_k]["checked"]                 = $details_v["checked"];
 
                             if (is__array($data[$details_k])){
                                 $dcat_items[$dcats_k]["items"][$details_k]["nach"]        = fn_fvalue($data[$details_k]["no"], 2);
@@ -668,7 +684,18 @@ function fn_uns__get_motions($params){
                   )
             ORDER BY uns__acc_documents.date ASC
     ";
-    $data = db_get_array($sql);
+    $data = db_get_hash_array($sql, "document_id");
+
+    // Добавить привязку к СЛ
+    if (is__array($data)){
+        $keys = array();
+        foreach ($data as $k=>$v){
+            if ($v["package_type"] == UNS_PACKAGE_TYPE__SL){
+                $data[$k]["sheet_no"] = db_get_field(UNS_DB_PREFIX . "SELECT uns__acc_sheets.no FROM uns__acc_sheets WHERE sheet_id=?i", $v["package_id"]);
+            }
+        }
+    }
+
     return (!is__array($data))?false:$data;
 }
 
@@ -694,7 +721,7 @@ function fn_uns__get_balance_mc_sk_su($params, $mc=true, $sk=true, $su=false){
 
     $p = array_merge($p, $params);
     if ($p["check_dcat_id"]){
-//        if (!is__more_0($p["dcat_id"])) return $res;
+//        if (!is__more_0($p["dcat_id"]) and !is__array($p["dcat_id"])) return false;
     }
     // ЗАПРОСИТЬ БАЛАНС МЕХ. ЦЕХА
     if ($mc == true){
