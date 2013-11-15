@@ -153,6 +153,17 @@ span.series_item_R{
 
 }
 
+/* Item DISABLED or VERIFICATION_REQUIRED */
+.item_disabled{
+    color: red;
+    text-decoration: line-through;
+}
+
+.item_verification_required{
+    border-left: 5px solid red;
+    cursor: pointer;
+}
+
 /*******************************************************************************/
 /*******************************************************************************/
 .b_t{

@@ -9,10 +9,9 @@
                     <input type="checkbox" name="check_all" value="Y" title="{$lang.check_uncheck_all}" class="checkbox cm-check-items" />
                 </th>
                 <th width="1%">&nbsp;</th>
-                <th width="20%">Наименование / Обозначение</th>
+                <th width="50%">Наименование / Обозначение</th>
                 <th width="35%">Учет</th>
                 <th width="15%">Прим.</th>
-                <th width="1%">Поз.</th>
                 <th>&nbsp;</th>
             </tr>
 
@@ -28,13 +27,13 @@
                         {include file="addons/uns/views/components/tools.tpl" type="edit" href="`$controller`.update?`$value`=`$id`"}
                     </td>
                     <td>
-                        <span class="uns_title_1">{$i.detail_name}</span>
+                        <span class="uns_title_1 {if $i.detail_status == "D"} item_disabled{/if}{if $i.checked == "N"} item_verification_required{/if}" title="{if $i.detail_status == "D"}Деталь выключена. {/if}{if $i.checked == "N"}Деталь требует проверки. {/if}">{$i.detail_name}
                         {if $i.detail_no}
-                            <br><span class="uns_info">{$i.detail_no}</span>
+                            [{$i.detail_no}]
                         {else}
-                            <br><span class="info_warning">Нет обозначения!</span>
+                            <span class="info_warning">Нет обозначения!</span>
                         {/if}
-                        {*<br><span class="uns_info">{$i.category_path}</span>*}
+                        </span>
                     </td>
                     <td>
                         {if is__array($i.accounting_data)}
@@ -85,9 +84,6 @@
                     </td>
                     <td>
                         {if $i.detail_comment}<span class="uns_comment">{$i.detail_comment}</span>{/if}
-                    </td>
-                    <td>
-                        {$i.detail_position}
                     </td>
 
                     <td class="nowrap right">
