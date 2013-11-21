@@ -40,8 +40,7 @@
 {/literal}
 {capture name="mainbox"}
     {include file="addons/uns_mech/views/uns_sheets/components/search_form.tpl" dispatch="`$controller`.manage" search_content=$smarty.capture.search_content}
-
-   <form action="{""|fn_url}" method="post" name="{$controller}_form" class="{if ""|fn_check_form_permissions} cm-hide-inputs{/if}">
+    <form action="{""|fn_url}" method="post" name="{$controller}_form" class="{if ""|fn_check_form_permissions} cm-hide-inputs{/if}">
        {include file="common_templates/pagination.tpl"}
        <table cellpadding="0" cellspacing="0" border="0" width="100%" class="table">
            <tr>
@@ -61,11 +60,9 @@
                <tr {cycle values="class=\"table-row\", "}>
                    {assign var="id" value=$i.sheet_id}
                    {assign var="value" value="sheet_id"}
-                   {*<td style="{if $id == "`$smarty.session.mark_item.$controller`"}border-left: 10px solid #FF9D1F;{/if}">*}
-                       {*<input type="checkbox" name="document_ids[]" value="{$id}" class="checkbox cm-item" />*}
-                   {*</td>*}
-                   <td> {*Идентификатор листа*}
-                        <b><a style="color: #000000;" href="{"`$controller`.update?`$value`=`$id`"|fn_url}">{$i.no} - {$i.date_open|date_format:"%d/%m/%y"}</a></b>
+                   <td {if $id == "`$smarty.session.mark_item.$controller`"} class="mark_item" {else} class="mark_item_clear" {/if} align="right" >
+                   {*Идентификатор листа*}
+                       <b><a name="{$id}" style="color: #000000;" href="{"`$controller`.update?`$value`=`$id`"|fn_url}">{$i.no} - {$i.date_open|date_format:"%d/%m/%y"}</a></b>
                    </td>
                    <td align="center"  style="border-left: 1px solid #808080;"> {*target_object*}
                        {if $i.target_object == 10}

@@ -387,7 +387,14 @@ function fn_uns__get_details($params = array(), $items_per_page = 0){
         $fields[] = "$j_materials.material_no";
         $join .= db_quote(" LEFT JOIN $j_detail__and__items ON ($j_detail__and__items.detail_id  = $m_table.detail_id) ");
         $join .= db_quote(" LEFT JOIN $j_materials          ON ($j_materials.material_id  = $j_detail__and__items.material_id) ");
+
+        if ($params["material_id_array"] = to__array($params["material_id"])){
+            $condition .= db_quote(" AND $j_materials.material_id in (?n)", $params["material_id_array"]);
+        }
     }
+
+
+
 
     //*********************
     $join .= db_quote(" LEFT JOIN $j_table_detail_categories ON ($j_table_detail_categories.dcat_id  = $m_table.dcat_id AND $j_table_detail_categories.dcat_status = 'A') ");
@@ -408,9 +415,10 @@ function fn_uns__get_details($params = array(), $items_per_page = 0){
     }
 
     $data = db_get_hash_array(UNS_DB_PREFIX . "SELECT " . implode(", ", $fields) . " FROM $m_table $join WHERE 1 $condition $sorting $limit", "detail_id");
+    if (!is__array($data)) return array(array(), $params, 0);
 
     // В добавить поле "ПОЛНЫЙ ПУТЬ КАТЕГОРИИ МАТЕРИАЛОВ"
-    if ($params["dcat_path"] && is__array($data)){
+    if ($params["dcat_path"]){
         list($cat_paths) = fn_uns__get_details_category_path (array("detail_id" => array_keys($data)));
         if (is__array($cat_paths)){
             foreach ($data as $k=>$v){
@@ -420,7 +428,7 @@ function fn_uns__get_details($params = array(), $items_per_page = 0){
     }
 
     // Получить информацию по учету материала
-    if ($params["with_accounting"] && is__array($data)){
+    if ($params["with_accounting"]){
         $accounting_data = fn_uns__get_accounting_items ("D", array_keys($data));
         if (is__array($accounting_data)){
             foreach ($data as $k=>$v){
@@ -439,7 +447,7 @@ function fn_uns__get_details($params = array(), $items_per_page = 0){
     }
 
     // Получить информацию об используемых материалов на выбранную деталь
-    if ($params["with_materials"] && is__array($data)){
+    if ($params["with_materials"]){
         $p = array(
             "detail_id" => array_keys($data),
             "material_info" => true,
@@ -454,7 +462,7 @@ function fn_uns__get_details($params = array(), $items_per_page = 0){
     }
 
     // Форматированное имя детали
-    if ($params["format_name"] && is__array($data)){
+    if ($params["format_name"]){
         foreach ($data as $k=>$v){
             $fn = " ___ОШИБКА!___ ";
             if (strlen($v["detail_no"])){
@@ -462,6 +470,16 @@ function fn_uns__get_details($params = array(), $items_per_page = 0){
             }
 
             $data[$k]["format_name"] = $v["detail_name"] . $fn;
+        }
+    }
+
+    // ПРИНАДЛЕЖНОСТЬ К НАСОСАМ
+    if ($params["with_accessory_pumps"]){
+        if (is__array($accessory_pumps = fn_uns__get_accessory_pumps('D', array_keys($data)))){
+            foreach ($data as $k=>$v){
+                $data[$k]['accessory_pumps']         = $accessory_pumps[$k]['list_of_pumps'];
+                $data[$k]['accessory_pump_series']   = $accessory_pumps[$k]['list_of_pump_series'];
+            }
         }
     }
 

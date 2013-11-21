@@ -126,6 +126,7 @@ function fn_acc__get_sheets($params = array(), $items_per_page = 0){
 
     $sorting_schemas = array(
         "view" => array(
+            "$m_tbl.date_open"  => "desc",
             "$m_tbl.no"  => "desc",
         )
     );

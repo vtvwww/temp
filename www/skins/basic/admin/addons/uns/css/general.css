@@ -162,7 +162,39 @@ span.series_item_R{
 .item_verification_required{
     border-left: 5px solid red;
     cursor: pointer;
+    padding-left: 2px;
 }
+
+/*RADIO*/
+label.radio{
+    float: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+input.radio{
+    display: none;
+}
+
+input.radio + label.radio {
+    display:inline-block;
+    padding: 1px 12px;
+    background-color: #F3F3F3;
+    border-color: #ddd;
+    border: 1px solid #BCBCBC;
+    font-weight: bold;
+}
+
+input.radio:checked + label.radio {
+    background-image: none;
+    background-color: #9ED74D;
+    border: 1px solid #80AC3F;
+    color: #000000;
+}
+
 
 /*******************************************************************************/
 /*******************************************************************************/
@@ -216,8 +248,12 @@ a.uns-tool.view_list{
     background: url("../images/view-list-icon.png") no-repeat scroll 0 0 transparent;
 }
 
-table.table tr.table-row td.mark_item{
+table.table tr td.mark_item{
     border-left: 10px solid #FF9D1F;
+}
+
+table.table tr td.mark_item_clear{
+    border-left: 10px solid white;
 }
 
 td.mark{

@@ -141,6 +141,12 @@ function fn_uns_mark_item($controller, $mode) {
                     $mark_item = $_REQUEST['document_id'];
                 }
                 break;
+
+            case "uns_sheets":
+                if(is__more_0($_REQUEST['sheet_id'])){
+                    $mark_item = $_REQUEST['sheet_id'];
+                }
+                break;
         }
         $_SESSION['mark_item'][$controller] = $mark_item;
     }

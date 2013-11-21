@@ -80,6 +80,78 @@
     {/if}
 {/if}
 
+{if $f_type == "status_button"}
+    {if $f_simple_text}
+        {if $f_value == "A"}<span {if $f_class}class="{$f_class}"{/if}>{$lang.active}</span>{/if}
+        {if $f_value == "D"}<span {if $f_class}class="{$f_class}"{/if}>{$lang.disabled}</span>{/if}
+    {elseif $f_simple}
+        {assign var="radio_item_title"  value=$lang.active}
+        {assign var="radio_item_value"  value="A"}
+        {assign var="radio_item_id"     value="`$f_id`_`$radio_item_value`"}
+        <input class="radio" type="radio" id="{$radio_item_id}" name="{$f_name}" value="{$radio_item_value}" {if $f_value == $radio_item_value}checked{/if}>
+        <label class="radio" for="{$radio_item_id}">{$radio_item_title}</label>
+
+        {assign var="radio_item_title"  value=$lang.disabled}
+        {assign var="radio_item_value"  value="D"}
+        {assign var="radio_item_id"     value="`$f_id`_`$radio_item_value`"}
+        <input class="radio" type="radio" id="{$radio_item_id}" name="{$f_name}" value="{$radio_item_value}" {if $f_value == $radio_item_value}checked{/if}>
+        <label class="radio" for="{$radio_item_id}">{$radio_item_title}</label>
+    {else}
+        <div class="form-field">
+            <label class="{if $f_required}cm-required{/if} {if $f_integer_more_0}cm-integer-more-0{/if}" for="{$f_name}_{$f_id}">{$f_description}:</label>
+            <select name="data[{$f_name}]" id="{$f_name}_{$f_id}">
+                <option value="A" {if $f_value == "A"}selected="selected"{/if}>{$lang.active}</option>
+                <option value="D" {if $f_value == "D"}selected="selected"{/if}>{$lang.disabled}</option>
+            </select>
+        </div>
+    {/if}
+{/if}
+
+
+{******************************************************************************}
+{* RADIO_BUTTON                                                                   *}
+{******************************************************************************}
+{if $f_type == "radio_button"}
+    {if $f_simple_text}
+        {*{if $f_value == "A"}<span {if $f_class}class="{$f_class}"{/if}>{$lang.active}</span>{/if}*}
+        {*{if $f_value == "D"}<span {if $f_class}class="{$f_class}"{/if}>{$lang.disabled}</span>{/if}*}
+    {elseif $f_simple}
+        {if $f1_value and $f1_title}
+            {assign var="radio_item_title"  value=$f1_title}
+            {assign var="radio_item_value"  value=$f1_value}
+            {assign var="radio_item_id"     value="`$f_id`_`$radio_item_value`"}
+            <input class="radio" type="radio" id="{$radio_item_id}" name="{$f_name}" value="{$radio_item_value}" {if $f_value == $radio_item_value or $f1_default}checked{/if}>
+            <label class="radio" for="{$radio_item_id}">{$radio_item_title}</label>
+        {/if}
+
+        {if $f2_value and $f2_title}
+            &nbsp;
+            {assign var="radio_item_title"  value=$f2_title}
+            {assign var="radio_item_value"  value=$f2_value}
+            {assign var="radio_item_id"     value="`$f_id`_`$radio_item_value`"}
+            <input class="radio" type="radio" id="{$radio_item_id}" name="{$f_name}" value="{$radio_item_value}" {if $f_value == $radio_item_value or $f2_default}checked{/if}>
+            <label class="radio" for="{$radio_item_id}">{$radio_item_title}</label>
+        {/if}
+
+        {if $f3_value and $f3_title}
+            &nbsp;
+            {assign var="radio_item_title"  value=$f3_title}
+            {assign var="radio_item_value"  value=$f3_value}
+            {assign var="radio_item_id"     value="`$f_id`_`$radio_item_value`"}
+            <input class="radio" type="radio" id="{$radio_item_id}" name="{$f_name}" value="{$radio_item_value}" {if $f_value == $radio_item_value or $f3_default}checked{/if}>
+            <label class="radio" for="{$radio_item_id}">{$radio_item_title}</label>
+        {/if}
+    {else}
+        {*<div class="form-field">*}
+            {*<label class="{if $f_required}cm-required{/if} {if $f_integer_more_0}cm-integer-more-0{/if}" for="{$f_id}">{$f_description}:</label>*}
+            {*<select name="data[{$f_name}]" id="{$f_name}_{$f_id}">*}
+                {*<option value="A" {if $f_value == "A"}selected="selected"{/if}>{$lang.active}</option>*}
+                {*<option value="D" {if $f_value == "D"}selected="selected"{/if}>{$lang.disabled}</option>*}
+            {*</select>*}
+        {*</div>*}
+    {/if}
+{/if}
+
 
 
 {******************************************************************************}

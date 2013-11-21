@@ -36,7 +36,10 @@
         </form>
     </div>
     {capture name="tools"}
-        {include file="common_templates/tools.tpl" tool_href="`$controller`.add" prefix="top" link_text="Добавить новый Сопроводительный лист"  hide_tools=true}
+        {include file="common_templates/tools.tpl" tool_href="`$controller`.add" prefix="top" link_text="Добавить СЛ"  hide_tools=true}
+        {if $mode == "update"}
+            {include file="common_templates/tools.tpl" tool_href="`$controller`.add&sheet_no=`$sheet.no+1`" prefix="top" link_text="Добавить СЛ ++"  hide_tools=false}
+        {/if}
     {/capture}
 {/capture}
 

@@ -7,10 +7,22 @@
             <input type="hidden" name="document_type"                   value="{$document_type}" />
             <input type="hidden" name="document_id"                     value="0" />
             <input type="hidden" name="motion[document][type]"          value="{$document_type}" />
+
+            {assign var="document_type"         value=$document_type}
+            {if     $document_type == 10}   {assign var="document_type_name"    value="PVP"}
+            {elseif $document_type == 2}    {assign var="document_type_name"    value="MCP"}
+            {elseif $document_type == 3}    {assign var="document_type_name"    value="VCP"}
+            {elseif $document_type == 12}   {assign var="document_type_name"    value="VCP_COMPLETE"}
+            {elseif $document_type == 11}   {assign var="document_type_name"    value="BRAK"}
+            {/if}
         {else}
             <input type="hidden" name="document_id"                     value="{$motion.document_id}" />
             <input type="hidden" name="motion[document][document_id]"   value="{$motion.document_id}" />
+            {assign var="document_id"           value=$motion.document_id}
+            {assign var="document_type"         value=$motion.document_type_info.dt_id}
+            {assign var="document_type_name"    value=$motion.document_type_info.type}
         {/if}
+
         <input type="hidden" name="motion[document][sheet_id]"      value="{$sheet.sheet_id}" />
         <input type="hidden" name="motion[document][package_id]"    value="{$sheet.sheet_id}" />
         <input type="hidden" name="motion[document][package_type]"  value="SL" />
@@ -38,6 +50,8 @@
                 f_required=true
                 f_name="motion[document][date]"
                 f_value=$motion_date
+                button_today=true
+                button_yesterday=true
                 f_simple=true
             }
             {include file="addons/uns/views/components/get_form_field.tpl"
@@ -53,12 +67,19 @@
         <div class="form-field">
             <label for="motion_status" class="cm-required">Статус:</label>
             {include file="addons/uns/views/components/get_form_field.tpl"
-                f_id="motion_status"
-                f_type="status"
-                f_required=true f_integer=false
+                f_type="radio_button"
+                f_id="motion_status_`$document_type_name`_`$document_id`"
                 f_name="motion[document][status]"
-                f_value=$motion.status
+                f_required=true f_integer=false
                 f_simple=true
+                f_value=$motion.status
+
+                f1_value="A"
+                f1_default=true
+                f1_title=$lang.active
+
+                f2_value="D"
+                f2_title=$lang.disabled
             }
         </div>
     </div>
@@ -66,18 +87,6 @@
     {* УПРАВЛЕНИЕ КОЛИЧЕСТВОМ *}
     {include file="common_templates/subheader.tpl" title="РАСХОД"}
     <div class="data-block">
-        {if $m_mode == 'add'}
-            {assign var="document_type"         value=$document_type}
-            {if     $document_type == 10}   {assign var="document_type_name"    value="PVP"}
-            {elseif $document_type == 2}    {assign var="document_type_name"    value="MCP"}
-            {elseif $document_type == 3}    {assign var="document_type_name"    value="VCP"}
-            {elseif $document_type == 12}   {assign var="document_type_name"    value="VCP_COMPLETE"}
-            {elseif $document_type == 11}   {assign var="document_type_name"    value="BRAK"}
-            {/if}
-        {else}
-            {assign var="document_type"         value=$motion.document_type_info.dt_id}
-            {assign var="document_type_name"    value=$motion.document_type_info.type}
-        {/if}
         <input type="hidden" name="motion[document][document_type_name]"      value="{$document_type_name}" />
         {assign var="di_index" value="0"}
 
@@ -87,9 +96,18 @@
         {if $document_type_name == "PVP"}
             <div class="form-field">
                 <label for="object_from" class="cm-required cm-integer-more-0">Откуда:</label>
-                <select name="motion[document][object_from]" id="object_from">
-                    <option value="8">Склад Литья</option>
-                </select>
+                {include file="addons/uns/views/components/get_form_field.tpl"
+                    f_type="radio_button"
+                    f_id="object_from_`$document_type_name`_`$document_id`"
+                    f_name="motion[document][object_from]"
+                    f_required=true f_integer=false
+                    f_simple=true
+                    f_value=$motion.object_from
+
+                    f1_value=8
+                    f1_default=true
+                    f1_title=$objects_plain[8].path
+                }
             </div>
             <div class="form-field">
                 <label for="material_quantity" class="cm-required">Кол-во:</label>
@@ -139,10 +157,21 @@
         {elseif ($document_type_name == "BRAK") or ($document_type_name == "VCP") or ($document_type_name == "VCP_COMPLETE") or ($document_type_name == "MCP")}
             <div class="form-field">
                 <label for="object_from" class="cm-required cm-integer-more-0">Откуда:</label>
-                <select name="motion[document][object_from]" id="object_from">
-                    <option {if $motion.object_from == 10}selected="selected"{/if} value="10"> ЦЕХ Мех. обр. - №1</option>
-                    <option {if $motion.object_from == 14}selected="selected"{/if} value="14"> ЦЕХ Мех. обр. - №2</option>
-                </select>
+                {include file="addons/uns/views/components/get_form_field.tpl"
+                    f_type="radio_button"
+                    f_id="object_from_`$document_type_name`_`$document_id`"
+                    f_name="motion[document][object_from]"
+                    f_required=true f_integer=false
+                    f_simple=true
+                    f_value=$motion.object_from
+
+                    f1_default=true
+                    f1_value=10
+                    f1_title=$objects_plain[10].path
+
+                    f2_value=14
+                    f2_title=$objects_plain[14].path
+                }
             </div>
 
             <div class="form-field">
@@ -215,18 +244,53 @@
     <div class="data-block">
         {if ($document_type_name == "PVP") or ($document_type_name == "BRAK") or ($document_type_name == "VCP_COMPLETE") or ($document_type_name == "VCP") or ($document_type_name == "MCP")}
             <div class="form-field">
-                <label for="object_from" class="cm-required cm-integer-more-0">Куда:</label>
-                <select name="motion[document][object_to]" id="object_to">
-                    {if ($document_type_name == "PVP") or ($document_type_name == "VCP") or ($document_type_name == "VCP_COMPLETE")}
-                        <option {if $motion.object_to == 10}selected="selected"{/if} value="10"> ЦЕХ Мех. обр. - №1</option>
-                        <option {if $motion.object_to == 14}selected="selected"{/if} value="14"> ЦЕХ Мех. обр. - №2</option>
-                    {elseif $document_type_name == "BRAK"}
-                        <option {if $motion.object_to == 21}selected="selected"{/if} value="21">Брак на отжиг</option>
-                        <option {if $motion.object_to == 22}selected="selected"{/if} value="22">Брак на переплавку</option>
-                    {elseif $document_type_name == "MCP"}
-                        <option {if $motion.object_to == 17}selected="selected"{/if} value="17">Склад Комплектующих</option>
-                    {/if}
-                </select>
+                <label for="object_to" class="cm-required cm-integer-more-0">Куда:</label>
+                {if ($document_type_name == "PVP") or ($document_type_name == "VCP") or ($document_type_name == "VCP_COMPLETE")}
+                    {include file="addons/uns/views/components/get_form_field.tpl"
+                        f_type="radio_button"
+                        f_id="object_to_`$document_type_name`_`$document_id`"
+                        f_name="motion[document][object_to]"
+                        f_required=true f_integer=false
+                        f_simple=true
+                        f_value=$motion.object_to
+
+                        f1_default=true
+                        f1_value=10
+                        f1_title=$objects_plain[10].path
+
+                        f2_value=14
+                        f2_title=$objects_plain[14].path
+                    }
+                {elseif $document_type_name == "BRAK"}
+                    {include file="addons/uns/views/components/get_form_field.tpl"
+                        f_type="radio_button"
+                        f_id="object_to_`$document_type_name`_`$document_id`"
+                        f_name="motion[document][object_to]"
+                        f_required=true f_integer=false
+                        f_simple=true
+                        f_value=$motion.object_to
+
+                        f1_default=true
+                        f1_value=21
+                        f1_title=$objects_plain[21].path
+
+                        f2_value=22
+                        f2_title=$objects_plain[22].path
+                    }
+                {elseif $document_type_name == "MCP"}
+                    {include file="addons/uns/views/components/get_form_field.tpl"
+                        f_type="radio_button"
+                        f_id="object_to_`$document_type_name`_`$document_id`"
+                        f_name="motion[document][object_to]"
+                        f_required=true f_integer=false
+                        f_simple=true
+                        f_value=$motion.object_to
+
+                        f1_default=true
+                        f1_value=17
+                        f1_title=$objects_plain[17].path
+                    }
+                {/if}
             </div>
 
             <div class="form-field">
@@ -303,3 +367,4 @@
 {*<hr>*}
 {*<pre>{$sheet|print_r}</pre>*}
 {*<pre>{$motion|print_r}</pre>*}
+{*<pre>{$objects_plain|print_r}</pre>*}
