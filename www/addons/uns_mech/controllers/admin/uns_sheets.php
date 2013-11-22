@@ -186,6 +186,46 @@ if($mode == 'update'){
     $view->assign('mcategories_plain', $mcategories_plain);
     list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true));
     $view->assign('dcategories_plain', $dcategories_plain);
+
+
+    // ОСТАТКИ по литью
+    if ($sheet["material_type"] == "O"){
+        $p_SL = array(
+            "plain"         => true,
+            "all"           => true,
+            "o_id"          => array(8),  // Склад литья
+            "item_type"     => "M",
+            "add_item_info" => true,
+            "view_all_position" => "Y",
+            "mclass_id"     => 1,
+            "with_weight"   => true,
+        );
+
+        $p_SL['period'] = "M";
+        list ($p_SL['time_from'], $p_SL['time_to']) = fn_create_periods($p_SL);
+
+        $material_info = array_shift(array_shift(fn_uns__get_materials(array("material_id"=>$sheet["material_id"]))));
+        $p_SL['mcat_id']     = $material_info["mcat_id"];
+        $p_SL['item_id']     = $material_info["material_id"];
+        $p_SL['material_id'] = $material_info["material_id"];
+        $p_SL['accessory_pumps'] = "Y";
+        list($balance_SL, $search_SL) = fn_uns__get_balance($p_SL);
+        $view->assign('balance_SL', $balance_SL);
+        $view->assign('search_SL', $search_SL);
+    }
+
+    // ОСТАТКИ по деталям
+    $detail_info = array_shift($sheet["details"]);
+    $p_D['period'] = "M";
+    $p_D['accessory_pumps'] = "Y";
+    $p_D['dcat_id'] = $detail_info["dcat_id"];
+    $p_D['item_id'] = $detail_info["detail_id"];
+
+    list ($p_D['time_from'], $p_D['time_to']) = fn_create_periods($p_D);
+
+    list($balances_D, $search_D) = fn_uns__get_balance_mc_sk_su($p_D, true, true, true);
+    $view->assign('balances_D',    $balances_D);
+    $view->assign('search_D', $search_D);
 }
 
 if ($mode == 'motion' and $action != 'delete'){

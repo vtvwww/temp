@@ -351,6 +351,9 @@ function fn_uns__get_balance($params = array()){
             if ($params["view_all_position"] == "N"){
                 $p["material_id"] = array_keys($data);
             }
+            if (is__array($params["material_id_array"] = to__array($params["material_id"]))){
+                $p["material_id"] = $params["material_id_array"];
+            }
 
             // ОТЧЕТ В РАЗРЕЗЕ НАСОСА
             if ($params['mode_report'] == 'P' and is__more_0($params['pump_id'])){
