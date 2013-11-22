@@ -1,11 +1,4 @@
-<h2>Движения по Сопроводительному листу:</h2>
-{*
-<span class="add_motions issuance_of_casting">Выдача литья</span><br>
-<span>Переместить с Мех. цех №2 на Мех. цех №1</span><br>
-<span>Переместить с Мех. цех №1 на Мех. цех №2</span><br>
-<span>Списать в брак</span><br>
-<span>Сдача на Склад комплектующих</span>
-*}
+{include file="common_templates/subheader.tpl" title="Движения по Сопроводительному листу" style="margin-bottom:10px;"}
 
 {literal}
     <style type="text/css">

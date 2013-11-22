@@ -36,6 +36,30 @@
             background-color: #E5B8B7;
             border: 2px solid #E56563;
         }
+
+        table tr td a, table tr td a:visited{
+            color: #000000;
+        }
+
+
+        tr.sheet_CL:not(:hover) td{
+            background-color: rgba(0, 81, 255, 0.20);
+            color: #808080;
+        }
+
+        tr.sheet_CL:not(:hover) td a{
+            color: #808080;
+        }
+
+        tr.sheet_OP:not(:hover) td{
+            background-color: rgba(255, 246, 0, 0.40);
+            /*color: #808080;*/
+        }
+
+        /*tr.sheet_OP:not(:hover) td a{*/
+            /*color: #808080;*/
+        /*}*/
+
     </style>
 {/literal}
 {capture name="mainbox"}
@@ -57,12 +81,13 @@
                <th>&nbsp;</th>
            </tr>
            {foreach from=$sheets item=i}
-               <tr {cycle values="class=\"table-row\", "}>
+               {*<tr {cycle values="class=\"table-row\", "}>*}
+               <tr class="sheet_{$i.status}">
                    {assign var="id" value=$i.sheet_id}
                    {assign var="value" value="sheet_id"}
                    <td {if $id == "`$smarty.session.mark_item.$controller`"} class="mark_item" {else} class="mark_item_clear" {/if} align="right" >
                    {*Идентификатор листа*}
-                       <b><a name="{$id}" style="color: #000000;" href="{"`$controller`.update?`$value`=`$id`"|fn_url}">{$i.no} - {$i.date_open|date_format:"%d/%m/%y"}</a></b>
+                       <b><a name="{$id}" href="{"`$controller`.update?`$value`=`$id`"|fn_url}">{$i.no} - {$i.date_open|date_format:"%d/%m/%y"}</a></b>
                    </td>
                    <td align="center"  style="border-left: 1px solid #808080;"> {*target_object*}
                        {if $i.target_object == 10}

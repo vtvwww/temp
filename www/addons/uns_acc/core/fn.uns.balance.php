@@ -721,7 +721,7 @@ function fn_uns__get_balance_mc_sk_su($params, $mc=true, $sk=true, $su=false){
 
     $p = array_merge($p, $params);
     if ($p["check_dcat_id"]){
-//        if (!is__more_0($p["dcat_id"]) and !is__array($p["dcat_id"])) return false;
+        if (!is__more_0($p["dcat_id"]) and !is__array($p["dcat_id"])) return array(array(), $p);
     }
     // ЗАПРОСИТЬ БАЛАНС МЕХ. ЦЕХА
     if ($mc == true){

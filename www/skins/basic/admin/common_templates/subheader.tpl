@@ -1,4 +1,4 @@
-<h2 class="{$subheader_class|default:"subheader"}">
+<h2 class="{$subheader_class|default:"subheader"}" {if $style}style="{$style}"{/if}>
 	{if $mode == "translate"}
 		<input class="input-text" type="text" name="translate_elm[{$translate_elm_id}]" value="{$item.description}" />
 	{else}
