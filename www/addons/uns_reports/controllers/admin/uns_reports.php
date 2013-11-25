@@ -162,7 +162,7 @@ if ($mode == 'get_report'){
             if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "M"; // Текущий месяц
             list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
             $balances = array();
-            $_REQUEST["dcat_id"] = array(7,6,4,2,15,9,8,36,5);
+            $_REQUEST["dcat_id"] = array(7,6,4,2,15,9,8,36,5,13,14,20);
             $_REQUEST["accessory_pumps"] = "Y";
             list($balances, $search) = fn_uns__get_balance_mc_sk_su($_REQUEST, true, true, true);
             // Запрос категорий
