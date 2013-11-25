@@ -8,7 +8,7 @@
                 <th style="text-align: center;" width="40px">Расход</th>
                 <th style="text-align: center;" width="40px">Кон. Ост.</th>
             </tr>
-        <thead>
+        </thead>
         {if is__array($motions)}
             {assign var="no"    value=0}
             {assign var="p"     value=0}
@@ -37,6 +37,7 @@
                     {/if}
                 {/if}
                 {assign var="ko"    value=$no+$p-$r}
+            <tbody>
                 <tr>
                     <td>
                         {$m.date|fn_parse_date|date_format:"%a %d/%m/%Y"}&nbsp;&nbsp;
@@ -51,6 +52,7 @@
                     <td align="center"><span class="{if $r<0} info_warning_block{elseif $r==0} zero{/if}">{if $r!=0}-{/if}{$r|fn_fvalue}</span></td>
                     <td align="center"><span class="{if $ko<0}info_warning_block{elseif $ko==0}zero{/if}">{$ko|fn_fvalue}</span></td>
                 </tr>
+            </tbody>
             {/foreach}
         {/if}
         <tbody>

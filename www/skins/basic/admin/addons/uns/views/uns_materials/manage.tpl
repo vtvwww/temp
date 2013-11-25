@@ -17,11 +17,10 @@
                     <input type="checkbox" name="check_all" value="Y" title="{$lang.check_uncheck_all}" class="checkbox cm-check-items" />
                 </th>
                 <th width="1%">&nbsp;</th>
-                <th width="30%">Наименование/Обозначение</th>
+                <th width="40%">Наименование/Обозначение</th>
                 <th width="20%">Учет</th>
                 <th width="15%">Класс</th>
                 <th width="10%">Прим.</th>
-                <th width="1%">Поз.</th>
                 <th>&nbsp;</th>
             </tr>
 
@@ -53,7 +52,7 @@
                     {/if}
 
                     <td>
-                        <span class="uns_title_1">{$i.material_name}&nbsp;{if strlen($i.material_no)}[{$i.material_no}]{/if}</span>
+                        <span class="uns_title_1{if $i.material_status == "D"} item_disabled{/if}">{$i.material_name}&nbsp;{if strlen($i.material_no)}[{$i.material_no}]{/if}</span>
                         <br><span class="uns_info">{$i.category_path}</span>
                     </td>
                     <td>
@@ -61,7 +60,7 @@
                     </td>
                     <td>
                         {strip}
-                            {$i.mclass_name} {if $i.mclass_id==1}
+                            {$i.mclass_name} {if $i.mclass_id==1}<br>
                                 (<b>{if $i.type_casting=="C"}Чугун
                                 {elseif $i.type_casting=="S"}Сталь
                                 {elseif $i.type_casting=="A"}Алюминий
@@ -72,9 +71,6 @@
                     </td>
                     <td>
                         {if $i.material_comment}<span class="uns_comment">{$i.material_comment}</span>{/if}
-                    </td>
-                    <td>
-                        {$i.material_position}
                     </td>
 
                     <td class="nowrap right">

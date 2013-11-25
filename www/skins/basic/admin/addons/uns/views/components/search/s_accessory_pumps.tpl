@@ -8,7 +8,7 @@
                         f_type="checkbox"
                         f_id="accessory_pumps"
                         f_name="accessory_pumps"
-                        f_value=$search.accessory_pumps
+                        f_value="Y"
                         f_style="margin-top:5px;"
                         f_simple=true
                     }

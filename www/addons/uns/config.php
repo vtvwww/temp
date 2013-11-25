@@ -19,7 +19,7 @@ define("UNS_NO_DATA", "Нет данных");
 define("UNS_NO_DATA_FORMAT", "<span class='info_warning'>" . UNS_NO_DATA . "</span>");
 define("UNS_ERROR", "<span class='info_warning'>Ошибка №84</span>");
 
-define("UNS_ITEMS_PER_PAGE", 40);
+define("UNS_ITEMS_PER_PAGE", 100);
 
 define ("UNS_UNIT_CATEGORY__AREA",      4);     // ID категории ед. изм. Единицы площади
 define ("UNS_UNIT_WEIGHT",              21);    // ID ед. изм. "кг"

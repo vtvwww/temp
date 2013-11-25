@@ -26,10 +26,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             fn_set_notification("N", $_REQUEST['data']['o_name'], UNS_DATA_UPDATED);
         }
         fn_delete_notification('changes_saved');
-        $suffix = "update&sheet_id={$id}&selected_section={$_REQUEST['selected_section']}";
+        $suffix = "update&sheet_id={$id}&selected_section={$_REQUEST['selected_section']}#$id";
     }
 
-    // ЗАПРОС МАТЕРИАЛА ПРИ РЕДАКТИРОВАНИИ СЛ
+    //**************************************************************************
+    // БЛОК МАТЕРИАЛОВ
+    //**************************************************************************
+    // запрос материала при редактировании сл
     if (defined('AJAX_REQUEST') and $mode == 'get_materials' and is__more_0($_REQUEST['mcat_id']) and $_REQUEST['event'] == "change__mcat_id"){
         $p = array('mcat_id'         => $_REQUEST['mcat_id'],
                    'with_accounting' => true,
@@ -46,7 +49,32 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         exit;
     }
 
-    // ЗАПРОС ДЕТАЛЕЙ ПРИ РЕДАКТИРОВАНИИ СЛ
+    if (defined('AJAX_REQUEST') and $mode == 'get_list_details' and is__more_0($_REQUEST['material_id']) and $_REQUEST['event'] == "change__material_id"){
+        $p = array(/*'with_accounting' => true,*/
+                   'format_name'            => true,
+                   'with_material_info'     => true,
+                   'material_id'            => $_REQUEST['material_id'],
+                   'with_accessory_pumps'   => true,
+                   'detail_status'          => "A",
+        );
+        list ($details) = fn_uns__get_details($p);
+        $view->assign('details', $details);
+
+        list($dcategories_plain) = fn_uns__get_details_categories(array("plain" => true, "with_q_ty"=>false));
+        $view->assign('dcategories_plain', $dcategories_plain);
+
+        $list_details = trim($view->display('addons/uns_mech/views/uns_sheets/components/get_list_details.tpl', false));
+
+        $ajax->assign('list_details', $list_details);
+        exit;
+    }
+
+
+
+
+    //**************************************************************************
+    // БЛОК ДЕТАЛЕЙ
+    // запрос деталей при редактировании сл
     if (defined('AJAX_REQUEST') and $mode == 'get_details' and is__more_0($_REQUEST['dcat_id']) and $_REQUEST['event'] == "change__dcat_id"){
         $p = array('dcat_id'         => $_REQUEST['dcat_id'],
                    'with_accounting' => true,
@@ -88,7 +116,8 @@ if($mode == 'manage' or $mode == 'update' or $mode == 'add'){
 
     // только при редактировании
     if($mode == 'update' or $mode == 'add'){
-        fn_add_breadcrumb(fn_get_lang_var($controller), $controller . ".manage");
+        $anchor = (is__more_0($_REQUEST['sheet_id']))?"#".$_REQUEST['sheet_id']:"";
+        fn_add_breadcrumb(fn_get_lang_var($controller), $controller . ".manage" . $anchor);
         fn_uns_navigation_tabs(array('general' => fn_get_lang_var('general'),));
     }
 }
@@ -132,7 +161,6 @@ if($mode == 'update'){
     $p = array_merge($_REQUEST, $p);
     $sheet = array_shift(array_shift(fn_acc__get_sheets($p)));
     $view->assign('sheet', $sheet);
-//    fn_print_r($sheet);
 
     // MOTIONS *****************************************************************
     $p = array(
@@ -148,13 +176,56 @@ if($mode == 'update'){
     );
     list($motions, $search) = fn_uns__get_documents($p);
     $view->assign("motions", $motions);
-//    fn_print_r($motions);
+
+    // OBJECTS *****************************************************************
+    $objects_plain   = array_shift(fn_uns__get_objects(array('plain' => true, 'all' => true)));
+    $view->assign("objects_plain", $objects_plain);
 
     // CATEGORIES **************************************************************
     list($mcategories_plain) = fn_uns__get_materials_categories(array('plain' => true, 'with_q_ty' => false, 'mcat_include_target' => ''));
     $view->assign('mcategories_plain', $mcategories_plain);
     list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true));
     $view->assign('dcategories_plain', $dcategories_plain);
+
+
+    // ОСТАТКИ по литью
+    if ($sheet["material_type"] == "O"){
+        $p_SL = array(
+            "plain"         => true,
+            "all"           => true,
+            "o_id"          => array(8),  // Склад литья
+            "item_type"     => "M",
+            "add_item_info" => true,
+            "view_all_position" => "Y",
+            "mclass_id"     => 1,
+            "with_weight"   => true,
+        );
+
+        $p_SL['period'] = "M";
+        list ($p_SL['time_from'], $p_SL['time_to']) = fn_create_periods($p_SL);
+
+        $material_info = array_shift(array_shift(fn_uns__get_materials(array("material_id"=>$sheet["material_id"]))));
+        $p_SL['mcat_id']     = $material_info["mcat_id"];
+        $p_SL['item_id']     = $material_info["material_id"];
+        $p_SL['material_id'] = $material_info["material_id"];
+        $p_SL['accessory_pumps'] = "Y";
+        list($balance_SL, $search_SL) = fn_uns__get_balance($p_SL);
+        $view->assign('balance_SL', $balance_SL);
+        $view->assign('search_SL', $search_SL);
+    }
+
+    // ОСТАТКИ по деталям
+    $detail_info = array_shift($sheet["details"]);
+    $p_D['period'] = "M";
+    $p_D['accessory_pumps'] = "Y";
+    $p_D['dcat_id'] = $detail_info["dcat_id"];
+    $p_D['item_id'] = $detail_info["detail_id"];
+
+    list ($p_D['time_from'], $p_D['time_to']) = fn_create_periods($p_D);
+
+    list($balances_D, $search_D) = fn_uns__get_balance_mc_sk_su($p_D, true, true, true);
+    $view->assign('balances_D',    $balances_D);
+    $view->assign('search_D', $search_D);
 }
 
 if ($mode == 'motion' and $action != 'delete'){
@@ -166,6 +237,10 @@ if ($mode == 'motion' and $action != 'delete'){
         );
         $sheet = array_shift(array_shift(fn_acc__get_sheets($d)));
         $view->assign('sheet', $sheet);
+
+        // OBJECTS *****************************************************************
+        $objects_plain   = array_shift(fn_uns__get_objects(array('plain' => true, 'all' => true)));
+        $view->assign("objects_plain", $objects_plain);
 
         // ТИПЫ ДОКУМЕНТОВ
         list($document_types) = fn_uns__get_document_types(array('status'=>'A'));
@@ -203,6 +278,10 @@ if($mode == 'add'){
     $view->assign('mcategories_plain', $mcategories_plain);
     list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true));
     $view->assign('dcategories_plain', $dcategories_plain);
+
+    // OBJECTS *****************************************************************
+    $objects_plain   = array_shift(fn_uns__get_objects(array('plain' => true, 'all' => true)));
+    $view->assign("objects_plain", $objects_plain);
 }
 
 
