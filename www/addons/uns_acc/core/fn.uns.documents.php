@@ -786,14 +786,14 @@ function fn_uns__upd_document_info($id = 0, $doc){;
         break;
 
         case DOC_TYPE__BRAK: // В БРАК
-            if ($operation == 'add'){
-                if(!is__more_0($type, $doc["object_to"], $doc["object_from"])) return false;
-                else{
+            if(!is__more_0($type, $doc["object_to"], $doc["object_from"])) return false;
+            else{
+                if ($operation == 'add'){
                     $d["date"]          = fn_concat_date_time($doc);
-                    $d["object_to"]     = $doc["object_to"];
-                    $d["object_from"]   = $doc["object_from"];
-                    $d["type"]          = $type;
                 }
+                $d["object_to"]     = $doc["object_to"];
+                $d["object_from"]   = $doc["object_from"];
+                $d["type"]          = $type;
             }
         break;
 

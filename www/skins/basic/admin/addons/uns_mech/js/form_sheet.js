@@ -69,8 +69,9 @@ $(function () {
     //**************************************************************************
     $('a.add_detail').live('click', function(){
         var d_id = $(this).attr("detail_id");
-        $("table.sheet_details tbody.data").empty().append($("div.data_detail__" + d_id + " table tbody").html());
+        $("table.sheet_details tbody.data")./*empty().*/append($("div.data_detail__" + d_id + " table tbody").html());
         $("input#details").val(d_id);
+        calc_sheet_details();                   // выполнить перерасчет таблицы с деталями
     });
 
 

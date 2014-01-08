@@ -101,7 +101,7 @@
     <table class="table sheet_details">
         <thead>
         <tr>
-            <th>{if !$disabled}<span class="add_detail">+</span>{/if}</th>
+            <th>{if !$disabled_details}<span class="add_detail">+</span>{/if}</th>
             <th>Категория</th>
             <th>Наименование</th>
             <th>&nbsp;</th>
@@ -154,7 +154,7 @@
                 <tr>
                     <td>
                         {$smarty.foreach.d.iteration}
-                        <input type="hidden" name="detail_id" value="{$d.detail_id}" {if $disabled}disabled="disabled"{/if} />
+                        <input type="hidden" name="detail_id" value="{$d.detail_id}" {if $disabled_details}disabled="disabled"{/if} />
                     </td>
                     <td>
                         {include file="addons/uns/views/components/get_form_field.tpl"
@@ -164,7 +164,7 @@
                             f_option_id="dcat_id"
                             f_option_value="dcat_name"
                             f_option_target_id=$d.dcat_id
-                            f_disabled=$disabled
+                            f_disabled=$disabled_details
                             f_with_q_ty=false
                             f_blank=true
                             f_blank_name="---"
@@ -172,17 +172,17 @@
                         }
                     </td>
                     <td>
-                        <select name="details[{$d.detail_id}][detail_id]" {if $disabled}disabled="disabled"{/if}>
+                        <select name="details[{$d.detail_id}][detail_id]" {if $disabled_details}disabled="disabled"{/if}>
                             <option value="0">---</option>
                             <option selected="selected" value="{$d.detail_id}">{if strlen($d.detail_no)}[{$d.detail_no}] {/if}{$d.detail_name}</option>
                         </select>
                     </td>
-                    <td>{if !$disabled}<span class="delete_detail">x</span>{/if}</td>
+                    <td>{if !$disabled_details}<span class="delete_detail">x</span>{/if}</td>
                 </tr>
             {/foreach}
         {/if}
         </tbody>
     </table>
-    <input type="hidden" readonly id="details" name="{$e_n}[details]" value="{$input_details}" {if $disabled}disabled="disabled"{/if} style="font-size: 10px; font-weight: bold; border: none;"/>
+    <input type="hidden" readonly id="details" name="{$e_n}[details]" value="{$input_details}" {if $disabled_details}disabled="disabled"{/if} style="font-size: 10px; font-weight: bold; border: none;"/>
 </div>
 {*<pre>{$details|print_r}</pre>*}

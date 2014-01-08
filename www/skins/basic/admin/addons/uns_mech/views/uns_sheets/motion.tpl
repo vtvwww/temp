@@ -145,6 +145,7 @@
                                             f_id="material_quantity"
                                             f_from=0
                                             f_to=200
+                                            f_add_attr=$smarty.foreach.d.index
                                             f_value=$motion.movement_items.O[$motion.object_from][$sheet.material_id].quantity
                                             f_simple=true
                                         }
@@ -215,13 +216,14 @@
                                     f_id="detail_quantity"
                                     f_from=0
                                     f_to=200
+                                    f_add_attr=$smarty.foreach.d.index
                                     f_value=$motion.movement_items.O[$motion.object_from][$k].quantity
                                     f_simple=true
                                 }
                             </td>
                             {if $document_type_name == "BRAK" or $document_type_name == "VCP" or $document_type_name == "VCP_COMPLETE" or $document_type_name == "MCP"}
                             <td>{*Статус обработки*}
-                                <select name="motion[document_items][{$di_index}][processing]">
+                                <select name="motion[document_items][{$di_index}][processing]" add_attr="{$smarty.foreach.d.index}">
                                     <option {if $motion.movement_items.O[$motion.object_from][$k].processing == "P"}selected="selected"{/if} value="P">Обр.</option>
                                     <option {if $motion.movement_items.O[$motion.object_from][$k].processing == "C"}selected="selected"{/if} value="C">Зав.</option>
                                 </select>
@@ -334,13 +336,14 @@
                                 f_id="detail_quantity"
                                 f_from=0
                                 f_to=200
+                                f_add_attr=$smarty.foreach.d.index
                                 f_value=$motion.movement_items.I[$motion.object_to][$k].quantity
                                 f_simple=true
                                 }
                             </td>
                             {if $document_type_name == "PVP" or $document_type_name == "VCP" or $document_type_name == "VCP_COMPLETE"}
                             <td>{*Статус обработки*}
-                                <select name="motion[document_items][{$di_index}][processing]">
+                                <select name="motion[document_items][{$di_index}][processing]" add_attr="{$smarty.foreach.d.index}">
                                     <option {if $motion.movement_items.I[$motion.object_to][$k].processing == "P"}selected="selected"{/if} value="P">Обр.</option>
                                     <option {if $motion.movement_items.I[$motion.object_to][$k].processing == "C"}selected="selected"{/if} value="C">Зав.</option>
                                 </select>

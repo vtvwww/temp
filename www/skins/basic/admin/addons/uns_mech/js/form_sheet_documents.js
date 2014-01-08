@@ -3,16 +3,15 @@ $(function () {
 
     function get_document_type (v){
         var t = v.parent().parent().parent().parent().parent().parent().find("input[name='motion[document][document_type_name]']").val();
-//        alert(t);
         return t;
     }
 
     function get_document_quantity_prih (v){
-        return v.parent().parent().parent().parent().parent().parent().parent().find('table.simple:eq(1) tbody tr:eq(0) select:eq(0)');
+        return v.parent().parent().parent().parent().parent().parent().parent().find('table.simple:eq(1) tbody tr:eq(' + v.attr('add_attr') + ') select:eq(0)');
     }
 
     function get_document_status_prih (v){
-        return v.parent().parent().parent().parent().parent().parent().parent().find('table.simple:eq(1) tbody tr:eq(0) select:eq(1)');
+        return v.parent().parent().parent().parent().parent().parent().parent().find('table.simple:eq(1) tbody tr:eq(' + v.attr('add_attr') + ') select:eq(1)');
     }
 
     function get_document_object_to (v){
@@ -64,13 +63,13 @@ $(function () {
     });
 
     // Смена кол-ва РАСХОДА
-    $('select[name="motion[document_items][0][quantity]"]').live('change', function (e) {
+    $('select[name^="motion[document_items]"][name$="[quantity]"]').live('change', function (e) {
         upd_document_quantity_prih($(this));
         upd_document_status_prih($(this));
     });
 
     // Смена статуса обработки РАСХОДА
-    $('select[name="motion[document_items][0][processing]"]').live('change', function (e) {
+    $('select[name^="motion[document_items]"][name$="[processing]"]').live('change', function (e) {
         upd_document_status_prih($(this));
     });
 
