@@ -33,6 +33,9 @@
                         {else}
                             <span class="info_warning">Нет обозначения!</span>
                         {/if}
+                        {if strlen($i.options_as_string)}
+                            {$i.options_as_string}
+                        {/if}
                         </span>
                     </td>
                     <td>
@@ -84,6 +87,7 @@
                     </td>
                     <td>
                         {if $i.detail_comment}<span class="uns_comment">{$i.detail_comment}</span>{/if}
+                        {$i.detail_position}
                     </td>
 
                     <td class="nowrap right">

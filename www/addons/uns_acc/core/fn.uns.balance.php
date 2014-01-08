@@ -391,6 +391,8 @@ function fn_uns__get_balance($params = array()){
                             $mcat_items[$mcats_k]["items"][$materials_k]["id"]                      = $materials_v["material_id"];
                             $mcat_items[$mcats_k]["items"][$materials_k]["material_id"]             = $materials_v["material_id"];
                             $mcat_items[$mcats_k]["items"][$materials_k]["name"]                    = $materials_v["material_name"];
+                            $mcat_items[$mcats_k]["items"][$materials_k]["material_comment"]        = $materials_v["material_comment"];
+                            $mcat_items[$mcats_k]["items"][$materials_k]["material_comment_1"]      = $materials_v["material_comment_1"];
                             $mcat_items[$mcats_k]["items"][$materials_k]["name_accounting"]         = $materials_v["material_name_accounting"];
                             $mcat_items[$mcats_k]["items"][$materials_k]["no"]                      = $materials_v["material_no"];
                             $mcat_items[$mcats_k]["items"][$materials_k]["accessory_pumps"]         = $materials_v["accessory_pumps"];
@@ -723,9 +725,9 @@ function fn_uns__get_balance_mc_sk_su($params, $mc=true, $sk=true, $su=false){
     );
 
     $p = array_merge($p, $params);
-    if ($p["check_dcat_id"]){
-        if (!is__more_0($p["dcat_id"]) and !is__array($p["dcat_id"])) return array(array(), $p);
-    }
+//    if ($p["check_dcat_id"]){
+//        if (!is__more_0($p["dcat_id"]) and !is__array($p["dcat_id"])) return array(array(), $p);
+//    }
     // ЗАПРОСИТЬ БАЛАНС МЕХ. ЦЕХА
     if ($mc == true){
         $mc_processing = $mc_complete = array();

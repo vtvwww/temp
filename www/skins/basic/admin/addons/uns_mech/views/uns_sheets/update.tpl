@@ -12,7 +12,6 @@
 
     <div id="content_group">
         <form action="{""|fn_url}" method="post" name="update_{$controller}_form_{$id}" class="cm-form-highlight">
-            <input type="hidden" value="" name="selected_section">
             {capture name="tabsbox"}
                 <div id="content_general">
                     {* Добавить описание листа *}

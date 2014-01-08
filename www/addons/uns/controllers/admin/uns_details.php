@@ -15,6 +15,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         } else{
             fn_set_notification("N", $_REQUEST['data']['detail_name'], UNS_DATA_UPDATED);
             fn_delete_notification('changes_saved');
+
+            $_REQUEST['detail_id'] = $id;
+            fn_uns_mark_item($controller, $mode);
         }
         $suffix = "update&detail_id={$id}&selected_section={$_REQUEST['selected_section']}";
     }
@@ -35,8 +38,12 @@ if($mode == 'manage' or $mode == 'update' or $mode == 'add'){
 }
 
 if($mode == 'manage'){
-    $p = array('dcat_path'      => true, 'with_accounting' => true,
-               'with_materials' => true);
+    $p = array( 'dcat_path'             => true,
+                'with_accounting'       => true,
+                'with_materials'        => true,
+                'with_options_as_string'=> true,
+                'format_name'           => true,
+    );
     $p = array_merge($_REQUEST, $p);
     list($details, $search) = fn_uns__get_details($p, UNS_ITEMS_PER_PAGE);
     $view->assign('details', $details);

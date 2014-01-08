@@ -473,6 +473,7 @@ function fn_uns__get_materials($params = array(), $items_per_page = 0)
         '?:materials.material_status',
         '?:materials.material_position',
         '?:materials.material_comment',
+        '?:materials.material_comment_1',
     );
 
     $sorting_schemas = array(
@@ -576,6 +577,24 @@ function fn_uns__get_materials($params = array(), $items_per_page = 0)
     if ($params['format_name']){
         foreach ($data as $k=>$v){
             $data[$k]['format_name'] = fn_uns__get_format_material_name($v, $v['accounting_data']['weight']);
+        }
+    }
+
+    if ($params['with_options']){
+        foreach ($data as $k=>$v){
+            $data[$k]['options'] = fn_uns__get_options_items("M", $k);
+            $options_as_str = array();
+            $options_as_str_names = array();
+            foreach ($data[$k]['options'] as $o=>$o_v){
+                $options_as_str[] = $o_v["variants"][$o_v["ov_id"]]["ov_value"];
+                $options_as_str_names[] = str_replace("П/М ЗАГОТОВКА ", "", $o_v["option_name"]);
+            }
+            if (is__array($options_as_str)){
+                $data[$k]['options_as_str'] = implode("/", $options_as_str);
+            }
+            if (is__array($options_as_str_names)){
+                $data[$k]['options_as_str_names'] = implode(" / ", $options_as_str_names);
+            }
         }
     }
 

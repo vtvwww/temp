@@ -36,7 +36,7 @@ if($mode == 'manage' or $mode == 'update' or $mode == 'add'){
 
 
 if($mode == 'manage'){
-    $p = array('mcat_path' => true, 'with_accounting' => true);
+    $p = array('mcat_path' => true, 'with_accounting' => true, 'with_options' => true);
     $p = array_merge($_REQUEST, $p);
     list($materials, $search) = fn_uns__get_materials($p, UNS_ITEMS_PER_PAGE);
     $view->assign('materials', $materials);
