@@ -381,6 +381,7 @@ function fn_acc__get_sheet_details($params = array(), $items_per_page = 0){
     // 6. ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ
     // *************************************************************************
     foreach ($data as $k_data=>$v_data){
+        $d = array();
         foreach ($v_data as $v){
             $d[] = $v["detail_id"];
         }
