@@ -26,7 +26,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             fn_set_notification("N", $_REQUEST['data']['o_name'], UNS_DATA_UPDATED);
         }
         fn_delete_notification('changes_saved');
-        $suffix = "update&sheet_id={$id}&selected_section={$_REQUEST['selected_section']}#$id";
+//        $suffix = "update&sheet_id={$id}&selected_section={$_REQUEST['selected_section']}#$id";
+        $suffix = "update&sheet_id={$id}#motions";
     }
 
     //**************************************************************************
@@ -104,7 +105,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             }
             fn_delete_notification('changes_saved');
         }
-        $suffix = "update&sheet_id={$_REQUEST['sheet_id']}&selected_section={$_REQUEST['selected_section']}";
+        $suffix = "update&sheet_id={$_REQUEST['sheet_id']}#motions";
     }
 
     return array(CONTROLLER_STATUS_OK, $controller . "." . $suffix);

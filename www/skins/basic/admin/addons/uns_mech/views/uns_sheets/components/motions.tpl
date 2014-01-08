@@ -1,5 +1,5 @@
 {include file="common_templates/subheader.tpl" title="Движения по Сопроводительному листу" style="margin-bottom:10px;"}
-
+<a name="motions"></a>
 {literal}
     <style type="text/css">
         table.uns_table{

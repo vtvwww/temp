@@ -461,12 +461,33 @@ function fn_uns__get_details($params = array(), $items_per_page = 0){
         }
     }
 
+    // ПОЛУЧИТЬ СПИСОК ПАРАМЕТРОВ КАК СТРОКУ ТОЛЬОК ДЛЯ КАТЕГОРИИ ПОЛУМУФТ ID=38
+    if ($params["with_options_as_string"]){
+        // ПЛОХАЯ РЕАЛИЗАЦИЯ
+        foreach ($data as $k=>$v){
+            if ($v["dcat_id"] == 38){
+                $options = fn_uns__get_options_items("D", $k);
+                if (is__array($options)){
+                    $o_array = array();
+                    foreach ($options as $o){
+                        $o_array[] = $o["variants"][$o["ov_id"]]["ov_value"];
+                    }
+                }
+                $data[$k]['options_as_string'] = implode('/', $o_array);
+            }
+        }
+    }
+
     // Форматированное имя детали
     if ($params["format_name"]){
         foreach ($data as $k=>$v){
             $fn = " ___ОШИБКА!___ ";
             if (strlen($v["detail_no"])){
                 $fn = " [{$v['detail_no']}]";
+            }
+
+            if (strlen($v["options_as_string"])){
+                $fn .= " ({$v['options_as_string']})";
             }
 
             $data[$k]["format_name"] = $v["detail_name"] . $fn;

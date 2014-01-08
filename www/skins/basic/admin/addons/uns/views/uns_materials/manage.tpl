@@ -53,7 +53,7 @@
 
                     <td>
                         <span class="uns_title_1{if $i.material_status == "D"} item_disabled{/if}">{$i.material_name}&nbsp;{if strlen($i.material_no)}[{$i.material_no}]{/if}</span>
-                        <br><span class="uns_info">{$i.category_path}</span>
+                        <br>{if strlen($i.options_as_str)}<span style="cursor: pointer;" title="{$i.options_as_str_names}" class="info_warning">{$i.options_as_str}</span>{/if}&nbsp;<span class="uns_info">{$i.category_path}</span>
                     </td>
                     <td>
                         {$accounting}

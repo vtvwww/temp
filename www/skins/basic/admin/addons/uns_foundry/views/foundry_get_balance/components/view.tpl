@@ -31,10 +31,14 @@
                 <td align="center" class="b1_r b1_l"><span class="{if $m.konech<0}info_warning_block{elseif $m.konech==0}zero{/if} bold">{$m.konech|fn_fvalue:2}</span></td>
                 {if $search.accessory_pumps == "Y"}
                 <td align="left" class="b1_r">
-                    {if $m.accessory_pump_series}
-                        {$m.accessory_pump_series}
+                    {if $m.material_comment_1|strlen}
+                        <span class="info_warning">{$m.material_comment_1}</span>
                     {else}
-                        {if $m.accessory_pumps}[{$m.accessory_pumps}]{/if}
+                        {if $m.accessory_pump_series}
+                            {$m.accessory_pump_series}
+                        {else}
+                            {if $m.accessory_pumps}[{$m.accessory_pumps}]{/if}
+                        {/if}
                     {/if}
                 </td>
                 {/if}

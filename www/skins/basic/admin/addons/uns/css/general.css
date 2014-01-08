@@ -130,6 +130,7 @@ tbody .cm-row-item.hide-row{
 
 span.uns_title_1{
     font-size: 14px;
+    display: inline-block;
     font-weight: bold;
 }
 
