@@ -145,7 +145,7 @@
                                             f_id="material_quantity"
                                             f_from=0
                                             f_to=200
-                                            f_add_attr=$smarty.foreach.d.index
+                                            f_add_attr="0"
                                             f_value=$motion.movement_items.O[$motion.object_from][$sheet.material_id].quantity
                                             f_simple=true
                                         }

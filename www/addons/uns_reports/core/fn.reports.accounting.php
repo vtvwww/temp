@@ -38,8 +38,11 @@ function fn_rpt__accounting($data){
 //    $pdf->Cell($col_sizes[7], 0, 'Кон.ост.', 1, 1, 'C', 0, '', 1);
 
     $i = 0;
+    $total_weights = array();
     if (is__array($data['balance'])){
         foreach ($data['balance'] as $group){
+            $weights = 0;
+
             $h          = 6;
             $border     = 1;
             $align      = 'C';
@@ -116,6 +119,7 @@ function fn_rpt__accounting($data){
                 $pdf->MultiCell($col_sizes[$k++],  $h, "",                      $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
                 $pdf->MultiCell($col_sizes[$k++],  $h, "",                      $border, $align, $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
                 $k = 0;
+                $weights += $i['nach']*$i['weight'];
             }
             // -------------------------------------------------------------
             $k = 0;
@@ -137,7 +141,7 @@ function fn_rpt__accounting($data){
             $pdf->uns_SetFont("B", 13);
             $pdf->MultiCell($col_sizes[$k++],  $h, "№ клм",                                 $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             $pdf->MultiCell($col_sizes[$k++],  $h, $pdf->uns__strtoupper($group['group']),   $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->MultiCell($col_sizes[$k++],  $h, "Вес,кг",                                 $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            $pdf->MultiCell($col_sizes[$k++],  $h, fn_fvalue($weights),                                 $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             $pdf->MultiCell($col_sizes[$k++],  $h, "Нач.ост.",                               $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             $pdf->MultiCell($col_sizes[$k++],  $h, "Приход",                                 $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             $pdf->MultiCell($col_sizes[$k++],  $h, "Расход",                                 $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
@@ -146,8 +150,23 @@ function fn_rpt__accounting($data){
             // -------------------------------------------------------------
 
             $pdf->ln(10);
+
+            $total_weights[$group['group']] = $weights;
         }
     }
+
+    // Пустые строки
+    $pdf->uns_SetFont("R", 10);
+    foreach ($total_weights as $k=>$v){
+        $pdf->SetTextColor(0, 0, 0);
+        $pdf->SetFillColor(255);
+        $pdf->Cell(100, 0, $k, 1, 0, 'L', 0, '', 1);
+        $pdf->Cell(30, 0, fn_fvalue($v), 1, 1, 'R', 0, '', 1);
+    }
+    $pdf->uns_SetFont("B", 11);
+    $pdf->Cell(100, 0, "ИТОГО:", 1, 0, 'R', 0, '', 1);
+    $pdf->Cell(30, 0, fn_fvalue(array_sum($total_weights)), 1, 1, 'R', 0, '', 1);
+    $pdf->ln(10);
 
     // Пустые строки
     for ($i=0;$i<15;$i++){
