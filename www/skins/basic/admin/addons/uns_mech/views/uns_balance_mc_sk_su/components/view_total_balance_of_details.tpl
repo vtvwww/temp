@@ -60,7 +60,9 @@
                         {else}
                             {$m.accessory_pump_series}
                         {/if}
-
+                        {if strlen($m.comment)}
+                            <br><span class="info_warning">{$m.comment}</span>
+                        {/if}
                         {*{if $m.accessory_pump_series}*}
                             {*&nbsp;&nbsp;{$m.accessory_pump_series}*}
                         {*{else}*}

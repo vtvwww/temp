@@ -484,6 +484,7 @@ function fn_uns__get_balance($params = array()){
                             $dcat_items[$dcats_k]["items"][$details_k]["name"]                    = $details_v["detail_name"];
                             $dcat_items[$dcats_k]["items"][$details_k]["name_accounting"]         = $details_v["detail_name_accounting"];
                             $dcat_items[$dcats_k]["items"][$details_k]["no"]                      = $details_v["detail_no"];
+                            $dcat_items[$dcats_k]["items"][$details_k]["comment"]                 = $details_v["detail_comment"];
                             $dcat_items[$dcats_k]["items"][$details_k]["accessory_pumps"]         = $details_v["accessory_pumps"];
                             $dcat_items[$dcats_k]["items"][$details_k]["accessory_pump_series"]   = $details_v["accessory_pump_series"];
                             $dcat_items[$dcats_k]["items"][$details_k]["accessory_pump_manual"]   = $details_v["accessory_manual"];
