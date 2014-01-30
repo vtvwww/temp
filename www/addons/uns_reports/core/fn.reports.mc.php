@@ -96,7 +96,7 @@ function fn_rpt__mc($data){
         foreach ($group['items'] as $k_i=>$i){
             if (in_array($i['id'], $data['exclude_items'])) continue;
             $item_name = $i["no"];
-            if (strlen($i["no"]) == 0) $item_name = "{$i["name"]}";
+            if (!strlen($i["no"]) or $i["no"] == "-") $item_name = "{$i["name"]}";
 
             // accessory_view
             $acc = "";
@@ -152,7 +152,7 @@ function fn_rpt__mc($data){
             $pdf->MultiCell(0.5,  $h, "",              $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
 
             $pdf->uns_SetFont("B", $font_sizes['small']);
-            $pdf->MultiCell($col_sizes[$k++],  $h, $acc,    $border, $align, $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            $pdf->MultiCell($col_sizes[$k++],  $h, $acc,    $border, "L", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             $k = 0;
         }
         $k = 0;
@@ -160,6 +160,7 @@ function fn_rpt__mc($data){
         $pdf->SetTextColor(260, 260, 260);
         $pdf->uns_SetFont("B", $font_sizes["medium"]);
         $g_name = $pdf->uns__strtoupper($group['group']);
+        $h = $maxh = 6;
         $pdf->MultiCell($col_sizes[$k++],  $h, "№",            $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
         $pdf->MultiCell($col_sizes[$k++],  $h, $g_name,         $border, "L",    $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
         $pdf->MultiCell($col_sizes[$k++],  $h, "Клм",           $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);

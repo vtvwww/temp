@@ -212,22 +212,21 @@ function fn_report_get_name ($item, $rules){
 
 
 // РАСЧЕТ ВЫСОТЫ СТРОКИ ДЛЯ ЕЕ ЛУЧШЕГО ЗАПОЛНЕНИЯ
-function fn_report_calc_height_row ($length, $msize = 30){
-    if (($length > (1*$msize)) and ($length <= (2*$msize))){
-        $h          = 9;
-        $maxh       = $h;
+function fn_report_calc_height_row ($length, $msize = 25){
+    $h          = 6;
+    if (($length >= (1*0)) and ($length <= (2*$msize))){
+        $h          = 7;
     }elseif (($length > (2*$msize)) and ($length <= (3*$msize))){
         $h          = 12;
-        $maxh       = $h;
     }elseif (($length > (3*$msize)) and ($length <= (4*$msize))){
         $h          = 15;
-        $maxh       = $h;
     }elseif (($length > (4*$msize)) and ($length <= (5*$msize))){
         $h          = 18;
-        $maxh       = $h;
+    }elseif (($length > (5*$msize)) and ($length <= (6*$msize))){
+        $h          = 21;
     }else{
-        $h          = 6;
-        $maxh       = $h;
+        $h          = 24;
     }
+    $maxh       = $h;
     return array($h, $maxh);
 }
