@@ -50,5 +50,5 @@
 {else}
     {assign var="title" value="Добавить новый"}
 {/if}
-{include file="common_templates/mainbox.tpl" title=$title content=$smarty.capture.mainbox tools=$smarty.capture.tools}
+{include file="common_templates/mainbox.tpl" title=$title content=$smarty.capture.mainbox tools=$smarty.capture.tools bottom_tools=$smarty.capture.tools}
 

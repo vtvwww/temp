@@ -96,7 +96,12 @@
     {if $sheet.status == "OP"}
         <b style="display: block; padding-top: 4px;">Открыт</b>
     {elseif $sheet.status == "CL"}
-        <b style="display: block; padding-top: 4px;">Закрыт</b>
+        <b style="background-color: #f4dc43;
+        border: 2px solid #dbc43d;
+        display: block;
+        height: 21px;
+        padding-left: 5px;
+        padding-top: 4px;">Закрыт</b>
     {else}
         <b style="display: block; padding-top: 4px;" class="info_warning">Нет данных!</b>
     {/if}

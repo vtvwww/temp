@@ -55,4 +55,6 @@
 	<div class="mainbox-body" {if $box_id}id="{$box_id}"{/if}>
 		{$content|default:"&nbsp;"}
 	{if $box_id}<!--{$box_id}-->{/if}</div>
+
+    {$bottom_tools}
 </div>

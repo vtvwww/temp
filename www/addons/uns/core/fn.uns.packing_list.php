@@ -619,7 +619,7 @@ function fn_uns_generate_data_for_packing ($id, $type, &$view){
 /**
  * ПОЛУЧИТЬ КОМПЛЕКТАЦИЮ НАСОСА ТОЛЬКО ИЗ ЛИТЬЯ
  */
-function fn_uns__get_packing_list_by_pump ($p_id, $item_type="M"){
+function fn_uns__get_packing_list_by_pump ($p_id, $item_type="M", $all_classes=false){
     $pump = array_shift(array_shift(fn_uns__get_pumps(array('p_id'=>$p_id))));
     if (!is__array($pump)) return false;
 
@@ -629,6 +629,10 @@ function fn_uns__get_packing_list_by_pump ($p_id, $item_type="M"){
         $field = "if(details.r_detail_id>0, r_uns_detail__and__items.detail_id, uns_detail__and__items.detail_id) as detail_id";
         $m_key = "detail_id";
     }
+
+    $classes = " and uns_materials.mclass_id = 1 ";
+    if ($all_classes) $classes = "";
+
     $sql = UNS_DB_PREFIX . "
         SELECT
         #     details.detail_id
@@ -642,7 +646,8 @@ function fn_uns__get_packing_list_by_pump ($p_id, $item_type="M"){
         #   , r_uns_detail__and__items.quantity as r_material_quantity
         #   ,
             $field
-          , sum(if(details.r_detail_id>0, details.r_detail_quantity*r_uns_detail__and__items.quantity, details.detail_quantity*uns_detail__and__items.quantity)) as quantity
+        # , sum(if(details.r_detail_id>0, details.r_detail_quantity*r_uns_detail__and__items.quantity, details.detail_quantity*uns_detail__and__items.quantity)) as quantity
+          , sum(if(details.r_detail_id>0, details.r_detail_quantity, details.detail_quantity)) as quantity
         #  , if(r_uns_detail__and__items.material_id>0, 'Y', 'N') as __replace
 
         FROM (
@@ -688,7 +693,7 @@ function fn_uns__get_packing_list_by_pump ($p_id, $item_type="M"){
         ) as details
           left join uns_detail__and__items on (details.detail_id = uns_detail__and__items.detail_id)
           left join uns_detail__and__items as r_uns_detail__and__items on (details.r_detail_id = r_uns_detail__and__items.detail_id)
-          inner join uns_materials on (uns_detail__and__items.material_id = uns_materials.material_id and uns_materials.mclass_id = 1) # отобрать только материалы типа ЛИТЬЕ
+          inner join uns_materials on (uns_detail__and__items.material_id = uns_materials.material_id {$classes})
         GROUP BY $m_key
     ";
     $data = db_get_hash_array($sql, $m_key);

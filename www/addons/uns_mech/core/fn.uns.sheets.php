@@ -63,6 +63,7 @@ function fn_acc__upd_sheet_info($id = 0, $data=array()){;
         "status"=> "OP",
         "material_type" => "O",
         "target_object" => 0,
+        "date_close"    => 0,
     );
     $p = array(
         "with_count_items"          => true,
@@ -82,6 +83,7 @@ function fn_acc__upd_sheet_info($id = 0, $data=array()){;
         foreach ($motions as $k=>$m){
             if ($m["status"] == "A" and in_array($m["document_type_info"]["type"], array("VCP_COMPLETE", "MCP"))){
                 $d["status"] = "CL";
+                $d["date_close"] = TIME;
             }
         }
     }
@@ -152,6 +154,7 @@ function fn_acc__get_sheets($params = array(), $items_per_page = 0){
         "$m_tbl.$m_key",
         "$m_tbl.no",
         "$m_tbl.date_open",
+        "$m_tbl.date_close",
         "$m_tbl.material_id",
         "$m_tbl.status",
         "$m_tbl.comment",

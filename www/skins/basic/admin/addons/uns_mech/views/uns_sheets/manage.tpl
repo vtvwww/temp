@@ -104,7 +104,7 @@
                        {if $i.status == "OP"}
                            <img border="0" title="Открыт" src="skins/basic/admin/addons/uns_acc/images/circle_yellow.png">
                        {elseif $i.status == "CL"}
-                           <img border="0" title="Закрыт" src="skins/basic/admin/addons/uns_acc/images/done.png">
+                           <img border="0" class="hand" title="Закрыт {if $i.date_close}{$i.date_close|date_format:"%a %d/%m/%y"}{else}Н/Д{/if}" src="skins/basic/admin/addons/uns_acc/images/done.png">
                        {elseif $i.status == "CN"}
                            <img border="0" title="Отменен" src="skins/basic/admin/addons/uns_acc/images/circle_red.png">
                        {/if}
