@@ -190,11 +190,16 @@ if ($mode == 'get_report'){
 //                76,
 //                65,
 //                66,
-                94,
+//                94,
+//                    78
+//                78, 79, 80, 29, 37, 77, 76, 65, 66, 36, 39, 48, 40, 58, 62, 52,
+//                63, 68, 75, 74, 69, 38, 42, 51, 47, 61, 57, 64, 30, 31, 60, 67,
+//                70, 88, 89, 90, 92, 91, 99, 94, 72, 71, 93, 106, 84, 105, 100,
+                95, 97, 73, 85, 87, 83, 86, 82, 107, 101, 102, 108, 103, 104, 109, 110,
             ));
             if (is__array($pump_series = array_shift(fn_uns__get_pump_series($p)))){
                 foreach ($pump_series as $k_ps=>$v_ps){
-                    if (is__array($pumps = array_shift(fn_uns__get_pumps(array("ps_id" => $k_ps))))){
+                    if (is__array($pumps = array_shift(fn_uns__get_pumps(array("ps_id" => $k_ps, "only_active"=>true))))){
                         foreach ($pumps as $k_p=>$v_p){
                             $list_details = fn_uns__get_packing_list_by_pump($k_p, "D", true);
                             $p_details = array_shift(fn_uns__get_details(array(

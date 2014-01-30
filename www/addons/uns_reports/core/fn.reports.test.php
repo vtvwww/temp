@@ -3,8 +3,14 @@
 function fn_rpt__test($data){
     $pdf = new UNS_TCPDF();
     $params = array(
-        'header_title' =>   "ООО «ТОРГОВЫЙ ДОМ «УКРНАСОССЕРВИС»",
-        'header_text' =>    $pdf->uns__strtoupper("Комплектация насосов"),
+        'header_title'  => "ООО «ТОРГОВЫЙ ДОМ «УКРНАСОССЕРВИС»",
+        'header_text'   => $pdf->uns__strtoupper("Комплектация насосов"),
+        'FooterData_tc' => array(255,255,255),
+        'HeaderData_lw' => 1.5,
+        'Margins_Left'  => 15,
+        'Margins_Top'   => 15,
+        'Margins_Right' => 15,
+
     );
     $pdf->uns_set_config($params);
     $pdf->AddPage();
@@ -33,11 +39,11 @@ function fn_rpt__test($data){
 
     $col_sizes = array( 7,
                         39,
-                        28,
+                        33,
                         9,
                         13,
                         7,
-                        69,
+                        72,
     );
 
 
@@ -47,18 +53,22 @@ function fn_rpt__test($data){
             if (is__array($p = $v_ps["pumps"])){
                 $p_index = 0;
                 $p_base = array(); // Комплектация базового насоса
+                $pdf->ln(5);
                 foreach ($p as $k_p=>$v_p){
                     // Переход на новую страницу
-                    if ($pdf->GetY() >= 260) $pdf->AddPage();
+                    if ($pdf->GetY() >= 250){
+                        $pdf->AddPage();
+                        $pdf->ln(5);
+                    }
 
                     if (!$p_index) $p_base = $v_p;
                     $pdf->uns_SetFont("B", 20);
                     if (!$p_index){
-                        $pdf->Cell(109, 8, $v_p["p_name"], 0, 0, 'L', 0, '', 0, false, "T", "B");
+                        $pdf->Cell(117, 8, $v_p["p_name"], 0, 0, 'L', 0, '', 0, false, "T", "B");
                         $pdf->uns_SetFont("BI", 11);
                         $pdf->Cell(25, 8, " ОСНОВНАЯ КОМПЛЕКТАЦИЯ НАСОСА", 0, 0, 'L', 0, '', 0, false, "T", "B");
                     }else{
-                        $pdf->Cell(71, 8, $v_p["p_name"], 0, 0, 'L', 0, '', 0, false, "T", "B");
+                        $pdf->Cell(79, 8, $v_p["p_name"], 0, 0, 'L', 0, '', 0, false, "T", "B");
                         $pdf->uns_SetFont("BI", 11);
                         $pdf->Cell(25, 8, " (полумуфты и отличия от основной комплектации)", 0, 0, 'L', 0, '', 0, false, "T", "B");
                     }
@@ -95,8 +105,6 @@ function fn_rpt__test($data){
                                     if ($v_d["accessory_view"] == "P") $d_acce = $v_d["accessory_pumps"];
                                     if ($v_d["accessory_view"] == "M") $d_acce = $v_d["accessory_manual"];
                                     $d_c_ac = $d_acce . (strlen($d_comm)? " ({$d_comm})":"");
-//                                    $d_c_ac .= " ".fn_strlen($d_c_ac)%30;
-//                                    $h = floor(fn_strlen($d_c_ac)/30)*ROW_HEIGHT;
                                 }
 
                                 $m_no__ = "";
@@ -130,11 +138,13 @@ function fn_rpt__test($data){
 
                     $pdf->ln(5);
                     $pdf->uns_SetFont("B", 10);
-                    $pdf->Cell(0, 0, " =========================================================================================", 0, 1, 'C', 0, '', 0);
+                    $pdf->Cell(0, 0, "=============================================================================================", 0, 1, 'C', 0, '', 0);
                     $pdf->ln(3);
                     $p_index++;
                 }
             }
+            $pdf->uns_SetFont("I", 9);
+            $pdf->Cell(0, 0, "Распечатано " . strftime("%Y/%m/%d", time()), 0, 1, 'R', 0, '', 0);
             $pdf->AddPage();
         }
     }

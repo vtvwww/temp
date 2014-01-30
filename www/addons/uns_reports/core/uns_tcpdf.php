@@ -18,25 +18,32 @@ class UNS_TCPDF extends TCPDF{
         $default_params = array(
             'header_title'  => '',
             'header_text'   => '',
-
+            'HeaderData_lw' => 0.85,
+            'FooterData_tc' => array(0, 0, 0),
+            'FooterData_lc' => array(0, 0, 0),
+            'HeaderMargin'  => 5,
+            'FooterMargin'  => 10,
+            'Margins_Left'  => 20,
+            'Margins_Top'   => 16,
+            'Margins_Right' => 20,
         );
         $params = array_merge($default_params, $params);
 
         // set default header data
-        $this->SetHeaderData("","",$params['header_title'],$params['header_text'],array(0, 0, 0),array(0, 0, 0));
-        $this->setFooterData(array(0, 0, 0), array(0, 0, 0));
+        $this->SetHeaderData("","",$params['header_title'],$params['header_text'],array(0, 0, 0),array(0, 0, 0), $params['HeaderData_lw']);
+        $this->setFooterData($params['FooterData_tc'], $params['FooterData_lc']);
 
         // set header and footer fonts
         $this->setHeaderFont(Array($this->font_name, '', 10));
         $this->setFooterFont(Array($this->font_name, '', 9));
-        $this->SetHeaderMargin(5);
-        $this->SetFooterMargin(10);
+        $this->SetHeaderMargin($params['HeaderMargin']);
+        $this->SetFooterMargin($params['FooterMargin']);
 
         // set default monospaced font
         $this->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
         // set margins
-        $this->SetMargins(20, 16, 20);
+        $this->SetMargins($params['Margins_Left'], $params['Margins_Top'], $params['Margins_Right']);
 
         // set auto page breaks
         $this->SetAutoPageBreak(true, 10);

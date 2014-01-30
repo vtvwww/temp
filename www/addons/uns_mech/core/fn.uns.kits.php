@@ -34,7 +34,10 @@ function fn_acc__get_kits($params = array(), $items_per_page = 0){
     $sorting_schemas = array(
         "view" => array(
             "$m_tbl.$m_key"  => "asc",
-        )
+        ),
+        "view_1" => array(
+            "$m_tbl.$m_key"  => "desc",
+        ),
     );
 
     $condition = $limit = $join = $group_by = $sorting = '';

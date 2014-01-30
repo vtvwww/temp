@@ -702,6 +702,7 @@ class TCPDF {
 	 * @protected
 	 */
 	protected $header_line_color = array(0,0,0);
+	protected $header_line_width = 0;
 
 	/**
 	 * Color for footer text (RGB array).
@@ -3260,13 +3261,14 @@ class TCPDF {
 	 * @param $lc (array) RGB array color for line.
 	 * @public
 	 */
-	public function setHeaderData($ln='', $lw=0, $ht='', $hs='', $tc=array(0,0,0), $lc=array(0,0,0)) {
+	public function setHeaderData($ln='', $lw=0, $ht='', $hs='', $tc=array(0,0,0), $lc=array(0,0,0), $lw=0.85) {
 		$this->header_logo = $ln;
 		$this->header_logo_width = $lw;
 		$this->header_title = $ht;
 		$this->header_string = $hs;
 		$this->header_text_color = $tc;
 		$this->header_line_color = $lc;
+		$this->header_line_width = $lw;
 	}
 
 	/**
@@ -3295,6 +3297,7 @@ class TCPDF {
 		$ret['string'] = $this->header_string;
 		$ret['text_color'] = $this->header_text_color;
 		$ret['line_color'] = $this->header_line_color;
+		$ret['line_width'] = $this->header_line_width;
 		return $ret;
 	}
 
@@ -3438,7 +3441,7 @@ class TCPDF {
 			$this->SetX($header_x);
 			$this->MultiCell($cw, $cell_height, $headerdata['string'], 0, '', 0, 1, '', '', true, 0, false, true, 0, 'T', false);
 			// print an ending header line
-			$this->SetLineStyle(array('width' => 0.85 / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => $headerdata['line_color']));
+			$this->SetLineStyle(array('width' => $headerdata['line_width'] / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => $headerdata['line_color']));
 			$this->SetY((2.835 / $this->k) + max($imgy, $this->y));
 			if ($this->rtl) {
 				$this->SetX($this->original_rMargin);

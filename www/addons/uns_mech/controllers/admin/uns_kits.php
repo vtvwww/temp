@@ -137,6 +137,7 @@ if($mode == 'manage'){
     $p = array();
     $p = array(
         "with_details" => true,
+        "sorting_schemas" => "view_1"
     );
     $p = array_merge($_REQUEST, $p);
     list($kits, $search) = fn_acc__get_kits($p, UNS_ITEMS_PER_PAGE);
