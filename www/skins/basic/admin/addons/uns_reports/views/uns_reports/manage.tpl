@@ -64,6 +64,11 @@
                     {include file="buttons/button.tpl" but_text="Баланс по мех. цеху" but_name="dispatch[`$controller`.get_report.mc]" but_role="submit"}
                 </td>
             </tr>
+            <tr>
+                <td>
+                    {include file="buttons/button.tpl" but_text="TEST" but_name="dispatch[`$controller`.get_report.test]" but_role="submit"}
+                </td>
+            </tr>
         </table>
     </form>
 {/capture}

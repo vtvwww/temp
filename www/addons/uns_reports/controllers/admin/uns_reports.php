@@ -177,6 +177,44 @@ if ($mode == 'get_report'){
 
         break;
 
+        case "test":
+            // 1/ Выборка серий насосов
+            $p = array("ps_id" => array(
+//                78,
+//                79,
+//                80,
+//                29,
+//                37,
+//                77,
+//                76,
+//                65,
+//                66,
+                94,
+            ));
+            if (is__array($pump_series = array_shift(fn_uns__get_pump_series($p)))){
+                foreach ($pump_series as $k_ps=>$v_ps){
+                    if (is__array($pumps = array_shift(fn_uns__get_pumps(array("ps_id" => $k_ps))))){
+                        foreach ($pumps as $k_p=>$v_p){
+                            $list_details = fn_uns__get_packing_list_by_pump($k_p, "D", true);
+                            $p_details = array_shift(fn_uns__get_details(array(
+                                                "detail_id" => array_keys($list_details),
+                                                "with_materials" => true,
+                                                "with_accessory_pumps" => true,
+                                            )));
+                            if (is__array($p_details)){
+                                foreach ($p_details as $k_p_details=>$v_p_details){
+                                    $p_details[$k_p_details]["quantity"] = $list_details[$k_p_details]["quantity"];
+                                }
+                            }
+
+                            $pumps[$k_p]["details"] = $p_details;
+                        }
+                        $pump_series[$k_ps]["pumps"] = $pumps;
+                    }
+                }
+            }
+            fn_rpt__test(array("ps"=>$pump_series));
+        break;
     }
     exit;
 }
