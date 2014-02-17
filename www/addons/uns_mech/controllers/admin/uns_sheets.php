@@ -37,6 +37,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     if (defined('AJAX_REQUEST') and $mode == 'get_materials' and is__more_0($_REQUEST['mcat_id']) and $_REQUEST['event'] == "change__mcat_id"){
         $p = array('mcat_id'         => $_REQUEST['mcat_id'],
                    'with_accounting' => true,
+                   'only_active'     => true,
                    'format_name'     => true);
         list ($materials) = fn_uns__get_materials($p);
         $view->assign('f_type', 'select');

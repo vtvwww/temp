@@ -117,27 +117,27 @@
                                 <span class="{if $v<0}info_warning_block{elseif $v==0}zero{/if}">{$v|fn_fvalue:2}</span>
                             </td>
                             <td  align="center" style="border-left: 2px dashed #808080;">
-                                {if $b_item.complete|fn_fvalue:0:0 > 0}
-                                    <form action="{""|fn_url}" method="post">
-                                        <input type="hidden" name="kit_id"      value="{$kit.kit_id}"/>
-                                        <input type="hidden" name="detail_id"   value="{$d.detail_id}"/>
-                                        <input type="hidden" name="object_from" value="10"/>
-                                        {include file="addons/uns/views/components/get_form_field.tpl"
-                                            f_type="select_range"
-                                            f_name="quantity"
-                                            f_id=""
-                                            f_from=0
-                                            f_to=$b_item.complete|fn_fvalue:0:0
-                                            f_value=$b_item.complete|fn_fvalue:0:0
-                                            f_style="min-width: 55px;"
-                                            f_simple=true
-                                        }
-                                        <input type="image" src="images/uns/add-green.png" name="dispatch[uns_kits.detail_mcp]" />
-                                    </form>
-                                {else}
+                                {*{if $b_item.complete|fn_fvalue:0:0 > 0}*}
+                                    {*<form action="{""|fn_url}" method="post">*}
+                                        {*<input type="hidden" name="kit_id"      value="{$kit.kit_id}"/>*}
+                                        {*<input type="hidden" name="detail_id"   value="{$d.detail_id}"/>*}
+                                        {*<input type="hidden" name="object_from" value="10"/>*}
+                                        {*{include file="addons/uns/views/components/get_form_field.tpl"*}
+                                            {*f_type="select_range"*}
+                                            {*f_name="quantity"*}
+                                            {*f_id=""*}
+                                            {*f_from=0*}
+                                            {*f_to=$b_item.complete|fn_fvalue:0:0*}
+                                            {*f_value=$b_item.complete|fn_fvalue:0:0*}
+                                            {*f_style="min-width: 55px;"*}
+                                            {*f_simple=true*}
+                                        {*}*}
+                                        {*<input type="image" src="images/uns/add-green.png" name="dispatch[uns_kits.detail_mcp]" />*}
+                                    {*</form>*}
+                                {*{else}*}
                                     {assign var="v" value=$b_item.complete}
                                     <span class="{if $v<0}info_warning_block{elseif $v==0}zero{/if}">{$v|fn_fvalue:2}</span>
-                                {/if}
+                                {*{/if}*}
                             </td>
                         {/if}
                     {/foreach}
@@ -152,27 +152,27 @@
                                 <span class="{if $v<0}info_warning_block{elseif $v==0}zero{/if}">{$v|fn_fvalue:2}</span>
                             </td>
                             <td align="center" style="border-left: 2px dashed #808080;">
-                                {if $b_item.complete|fn_fvalue:0:0 > 0}
-                                    <form action="{""|fn_url}" method="post">
-                                        <input type="hidden" name="kit_id"      value="{$kit.kit_id}"/>
-                                        <input type="hidden" name="detail_id"   value="{$d.detail_id}"/>
-                                        <input type="hidden" name="object_from" value="14"/>
-                                        {include file="addons/uns/views/components/get_form_field.tpl"
-                                            f_type="select_range"
-                                            f_name="quantity"
-                                            f_id=""
-                                            f_from=0
-                                            f_to=$b_item.complete|fn_fvalue:0:0
-                                            f_value=$b_item.complete|fn_fvalue:0:0
-                                            f_style="min-width: 55px;"
-                                            f_simple=true
-                                        }
-                                        <input type="image" src="images/uns/add-green.png" name="dispatch[uns_kits.detail_mcp]" />
-                                    </form>
-                                {else}
+                                {*{if $b_item.complete|fn_fvalue:0:0 > 0}*}
+                                    {*<form action="{""|fn_url}" method="post">*}
+                                        {*<input type="hidden" name="kit_id"      value="{$kit.kit_id}"/>*}
+                                        {*<input type="hidden" name="detail_id"   value="{$d.detail_id}"/>*}
+                                        {*<input type="hidden" name="object_from" value="14"/>*}
+                                        {*{include file="addons/uns/views/components/get_form_field.tpl"*}
+                                            {*f_type="select_range"*}
+                                            {*f_name="quantity"*}
+                                            {*f_id=""*}
+                                            {*f_from=0*}
+                                            {*f_to=$b_item.complete|fn_fvalue:0:0*}
+                                            {*f_value=$b_item.complete|fn_fvalue:0:0*}
+                                            {*f_style="min-width: 55px;"*}
+                                            {*f_simple=true*}
+                                        {*}*}
+                                        {*<input type="image" src="images/uns/add-green.png" name="dispatch[uns_kits.detail_mcp]" />*}
+                                    {*</form>*}
+                                {*{else}*}
                                     {assign var="v" value=$b_item.complete}
                                     <span class="{if $v<0}info_warning_block{elseif $v==0}zero{/if}">{$v|fn_fvalue:2}</span>
-                                {/if}
+                                {*{/if}*}
                             </td>
                         {/if}
                     {/foreach}
@@ -183,27 +183,27 @@
                         {if $b_item.detail_id == $d.detail_id}
                             {*Склад КМП*}
                             <td align="center" style="border-left: 2px solid  black; border-right: 2px solid  black;">
-                                {if $b_item.konech|fn_fvalue:0:0 > 0}
-                                    <form action="{""|fn_url}" method="post">
-                                        <input type="hidden" name="kit_id"      value="{$kit.kit_id}"/>
-                                        <input type="hidden" name="detail_id"   value="{$d.detail_id}"/>
-                                        <input type="hidden" name="object_from" value="17"/>
-                                        {include file="addons/uns/views/components/get_form_field.tpl"
-                                            f_type="select_range"
-                                            f_name="quantity"
-                                            f_id=""
-                                            f_from=0
-                                            f_to=$b_item.konech|fn_fvalue:0:0
-                                            f_value=$b_item.konech|fn_fvalue:0:0
-                                            f_style="min-width: 55px;"
-                                            f_simple=true
-                                        }
-                                        <input type="image" src="images/uns/add-green.png" name="dispatch[uns_kits.detail_mcp]" />
-                                    </form>
-                                {else}
+                                {*{if $b_item.konech|fn_fvalue:0:0 > 0}*}
+                                    {*<form action="{""|fn_url}" method="post">*}
+                                        {*<input type="hidden" name="kit_id"      value="{$kit.kit_id}"/>*}
+                                        {*<input type="hidden" name="detail_id"   value="{$d.detail_id}"/>*}
+                                        {*<input type="hidden" name="object_from" value="17"/>*}
+                                        {*{include file="addons/uns/views/components/get_form_field.tpl"*}
+                                            {*f_type="select_range"*}
+                                            {*f_name="quantity"*}
+                                            {*f_id=""*}
+                                            {*f_from=0*}
+                                            {*f_to=$b_item.konech|fn_fvalue:0:0*}
+                                            {*f_value=$b_item.konech|fn_fvalue:0:0*}
+                                            {*f_style="min-width: 55px;"*}
+                                            {*f_simple=true*}
+                                        {*}*}
+                                        {*<input type="image" src="images/uns/add-green.png" name="dispatch[uns_kits.detail_mcp]" />*}
+                                    {*</form>*}
+                                {*{else}*}
                                     {assign var="v" value=$b_item.konech}
                                     <span class="{if $v<0}info_warning_block{elseif $v==0}zero{/if}">{$v|fn_fvalue:2}</span>
-                                {/if}
+                                {*{/if}*}
                             </td>
                         {/if}
                     {/foreach}

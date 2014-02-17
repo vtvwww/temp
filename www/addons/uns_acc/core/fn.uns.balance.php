@@ -444,6 +444,7 @@ function fn_uns__get_balance($params = array()){
             $p["detail_no"] = $params['detail_no'];
         }
 
+        $p["only_active"] = true;
         list($dcats) = fn_uns__get_details_categories($p);
         if (is__array($dcats)){
             $dcat_items = array();

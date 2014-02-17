@@ -31,7 +31,7 @@ if($mode == 'manage'){
     // Корректное отображение принадлежности
 
     // Запрос категорий
-    list($dcategories_plain) = fn_uns__get_details_categories(array("plain" => true, "with_q_ty"=>false));
+    list($dcategories_plain) = fn_uns__get_details_categories(array("plain" => true, "with_q_ty"=>false, "only_active" => true));
     $view->assign('dcategories_plain', $dcategories_plain);
     $view->assign('dcategories_plain_with_q_ty', false);
 

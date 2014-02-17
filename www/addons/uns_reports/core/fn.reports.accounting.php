@@ -119,7 +119,9 @@ function fn_rpt__accounting($data){
                 $pdf->MultiCell($col_sizes[$k++],  $h, "",                      $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
                 $pdf->MultiCell($col_sizes[$k++],  $h, "",                      $border, $align, $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
                 $k = 0;
-                $weights += $i['nach']*$i['weight'];
+                if ($i['nach']>0){
+                    $weights += $i['nach']*$i['weight'];
+                }
             }
             // -------------------------------------------------------------
             $k = 0;
@@ -156,19 +158,6 @@ function fn_rpt__accounting($data){
     }
 
     // Пустые строки
-    $pdf->uns_SetFont("R", 10);
-    foreach ($total_weights as $k=>$v){
-        $pdf->SetTextColor(0, 0, 0);
-        $pdf->SetFillColor(255);
-        $pdf->Cell(100, 0, $k, 1, 0, 'L', 0, '', 1);
-        $pdf->Cell(30, 0, fn_fvalue($v), 1, 1, 'R', 0, '', 1);
-    }
-    $pdf->uns_SetFont("B", 11);
-    $pdf->Cell(100, 0, "ИТОГО:", 1, 0, 'R', 0, '', 1);
-    $pdf->Cell(30, 0, fn_fvalue(array_sum($total_weights)), 1, 1, 'R', 0, '', 1);
-    $pdf->ln(10);
-
-    // Пустые строки
     for ($i=0;$i<15;$i++){
         $pdf->Cell($col_sizes[0], 0, '', 1, 0, 'C', 0, '', 1);
         $pdf->Cell($col_sizes[1], 0, '', 1, 0, 'L', 0, '', 1);
@@ -179,6 +168,43 @@ function fn_rpt__accounting($data){
         $pdf->Cell($col_sizes[6], 0, '', 1, 0, 'C', 0, '', 1);
         $pdf->Cell($col_sizes[7], 0, '', 1, 1, 'C', 0, '', 1);
     }
+
+    $pdf->ln(10);
+
+    // Сводка веса
+    $max_weight = array_sum($total_weights);
+    $perc_width = 20;
+
+
+    $pdf->SetTextColor(0, 0, 0);
+    $pdf->SetFillColor(255);
+    $pdf->uns_SetFont("B", 11);
+
+    $pdf->Cell(100, 0, "Группа заготовок", 1, 0, 'C', 0, '', 1);
+    $pdf->Cell(35, 0, "Общий вес, кг", 1, 0, 'C', 0, '', 1);
+    $pdf->Cell($perc_width, 0, "%", 1, 1, 'C', 0, '', 1);
+
+    foreach ($total_weights as $k=>$v){
+        $pdf->uns_SetFont("R", 12);
+        $pdf->Cell(100, 6, $k, 1, 0, 'L', 0, '', 1);
+        $pdf->Cell(35, 6, fn_fvalue($v, 1, false), 1, 0, 'R', 0, '', 1);
+
+        $pdf->uns_SetFont("B", 8);
+        $perc = fn_fvalue(100*$v/$max_weight, 1, false);
+        if ($perc == 100){
+            $pdf->SetFillColor(160);
+            $pdf->Cell($perc_width*$perc/100,           6, $perc."%",   1, 1, 'L', 1, '', 0);
+        }else{
+            $pdf->SetFillColor(160);
+            $pdf->Cell($perc_width*$perc/100,           6, "",          1, 0, 'L', 1, '', 0);
+            $pdf->SetFillColor(255);
+            $pdf->Cell($perc_width*(100-$perc)/100,     6, $perc."%",   1, 1, 'R', 0, '', 0);
+        }
+    }
+    $pdf->uns_SetFont("B", 13);
+    $pdf->Cell(100, 0, "ИТОГО", 1, 0, 'R', 0, '', 1);
+    $pdf->Cell(35, 0, fn_fvalue(array_sum($total_weights), 1, false), 1, 1, 'R', 0, '', 1);
+    $pdf->ln(10);
 
     $pdf->Output(str_replace(array('fn.reports.', '.php'), '', basename(__FILE__)) . "_" . strftime("%Y-%m-%d_%H-%M", time()) . ".pdf", 'I');
     return true;

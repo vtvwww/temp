@@ -188,7 +188,7 @@ if($mode == 'update'){
     // BALANCE *****************************************************************
     $p = array();
     list ($p['time_from'], $p['time_to']) = fn_create_periods($p);
-    $p["detail_id"]          = array_keys($kit["details"]);
+    $p["detail_id"] = $p["item_id"] = array_keys($kit["details"]);
     $p["period"]             = "A";
     $p["check_dcat_id"]      = false;
     $p["su"]["package_id"]   = $_REQUEST['kit_id'];

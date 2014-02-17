@@ -3,6 +3,15 @@
 if(!defined('AREA')){
     die('Access denied');
 }
+/**
+ * Простая функция для реализации поведения из PHP 5
+ */
+function microtime_float()
+{
+    list($usec, $sec) = explode(" ", microtime());
+    return ((float)$usec + (float)$sec);
+}
+
 
 /**
  * @param $type -   I - insert;
