@@ -137,6 +137,7 @@ if($mode == 'manage'){
     $p = array();
     $p = array(
         "with_details" => true,
+        "sorting_schemas" => "view_1"
     );
     $p = array_merge($_REQUEST, $p);
     list($kits, $search) = fn_acc__get_kits($p, UNS_ITEMS_PER_PAGE);
@@ -187,7 +188,7 @@ if($mode == 'update'){
     // BALANCE *****************************************************************
     $p = array();
     list ($p['time_from'], $p['time_to']) = fn_create_periods($p);
-    $p["detail_id"]          = array_keys($kit["details"]);
+    $p["detail_id"] = $p["item_id"] = array_keys($kit["details"]);
     $p["period"]             = "A";
     $p["check_dcat_id"]      = false;
     $p["su"]["package_id"]   = $_REQUEST['kit_id'];

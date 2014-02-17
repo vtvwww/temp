@@ -26,17 +26,19 @@ body:before {
 }
 
 .subheader{
-    border: 1px solid #DFDFDF;
+    border: 1px solid #C5C5C5;
     border-top-width: 7px;
     clear: both;
     color: #000000;
     font-size: 18px;
     margin: 20px 0 0;
     padding: 0 0 3px 10px;
+    border-left:5px double #C5C5C5;
+    border-right:5px double #C5C5C5;
 }
 
 div.subheader_block{
-    border: 1px solid #DFDFDF;
+    border: 5px double #C5C5C5;
     border-top-width: 0;
     padding: 3px 0 8px 10px;
 }

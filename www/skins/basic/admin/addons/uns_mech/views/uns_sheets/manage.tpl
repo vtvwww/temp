@@ -71,7 +71,7 @@
                {*<th width="1%">*}
                    {*<input type="checkbox" name="check_all" value="Y" title="{$lang.check_uncheck_all}" class="checkbox cm-check-items" />*}
                {*</th>*}
-               <th width="115px" style="text-align: center;">Номер - Дата</th>
+               <th width="130px" style="text-align: center;">Номер - Дата</th>
                <th width="10px"  style="text-align: center;">{include file="common_templates/tooltip.tpl" tooltip="<b>Местоположение СЛ:</b><br>1 - МЦ1; 2 - МЦ2; КМП - Скл. КМП" tooltip_mark="<b>Цех</b>"}</th>
                <th width="10px"  style="text-align: center;">{include file="common_templates/tooltip.tpl" tooltip="<b>Статус СЛ:</b><br>Открыт/Закрыт" tooltip_mark="<b>СТ</b>"}</th>
                <th width="10px"  style="text-align: center;">{include file="common_templates/tooltip.tpl" tooltip="<b>Тип материала:</b><br>О - отливка; М - металлопрокат;" tooltip_mark="<b>Тип</b>"}</th>
@@ -96,13 +96,15 @@
                            <span class="target_object mc2">2</span>
                        {elseif $i.target_object == 17}
                            <span class="target_object kmp">КМП</span>
+                       {else}
+                           <span title="Местонахождение деталей неизвестно! Необходимо исправить!" class="info_warning hand">Н/Д</span>
                        {/if}
                    </td>
                    <td style="border-left: 1px solid #808080;"> {*Статус*}
                        {if $i.status == "OP"}
                            <img border="0" title="Открыт" src="skins/basic/admin/addons/uns_acc/images/circle_yellow.png">
                        {elseif $i.status == "CL"}
-                           <img border="0" title="Закрыт" src="skins/basic/admin/addons/uns_acc/images/done.png">
+                           <img border="0" class="hand" title="Закрыт {if $i.date_close}{$i.date_close|date_format:"%a %d/%m/%y"}{else}Н/Д{/if}" src="skins/basic/admin/addons/uns_acc/images/done.png">
                        {elseif $i.status == "CN"}
                            <img border="0" title="Отменен" src="skins/basic/admin/addons/uns_acc/images/circle_red.png">
                        {/if}

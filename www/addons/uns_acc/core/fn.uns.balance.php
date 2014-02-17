@@ -155,8 +155,8 @@ function fn_uns__get_balance($params = array()){
             }
         }elseif ($params['item_type'] == 'D'){
             $cond__items .= db_quote(" AND uns__acc_document_items.item_type = ?s AND uns__acc_document_items.typesize = 'M' ", $params['item_type']);
-            if (is__more_0($params['item_id'])){
-                $cond__items .= db_quote(" AND uns__acc_document_items.item_id = ?i ", $params['item_id']);
+            if ($params['item_id_array'] = to__array($params['item_id'])){
+                $cond__items .= db_quote(" AND uns__acc_document_items.item_id in (?n) ", $params['item_id_array']);
             }
         }elseif (fn_check_type($params['item_type'], UNS_ITEM_TYPES)){
             $cond__items .= db_quote(" AND uns__acc_document_items.item_type = ?s ", $params['item_type']);
@@ -444,14 +444,15 @@ function fn_uns__get_balance($params = array()){
             $p["detail_no"] = $params['detail_no'];
         }
 
+        $p["only_active"] = true;
         list($dcats) = fn_uns__get_details_categories($p);
         if (is__array($dcats)){
             $dcat_items = array();
             $p["detail_status"] = "A";
             $p["dcat_id"] = array_keys($dcats);
 
-            if (is__more_0($params["item_id"])){
-                $p["detail_id"] = $params["item_id"];
+            if ($params['item_id_array'] = to__array($params['item_id_array'])){
+                $p["detail_id"] = $params["item_id_array"];
             }
 
             // Условие по выборке материала
@@ -484,6 +485,7 @@ function fn_uns__get_balance($params = array()){
                             $dcat_items[$dcats_k]["items"][$details_k]["name"]                    = $details_v["detail_name"];
                             $dcat_items[$dcats_k]["items"][$details_k]["name_accounting"]         = $details_v["detail_name_accounting"];
                             $dcat_items[$dcats_k]["items"][$details_k]["no"]                      = $details_v["detail_no"];
+                            $dcat_items[$dcats_k]["items"][$details_k]["comment"]                 = $details_v["detail_comment"];
                             $dcat_items[$dcats_k]["items"][$details_k]["accessory_pumps"]         = $details_v["accessory_pumps"];
                             $dcat_items[$dcats_k]["items"][$details_k]["accessory_pump_series"]   = $details_v["accessory_pump_series"];
                             $dcat_items[$dcats_k]["items"][$details_k]["accessory_pump_manual"]   = $details_v["accessory_manual"];

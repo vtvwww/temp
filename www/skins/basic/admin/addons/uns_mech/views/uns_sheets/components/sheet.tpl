@@ -14,7 +14,8 @@
     {assign var="sheet_no"      value=$sheet.no}
     {assign var="sheet_id"      value=$sheet.sheet_id}
     {assign var="details"       value=$sheet.details}
-    {assign var="disabled"      value=true}
+    {assign var="disabled"          value=true}
+    {assign var="disabled_details"  value=false}
 {/if}
 
 {assign var="e_n" value="data[sheet]"}
@@ -77,13 +78,13 @@
         <option selected="selected" value="{$sheet.material_id}">{if strlen($sheet.material_no)}[{$sheet.material_no}] {/if}{$sheet.material_name}</option>
     {/if}
     </select>
-    {if $mode == "add"}
+    {*{if $mode == "add"}*}
         &nbsp;
         <span class="action-btn">
-            <a id="get_list_details">Список деталей</a>
+            <a id="get_list_details">Возможные детали</a>
         </span>
         <div id="list_details" style="margin: 10px 0"></div>
-    {/if}
+    {*{/if}*}
 </div>
 
 {*Ожидаемые ДЕТАЛИ СЛ*}
@@ -92,7 +93,19 @@
 {*Статус*}
 <div class="form-field">
     <label for="status_radio">Статус:</label>
-    {include file="addons/uns/views/components/get_form_field.tpl"
+    {if $sheet.status == "OP"}
+        <b style="display: block; padding-top: 4px;">Открыт</b>
+    {elseif $sheet.status == "CL"}
+        <b style="background-color: #f4dc43;
+        border: 2px solid #dbc43d;
+        display: block;
+        height: 21px;
+        padding-left: 5px;
+        padding-top: 4px;">Закрыт</b>
+    {else}
+        <b style="display: block; padding-top: 4px;" class="info_warning">Нет данных!</b>
+    {/if}
+{*    {include file="addons/uns/views/components/get_form_field.tpl"
         f_type="radio_button"
         f_id="sheet_status"
         f_name="`$e_n`[status]"
@@ -101,18 +114,25 @@
         f_value=$sheet.status
 
         f1_value="OP"
-        f1_default=true
         f1_title="Открыт"
 
         f2_value="CL"
         f2_title="Закрыт"
-    }
+    }*}
 </div>
 
 {*Тип исходного материала*}
 <div class="form-field">
     <label for="{$radio_id}">Тип исх. материал:</label>
-    {include file="addons/uns/views/components/get_form_field.tpl"
+    {if $sheet.material_type == "O"}
+        <b style="display: block; padding-top: 4px;">Отливка</b>
+    {elseif $sheet.material_type == "M"}
+        <b style="display: block; padding-top: 4px;">Металлопрокат</b>
+    {else}
+        <b style="display: block; padding-top: 4px;" class="info_warning">Нет данных!</b>
+    {/if}
+
+{*    {include file="addons/uns/views/components/get_form_field.tpl"
         f_type="radio_button"
         f_id="sheet_material_type"
         f_name="`$e_n`[material_type]"
@@ -120,19 +140,28 @@
         f_simple=true
         f_value=$sheet.material_type
 
-        f1_default=true
         f1_value="O"
         f1_title="Отливка"
 
         f2_value="M"
         f2_title="Металлопрокат"
-    }
+    }*}
 </div>
 
 {*Объект назначения*}
 <div class="form-field">
     <label for="target_object">Местоположение:</label>
-    {include file="addons/uns/views/components/get_form_field.tpl"
+    {if $sheet.target_object == 10}
+        <b style="display: block; padding-top: 4px;">{$objects_plain[10].path}</b>
+    {elseif $sheet.target_object == 14}
+        <b style="display: block; padding-top: 4px;">{$objects_plain[14].path}</b>
+    {elseif $sheet.target_object == 17}
+        <b style="display: block; padding-top: 4px;">{$objects_plain[17].path}</b>
+    {else}
+        <b style="display: block; padding-top: 4px;" class="info_warning">Нет данных!</b>
+    {/if}
+
+{*    {include file="addons/uns/views/components/get_form_field.tpl"
         f_type="radio_button"
         f_id="sheet_target_object"
         f_name="`$e_n`[target_object]"
@@ -140,7 +169,6 @@
         f_simple=true
         f_value=$sheet.target_object
 
-        f1_default=true
         f1_value=10
         f1_title=$objects_plain[10].path
 
@@ -149,7 +177,7 @@
 
         f3_value=17
         f3_title=$objects_plain[17].path
-    }
+    }*}
 </div>
 
 {*Комментарий СЛ*}

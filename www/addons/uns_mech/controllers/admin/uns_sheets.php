@@ -37,6 +37,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     if (defined('AJAX_REQUEST') and $mode == 'get_materials' and is__more_0($_REQUEST['mcat_id']) and $_REQUEST['event'] == "change__mcat_id"){
         $p = array('mcat_id'         => $_REQUEST['mcat_id'],
                    'with_accounting' => true,
+                   'only_active'     => true,
                    'format_name'     => true);
         list ($materials) = fn_uns__get_materials($p);
         $view->assign('f_type', 'select');
@@ -161,7 +162,6 @@ if($mode == 'update'){
     );
     $p = array_merge($_REQUEST, $p);
     $sheet = array_shift(array_shift(fn_acc__get_sheets($p)));
-    $view->assign('sheet', $sheet);
 
     // MOTIONS *****************************************************************
     $p = array(
@@ -176,7 +176,10 @@ if($mode == 'update'){
         "sorting_schemas"           => "view_asc",
     );
     list($motions, $search) = fn_uns__get_documents($p);
+
+    $view->assign('sheet', $sheet);
     $view->assign("motions", $motions);
+
 
     // OBJECTS *****************************************************************
     $objects_plain   = array_shift(fn_uns__get_objects(array('plain' => true, 'all' => true)));
@@ -216,11 +219,9 @@ if($mode == 'update'){
     }
 
     // ОСТАТКИ по деталям
-    $detail_info = array_shift($sheet["details"]);
     $p_D['period'] = "M";
     $p_D['accessory_pumps'] = "Y";
-    $p_D['dcat_id'] = $detail_info["dcat_id"];
-    $p_D['item_id'] = $detail_info["detail_id"];
+    $p_D['item_id'] = array_keys($sheet["details"]);
 
     list ($p_D['time_from'], $p_D['time_to']) = fn_create_periods($p_D);
 
@@ -270,6 +271,7 @@ if ($mode == 'motion' and $action != 'delete'){
 
 if ($mode == 'motion' and $action == 'delete' and is__more_0($_REQUEST['document_id'], $_REQUEST['sheet_id'])){
     fn_uns__del_document($_REQUEST['document_id']);
+    fn_acc__upd_sheet($_REQUEST['sheet_id']);
     return array(CONTROLLER_STATUS_REDIRECT, $controller . ".update&sheet_id=".$_REQUEST['sheet_id']);
 }
 
@@ -312,5 +314,3 @@ function fn_uns_sheets__search ($controller){
     fn_uns_search_set_get_params($controller, $params);
     return true;
 }
-
-

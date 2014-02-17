@@ -47,7 +47,7 @@ function fn_rpt__foundry($data){
         }
     }
 
-    $pdf->uns_SetFont("B", 12);
+    $pdf->uns_SetFont("B", 13);
     $pdf->Cell(10, 0, '', 0, 0, 'C', 0, '', 0);
     $pdf->Cell(90, 0, 'ИТОГО:', 0, 0, 'C', 0, '', 0);
     $pdf->Cell(20, 0, ($total_weight['C'])?$total_weight['C']:'0', 1, 0, 'R', 0, '', 1);
@@ -56,6 +56,11 @@ function fn_rpt__foundry($data){
     $pdf->Cell(20, 0, ($total_weight['W'])?$total_weight['W']:'0', 1, 1, 'R', 0, '', 1);
 
     $pdf->Cell(0, 5, '', 0, 1, 'L', 0, '', 0);
+    $pdf->ln(10);
+    $avg = (($total_weight['C'])?$total_weight['C']:0)/count($data['documents']);
+    $pdf->Cell(200, 0, "Среднее значение выпуска серого чугуна: " . fn_fvalue($avg, 1, false) . " кг", 0, 1, 'L', 0, '', 1);
+    $pdf->ln(10);
+
     $pdf->AddPage();
 
     //--------------------------------------------------------------------------
@@ -227,7 +232,7 @@ function fn_rpt__foundry($data){
         $pdf->Cell(0, 5, '', 0, 1, 'L', 0, '', 0);
     }
 
-    $pdf->Output('example_001.pdf', 'I');
+    $pdf->Output(str_replace(array('fn.reports.', '.php'), '', basename(__FILE__)) . "_" . strftime("%Y-%m-%d_%H-%M", time()) . ".pdf", 'I');
     return true;
 }
 

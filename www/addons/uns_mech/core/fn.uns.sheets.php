@@ -6,8 +6,8 @@
  * @param $data
  * @return bool|int
  */
-function fn_acc__upd_sheet_info($id = 0, $data){;
-    if (is__more_0($id) and is__array($data) and is__more_0(db_get_field(UNS_DB_PREFIX . "SELECT sheet_id FROM ?:_acc_sheets WHERE sheet_id = $id"))){
+function fn_acc__upd_sheet_info($id = 0, $data=array()){;
+    if (is__more_0($id) and is__more_0(db_get_field(UNS_DB_PREFIX . "SELECT sheet_id FROM ?:_acc_sheets WHERE sheet_id = $id"))){
         $operation = "update";
     }else{
         $operation = "add";
@@ -16,54 +16,95 @@ function fn_acc__upd_sheet_info($id = 0, $data){;
 
     $data = trim__data($data);
     $d = array();
-    $d["status"]        = (fn_check_type($data["status"], UNS_STATUS_SHEET))?$data["status"]:UNS_STATUS_SHEET__OP;
-    $d["comment"]       = $data["comment"];
-    $d["material_type"] = $data["material_type"];
-    $d["target_object"] = $data["target_object"];
+    if (isset($data["comment"])){
+        $d["comment"]       = $data["comment"];
+    }
 
-
+    // 1. СОХРАНЕНИЕ ИНФОРМАЦИИ О СОПРОВОДИТЕЛЬНОМ ЛИСТЕ
     if ($operation == "update"){
         db_query(UNS_DB_PREFIX . "UPDATE ?:_acc_sheets SET ?u WHERE sheet_id = ?i", $d, $id);
-        return $id;
-    }
-
-    if (    !is__more_0($data["mcat_id"])
-        or  !is__more_0($data["no"])
-        or  !is__more_0($data["material_id"])
-        or  !strlen($data["details"])
-    ){
-        return false;
-    }
-
-    if ($operation == "update") $d["date_update"] = TIME;
-    $d["date_open"]     = fn_parse_date($data["date"]);
-    $d["material_id"]   = $data["material_id"];
-    $d["no"]            = $data["no"];
-
-    // анализ деталей
-    $details = (array) explode("|", $data["details"]);
-    if (!is__array($details)) return false;
-
-    // 1. Сохранение ИНФОРМАЦИИ о Сопроводительном листе
-    if ($operation == "add"){
-        $id = db_query(UNS_DB_PREFIX . "INSERT INTO ?:_acc_sheets ?e", $d);
-    }else{
-        db_query(UNS_DB_PREFIX . "UPDATE ?:_acc_sheets SET ?u WHERE sheet_id = ?i", $d, $id);
-    }
-
-    // 2. Сохранение Деталей Сопроводительном листе
-    $sd_ids = $d = array();
-    foreach ($details as $k){
-        if ($sd_id = db_get_field(UNS_DB_PREFIX . "SELECT sd_id FROM ?:_acc_sheet_details WHERE sheet_id = ?i and detail_id = ?i", $id, $k)){
-            db_query(UNS_DB_PREFIX . "UPDATE ?:_acc_sheet_details SET ?u WHERE sd_id = ?i", $d, $sd_id);
-        }else{
-            $d["sheet_id"] = $id;
-            $d["detail_id"] = $k;
-            $sd_id = db_query(UNS_DB_PREFIX . "INSERT INTO ?:_acc_sheet_details ?e", $d);
+    }elseif ($operation == "add"){
+        if (    !is__more_0($data["mcat_id"])
+            or  !is__more_0($data["no"])
+            or  !is__more_0($data["material_id"])
+            or  !strlen($data["details"])
+        ){
+            return false;
         }
-        $sd_ids[] = $sd_id;
+
+        $d["date_open"]     = fn_parse_date($data["date"]);
+        $d["material_id"]   = $data["material_id"];
+        $d["no"]            = $data["no"];
+
+        $id = db_query(UNS_DB_PREFIX . "INSERT INTO ?:_acc_sheets ?e", $d);
     }
-    db_query(UNS_DB_PREFIX . "DELETE FROM ?:_acc_sheet_details WHERE sheet_id = ?i AND sd_id not in (?n) ", $id, $sd_ids);
+    //--------------------------------------------------------------------------
+
+    // 2. СОХРАНЕНИЕ ДЕТАЛЕЙ СОПРОВОДИТЕЛЬНОМ ЛИСТЕ
+    if (strlen($data["details"])){
+        $details = array_unique( (array) explode("|", $data["details"]));
+        $sd_ids = $d = array();
+        foreach ($details as $k){
+            if ($sd_id = db_get_field(UNS_DB_PREFIX . "SELECT sd_id FROM ?:_acc_sheet_details WHERE sheet_id = ?i and detail_id = ?i", $id, $k)){
+                db_query(UNS_DB_PREFIX . "UPDATE ?:_acc_sheet_details SET ?u WHERE sd_id = ?i", $d, $sd_id);
+            }else{
+                $d["sheet_id"] = $id;
+                $d["detail_id"] = $k;
+                $sd_id = db_query(UNS_DB_PREFIX . "INSERT INTO ?:_acc_sheet_details ?e", $d);
+            }
+            $sd_ids[] = $sd_id;
+        }
+        db_query(UNS_DB_PREFIX . "DELETE FROM ?:_acc_sheet_details WHERE sheet_id = ?i AND sd_id not in (?n) ", $id, $sd_ids);
+    }
+    //--------------------------------------------------------------------------
+
+    // 3. ОБНОВЛЕНИЕ СТАТУСА, МЕСТОПОЛОЖЕНИЯ И ТИПА МАТЕРИАЛА
+    $d = array(
+        "status"=> "OP",
+        "material_type" => "O",
+        "target_object" => 0,
+        "date_close"    => 0,
+    );
+    $p = array(
+        "with_count_items"          => true,
+        "object_name"               => true,
+        "period"                    => "A",
+        "package_id"                => $id,
+        "package_type"              => "SL",
+        "get_info_document_type"    => true,
+        "get_info_objects"          => true,
+        "movement_items"            => true, // движение элементов
+        "sorting_schemas"           => "view_asc",
+    );
+    list($motions) = fn_uns__get_documents($p);
+
+    // 3.1. ---> статус
+    if (is__array($motions)){
+        foreach ($motions as $k=>$m){
+            if ($m["status"] == "A" and in_array($m["document_type_info"]["type"], array("VCP_COMPLETE", "MCP"))){
+                $d["status"] = "CL";
+                $d["date_close"] = TIME;
+            }
+        }
+    }
+
+    // 3.2. ---> тип материала
+    $material_id = db_get_field(UNS_DB_PREFIX . "SELECT material_id FROM ?:_acc_sheets WHERE sheet_id = $id");
+    $material_info = array_shift(array_shift(fn_uns__get_materials(array("material_id"=>$material_id))));
+    if (UNS_MATERIAL_CATEGORY__CAST != db_get_field(UNS_DB_PREFIX . "SELECT mcat_parent_id FROM ?:material_categories WHERE mcat_id = " . $material_info["mcat_id"])){
+        $d["material_type"] = "M";
+    }
+
+    // 3.3. ---> местоположение
+    if (is__array($motions)){
+        foreach ($motions as $k=>$m){
+            if ($m["status"] == "A" and in_array($m["document_type_info"]["type"], array("PVP", "VCP", "VCP_COMPLETE", "MCP"))){
+                $d["target_object"] = $m["object_to"];
+            }
+        }
+    }
+
+    db_query(UNS_DB_PREFIX . "UPDATE ?:_acc_sheets SET ?u WHERE sheet_id = ?i", $d, $id);
 
     return $id;
 }
@@ -75,15 +116,14 @@ function fn_acc__upd_sheet_info($id = 0, $data){;
  * @param $data
  * @return bool|int
  */
-function fn_acc__upd_sheet($id = 0, $data){
+function fn_acc__upd_sheet($id = 0, $data = array()){
     $data = trim__data($data);
-    if (!is__array($data) || !is_numeric($id) || $id < 0 ) return false;
+    if (!is_numeric($id) || $id < 0 ) return false;
 
     // Обновить информацию о СЛ
     $id = fn_acc__upd_sheet_info($id, $data['sheet']);
 
-    // Обновить движения по СЛ
-//    fn_uns__upd_document_motions($id);
+
 
     return $id;
 }
@@ -114,6 +154,7 @@ function fn_acc__get_sheets($params = array(), $items_per_page = 0){
         "$m_tbl.$m_key",
         "$m_tbl.no",
         "$m_tbl.date_open",
+        "$m_tbl.date_close",
         "$m_tbl.material_id",
         "$m_tbl.status",
         "$m_tbl.comment",
@@ -343,10 +384,12 @@ function fn_acc__get_sheet_details($params = array(), $items_per_page = 0){
     // 6. ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ
     // *************************************************************************
     foreach ($data as $k_data=>$v_data){
-        $v = array_shift($v_data);
-        $d[$k_data][$v["detail_id"]] = $v;
+        $d = array();
+        foreach ($v_data as $v){
+            $d[] = $v["detail_id"];
+        }
+        $data[$k_data] = array_shift(fn_uns__get_details(array("detail_id" => $d )));
     }
-    $data = $d;
 
     return array($data, $params);
 }
@@ -358,9 +401,9 @@ function fn_acc__upd_motion ($sheet_id, $document_id=0, $data){
 
     $d_id = fn_uns__upd_document($document_id, $data);
     if (!is__more_0($d_id)) return false;
-    $document_id = $d_id;
+    fn_acc__upd_sheet($sheet_id);
 
-    return $document_id;
+    return $d_id;
 }
 
 function fn_uns__del_sheet($id){
