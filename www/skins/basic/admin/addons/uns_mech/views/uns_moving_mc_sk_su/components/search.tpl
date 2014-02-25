@@ -43,6 +43,7 @@
                             <option {if $search.o_id == 14}selected="selected"{/if} value="14">Мех.цех №2</option>
                             <option {if $search.o_id == 17}selected="selected"{/if} value="17">Склад комплектующих</option>
                             <option {if $search.o_id == 18}selected="selected"{/if} value="18">Сборочный участок</option>
+                            <option {if $search.o_id == 19}selected="selected"{/if} value="19">Склад готовой продукции</option>
                         </select>
                     </div>
                 </td>
@@ -61,6 +62,20 @@
                 </td>
                 <td align="left" style="padding: 0;" class="nowrap search-field">
                     <label for="include_kits">Отобразить документы по ПАРТИЯМ ДЕТАЛЕЙ</label>
+                </td>
+            </tr>
+        </table>
+
+        <table cellpadding="10" cellspacing="0" border="0" class="search-header">
+            <tr>
+                <td rowspan="2" class="nowrap search-field" style="padding-right: 10px">
+                    <label>Тип документа:</label>
+                    <div class="break">
+                        <select name="type" id="">
+                            <option value="0">---</option>
+                            <option {if $search.type == 7}selected="selected"{/if} value="7">{$document_types[7].name}</option> {*RO*}
+                        </select>
+                    </div>
                 </td>
             </tr>
         </table>

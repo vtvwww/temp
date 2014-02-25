@@ -1,4 +1,7 @@
 {strip}
+    {assign var="total_q_P"     value=0}
+    {assign var="total_q_PF"    value=0}
+    {assign var="total_q_PA"    value=0}
     {foreach from=$balances.P key="group_id" item="item"}
             {assign var="id" value=$group_id}
             <tbody>
@@ -16,7 +19,7 @@
                 {assign var="q_P"   value=$balances.P[$group_id].items[$k_m].konech}
                 {assign var="q_PF"  value=$balances.PF[$group_id].items[$k_m].konech}
                 {assign var="q_PA"  value=$balances.PA[$group_id].items[$k_m].konech}
-                {if $q_P > 0 or $q_PF > 0 or $q_PA > 0}
+                {if ($q_P > 0 or $q_P < 0) or ($q_PF > 0 or $q_PF < 0) or ($q_PA > 0 or $q_PA < 0)}
                     <tr class="category_items {$id} {if $expand_all} hidden {/if}" m_id={$m.id}>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             {assign var="n" value=$m.name}
@@ -27,17 +30,26 @@
 
                         <td align="center" style="border-left: 1px dashed #808080;">
                             <span class="{if $q_P<0}info_warning_block{elseif $q_P==0}zero{/if}">
-                                {$q_P|fn_fvalue:2}
+                                <b>{$q_P|fn_fvalue:2}</b>
+                                {if $q_P >= 0}
+                                    {assign var="total_q_P" value=$total_q_P+$q_P}
+                                {/if}
                             </span>
                         </td>
                         <td align="center" style="border-left: 1px dashed #808080;">
                             <span class="{if $q_PF<0}info_warning_block{elseif $q_PF==0}zero{/if}">
-                                {$q_PF|fn_fvalue:2}
+                                <b>{$q_PF|fn_fvalue:2}</b>
+                                {if $q_PF >= 0}
+                                    {assign var="total_q_PF" value=$total_q_PF+$q_PF}
+                                {/if}
                             </span>
                         </td>
                         <td align="center" style="border-left: 1px dashed #808080;">
                             <span class="{if $q_PA<0}info_warning_block{elseif $q_PA==0}zero{/if}">
-                                {$q_PA|fn_fvalue:2}
+                                <b>{$q_PA|fn_fvalue:2}</b>
+                                {if $q_PA >= 0}
+                                    {assign var="total_q_PA" value=$total_q_PA+$q_PA}
+                                {/if}
                             </span>
                         </td>
                     </tr>
@@ -49,6 +61,34 @@
             {/foreach}
             </tbody>
     {/foreach}
+    <tr>
+        <td align="right"><span style="font-size: 15px; font-weight: bold; text-align: right;">ИТОГО:</span></td>
+
+        <td align="center" style="border-left: 1px dashed #808080;">
+            <span class="{if $total_q_P<0}info_warning_block{elseif $total_q_P==0}zero{/if}">
+                <span style="font-size: 15px; font-weight: bold; text-align: right;">{$total_q_P|fn_fvalue:2}</span>
+            </span>
+        </td>
+        <td align="center" style="border-left: 1px dashed #808080;">
+            <span class="{if $total_q_PF<0}info_warning_block{elseif $total_q_PF==0}zero{/if}">
+                <span style="font-size: 15px; font-weight: bold; text-align: right;">{$total_q_PF|fn_fvalue:2}</span>
+            </span>
+        </td>
+        <td align="center" style="border-left: 1px dashed #808080;">
+            <span class="{if $total_q_PA<0}info_warning_block{elseif $total_q_PA==0}zero{/if}">
+                <span style="font-size: 15px; font-weight: bold; text-align: right;">{$total_q_PA|fn_fvalue:2}</span>
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <td align="right"></td>
+        <td align="center" style="border-left: 1px dashed #808080;" colspan="3">
+            <span class="{if $total_q_P<0}info_warning_block{elseif $total_q_P==0}zero{/if}">
+                <span style="font-size: 15px; font-weight: bold; text-align: right;">{$total_q_P+$total_q_PF+$total_q_PA|fn_fvalue:2}</span>
+            </span>
+        </td>
+    </tr>
+
 {*
         {foreach from=$item.items item=m}
             {assign var="t_nach"            value=$t_nach+$m.nach}

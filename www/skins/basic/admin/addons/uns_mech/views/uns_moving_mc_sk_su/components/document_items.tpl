@@ -23,6 +23,14 @@
 }
     {assign var="item_type_material"    value=false}
     {assign var="item_type_detail"      value=true}
+
+    {*Дополнительные элементы для P, PF и PA*}
+    {if $d.object_from == 19 or $d.object_to == 19} {*Склад готовой продукции*}
+        {assign var="is_SGP"        value=true}
+        {assign var="item_type_p"   value=true}
+        {assign var="item_type_pf"  value=true}
+        {assign var="item_type_pa"  value=true}
+    {/if}
 {/if}
 
 
@@ -33,11 +41,13 @@
         <tr class="first-sibling">
             <th width="10px" class="cm-non-cb">№</th>
             <th class="cm-non-cb" width="10px">Тип</th>
-            <th class="cm-non-cb" width="90px">Категория</th>
+            <th class="cm-non-cb" width="90px">Категория/Серия</th>
             <th class="cm-non-cb" width="140px">Наименование</th>
             {*<th class="cm-non-cb" width="10px">Исп.{include file="common_templates/tooltip.tpl" tooltip="Исполнение детали:<br><b>Номинальное / исп. А / исп. Б</b>"}</th>*}
             <th class="cm-non-cb" width="88px">Кол-во</th>
+            {if !$is_SGP}
             <th class="cm-non-cb" width="10px">{include file="common_templates/tooltip.tpl" tooltip="<u><b>Статус обработки:</b></u><br><br><b>Обр.</b> - деталь пока еще обрабатывается;<br><b>Зав.</b> - деталь уже обработана;" tooltip_mark="Статус"}</th>
+            {/if}
             {*<th class="cm-non-cb" width="10px">Вес{include file="common_templates/tooltip.tpl" tooltip="Вес одной единицы материала, кг"}</th>*}
             {*<th class="cm-non-cb" width="10px">Вес{include file="common_templates/tooltip.tpl" tooltip="Общий вес всего количества, кг"}</th>*}
         </tr>
@@ -63,8 +73,11 @@
                             {include file="addons/uns/views/components/get_form_field.tpl"
                                 f_type="item_type"
                                 f_required=true f_integer=false
-                                f_material=$item_type_material
-                                f_detail  =$item_type_detail
+                                f_material= $item_type_material
+                                f_detail  = $item_type_detail
+                                f_p   =     $item_type_p
+                                f_pf  =     $item_type_pf
+                                f_pa  =     $item_type_pa
                                 f_name="`$e_n`[item_type]"
                                 f_value=$i.item_type
                                 f_simple=true
@@ -94,6 +107,21 @@
                                     f_option_value="mcat_name"
                                     f_with_q_ty=false
                                     f_option_target_id=$i.item_info.mcat_id|default:"0"
+                                    f_simple=true
+                                }
+                            {elseif $i.item_type == "P" or $i.item_type == "PF" or $i.item_type == "PA"}
+                                {include file="addons/uns/views/components/get_form_field.tpl"
+                                    f_id=$id
+                                    f_type="select_by_group"
+                                    f_required=true f_integer=false
+                                    f_name="`$e_n`[item_cat_id]"
+                                    f_options="pump_series"
+                                    f_option_id="ps_id"
+                                    f_option_value="ps_name"
+                                    f_optgroups=$pump_series
+                                    f_optgroup_label="pt_name"
+                                    f_with_q_ty=false
+                                    f_option_target_id=$i.item_info.ps_id|default:"0"
                                     f_simple=true
                                 }
                             {/if}
@@ -131,6 +159,10 @@
                                 {if $i.item_type == "D"}
                                     <select name="{$e_n}[item_id]">
                                         <option value="{$i.item_info.detail_id}">{$i.item_info.detail_name}{if $i.item_info.detail_no|strlen} [{$i.item_info.detail_no}]{/if}</option>
+                                    </select>
+                                {elseif $i.item_type == "P" or $i.item_type == "PF" or $i.item_type == "PA"}
+                                    <select name="{$e_n}[item_id]">
+                                        <option value="{$i.item_info.p_id}">{$i.item_info.p_name}{if $i.item_info.p_no|strlen} [{$i.item_info.p_no}]{/if}</option>
                                     </select>
                                 {/if}
                             {/if}
@@ -198,12 +230,14 @@
                         {*</td>*}
 
                         <td class="cm-non-cb" align="right">
+                            {*{if !$is_SGP}*}
                             {include file="addons/uns/views/components/get_form_field.tpl"
                                 f_type="processing"
                                 f_name="`$e_n`[processing]"
                                 f_value=$i.processing
                                 f_simple=true
                             }
+                            {*{/if}*}
                         </td>
 
                         <td class="right cm-non-cb">
@@ -230,6 +264,9 @@
                     f_type="item_type"
                     f_material=$item_type_material
                     f_detail=$item_type_detail
+                    f_p   =     $item_type_p
+                    f_pf  =     $item_type_pf
+                    f_pa  =     $item_type_pa
                     f_name="`$e_n`[item_type]"
                     f_simple=true
                 }
@@ -289,12 +326,14 @@
             {*</td>*}
             {*<td class="cm-non-cb" align="right">&nbsp;</td>*}
             <td class="cm-non-cb" align="right">
+                {*{if !$is_SGP}*}
                 {include file="addons/uns/views/components/get_form_field.tpl"
                     f_type="processing"
                     f_name="`$e_n`[processing]"
                     f_value=""
                     f_simple=true
                 }
+                {*{/if}*}
             </td>
             <td class="right cm-non-cb">
                 {include file="buttons/multiple_buttons.tpl" item_id="add_`$num`" tag_level="2"}

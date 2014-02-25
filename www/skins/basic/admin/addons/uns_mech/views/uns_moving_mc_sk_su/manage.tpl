@@ -36,7 +36,7 @@
                        {/if}
                    </td>
                    <td>
-                       <b>№{$id}</b> - {$document_types[$i.type].name}
+                       <a class="black" href="{"`$controller`.update?`$value`=`$id`"|fn_url}"><b title="{$document_types[$i.type].name}">{$id} - {$document_types[$i.type].name_short}</b></a>
                        {if $i.type == $smarty.const.DOC_TYPE__VLC}
                            <br><span style="font-size: 12px; font-weight: bold;" class="date">Дата плавки: {$i.date_cast|date_format:"%a %d/%m/%Y"}</span>
                        {/if}
@@ -45,9 +45,15 @@
                        {include file="common_templates/tooltip.tpl" tooltip=$i.comment}
                    </td>
                    <td>
-                       <span style="font-size: 11px; font-weight:bold;">{$objects_plain[$i.object_from].path}&nbsp;</span>&nbsp;
-                       <hr style="margin: 3px 0">
-                       <span style="font-size: 11px; font-weight:bold;">{$objects_plain[$i.object_to].path}&nbsp;</span>
+                       {if $i.region_id|is__more_0}
+                           <span style="font-size: 11px; font-weight:bold;">{$objects_plain[$i.object_to].path}&nbsp;</span>
+                           <hr style="margin: 3px 0">
+                           <span style="font-size: 11px; font-weight:bold;">{$regions[$i.region_id].name}&nbsp;</span>
+                       {else}
+                           <span style="font-size: 11px; font-weight:bold;">{$objects_plain[$i.object_from].path}&nbsp;</span>
+                           <hr style="margin: 3px 0">
+                           <span style="font-size: 11px; font-weight:bold;">{$objects_plain[$i.object_to].path}&nbsp;</span>
+                       {/if}
                    </td>
                    <td>
                        {if ($i.package_type == "SL" and $i.package_id|is__more_0) or ($i.package_type == "PN" and $i.package_id|is__more_0)}

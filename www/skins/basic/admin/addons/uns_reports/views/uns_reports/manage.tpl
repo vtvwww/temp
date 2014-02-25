@@ -75,6 +75,14 @@
                     {include file="buttons/button.tpl" but_text="Комплектация серии насосов" but_name="dispatch[`$controller`.get_report.test]" but_role="submit"}
                 </td>
             </tr>
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>
+                    {include file="buttons/button.tpl" but_text="Общий отчет" but_name="dispatch[`$controller`.get_report.general_report]" but_role="submit"}
+                </td>
+            </tr>
         </table>
     </form>
 {/capture}

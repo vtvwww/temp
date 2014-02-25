@@ -994,7 +994,9 @@ function fn_uns__get_balance_sgp($params, $pump=false, $pump_frame=false, $pump_
         "o_id"                      => 19,
         "add_item_info"             => true,
         "view_all_position"         => "Y",
+        "with_material_info"        => true,
         "total_balance_of_details"  => "Y",
+        "accessory_pumps"           => "Y",
         "with_weight"               => true,
         "prihod_doc_types"          => array("'AIO'", "'VN'", "'PN'",),
         "rashod_doc_types"          => array("'AIO'", "'RO'", "'PN'",),
@@ -1044,15 +1046,56 @@ function fn_uns__get_balance_sgp($params, $pump=false, $pump_frame=false, $pump_
         list($res[$p["item_type"]]) = fn_uns__get_balance($p);
     }
 
+    // ЗАПРОСИТЬ БАЛАНС ПО НАСОСАМ НА РАМЕ
     if ($pump_frame == true){
         $p["item_type"] = "PF";
         list($res[$p["item_type"]]) = fn_uns__get_balance($p);
     }
 
+    // ЗАПРОСИТЬ БАЛАНС ПО НАСОСНЫМ АГРЕГАТАМ
     if ($pump_frame == true){
         $p["item_type"] = "PA";
         list($res[$p["item_type"]]) = fn_uns__get_balance($p);
     }
 
+
+    // ЗАПРОС БАЛАНСА СГП ПО ДЕТАЛЯМ
+    if ($details == true){
+        $p["prihod_doc_types"] = array("'AIO'", "'MCP'");
+        $p["rashod_doc_types"] = array("'AIO'", "'MCP'", "'BRAK'");
+
+        $p["cond_prih"]    = " AND (
+                                     (
+                                            uns__acc_document_types.type        = 'MCP'
+                                        and uns__acc_document_items.motion_type like '%I%'
+                                     )
+                                     OR
+                                     (
+                                            uns__acc_document_types.type        = 'AIO'
+                                        and uns__acc_document_items.change_type = 'POZ'
+                                        and uns__acc_document_items.motion_type like '%I%'
+                                     )
+                                )
+                                ";
+        $p["cond_rash"]    = " AND (
+                                     (
+                                            uns__acc_document_types.type        = 'MCP'
+                                        and uns__acc_document_items.motion_type like '%O%'
+                                     )
+                                     OR
+                                     (
+                                            uns__acc_document_types.type        = 'BRAK'
+                                        and uns__acc_document_items.motion_type like '%O%'
+                                     )
+                                     OR
+                                     (
+                                            uns__acc_document_types.type        = 'AIO'
+                                        and uns__acc_document_items.change_type = 'NEG'
+                                        and uns__acc_document_items.motion_type like '%O%'
+                                     )
+                                )";
+        $p["item_type"] = "D";
+        list($res[$p["item_type"]]) = fn_uns__get_balance($p);
+    }
     return array($res, $p);
 }

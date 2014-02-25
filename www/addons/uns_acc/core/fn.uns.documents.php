@@ -156,6 +156,7 @@ function fn_uns__get_documents($params = array(), $items_per_page = 0){
         "$m_tbl.date_cast",
         "$m_tbl.package_id",
         "$m_tbl.package_type",
+        "$m_tbl.region_id",
         //        "$j_tbl_1.date_cast",
     );
 
@@ -206,6 +207,11 @@ function fn_uns__get_documents($params = array(), $items_per_page = 0){
         if (array_sum($params["o_id_array"])){
             $condition .= db_quote(" AND ($m_tbl.object_from in (?n) OR $m_tbl.object_to in (?n))", $params["o_id_array"], $params["o_id_array"]);
         }
+    }
+
+    // ПО РЕГИОНАМ
+    if ($params["region_id_array"] = to__array($params["region_id"])){
+        $condition .= db_quote(" AND $m_tbl.region_id in (?n) ", $params["region_id_array"]);
     }
 
 
@@ -726,6 +732,12 @@ function fn_uns__upd_document_info($id = 0, $doc){;
         $d["package_id"]  = 0;
         $d["package_type"]  = UNS_PACKAGE_TYPE__N;
     }
+
+    // REGION
+    if (is__more_0($doc["region_id"])){
+        $d["region_id"]  = $doc["region_id"];
+    }
+
 
     switch($type){
         case DOC_TYPE__VLC: // Выпуск Лит. цеха

@@ -98,7 +98,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     if (defined('AJAX_REQUEST') and $mode == 'document_items'){
         switch ($_REQUEST['event']){
             case "change__item_type": // Произошла смена ТИПА ДЕТАЛИ
-                if(in_array($_REQUEST['item_type'], array('D', 'M'))){
+                if(in_array($_REQUEST['item_type'], array('D', 'M', 'P', 'PF', 'PA'))){
                     $options = "<option value='0'>---</option>";
                     if($_REQUEST['item_type'] == "D"){
                         list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true));
@@ -108,11 +108,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                         $view->assign('f_option_value', 'dcat_name');
                         $view->assign('f_with_q_ty', false);
                         $view->assign('f_simple_2', true);
-                        $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
-                    } else{
+
+                    } elseif($_REQUEST['item_type'] == "M"){
                         $p = array( 'plain'         => true,
                                     'mcat_id'       => UNS_MATERIAL_CATEGORY__CAST,
-                                    'include_child' => true,
+                                    'include_child' => false,
                         );
                         list($mcategories_plain) = fn_uns__get_materials_categories($p);
                         $view->assign('f_type', 'mcategories_plain');
@@ -121,22 +121,38 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                         $view->assign('f_option_value', 'mcat_name');
                         $view->assign('f_with_q_ty', false);
                         $view->assign('f_simple_2', true);
-                        $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
+
+                    } elseif(in_array($_REQUEST['item_type'], array("P", "PF", "PA"))){
+                        $p = array(
+                            'only_active' => true,
+                            'group_by_types'=>true,
+                        );
+                        list($pump_series) = fn_uns__get_pump_series($p);
+                        $view->assign("f_type", "select_by_group");
+                        $view->assign("f_options", "pump_series");
+                        $view->assign("f_option_id", "ps_id");
+                        $view->assign("f_option_value", "ps_name");
+                        $view->assign("f_optgroups", $pump_series);
+                        $view->assign("f_optgroup_label", "pt_name");
+                        $view->assign('f_simple_2', true);
+                        $ajax->assign('processing', "hide");
                     }
+                    $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
                     $ajax->assign('options', $options);
                     exit;
                 }
                 break;
 
             case "change__item_cat_id":
-                // Произошла смена категории Детали/Материала
-                if(in_array($_REQUEST['item_type'], array('D', 'M')) && is__more_0($_REQUEST['item_cat_id'])){
+                // Произошла смена категории//серии Детали/Материала//Насоса
+                if(in_array($_REQUEST['item_type'], array("D", "M", "P", "PF", "PA")) && is__more_0($_REQUEST['item_cat_id'])){
                     $options = "<option value='0'>---</option>";
                     if($_REQUEST['item_type'] == "D"){
                         $p = array('dcat_id'            => $_REQUEST['item_cat_id'],
                                    'with_accounting'    => true,
                                    'with_materials'     => true,
                                    'with_material_info' => true,
+                                   'only_active'        => true,
                                    'format_name'        => true);
                         list ($details) = fn_uns__get_details($p);
                         $view->assign('f_type', 'select');
@@ -145,9 +161,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                         $view->assign('f_option_value', 'format_name');
                         $view->assign('f_add_value', 'material_no');
                         $view->assign('f_simple_2', true);
-                        $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
-                    } else{
+                    } elseif($_REQUEST['item_type'] == "M"){
                         $p = array('mcat_id'         => $_REQUEST['item_cat_id'],
+                                   'only_active'        => true,
                                    'with_accounting' => true,
                                    'format_name'     => true);
                         list ($materials) = fn_uns__get_materials($p);
@@ -156,8 +172,18 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                         $view->assign('f_option_id', 'material_id');
                         $view->assign('f_option_value', 'format_name');
                         $view->assign('f_simple_2', true);
-                        $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
+                    } elseif(in_array($_REQUEST['item_type'], array("P", "PF", "PA"))){
+                        $p = array(
+                            'ps_id'         => $_REQUEST['item_cat_id'],
+                        );
+                        list ($pumps) = fn_uns__get_pumps($p);
+                        $view->assign('f_type', 'select');
+                        $view->assign('f_options', $pumps);
+                        $view->assign('f_option_id', 'p_id');
+                        $view->assign('f_option_value', 'p_name');
+                        $view->assign('f_simple_2', true);
                     }
+                    $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
                     $ajax->assign('options', $options);
                     exit;
                 }
@@ -165,7 +191,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
             case "change__item_id":
                 // Произошла смена Детали/Материала
-                if(in_array($_REQUEST['item_type'], array('D','M')) && is__more_0($_REQUEST['item_id'])){
+                if(in_array($_REQUEST['item_type'], array("D", "M", "P", "PF", "PA")) && is__more_0($_REQUEST['item_id'])){
                     if($_REQUEST['item_type'] == "D"){
                         $p = array('detail_id' => $_REQUEST['item_id'],
                                    'item_type' => $_REQUEST['item_type']);
@@ -205,42 +231,43 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                     $ajax->assign('typesizes', $typesizes);
 
                     // БАЛАНС
-                    $balance = -12;
-                    $p = array(
-                        "plain"             => true,
-                        "all"               => true,
-                        "o_id"              => array(8),  // Склад литья
-                        "item_type"         => $_REQUEST['item_type'],
-                        "item_id"           => $_REQUEST['item_id'],
-                        "add_item_info"     => false,
-                        "view_all_position" => "Y",
-                        "mclass_id"         => 1,
-                        "with_weight"       => true,
-                    );
+                    if ($_REQUEST['item_type'] == "M"){
+                        $balance = -12;
+                        $p = array(
+                            "plain"             => true,
+                            "all"               => true,
+                            "o_id"              => array(8),  // Склад литья
+                            "item_type"         => $_REQUEST['item_type'],
+                            "item_id"           => $_REQUEST['item_id'],
+                            "add_item_info"     => false,
+                            "view_all_position" => "Y",
+                            "mclass_id"         => 1,
+                            "with_weight"       => true,
+                        );
 
-                    list ($p['time_from'], $p['time_to']) = fn_create_periods(null);
+                        list ($p['time_from'], $p['time_to']) = fn_create_periods(null);
 
-                    list($balance, $search) = fn_uns__get_balance($p);
-                    $balance = fn_fvalue($balance[$_REQUEST['item_id']]['ko']);
+                        list($balance, $search) = fn_uns__get_balance($p);
+                        $balance = fn_fvalue($balance[$_REQUEST['item_id']]['ko']);
 
-                    if ($balance<1) $balance = "<span title='Текущий остаток на Складе литья' style='cursor:pointer; color:red; font-weight:bold;'>$balance</span>";
-                    else $balance = "<span title='Текущий остаток на Складе литья' style='cursor:cursor; font-weight:bold;'>$balance</span>";
-                    $ajax->assign('balance', $balance);
-                    //----------------------------------------------------------
+                        if ($balance<1) $balance = "<span title='Текущий остаток на Складе литья' style='cursor:pointer; color:red; font-weight:bold;'>$balance</span>";
+                        else $balance = "<span title='Текущий остаток на Складе литья' style='cursor:cursor; font-weight:bold;'>$balance</span>";
+                        $ajax->assign('balance', $balance);
+                        //----------------------------------------------------------
+                    }
 
 
                     // ВЕС
                     $weight = 0;
-                    if($_REQUEST['item_type'] == "D"){
-                    } else{
+                    if($_REQUEST['item_type'] == "M"){
                         $p = array('material_id'     => $_REQUEST['item_id'],
                                    'with_accounting' => true,
                                    /*'format_name'     => true,*/
                         );
                         $material = array_shift(array_shift(fn_uns__get_materials($p)));
                         $weight = $material['accounting_data']['weight'];
-                    }
-                    $ajax->assign('weight', fn_fvalue($weight));
+                        $ajax->assign('weight', fn_fvalue($weight));
+                        }
                     exit;
                 }
             break;

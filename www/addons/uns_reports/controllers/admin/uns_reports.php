@@ -223,6 +223,38 @@ if ($mode == 'get_report'){
             }
             fn_rpt__test(array("ps"=>$pump_series));
         break;
+
+        // отчет работы предприятия
+        case "general_report":
+            if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "LM"; // Текущий месяц
+            list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
+
+            // 1. Выпуск Литейного цеха
+            $p = array("with_weight_per_each_document" => true, "with_total_weight_all_documents" => true, "sorting_schemas"=>"view_asc");
+            list($report_VLC) = fn_acc__get_report_VLC(array_merge($_REQUEST, $p));
+//            fn_print_r($report_VLC);
+
+            // 2. Продажа отливок со Склада литья
+            $p = array("type" => 7, "o_id" => 8, "with_items" =>  true, "info_unit"=>false, "info_item" => false, "sorting_schemas" => "view_asc"); // RO = 7; Sklad Litya = 8
+            list($sales_VLC) = fn_uns__get_documents(array_merge($_REQUEST, $p));
+//            fn_print_r($sales_VLC);
+
+            // 3. Выпуск насосной продукции
+            $p = array("type" => 13, "o_id" => 19, "with_items" =>  true, "info_unit"=>false, "info_item" => false, "sorting_schemas" => "view_asc"); // RO = 7; Sklad Litya = 8
+            list($vn_SGP) = fn_uns__get_documents(array_merge($_REQUEST, $p));
+//            fn_print_r($vn_SGP);
+
+            // 4. Продажа насосоной продукции
+            $p = array("type" => 7, "o_id" => 19, "with_items" =>  true, "info_unit"=>false, "info_item" => false, "sorting_schemas" => "view_asc"); // RO = 7; Sklad Litya = 8
+            list($sales_SGP) = fn_uns__get_documents(array_merge($_REQUEST, $p));
+//            fn_print_r($sales_SGP);
+
+            list($regions) = fn_uns__get_regions(array('status'=>'A'));
+//            fn_print_r($regions);
+
+            fn_rpt__general_report(array("report_VLC"=>$report_VLC, "sales_VLC"=>$sales_VLC, "vn_SGP"=>$vn_SGP, "sales_SGP"=>$sales_SGP, "regions"=>$regions));
+
+        break;
     }
     exit;
 }
