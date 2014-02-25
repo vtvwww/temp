@@ -144,6 +144,7 @@
                                 f_name="`$e_n`[quantity]"
                                 f_value=$q|fn_fvalue
                                 f_simple=true
+                                f_number=true
                             }
                             <div class="balance" style="display:block; float:right;"></div>
                         </td>
@@ -239,6 +240,7 @@
                     f_name="`$e_n`[quantity]"
                     f_value=""
                     f_simple=true
+                    f_number=true
                 }
                 <div class="balance" style="display:block; float:right;"></div>
             </td>

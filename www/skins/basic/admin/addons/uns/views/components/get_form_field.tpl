@@ -231,8 +231,8 @@
         {/if}
     {else}
         <div class="form-field">
-            <label class="{if $f_required}cm-required{/if} {if $f_integer_more_0}cm-integer-more-0{/if}" for="{$f_name}_{$f_id}">{$f_description}:</label>
-            <select name="data[{$f_name}]" id="{$f_name}_{$f_id}">
+            <label class="{if $f_required}cm-required{/if} {if $f_integer_more_0}cm-integer-more-0{/if}" {if f_full}for="{$f_id}"{else}for="{$f_name}_{$f_id}"{/if}>{$f_description}:</label>
+            <select {if f_full}name="{$f_name}" id="{$f_id}"{else}name="data[{$f_name}]" id="{$f_name}_{$f_id}"{/if}>
                 {if $f_blank}<option value="0" {if $f_option_target_id == 0} selected="selected" {/if}>---</option>{/if}
                 {if is__array($f_options)}
                 {foreach from=$f_options item="j"}
@@ -311,7 +311,7 @@
             {foreach from=$f_options item="j" name="j"}
                 {if $j.dcat_id_path|strpos:"`$f_target.dcat_id_path`/" === false && $j.dcat_id != $f_target.dcat_id || !$f_target.dcat_id || !$f_option_target_id}
                     {*{if !$j.level && $smarty.foreach.j.index>0}<option disabled="disabled">&nbsp;</option>{/if}*}
-                    <option value="{$j.dcat_id}" {if $j.dcat_status == "D"}disabled="disabled"{/if} {if $j.dcat_id == $f_target.dcat_parent_id}selected="selected"{/if} {if $j.dcat_id == $f_option_target_id}selected="selected"{/if} >{if $f_value_prefix}{$f_value_prefix}{/if}{$j.dcat_name|indent:$j.level:"&#166;&nbsp;&nbsp;&nbsp;&nbsp;":"&#166;--&nbsp;"}{if $f_value_suffix}{$f_value_suffix}{/if}&nbsp;&nbsp;&nbsp;({$j.q_ty} шт.)</option>
+                    <option value="{$j.dcat_id}" {if $j.dcat_status == "D"}disabled="disabled"{/if} {if $j.dcat_id == $f_target.dcat_parent_id}selected="selected"{/if} {if $j.dcat_id == $f_option_target_id}selected="selected"{/if} >{if $f_value_prefix}{$f_value_prefix}{/if}{$j.dcat_name|indent:$j.level:"&#166;&nbsp;&nbsp;&nbsp;&nbsp;":"&#166;--&nbsp;"}{if $f_value_suffix}{$f_value_suffix}{/if}{if $f_with_q_ty}&nbsp;&nbsp;&nbsp;({$j.q_ty} шт.){/if}</option>
                 {/if}
             {/foreach}
         {/if}
@@ -463,6 +463,19 @@
            {/foreach}
            {/if}
        </select>
+   {elseif $f_simple_2}
+       {if $f_blank}<option value="0">---</option>{/if}
+       {if is__array($f_optgroups)}
+       {foreach from=$f_optgroups item="optgroup"}
+           {if is__array($optgroup.$f_options)}
+            <optgroup label="{$optgroup.$f_optgroup_label}">
+               {foreach from=$optgroup.$f_options item="j"}
+                   <option value="{$j.$f_option_id}" {if $j.$f_option_id == $f_option_target_id} selected="selected" {/if}>{if $f_value_prefix}{$f_value_prefix}{/if}{$j.$f_option_value}{if $f_option_value_add && $j.$f_option_value_add}{$f_option_value_add_prefix}{$j.$f_option_value_add}{$f_option_value_add_suffix}{/if}{if $f_value_suffix}{$f_value_suffix}{/if}</option>
+               {/foreach}
+            </optgroup>
+           {/if}
+       {/foreach}
+       {/if}
    {else}
        <div class="form-field">
            {*<label class="{if $f_required}cm-required{/if} {if $f_integer}cm_integer{/if} {if $f_integer_more_0}cm-integer-more-0{/if}"*}
@@ -575,8 +588,11 @@
     {if $f_simple}
         <select name="{$f_name}" {if $f_id} id="{$f_id}" {/if} {if $f_disabled}disabled="disabled"{/if} >
             <option {if $f_value == 0} selected="selected" {/if} value="0">---</option>
-            {if $f_detail}  <option {if $f_value == "D"} selected="selected" {/if} {if $f_disabled_detail} disabled="disabled" {/if} value="D">Дет.</option>{/if}
-            {if $f_material}<option {if $f_value == "M"} selected="selected" {/if} {if $f_disabled_material} disabled="disabled" {/if} value="M">Мат.</option>{/if}
+            {if $f_detail}  <option {if $f_value == "D"} selected="selected" {/if} {if $f_disabled_detail}  disabled="disabled" {/if} value="D">Дет.</option>{/if}
+            {if $f_material}<option {if $f_value == "M"} selected="selected" {/if} {if $f_disabled_material}disabled="disabled" {/if} value="M">Мат.</option>{/if}
+            {if $f_p}       <option {if $f_value == "P"} selected="selected" {/if} {if $f_disabled_p}       disabled="disabled" {/if} value="P">Насос</option>{/if}
+            {if $f_pf}      <option {if $f_value == "PF"} selected="selected" {/if} {if $f_disabled_pf}     disabled="disabled" {/if} value="PF">Н на раме</option>{/if}
+            {if $f_pa}      <option {if $f_value == "PA"} selected="selected" {/if} {if $f_disabled_pa}     disabled="disabled" {/if} value="PA">Н агрегат</option>{/if}
         </select>
     {else}
     {/if}

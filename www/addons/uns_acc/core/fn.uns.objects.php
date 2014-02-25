@@ -122,6 +122,9 @@ function fn_uns__get_enabled_objects($document_type){
             18 => array(
                 0=> true,
             ),
+            19 => array(
+                0=> true,
+            ),
         ),
 
 
@@ -133,6 +136,9 @@ function fn_uns__get_enabled_objects($document_type){
         DOC_TYPE__RO => array(     // РАСХОДНЫЙ ОРДЕР
             8 => array(             // Склад Литья
                 0=> true,          // Мех.цех -> Склад материалов
+            ),
+            19 => array(           // Склад готовой продукции
+                0=> true,
             ),
         ),
         DOC_TYPE__VCP => array(),   //ВНУТРИЦЕХОВЫЕ ПЕРЕМЕЩЕНИЯ

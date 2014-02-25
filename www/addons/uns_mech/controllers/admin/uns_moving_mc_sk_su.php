@@ -288,6 +288,10 @@ if($mode == 'manage'){
     // СПИСОК ТИПОВ ДОКУМЕНТОВ
     list($document_types) = fn_uns__get_document_types(array('status'=>'A'));
     $view->assign('document_types', $document_types);
+
+    // REGIONS
+    list($regions) = fn_uns__get_regions(array('status'=>'A'));
+    $view->assign('regions', $regions);
 }
 
 
@@ -324,6 +328,17 @@ if($mode == 'update' or $mode == 'view'){
     list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true));
     $view->assign('dcategories_plain', $dcategories_plain);
 
+    // PUMP_SERIES
+    $p = array(
+        'only_active' => true,
+        'group_by_types'=>true,
+    );
+    list($pump_series) = fn_uns__get_pump_series($p);
+    $view->assign('pump_series', $pump_series);
+
+    // REGIONS
+    list($regions) = fn_uns__get_regions(array('status'=>'A'));
+    $view->assign('regions', $regions);
 }
 
 
@@ -331,7 +346,7 @@ if($mode == 'add'){
     list($document_types) = fn_uns__get_document_types();
     $view->assign('document_types', $document_types);
 
-    $document_types_enabled = array('AIO', 'BRAK', 'MCP');
+    $document_types_enabled = array('AIO', 'BRAK', 'MCP', 'RO');
     $view->assign('document_types_enabled', $document_types_enabled);
 }
 

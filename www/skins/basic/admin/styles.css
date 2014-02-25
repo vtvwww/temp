@@ -2187,7 +2187,7 @@ a.users-online:hover {
 }*/
 .table, .sortable {
 	background: url(images/table_header_bg.gif) repeat-x top;
-	border: 1px solid #e4e4e4;
+	border: 1px solid #999999;
 	-moz-border-radius: 6px 6px 0 0;
 	-webkit-border-radius: 6px 6px 0 0;
 	border-radius: 6px 6px 0 0;
@@ -2223,8 +2223,8 @@ table .hidden-inputs .input-text-medium, table .hidden-inputs .input-text, table
 	padding: 0 11px;
 }
 .table tr:hover td, .table tbody.hover:hover td, .object-group:hover td, .object-group-elements:hover td {
-	background-color: #ddf3fa !important;
-	border-bottom-color: #9fdaed;
+	background-color: #f9c578 !important;
+	/*border-bottom-color: #9fdaed;*/
 }
 .object-group:hover, .object-group-elements:hover, .table.scrollable p:hover {
 	margin-top: -1px;
@@ -2243,7 +2243,7 @@ table .hidden-inputs .input-text-medium, table .hidden-inputs .input-text, table
 .table td, .search-advanced table.table td,  .table-tree tr.multiple-table-row td {
 	padding: 10px;
 	border-bottom: 1px solid transparent;
-	border-top: 1px solid #ebebeb;
+	border-top: 1px solid #999999;
 	background-color: #fff;
 }
 .table tr.table-row td, .search-advanced table.table  tr.table-row td,  .table-tree tr td, .form-field .table td {
@@ -2251,10 +2251,12 @@ table .hidden-inputs .input-text-medium, table .hidden-inputs .input-text, table
 }
 .table tr:hover td {
 	padding: 10px;
-	border-color: #9fdaed;
+	border-color: #cf9a68;
 	border-right: none;
 	border-left: none;
 }
+
+
 .table tr:hover td .input-text-medium, .table tr:hover td .input-text, .table tr:hover td .input-text-short, .table tr:hover td .input-text-long, .table tr:hover td  .input-text-large {
 	background: #ffffff url(images/input_bg.gif) repeat-x top;
 	border-color: #82c3d9;

@@ -308,6 +308,10 @@ a.black{
     cursor: pointer;
 }
 
+a.black:hover{
+    text-decoration: underline;
+}
+
 
 /*ПРОСТАЯ ТАБЛИЦА*/
 table.simple{

@@ -99,7 +99,7 @@ $(function () {
         item_typesize   .empty();
         item_weight     .empty();
 
-        if ((item_type.val() == "M") || (item_type.val() == "D")){
+        if ((item_type.val() == "M") || (item_type.val() == "D") || (item_type.val() == "P") || (item_type.val() == "PF") || (item_type.val() == "PA") ){
             $.ajaxRequest(
                 fn_url('acc_documents.document_items'),
                 {

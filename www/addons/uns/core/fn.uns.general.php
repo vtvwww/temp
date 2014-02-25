@@ -146,6 +146,7 @@ function fn_uns_mark_item($controller, $mode) {
                 break;
 
             case "acc_documents":
+            case "uns_moving_mc_sk_su":
                 if(is__more_0($_REQUEST['document_id'])){
                     $mark_item = $_REQUEST['document_id'];
                 }
