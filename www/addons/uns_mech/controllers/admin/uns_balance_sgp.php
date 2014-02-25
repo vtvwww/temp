@@ -23,7 +23,7 @@ if($mode == 'manage'){
     if (!isset($_REQUEST["total_balance_of_details"])) $_REQUEST["total_balance_of_details"] = "Y";
 
     $balances = array();
-    list($balances, $search) = fn_uns__get_balance_sgp($_REQUEST, true, true, true);
+    list($balances, $search) = fn_uns__get_balance_sgp($_REQUEST, true, true, true, true);
 //    fn_print_r($balances);
     $view->assign('balances',    $balances);
 

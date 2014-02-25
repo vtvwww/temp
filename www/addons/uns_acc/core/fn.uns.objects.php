@@ -85,16 +85,19 @@ function fn_uns__get_enabled_objects($document_type){
                 14 => true,
                 17 => true,
                 18 => true,
+                19 => true,
             ),
             14 => array(
                 10 => true,
                 17 => true,
                 18 => true,
+                19 => true,
             ),
             17 => array(
                 10 => true,
                 14 => true,
                 18 => true,
+                19 => true,
             ),
             18 => array(
                 10 => true,

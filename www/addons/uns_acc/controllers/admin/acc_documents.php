@@ -108,6 +108,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                         $view->assign('f_option_value', 'dcat_name');
                         $view->assign('f_with_q_ty', false);
                         $view->assign('f_simple_2', true);
+
                     } elseif($_REQUEST['item_type'] == "M"){
                         $p = array( 'plain'         => true,
                                     'mcat_id'       => UNS_MATERIAL_CATEGORY__CAST,
@@ -120,6 +121,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                         $view->assign('f_option_value', 'mcat_name');
                         $view->assign('f_with_q_ty', false);
                         $view->assign('f_simple_2', true);
+
                     } elseif(in_array($_REQUEST['item_type'], array("P", "PF", "PA"))){
                         $p = array(
                             'only_active' => true,
@@ -133,6 +135,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                         $view->assign("f_optgroups", $pump_series);
                         $view->assign("f_optgroup_label", "pt_name");
                         $view->assign('f_simple_2', true);
+                        $ajax->assign('processing', "hide");
                     }
                     $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
                     $ajax->assign('options', $options);

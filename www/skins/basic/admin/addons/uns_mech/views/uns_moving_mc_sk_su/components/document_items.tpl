@@ -230,14 +230,14 @@
                         {*</td>*}
 
                         <td class="cm-non-cb" align="right">
-                            {if !$is_SGP}
+                            {*{if !$is_SGP}*}
                             {include file="addons/uns/views/components/get_form_field.tpl"
                                 f_type="processing"
                                 f_name="`$e_n`[processing]"
                                 f_value=$i.processing
                                 f_simple=true
                             }
-                            {/if}
+                            {*{/if}*}
                         </td>
 
                         <td class="right cm-non-cb">
@@ -326,14 +326,14 @@
             {*</td>*}
             {*<td class="cm-non-cb" align="right">&nbsp;</td>*}
             <td class="cm-non-cb" align="right">
-                {if !$is_SGP}
+                {*{if !$is_SGP}*}
                 {include file="addons/uns/views/components/get_form_field.tpl"
                     f_type="processing"
                     f_name="`$e_n`[processing]"
                     f_value=""
                     f_simple=true
                 }
-                {/if}
+                {*{/if}*}
             </td>
             <td class="right cm-non-cb">
                 {include file="buttons/multiple_buttons.tpl" item_id="add_`$num`" tag_level="2"}
