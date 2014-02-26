@@ -195,10 +195,14 @@
 {* TEXTAREA                                                                   *}
 {******************************************************************************}
 {if $f_type == "textarea"}
-    <div class="form-field">
-        <label class="" {if $f_full_name} for="{$f_id}" {else} for="{$f_name}_{$f_id}" {/if}>{$f_description}:</label>
-        <textarea {if $f_full_name} id="{$f_id}" name="{$f_full_name}" {else} id="{$f_name}_{$f_id}" name="data[{$f_name}]" {/if} rows="{$f_row|default:"5"}" class="input-textarea-long">{if $f_value_prefix}{$f_value_prefix}{/if}{$f_value}{if $f_value_suffix}{$f_value_suffix}{/if}</textarea>
-    </div>
+    {if $f_simple}
+        <textarea {if $f_full_name} id="{$f_id}" name="{$f_full_name}" {else} id="{$f_name}_{$f_id}" name="data[{$f_name}]" {/if} rows="{$f_row|default:"5"}" cols="{$f_col|default:"30"}" class="input-textarea-long" {if $f_style}style="{$f_style}" {/if}>{if $f_value_prefix}{$f_value_prefix}{/if}{$f_value}{if $f_value_suffix}{$f_value_suffix}{/if}</textarea>
+    {else}
+        <div class="form-field">
+            <label class="" {if $f_full_name} for="{$f_id}" {else} for="{$f_name}_{$f_id}" {/if}>{$f_description}:</label>
+            <textarea {if $f_full_name} id="{$f_id}" name="{$f_full_name}" {else} id="{$f_name}_{$f_id}" name="data[{$f_name}]" {/if} rows="{$f_row|default:"5"}" class="input-textarea-long">{if $f_value_prefix}{$f_value_prefix}{/if}{$f_value}{if $f_value_suffix}{$f_value_suffix}{/if}</textarea>
+        </div>
+    {/if}
 {/if}
 
 
@@ -454,7 +458,7 @@
            {if is__array($f_optgroups)}
            {foreach from=$f_optgroups item="optgroup"}
                {if is__array($optgroup.$f_options)}
-                <optgroup label="{$optgroup.$f_optgroup_label}">
+                <optgroup label="{$optgroup.$f_optgroup_label}" style="font-family: monospace; font-style: normal;">
                    {foreach from=$optgroup.$f_options item="j"}
                        <option value="{$j.$f_option_id}" {if $j.$f_option_id == $f_option_target_id} selected="selected" {/if}>{if $f_value_prefix}{$f_value_prefix}{/if}{$j.$f_option_value}{if $f_option_value_add && $j.$f_option_value_add}{$f_option_value_add_prefix}{$j.$f_option_value_add}{$f_option_value_add_suffix}{/if}{if $f_value_suffix}{$f_value_suffix}{/if}</option>
                    {/foreach}
@@ -468,7 +472,7 @@
        {if is__array($f_optgroups)}
        {foreach from=$f_optgroups item="optgroup"}
            {if is__array($optgroup.$f_options)}
-            <optgroup label="{$optgroup.$f_optgroup_label}">
+            <optgroup label="{$optgroup.$f_optgroup_label}" style="font-family: monospace; font-style: normal;">
                {foreach from=$optgroup.$f_options item="j"}
                    <option value="{$j.$f_option_id}" {if $j.$f_option_id == $f_option_target_id} selected="selected" {/if}>{if $f_value_prefix}{$f_value_prefix}{/if}{$j.$f_option_value}{if $f_option_value_add && $j.$f_option_value_add}{$f_option_value_add_prefix}{$j.$f_option_value_add}{$f_option_value_add_suffix}{/if}{if $f_value_suffix}{$f_value_suffix}{/if}</option>
                {/foreach}

@@ -133,7 +133,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                         $view->assign("f_option_id", "ps_id");
                         $view->assign("f_option_value", "ps_name");
                         $view->assign("f_optgroups", $pump_series);
-                        $view->assign("f_optgroup_label", "pt_name");
+                        $view->assign("f_optgroup_label", "pt_name_short");
                         $view->assign('f_simple_2', true);
                         $ajax->assign('processing', "hide");
                     }

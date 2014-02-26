@@ -26,6 +26,7 @@ function fn_uns__get_pump_types($params = array(), $items_per_page = 0){
     $fields = array(
         "$m_table.pt_id",
         "$m_table.pt_name",
+        "$m_table.pt_name_short",
         "$m_table.pt_status",
         "$m_table.pt_position",
         "$m_table.pt_comment",
@@ -149,6 +150,7 @@ function fn_uns__get_pump_series($params = array(), $items_per_page = 0){
         "$m_table.ps_comment",
         "$m_table.pt_id",
         "$j_table.pt_name",
+        "$j_table.pt_name_short",
     );
 
     $sorting_schemas = array(

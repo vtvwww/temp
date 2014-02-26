@@ -119,7 +119,7 @@
                                     f_option_id="ps_id"
                                     f_option_value="ps_name"
                                     f_optgroups=$pump_series
-                                    f_optgroup_label="pt_name"
+                                    f_optgroup_label="pt_name_short"
                                     f_with_q_ty=false
                                     f_option_target_id=$i.item_info.ps_id|default:"0"
                                     f_simple=true

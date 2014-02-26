@@ -57,11 +57,11 @@
                        {if      $i.status == "O"}
                            В ожидании
                        {elseif  $i.status == "K"}
-                           <img border="0" title="Комплектуется" src="skins/basic/admin/addons/uns_acc/images/circle_yellow.png">
+                           <img class="hand" border="0" title="Комплектуется" src="skins/basic/admin/addons/uns_acc/images/circle_yellow.png">
                        {elseif  $i.status == "U"}
-                           Укомплектована
+                           <img class="hand" border="0" title="Укомплектована" src="skins/basic/admin/addons/uns_acc/images/circle_green.png">
                        {elseif  $i.status == "Z"}
-                           <img border="0" title="Закрыт" src="skins/basic/admin/addons/uns_acc/images/done.png">
+                           <img class="hand" border="0" title="Закрыт" src="skins/basic/admin/addons/uns_acc/images/done.png">
                        {elseif  $i.status == "A"}
                            Аннулирована
                        {/if}
