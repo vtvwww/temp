@@ -4,6 +4,7 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
     $default_params = array(
         'order_id' => 0,
         'page' => 1,
+        'only_active'=>false,
         'limit' => 0,
         'sorting_schemas' => 'view',
 
@@ -18,7 +19,7 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
         "$m_tbl.$m_key",
         "$m_tbl.comment",
         "$m_tbl.status",
-        "$m_tbl.date_opened",
+        "$m_tbl.date_updated",
         "$m_tbl.date_finished",
         "$m_tbl.region_id",
     );
@@ -41,6 +42,10 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
     // По ID
     if ($params["{$m_key}_array"] = to__array($params[$m_key])){
         $condition .= db_quote(" AND $m_tbl.$m_key in (?n)", $params["{$m_key}_array"]);
+    }
+
+    if ($params['only_active']) {
+        $condition .= db_quote(" AND $m_tbl.status = 'Open' ");
     }
 
     // *************************************************************************
@@ -88,6 +93,19 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
                 $data[$k_d]["items"] = $items[$k_d];
             }
         }
+
+
+        // подготовка данных для smarty
+        if ($params["data_for_tmp"]){
+            if (is__array($items)){
+                foreach ($items as $k_o=>$v_o){
+                    foreach ($v_o as $i){
+                        $data[$k_o]["data_for_tmp"][$i["item_type"]][$i["item_id"]] = $i;
+                    }
+                }
+            }
+        }
+
     }
 
     if ($params["with_count"]){
@@ -95,6 +113,12 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
         $count_data = db_get_hash_array($sql, "order_id");
         foreach ($data as $k_d=>$v_d){
             $data[$k_d]["count"] = $count_data[$k_d]["count"];
+        }
+    }
+
+    if ($params["remaining_time"]){
+        foreach ($data as $k_d=>$v_d){
+            $data[$k_d]["remaining_time"] = round(($v_d["date_finished"] - TIME)/(86400), 0);
         }
     }
 
@@ -166,13 +190,13 @@ function fn_acc__upd_order_info($id, $data){
     $d["date_finished"] = fn_parse_date($data["date_finished"]);
     $d["status"]        = (fn_check_type($data["status"], "|Open|Close|"))?$data["status"]:"Open";
     $d["region_id"]     = $data["region_id"];
+    $d["date_updated"]  = TIME;
 
     if ($operation == "update"){
         // ОБНОВИТЬ
         db_query(UNS_DB_PREFIX . "UPDATE ?:_acc_orders SET ?u WHERE order_id = ?i", $d, $id);
     }elseif ($operation == "add"){
         // ДОБАВИТЬ
-        $d["date_opened"] = TIME;
         $id = db_query(UNS_DB_PREFIX . "INSERT INTO ?:_acc_orders ?e", $d);
     }
     return $id;

@@ -58,7 +58,6 @@ if($mode == 'manage'){
     );
     $p = array_merge($_REQUEST, $p);
     list($orders, $search) = fn_acc__get_orders($p, UNS_ITEMS_PER_PAGE);
-
 //    fn_print_r($orders);
 
     $view->assign('orders', $orders);
