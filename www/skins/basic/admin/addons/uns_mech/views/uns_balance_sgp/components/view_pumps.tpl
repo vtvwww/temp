@@ -112,7 +112,12 @@
                                         {if $o.data_for_tmp.P[$k_m].quantity > 0}
                                             <td align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
                                                 <span class="{if $o.data_for_tmp.P[$k_m].quantity<0}info_warning_block{elseif $o.data_for_tmp.P[$k_m].quantity==0}zero{/if}">
-                                                    {$o.data_for_tmp.P[$k_m].quantity|fn_fvalue:2}
+                                                    {assign var="q" value=$o.data_for_tmp.P[$k_m].quantity|fn_fvalue:2}
+                                                    {if $o.data_for_tmp.P[$k_m].comment|strlen}
+                                                        {include file="common_templates/tooltip.tpl" tooltip=$o.data_for_tmp.P[$k_m].comment tooltip_mark="<b>`$q`</b>"}
+                                                    {else}
+                                                        {$q}
+                                                    {/if}
                                                 </span>
                                             </td>
                                         {else}
@@ -141,7 +146,12 @@
                                         {if $o.data_for_tmp.PF[$k_m].quantity > 0}
                                             <td align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
                                                 <span class="{if $o.data_for_tmp.PF[$k_m].quantity<0}info_warning_block{elseif $o.data_for_tmp.PF[$k_m].quantity==0}zero{/if}">
-                                                    {$o.data_for_tmp.PF[$k_m].quantity|fn_fvalue:2}
+                                                    {assign var="q" value=$o.data_for_tmp.PF[$k_m].quantity|fn_fvalue:2}
+                                                    {if $o.data_for_tmp.PF[$k_m].comment|strlen}
+                                                        {include file="common_templates/tooltip.tpl" tooltip=$o.data_for_tmp.PF[$k_m].comment tooltip_mark="<b>`$q`</b>"}
+                                                    {else}
+                                                        {$q}
+                                                    {/if}
                                                 </span>
                                             </td>
                                         {else}
@@ -170,7 +180,12 @@
                                         {if $o.data_for_tmp.PA[$k_m].quantity > 0}
                                             <td align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
                                                 <span class="{if $o.data_for_tmp.PA[$k_m].quantity<0}info_warning_block{elseif $o.data_for_tmp.PA[$k_m].quantity==0}zero{/if}">
-                                                    {$o.data_for_tmp.PA[$k_m].quantity|fn_fvalue:2}
+                                                    {assign var="q" value=$o.data_for_tmp.PA[$k_m].quantity|fn_fvalue:2}
+                                                    {if $o.data_for_tmp.PA[$k_m].comment|strlen}
+                                                        {include file="common_templates/tooltip.tpl" tooltip=$o.data_for_tmp.PA[$k_m].comment tooltip_mark="<b>`$q`</b>"}
+                                                    {else}
+                                                        {$q}
+                                                    {/if}
                                                 </span>
                                             </td>
                                         {else}

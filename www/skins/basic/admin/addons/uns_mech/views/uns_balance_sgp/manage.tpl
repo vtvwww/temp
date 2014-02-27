@@ -18,32 +18,7 @@
     {include file="addons/uns_mech/views/uns_balance_sgp/components/view_pumps.tpl" balances=$balances}
 
     {* БАЛАНС ПО ДЕТАЛЯМ НА СГП *}
-    {include file="common_templates/subheader.tpl" title="Детали"}
-    <div class="subheader_block">
-        <table cellpadding="0" cellspacing="0" border="0" class="table">
-            <thead>
-                <tr>
-                    <th style="text-align: center; " width="300px">
-                        <img id="on_cat" class="hand cm-combinations hidden" width="13" height="12" border="0" title="Расширить / сократить список элементов" alt="Расширить / сократить список элементов" src="skins/basic/admin/images/plus_minus.gif">
-                        <img id="off_cat" class="hand cm-combinations" width="13" height="12" border="0" title="Расширить / сократить список элементов" alt="Расширить / сократить список элементов" src="skins/basic/admin/images/minus_plus.gif">
-                        &nbsp;Наименование
-                    </th>
-                    <th style="border-left: 1px solid #808080;">КЛМ</th>
-                    <th style="border-left: 1px solid #808080;">СГП</th>
-                    <th style="border-left: 1px solid #808080;">Принадлежность к насосам</th>
-                </tr>
-            </thead>
-            {if is__array($balances.D)}
-                {include file="addons/uns_mech/views/uns_balance_sgp/components/view_details.tpl" balances=$balances.D}
-            {else}
-                <tbody>
-                    <tr class="no-items">
-                        <td colspan="7"><p>{$lang.no_data}</p></td>
-                    </tr>
-                </tbody>
-            {/if}
-        </table>
-    </div>
+    {include file="addons/uns_mech/views/uns_balance_sgp/components/view_details.tpl" balances=$balances.D}
 {/capture}
 {assign var="last_date" value=$info_of_the_last_movement.date|fn_parse_date|date_format:"%d/%m/%Y"}
 {assign var="last_document_id" value=$info_of_the_last_movement.document_id}
