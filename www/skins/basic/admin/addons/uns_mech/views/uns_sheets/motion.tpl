@@ -39,7 +39,7 @@
 
         <div class="form-field">
             {if $m_mode == 'add'}
-                {assign var="motion_date" value=$sheet.date_open}
+                {assign var="motion_date" value=$smarty.now}
             {else}
                 {assign var="motion_date" value=$motion.date}
             {/if}
@@ -86,7 +86,7 @@
 
     {* УПРАВЛЕНИЕ КОЛИЧЕСТВОМ *}
     {include file="common_templates/subheader.tpl" title="РАСХОД"}
-    <div class="data-block">
+    <div class="subheader_block">
         <input type="hidden" name="motion[document][document_type_name]"      value="{$document_type_name}" />
         {assign var="di_index" value="0"}
 
@@ -156,6 +156,12 @@
                 {assign var="di_index" value=$di_index+1}
             </div>
         {elseif ($document_type_name == "BRAK") or ($document_type_name == "VCP") or ($document_type_name == "VCP_COMPLETE") or ($document_type_name == "MCP")}
+            {assign var="f1__default" value=true}
+            {assign var="f2__default" value=false}
+            {if $sheet.target_object == 14}
+                {assign var="f1__default" value=false}
+                {assign var="f2__default" value=true}
+            {/if}
             <div class="form-field">
                 <label for="object_from" class="cm-required cm-integer-more-0">Откуда:</label>
                 {include file="addons/uns/views/components/get_form_field.tpl"
@@ -166,10 +172,11 @@
                     f_simple=true
                     f_value=$motion.object_from
 
-                    f1_default=true
+                    f1_default=$f1__default
                     f1_value=10
                     f1_title=$objects_plain[10].path
 
+                    f2_default=$f2__default
                     f2_value=14
                     f2_title=$objects_plain[14].path
                 }
@@ -243,11 +250,18 @@
     {* ПРИХОД                                                             *}
     {**********************************************************************}
     {include file="common_templates/subheader.tpl" title="ПРИХОД"}
-    <div class="data-block">
+    <div class="subheader_block">
         {if ($document_type_name == "PVP") or ($document_type_name == "BRAK") or ($document_type_name == "VCP_COMPLETE") or ($document_type_name == "VCP") or ($document_type_name == "MCP")}
             <div class="form-field">
                 <label for="object_to" class="cm-required cm-integer-more-0">Куда:</label>
                 {if ($document_type_name == "PVP") or ($document_type_name == "VCP") or ($document_type_name == "VCP_COMPLETE")}
+                    {assign var="f1__default" value=true}
+                    {assign var="f2__default" value=false}
+                    {if ($sheet.target_object == 10 and $document_type_name == "VCP") or ($sheet.target_object == 14 and $document_type_name == "VCP_COMPLETE")}
+                        {assign var="f1__default" value=false}
+                        {assign var="f2__default" value=true}
+                    {/if}
+
                     {include file="addons/uns/views/components/get_form_field.tpl"
                         f_type="radio_button"
                         f_id="object_to_`$document_type_name`_`$document_id`"
@@ -256,10 +270,11 @@
                         f_simple=true
                         f_value=$motion.object_to
 
-                        f1_default=true
+                        f1_default=$f1__default
                         f1_value=10
                         f1_title=$objects_plain[10].path
 
+                        f2_default=$f2__default
                         f2_value=14
                         f2_title=$objects_plain[14].path
                     }
@@ -272,10 +287,11 @@
                         f_simple=true
                         f_value=$motion.object_to
 
-                        f1_default=true
+                        f1_default=false
                         f1_value=21
                         f1_title=$objects_plain[21].path
 
+                        f2_default=true
                         f2_value=22
                         f2_title=$objects_plain[22].path
                     }
@@ -291,6 +307,14 @@
                         f1_default=true
                         f1_value=17
                         f1_title=$objects_plain[17].path
+
+                        f2_default=false
+                        f2_value=18
+                        f2_title=$objects_plain[18].path
+
+                        f3_default=false
+                        f3_value=19
+                        f3_title=$objects_plain[19].path
                     }
                 {/if}
             </div>
@@ -357,6 +381,39 @@
             </div>
         {/if}
     </div>
+    {* ВОЗМОЖНОСТЬ БЫСТРОГО ИЗМЕНЕНИЯ СТАТУСА СЛ*}
+    {if $document_type_name == "MCP" or $document_type_name == "VCP_COMPLETE"}
+        {assign var="smarty_now" value=$smarty.now}
+        <div style="float: left; margin-right: 15px;">
+            {include file="addons/uns/views/components/get_form_field.tpl"
+            f_type="checkbox"
+            f_name="sheet[change_status]"
+            f_id="change_status_`$smarty_now`"
+            f_label="Изменить статус Сопровод. листа"
+            f_simple=true
+            f_onchange="if ($('#change_status_`$smarty_now`').attr('checked')) $('#div_change_status_`$smarty.now`').removeClass('hidden'); if (!$('#change_status_`$smarty_now`').attr('checked')) $('#div_change_status_`$smarty.now`').addClass('hidden');"
+            }
+        </div>
+        <div id="div_change_status_{$smarty_now}" class="hidden">
+            {include file="addons/uns/views/components/get_form_field.tpl"
+            f_type="radio_button"
+            f_id="sheet_status_`$smarty_now`"
+            f_name="sheet[status]"
+            f_required=true
+            f_simple=true
+
+            f1_value="OP"
+            f1_title="Открыт"
+
+            f2_value="PARTIALLYCL"
+            f2_title="Частично закрыт"
+
+            f3_default=true
+            f3_value="CL"
+            f3_title="Закрыт"
+        }
+        </div>
+    {/if}
 
     <br>
     <div class="buttons-container cm-toggle-button buttons-bg">
@@ -367,7 +424,7 @@
         {/if}
     </div>
 </form>
-{*<hr>*}
-{*<pre>{$sheet|print_r}</pre>*}
-{*<pre>{$motion|print_r}</pre>*}
-{*<pre>{$objects_plain|print_r}</pre>*}
+
+
+
+

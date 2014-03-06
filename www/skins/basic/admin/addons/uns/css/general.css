@@ -32,9 +32,10 @@ body:before {
     color: #000000;
     font-size: 18px;
     margin: 20px 0 0;
-    padding: 0 0 3px 10px;
+    padding: 0 0 5px 10px;
     border-left:5px double #C5C5C5;
     border-right:5px double #C5C5C5;
+    background-color: #d8d8d8;
 }
 
 div.subheader_block{
@@ -234,6 +235,39 @@ input.radio:checked + label.radio {
     border-left: 1px solid #808080;
 }
 
+/* BORDER 2 px */
+.b2_t{
+    border-top: 2px solid #000000;
+}
+
+.b2_r{
+    border-right: 2px solid #000000;
+}
+
+.b2_b{
+    border-bottom: 2px solid #000000;
+}
+
+.b2_l{
+    border-left: 2px solid #000000;
+}
+
+/* BORDER 3 px */
+.b3_t{
+    border-top: 3px solid #000000;
+}
+
+.b3_r{
+    border-right: 3px solid #000000;
+}
+
+.b3_b{
+    border-bottom: 3px solid #000000;
+}
+
+.b3_l{
+    border-left: 3px solid #000000;
+}
 
 /*******************************************************************************/
 /*******************************************************************************/
@@ -343,6 +377,14 @@ div.data-block.top{
     border: 1px solid #DFDFDF;
 }
 
+table tr.CL td{
+    background-color: rgba(0, 81, 255, 0.20);
+    text-decoration: line-through;
+}
+
+table tr.OP td{
+    background-color: rgba(255, 246, 0, 0.4);
+}
 
 /******************************************************************************/
 /* TOOLTIP*/

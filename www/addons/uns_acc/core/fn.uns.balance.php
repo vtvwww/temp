@@ -644,6 +644,7 @@ function fn_uns__get_motions($params){
             SELECT
               uns__acc_documents.document_id,
               uns__acc_documents.date,
+              uns__acc_documents.date_cast,
               uns__acc_documents.package_id,
               uns__acc_documents.package_type,
 

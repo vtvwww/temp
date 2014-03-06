@@ -6,14 +6,12 @@
 {******************************************************************************}
 {if $f_type == "hidden"}
     <input type="hidden" name="{$f_name}" value="{$f_value}" {if $f_class} class="{$f_class}" {/if} />
-{/if}
-
 
 
 {******************************************************************************}
 {* INPUT                                                                      *}
 {******************************************************************************}
-{if $f_type == "input"}
+{elseif $f_type == "input"}
     {if $f_simple_text}
         <span {if $f_class}class="{$f_class}"{/if}>{if (strlen($f_default) && !strlen($f_value))}{$f_default}{else}{$f_value}{/if}</span>
     {elseif $f_simple}
@@ -24,9 +22,8 @@
              <input type="text" id="{$f_name}_{$f_id}" name="data[{$f_name}]" size="35" value="{if (strlen($f_default) && !strlen($f_value))}{$f_default}{else}{$f_value}{/if}" class="input-text-large main-input" />
          </div>
     {/if}
-{/if}
 
-{if $f_type == "input_2"}
+{elseif $f_type == "input_2"}
     {if $f_simple_text}
         {*<span {if $f_class}class="{$f_class}"{/if}>{if (strlen($f_default) && !strlen($f_value))}{$f_default}{else}{$f_value}{/if}</span>*}
     {elseif $f_simple}
@@ -37,30 +34,30 @@
              <input {if $f_autocomplete}autocomplete="{$f_autocomplete}"{/if} type="{if $f_number}number{else}text{/if}" {if $f_disabled}disabled="disabled"{/if} {if $f_id}id="{$f_id}"{/if} {if $f_name}name="{$f_name}"{/if} {if $f_size}size="{$f_size}"{else}size="35"{/if} value="{if (strlen($f_default) && !strlen($f_value))}{$f_default}{else}{$f_value}{/if}" {if $f_class}class="{$f_class}"{else}class="input-text-large"{/if} />
          </div>
     {/if}
-{/if}
 
 
 {******************************************************************************}
 {* CHECKBOX                                                                   *}
 {******************************************************************************}
-{if $f_type == "checkbox"}
+{elseif $f_type == "checkbox"}
     {if $f_simple}
         <input type="hidden"                               {if $f_name}name="{$f_name}"{/if} value="N"/>
-        <input type="checkbox" {if $f_id}id="{$f_id}"{/if} {if $f_name}name="{$f_name}"{/if} value="Y" {if $f_value=="Y"} checked="checked" {/if} {if $f_class} class="{$f_class}" {/if} {if $f_style} style="{$f_style}" {/if} {if $f_disabled} disabled="disabled" {/if} />
+        <input type="checkbox" {if $f_id}id="{$f_id}"{/if} {if $f_name}name="{$f_name}"{/if} value="Y" {if $f_value=="Y"} checked="checked" {/if} {if $f_class} class="{$f_class}" {/if} {if $f_style} style="{$f_style}" {/if} {if $f_disabled} disabled="disabled" {/if} {if $f_onchange}onchange="{$f_onchange}"{/if} />
+        {if $f_label}
+            <label for="{$f_id}">{if $f_label}{$f_label}{/if}</label>
+        {/if}
     {else}
         {*<div class="form-field">*}
              {*<label class="{if $f_required}cm-required{/if}{if $f_integer} cm-integer{/if}" for="{$f_name}_{$f_id}">{$f_description}:</label>*}
              {*<input type="text" id="{$f_name}_{$f_id}" name="data[{$f_name}]" size="35" value="{if (strlen($f_default) && !strlen($f_value))}{$f_default}{else}{$f_value}{/if}" class="input-text-large main-input" />*}
          {*</div>*}
     {/if}
-{/if}
-
 
 
 {******************************************************************************}
 {* STATUS                                                                     *}
 {******************************************************************************}
-{if $f_type == "status"}
+{elseif $f_type == "status"}
     {if $f_simple_text}
         {if $f_value == "A"}<span {if $f_class}class="{$f_class}"{/if}>{$lang.active}</span>{/if}
         {if $f_value == "D"}<span {if $f_class}class="{$f_class}"{/if}>{$lang.disabled}</span>{/if}
@@ -78,9 +75,9 @@
             </select>
         </div>
     {/if}
-{/if}
 
-{if $f_type == "status_button"}
+
+{elseif $f_type == "status_button"}
     {if $f_simple_text}
         {if $f_value == "A"}<span {if $f_class}class="{$f_class}"{/if}>{$lang.active}</span>{/if}
         {if $f_value == "D"}<span {if $f_class}class="{$f_class}"{/if}>{$lang.disabled}</span>{/if}
@@ -105,13 +102,12 @@
             </select>
         </div>
     {/if}
-{/if}
 
 
 {******************************************************************************}
 {* RADIO_BUTTON                                                                   *}
 {******************************************************************************}
-{if $f_type == "radio_button"}
+{elseif $f_type == "radio_button"}
     {if $f_simple_text}
         {*{if $f_value == "A"}<span {if $f_class}class="{$f_class}"{/if}>{$lang.active}</span>{/if}*}
         {*{if $f_value == "D"}<span {if $f_class}class="{$f_class}"{/if}>{$lang.disabled}</span>{/if}*}
@@ -150,14 +146,12 @@
             {*</select>*}
         {*</div>*}
     {/if}
-{/if}
-
 
 
 {******************************************************************************}
 {* TYPESIZE                                                                   *}
 {******************************************************************************}
-{if $f_type == "typesize"}
+{elseif $f_type == "typesize"}
     {assign var="size_m_name" value="Ном."}
     {assign var="size_a_name" value="исп.А"}
     {assign var="size_b_name" value="исп.Б"}
@@ -187,26 +181,26 @@
             {/if}
         </select>
     {/if}
-{/if}
-
 
 
 {******************************************************************************}
 {* TEXTAREA                                                                   *}
 {******************************************************************************}
-{if $f_type == "textarea"}
-    <div class="form-field">
-        <label class="" {if $f_full_name} for="{$f_id}" {else} for="{$f_name}_{$f_id}" {/if}>{$f_description}:</label>
-        <textarea {if $f_full_name} id="{$f_id}" name="{$f_full_name}" {else} id="{$f_name}_{$f_id}" name="data[{$f_name}]" {/if} rows="{$f_row|default:"5"}" class="input-textarea-long">{if $f_value_prefix}{$f_value_prefix}{/if}{$f_value}{if $f_value_suffix}{$f_value_suffix}{/if}</textarea>
-    </div>
-{/if}
-
+{elseif $f_type == "textarea"}
+    {if $f_simple}
+        <textarea {if $f_full_name} id="{$f_id}" name="{$f_full_name}" {else} id="{$f_name}_{$f_id}" name="data[{$f_name}]" {/if} rows="{$f_row|default:"5"}" cols="{$f_col|default:"30"}" class="input-textarea-long" {if $f_style}style="{$f_style}" {/if}>{if $f_value_prefix}{$f_value_prefix}{/if}{$f_value}{if $f_value_suffix}{$f_value_suffix}{/if}</textarea>
+    {else}
+        <div class="form-field">
+            <label class="" {if $f_full_name} for="{$f_id}" {else} for="{$f_name}_{$f_id}" {/if}>{$f_description}:</label>
+            <textarea {if $f_full_name} id="{$f_id}" name="{$f_full_name}" {else} id="{$f_name}_{$f_id}" name="data[{$f_name}]" {/if} rows="{$f_row|default:"5"}" class="input-textarea-long">{if $f_value_prefix}{$f_value_prefix}{/if}{$f_value}{if $f_value_suffix}{$f_value_suffix}{/if}</textarea>
+        </div>
+    {/if}
 
 
 {******************************************************************************}
 {* SELECT                                                                     *}
 {******************************************************************************}
-{if $f_type == "select"}
+{elseif $f_type == "select"}
     {if $f_simple_text}
         {if is__array($f_options)}
             {foreach from=$f_options item="j"}
@@ -232,7 +226,7 @@
     {else}
         <div class="form-field">
             <label class="{if $f_required}cm-required{/if} {if $f_integer_more_0}cm-integer-more-0{/if}" {if f_full}for="{$f_id}"{else}for="{$f_name}_{$f_id}"{/if}>{$f_description}:</label>
-            <select {if f_full}name="{$f_name}" id="{$f_id}"{else}name="data[{$f_name}]" id="{$f_name}_{$f_id}"{/if}>
+            <select {if $f_full}name="{$f_name}" id="{$f_id}"{else}name="data[{$f_name}]" id="{$f_name}_{$f_id}"{/if}>
                 {if $f_blank}<option value="0" {if $f_option_target_id == 0} selected="selected" {/if}>---</option>{/if}
                 {if is__array($f_options)}
                 {foreach from=$f_options item="j"}
@@ -242,14 +236,12 @@
             </select>
         </div>
     {/if}
-{/if}
-
 
 
 {******************************************************************************}
 {* MCATEGORIES_PLAIN                                                          *}
 {******************************************************************************}
-{if $f_type == "mcategories_plain"}
+{elseif $f_type == "mcategories_plain"}
     {if $f_simple_2}
         {if $f_blank}<option value="0" {if $f_target.mcat_id == 0} selected="selected" {/if}>{if $f_blank_name}{$f_blank_name}{else}- корневой уровень -{/if}</option>{/if}
         {if is__array($f_options)}
@@ -297,14 +289,12 @@
             </select>
         </div>
     {/if}
-{/if}
-
 
 
 {******************************************************************************}
 {* DCATEGORIES_PLAIN                                                          *}
 {******************************************************************************}
-{if $f_type == "dcategories_plain"}
+{elseif $f_type == "dcategories_plain"}
     {if $f_simple_2}
         {if $f_blank}<option value="0" {if $f_target.dcat_id == 0} selected="selected" {/if}>{if $f_blank_name}{$f_blank_name}{else}- корневой уровень -{/if}</option>{/if}
         {if is__array($f_options)}
@@ -352,14 +342,12 @@
             </select>
         </div>
     {/if}
-{/if}
-
 
 
 {******************************************************************************}
 {* OBJECTS_PLAIN                                                              *}
 {******************************************************************************}
-{if $f_type == "objects_plain"}
+{elseif $f_type == "objects_plain"}
     {if $f_simple_2}
         {if $f_blank}<option value="0" {if $f_target.o_id == 0} selected="selected" {/if}>{if $f_blank_name}{$f_blank_name}{else}- корневой уровень -{/if}</option>{/if}
         {if is__array($f_options)}
@@ -403,14 +391,12 @@
             </select>
         </div>
     {/if}
-{/if}
-
 
 
 {******************************************************************************}
 {* SELECT_BY_GROUP                                                            *}
 {******************************************************************************}
-{if $f_type == "select_by_group"}
+{elseif $f_type == "select_by_group"}
   {*Array
   (
       [3] => Array
@@ -454,7 +440,7 @@
            {if is__array($f_optgroups)}
            {foreach from=$f_optgroups item="optgroup"}
                {if is__array($optgroup.$f_options)}
-                <optgroup label="{$optgroup.$f_optgroup_label}">
+                <optgroup label="{$optgroup.$f_optgroup_label}" style="font-family: monospace; font-style: normal;">
                    {foreach from=$optgroup.$f_options item="j"}
                        <option value="{$j.$f_option_id}" {if $j.$f_option_id == $f_option_target_id} selected="selected" {/if}>{if $f_value_prefix}{$f_value_prefix}{/if}{$j.$f_option_value}{if $f_option_value_add && $j.$f_option_value_add}{$f_option_value_add_prefix}{$j.$f_option_value_add}{$f_option_value_add_suffix}{/if}{if $f_value_suffix}{$f_value_suffix}{/if}</option>
                    {/foreach}
@@ -468,7 +454,7 @@
        {if is__array($f_optgroups)}
        {foreach from=$f_optgroups item="optgroup"}
            {if is__array($optgroup.$f_options)}
-            <optgroup label="{$optgroup.$f_optgroup_label}">
+            <optgroup label="{$optgroup.$f_optgroup_label}" style="font-family: monospace; font-style: normal;">
                {foreach from=$optgroup.$f_options item="j"}
                    <option value="{$j.$f_option_id}" {if $j.$f_option_id == $f_option_target_id} selected="selected" {/if}>{if $f_value_prefix}{$f_value_prefix}{/if}{$j.$f_option_value}{if $f_option_value_add && $j.$f_option_value_add}{$f_option_value_add_prefix}{$j.$f_option_value_add}{$f_option_value_add_suffix}{/if}{if $f_value_suffix}{$f_value_suffix}{/if}</option>
                {/foreach}
@@ -499,14 +485,12 @@
        </div>
 
    {/if}
-{/if}
-
 
 
 {******************************************************************************}
 {* DATE                                                                       *}
 {******************************************************************************}
-{if $f_type == "date"}
+{elseif $f_type == "date"}
    {if $f_simple}
        {assign var="r" value=10000000|rand:99999999}
        {include file="addons/uns/views/components/calendar.tpl"
@@ -539,14 +523,12 @@
                date_disabled=$f_disabled}
        </div>
    {/if}
-{/if}
-
 
 
 {******************************************************************************}
 {* DOCUMENT_TYPE                                                              *}
 {******************************************************************************}
-{if $f_type == "document_type"}
+{elseif $f_type == "document_type"}
     {if $f_simple}
         <select {if $f_name} name="{$f_name}" {/if} {if $f_id} id="{$f_id}" {/if} {if $f_disabled} disabled="disabled" {/if}>
             {if $f_blank}<option>---</option>{/if}
@@ -577,14 +559,12 @@
             </select>
         </div>
     {/if}
-{/if}
-
 
 
 {******************************************************************************}
 {* ITEM_TYPE                                                              *}
 {******************************************************************************}
-{if $f_type == "item_type"}
+{elseif $f_type == "item_type"}
     {if $f_simple}
         <select name="{$f_name}" {if $f_id} id="{$f_id}" {/if} {if $f_disabled}disabled="disabled"{/if} >
             <option {if $f_value == 0} selected="selected" {/if} value="0">---</option>
@@ -596,13 +576,12 @@
         </select>
     {else}
     {/if}
-{/if}
 
 
 {******************************************************************************}
 {* PROCESSING                                                              *}
 {******************************************************************************}
-{if $f_type == "processing"}
+{elseif $f_type == "processing"}
     {if $f_simple}
         <select {if $f_name}name="{$f_name}"{/if} {if $f_id}id="{$f_id}"{/if} {if $f_disabled}disabled="disabled"{/if}>
             {if $f_blank}<option>---</option>{/if}
@@ -611,13 +590,12 @@
         </select>
     {else}
     {/if}
-{/if}
 
 
 {******************************************************************************}
 {* DOCUMENT_STATUS                                                            *}
 {******************************************************************************}
-{if $f_type == "document_status"}
+{elseif $f_type == "document_status"}
     {if $f_simple}
     {else}
         <div class="form-field">
@@ -630,13 +608,12 @@
             </select>
         </div>
     {/if}
-{/if}
 
 
 {******************************************************************************}
 {* SELECT_RANGE                                                               *}
 {******************************************************************************}
-{if $f_type == "select_range"}
+{elseif $f_type == "select_range"}
     {if $f_simple}
         <select {if strlen($f_add_attr)}add_attr="{$f_add_attr}"{/if} autocomplete="off" {if $f_name}name="{$f_name}"{/if} {if $f_id} id="{$f_id}"{/if} {if $f_disabled}disabled="disabled"{/if} {if $f_style}style="{$f_style}"{/if} {if $f_onchange}onchange="{$f_onchange}"{/if} >
             {if $f_blank}
@@ -663,13 +640,12 @@
             </select>
         </div>
     {/if}
-{/if}
 
 
 {******************************************************************************}
 {* TRANSACTION                                                                *}
 {******************************************************************************}
-{if $f_type == "transaction"}
+{elseif $f_type == "transaction"}
     {if $f_simple}
     {else}
         <div class="form-field">
@@ -698,13 +674,12 @@
             {/literal}
         </div>
     {/if}
-{/if}
 
 
 {******************************************************************************}
 {* TYPE_CASTING --- ТИП ЛИТЬЯ (Чугунное/Стальное)                                                              *}
 {******************************************************************************}
-{if $f_type == "type_casting"}
+{elseif $f_type == "type_casting"}
     {if $f_simple}
         <select name="{$f_name}" {if $f_id} id="{$f_id}" {/if} {if $f_disabled}disabled="disabled"{/if} >
             <option {if $f_value == 0}   selected="selected" {/if} value="0">---</option>
@@ -727,12 +702,12 @@
             </select>
         </div>
     {/if}
-{/if}
+
 
 {******************************************************************************}
 {* TIME                                                                       *}
 {******************************************************************************}
-{if $f_type == "time"}
+{elseif $f_type == "time"}
     {if $f_simple}
         {assign var="f_value" value=$f_value|fn_parse_date|date_format:"%H:%M"}
         <select {if $f_name}name="{$f_name}"{/if} {if $f_id} id="{$f_id}"{/if} {if $f_disabled}disabled="disabled"{/if} >

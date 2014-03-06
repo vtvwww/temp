@@ -20,6 +20,7 @@ if($mode == 'manage' or $mode == 'update' or $mode == 'add'){
 if($mode == 'manage'){
     if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "M"; // Текущий месяц
     list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
+    $_REQUEST["accessory_pumps"] = "Y";
 
     $balances = array();
     list($balances, $search) = fn_uns__get_balance_mc_sk_su($_REQUEST, true, true, true);

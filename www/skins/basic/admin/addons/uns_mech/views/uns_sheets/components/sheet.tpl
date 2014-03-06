@@ -93,19 +93,21 @@
 {*Статус*}
 <div class="form-field">
     <label for="status_radio">Статус:</label>
-    {if $sheet.status == "OP"}
-        <b style="display: block; padding-top: 4px;">Открыт</b>
-    {elseif $sheet.status == "CL"}
-        <b style="background-color: #f4dc43;
-        border: 2px solid #dbc43d;
-        display: block;
-        height: 21px;
-        padding-left: 5px;
-        padding-top: 4px;">Закрыт</b>
-    {else}
-        <b style="display: block; padding-top: 4px;" class="info_warning">Нет данных!</b>
-    {/if}
-{*    {include file="addons/uns/views/components/get_form_field.tpl"
+    {*{if $sheet.status == "OP"}*}
+        {*<b style="display: block; padding-top: 4px;">Открыт</b>*}
+    {*{if $sheet.status == "OP"}*}
+        {*<b style="display: block; padding-top: 4px;">Частично закрыт</b>*}
+    {*{elseif $sheet.status == "CL"}*}
+        {*<b style="background-color: #f4dc43;*}
+        {*border: 2px solid #dbc43d;*}
+        {*display: block;*}
+        {*height: 21px;*}
+        {*padding-left: 5px;*}
+        {*padding-top: 4px;">Закрыт</b>*}
+    {*{else}*}
+        {*<b style="display: block; padding-top: 4px;" class="info_warning">Нет данных!</b>*}
+    {*{/if}*}
+    {include file="addons/uns/views/components/get_form_field.tpl"
         f_type="radio_button"
         f_id="sheet_status"
         f_name="`$e_n`[status]"
@@ -113,12 +115,16 @@
         f_simple=true
         f_value=$sheet.status
 
+        f1_default=true
         f1_value="OP"
         f1_title="Открыт"
 
-        f2_value="CL"
-        f2_title="Закрыт"
-    }*}
+        f2_value="PARTIALLYCL"
+        f2_title="Частично закрыт"
+
+        f3_value="CL"
+        f3_title="Закрыт"
+    }
 </div>
 
 {*Тип исходного материала*}
@@ -157,6 +163,10 @@
         <b style="display: block; padding-top: 4px;">{$objects_plain[14].path}</b>
     {elseif $sheet.target_object == 17}
         <b style="display: block; padding-top: 4px;">{$objects_plain[17].path}</b>
+    {elseif $sheet.target_object == 18}
+        <b style="display: block; padding-top: 4px;">{$objects_plain[18].path}</b>
+    {elseif $sheet.target_object == 19}
+        <b style="display: block; padding-top: 4px;">{$objects_plain[19].path}</b>
     {else}
         <b style="display: block; padding-top: 4px;" class="info_warning">Нет данных!</b>
     {/if}

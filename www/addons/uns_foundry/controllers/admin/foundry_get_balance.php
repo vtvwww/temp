@@ -59,6 +59,7 @@ if($mode == 'manage'){
 
     if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "M"; // Текущий месяц
     list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
+    $_REQUEST["accessory_pumps"] = "Y";
 
     $p = array_merge($_REQUEST, $p);
 

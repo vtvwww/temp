@@ -24,13 +24,30 @@ if($mode == 'manage'){
 
     $balances = array();
     list($balances, $search) = fn_uns__get_balance_sgp($_REQUEST, true, true, true, true);
-//    fn_print_r($balances);
     $view->assign('balances',    $balances);
+//    fn_print_r($balances);
 
     $view->assign('search',     $_REQUEST);
     $view->assign('expand_all', false);
 //    fn_print_r($search);
 
+
+    // Запрос ЗАКАЗОВ
+    $p = array(
+        "with_items"        => true,
+        "full_info"         => true,
+        "with_count"        => true,
+        "only_active"       => true,
+        "data_for_tmp"      => true,
+        "remaining_time"    => true,
+    );
+    list($orders, $search) = fn_acc__get_orders(array_merge($_REQUEST, $p));
+//    fn_print_r($orders);
+    $view->assign('orders', $orders);
+
+    // REGIONS
+    list($regions) = fn_uns__get_regions();
+    $view->assign('regions', $regions);
 
     // Запрос категорий
     list($dcategories_plain) = fn_uns__get_details_categories(array("plain" => true, "with_q_ty"=>false));
