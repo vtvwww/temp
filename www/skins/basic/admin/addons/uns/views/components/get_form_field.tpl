@@ -585,8 +585,8 @@
     {if $f_simple}
         <select {if $f_name}name="{$f_name}"{/if} {if $f_id}id="{$f_id}"{/if} {if $f_disabled}disabled="disabled"{/if}>
             {if $f_blank}<option>---</option>{/if}
-            <option {if $f_value == "P"}selected="selected"{/if} value="P">Обр.</option>
             <option {if $f_value == "C"}selected="selected"{/if} value="C">Зав.</option>
+            <option {if $f_value == "P"}selected="selected"{/if} value="P">Обр.</option>
         </select>
     {else}
     {/if}
