@@ -30,13 +30,21 @@
                 {foreach from=$gr key="group_id" item="item"}
                         {assign var="id" value=$group_id}
                         <tbody>
+                        {assign var="group_showed" value=false}
                         {foreach from=$item.items  item=m key=k_m}
-                            {if $m.konech >0 or $m.konech<0}
+                            {assign var="q_D_orders"  value=0}
+                            {foreach from=$orders item="o"}
+                                {if $o.data_for_tmp.D[$k_m].quantity > 0}
+                                    {assign var="q_D_orders"  value=$q_D_orders+$o.data_for_tmp.D[$k_m].quantity}
+                                {/if}
+                            {/foreach}
+                            {if ($m.konech > 0 or $m.konech < 0 or $q_D_orders > 0 or $q_D_orders < 0) and !$group_showed }
+                            {assign var="group_showed" value=true}
                             <tr>
                                 <td colspan="{math equation="5+3*x" x=$orders|count}" style="background-color: #d3d3d3; ">
                                     <img width="14" category_items="{$id}" height="9" border="0" title="Расширить список" class="hand {$id} plus {if !$expand_all} hidden {/if}" alt="Расширить список" src="skins/basic/admin/images/plus.gif">
                                     <img width="14" category_items="{$id}" height="9" border="0" title="Свернуть список" class="hand {$id} minus {if $expand_all} hidden {/if}" alt="Свернуть список" src="skins/basic/admin/images/minus.gif">
-                                    &nbsp;<span style="color: #000000; font-weight: bold; font-size: 14px;">{$item.group} [{$item.group_id}] {if $item.group_comment} <span class="info_warning">({$item.group_comment})</span>{/if}</span>
+                                    &nbsp;<span style="color: #000000; font-weight: bold; font-size: 14px;">{$item.group}{if $item.group_comment} <span class="info_warning">({$item.group_comment})</span>{/if}</span>
                                 </td>
                             </tr>
                             {/if}
@@ -84,15 +92,19 @@
                                         </td>
                                     {else}
                                         <td align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
-                                            <span class="zero">0</span>
+                                            &nbsp;
                                         </td>
                                     {/if}
                                 {/foreach}
                                 <td align="center" style="border-left: 1px solid #808080;">
+                                    {if $q_D_orders > 0}
                                     {assign var="diff" value=$q_D-$q_D_orders}
                                     <span class="{if $diff<0}info_warning_block{elseif $diff==0}zero{/if}">
                                         {$diff|fn_fvalue:2}
                                     </span>
+                                    {else}
+                                        &nbsp;
+                                    {/if}
                                 </td>
 
                                 <td align="left" style="border-left: 3px solid #000000;">
@@ -144,13 +156,15 @@
                 {foreach from=$gr key="group_id" item="item"}
                         {assign var="id" value=$group_id}
                         <tbody>
+                        {assign var="group_showed" value=false}
                         {foreach from=$item.items  item=m key=k_m}
-                            {if $m.konech >0 or $m.konech<0}
+                            {if ($m.konech > 0 or $m.konech < 0) and !$group_showed}
+                            {assign var="group_showed" value=true}
                             <tr>
                                 <td colspan="4" style="background-color: #d3d3d3; ">
                                     <img width="14" category_items="{$id}" height="9" border="0" title="Расширить список" class="hand {$id} plus {if !$expand_all} hidden {/if}" alt="Расширить список" src="skins/basic/admin/images/plus.gif">
                                     <img width="14" category_items="{$id}" height="9" border="0" title="Свернуть список" class="hand {$id} minus {if $expand_all} hidden {/if}" alt="Свернуть список" src="skins/basic/admin/images/minus.gif">
-                                    &nbsp;<span style="color: #000000; font-weight: bold; font-size: 14px;">{$item.group} [{$item.group_id}] {if $item.group_comment} <span class="info_warning">({$item.group_comment})</span>{/if}</span>
+                                    &nbsp;<span style="color: #000000; font-weight: bold; font-size: 14px;">{$item.group}{if $item.group_comment} <span class="info_warning">({$item.group_comment})</span>{/if}</span>
                                 </td>
                             </tr>
                             {/if}

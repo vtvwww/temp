@@ -28,7 +28,7 @@
                 <td align="center" class="b1_r b1_l"><span class="{if $m.nach<0}info_warning_block{elseif $m.nach==0}zero{/if}">{$m.nach|fn_fvalue:2}</span></td>
                 <td align="center" class="b1_r b1_l"><span class="{if $m.current__in<0}info_warning_block{elseif $m.current__in==0}zero{/if}">{$m.current__in|fn_fvalue:2}</span></td>
                 <td align="center" class="b1_r b1_l"><span class="{if $m.current__out<0}info_warning_block{elseif $m.current__out==0}zero{/if}">{$m.current__out|fn_fvalue:2}</span></td>
-                <td align="center" class="b1_r b1_l"><span class="{if $m.konech<0}info_warning_block{elseif $m.konech==0}zero{/if} bold">{$m.konech|fn_fvalue:2}</span></td>
+                <td align="center" class="b1_r b1_l" style="background-color: #d3d3d3;" ><span class="{if $m.konech<0}info_warning_block{elseif $m.konech==0}zero{/if} bold">{$m.konech|fn_fvalue:2}</span></td>
                 {if $search.accessory_pumps == "Y"}
                 <td align="left" class="b1_r">
                     {if $m.material_comment_1|strlen}
@@ -45,13 +45,13 @@
             </tr>
         {foreachelse}
             <tr class="no-items">
-                <td colspan="7"><p>{$lang.no_data}</p></td>
+                <td colspan="8"><p>{$lang.no_data}</p></td>
             </tr>
         {/foreach}
         {if $mode_report != "P"}
-        <tr class="category_items {$id}{if $expand_all} hidden {/if}">
-            <td colspan="7" >&nbsp;</td>
-        </tr>
+        {*<tr class="category_items {$id}{if $expand_all} hidden {/if}">*}
+            {*<td colspan="8" >&nbsp;</td>*}
+        {*</tr>*}
         {/if}
     {/capture}
 

@@ -95,8 +95,9 @@
                                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         {assign var="n" value=$m.name}
                                         {assign var="href" value="foundry_get_balance.motion?item_id=`$m.id`&period=`$search.period`&time_from=`$search.time_from`&time_to=`$search.time_to`&nach=`$m.nach`&current__in=`$m.current__in`&current__out=`$m.current__out`&konech=`$m.konech`"}
-                                        <a  rev="content_item_{$m.id}" id="opener_item_{$m_id}" href="{$href|fn_url}" class="cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black" onclick="mark_item($(this));">{$n}</a>
-                                        <div id="content_item_{$m.id}" class="hidden" title="Движение по {$n}"></div>
+                                        <b>{$n}</b>
+                                        {*<a  rev="content_item_{$m.id}" id="opener_item_{$m_id}" href="{$href|fn_url}" class="cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black" onclick="mark_item($(this));">{$n}</a>*}
+                                        {*<div id="content_item_{$m.id}" class="hidden" title="Движение по {$n}"></div>*}
                                     </td>
 
                                     {*************************************************************************************}
@@ -122,15 +123,19 @@
                                             </td>
                                         {else}
                                             <td align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
-                                                <span class="zero">0</span>
+                                                &nbsp;
                                             </td>
                                         {/if}
                                     {/foreach}
                                     <td align="center" style="border-left: 1px solid #808080;">
-                                        {assign var="diff" value=$q_P-$q_P_orders}
-                                        <span class="{if $diff<0}info_warning_block{elseif $diff==0}zero{/if}">
-                                            {$diff|fn_fvalue:2}
-                                        </span>
+                                        {if $q_P_orders > 0}
+                                            {assign var="diff" value=$q_P-$q_P_orders}
+                                            <span class="{if $diff<0}info_warning_block{elseif $diff==0}zero{/if}">
+                                                {$diff|fn_fvalue:2}
+                                            </span>
+                                        {else}
+                                            &nbsp;
+                                        {/if}
                                     </td>
 
                                     {*************************************************************************************}
@@ -156,15 +161,19 @@
                                             </td>
                                         {else}
                                             <td align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
-                                                <span class="zero">0</span>
+                                                &nbsp;
                                             </td>
                                         {/if}
                                     {/foreach}
                                     <td align="center" style="border-left: 1px solid #808080;">
-                                        {assign var="diff" value=$q_PF-$q_PF_orders}
-                                        <span class="{if $diff<0}info_warning_block{elseif $diff==0}zero{/if}">
-                                            {$diff|fn_fvalue:2}
-                                        </span>
+                                        {if $q_PF_orders > 0}
+                                            {assign var="diff" value=$q_PF-$q_PF_orders}
+                                            <span class="{if $diff<0}info_warning_block{elseif $diff==0}zero{/if}">
+                                                {$diff|fn_fvalue:2}
+                                            </span>
+                                        {else}
+                                            &nbsp;
+                                        {/if}
                                     </td>
 
                                     {*************************************************************************************}
@@ -190,15 +199,19 @@
                                             </td>
                                         {else}
                                             <td align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
-                                                <span class="zero">0</span>
+                                                &nbsp;
                                             </td>
                                         {/if}
                                     {/foreach}
                                     <td align="center" style="border-left: 1px solid #808080;">
-                                        {assign var="diff" value=$q_PA-$q_PA_orders}
-                                        <span class="{if $diff<0}info_warning_block{elseif $diff==0}zero{/if}">
-                                            {$diff|fn_fvalue:2}
-                                        </span>
+                                        {if $q_PF_orders > 0}
+                                            {assign var="diff" value=$q_PA-$q_PA_orders}
+                                            <span class="{if $diff<0}info_warning_block{elseif $diff==0}zero{/if}">
+                                                {$diff|fn_fvalue:2}
+                                            </span>
+                                        {else}
+                                            &nbsp;
+                                        {/if}
                                     </td>
                                 </tr>
                             {/if}
@@ -240,7 +253,7 @@
                             </td>
                         {else}
                             <td align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
-                                <span class="zero">0</span>
+                                &nbsp;
                             </td>
                         {/if}
                     {/foreach}
@@ -272,7 +285,7 @@
                             </td>
                         {else}
                             <td align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
-                                <span class="zero">0</span>
+                                &nbsp;
                             </td>
                         {/if}
                     {/foreach}
@@ -304,7 +317,7 @@
                             </td>
                         {else}
                             <td align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
-                                <span class="zero">0</span>
+                                &nbsp;
                             </td>
                         {/if}
                     {/foreach}

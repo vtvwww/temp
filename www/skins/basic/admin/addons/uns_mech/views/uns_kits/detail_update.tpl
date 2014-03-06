@@ -44,7 +44,7 @@
                     f_id="quantity_`$add_index`"
                     f_from=0
                     f_to=200
-                    f_value=$detail.quantity
+                    f_value=$detail.quantity|default:1
                     f_simple=true
                 }
             </div>

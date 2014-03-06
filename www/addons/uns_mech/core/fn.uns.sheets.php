@@ -20,9 +20,18 @@ function fn_acc__upd_sheet_info($id = 0, $data=array()){;
         $d["comment"]       = $data["comment"];
     }
 
+    if ($data["status"] == "OP" or $data["status"] == "PARTIALLYCL" or $data["status"] == "CL"){
+        $d["status"] = $data["status"];
+    }
+    if ($data["status"] == "CL"){
+        $d["date_close"] = TIME;
+    }
+
     // 1. СОХРАНЕНИЕ ИНФОРМАЦИИ О СОПРОВОДИТЕЛЬНОМ ЛИСТЕ
     if ($operation == "update"){
-        db_query(UNS_DB_PREFIX . "UPDATE ?:_acc_sheets SET ?u WHERE sheet_id = ?i", $d, $id);
+        if ($data["change_status"] != "N"){
+            db_query(UNS_DB_PREFIX . "UPDATE ?:_acc_sheets SET ?u WHERE sheet_id = ?i", $d, $id);
+        }
     }elseif ($operation == "add"){
         if (    !is__more_0($data["mcat_id"])
             or  !is__more_0($data["no"])
@@ -60,7 +69,6 @@ function fn_acc__upd_sheet_info($id = 0, $data=array()){;
 
     // 3. ОБНОВЛЕНИЕ СТАТУСА, МЕСТОПОЛОЖЕНИЯ И ТИПА МАТЕРИАЛА
     $d = array(
-        "status"=> "OP",
         "material_type" => "O",
         "target_object" => 0,
         "date_close"    => 0,
@@ -79,14 +87,14 @@ function fn_acc__upd_sheet_info($id = 0, $data=array()){;
     list($motions) = fn_uns__get_documents($p);
 
     // 3.1. ---> статус
-    if (is__array($motions)){
-        foreach ($motions as $k=>$m){
-            if ($m["status"] == "A" and in_array($m["document_type_info"]["type"], array("VCP_COMPLETE", "MCP"))){
-                $d["status"] = "CL";
-                $d["date_close"] = TIME;
-            }
-        }
-    }
+//    if (is__array($motions)){
+//        foreach ($motions as $k=>$m){
+//            if ($m["status"] == "A" and in_array($m["document_type_info"]["type"], array("VCP_COMPLETE", "MCP"))){
+//                $d["status"] = "CL";
+//                $d["date_close"] = TIME;
+//            }
+//        }
+//    }
 
     // 3.2. ---> тип материала
     $material_id = db_get_field(UNS_DB_PREFIX . "SELECT material_id FROM ?:_acc_sheets WHERE sheet_id = $id");
@@ -401,8 +409,8 @@ function fn_acc__upd_motion ($sheet_id, $document_id=0, $data){
 
     $d_id = fn_uns__upd_document($document_id, $data);
     if (!is__more_0($d_id)) return false;
-    fn_acc__upd_sheet($sheet_id);
 
+    fn_acc__upd_sheet($sheet_id, $_REQUEST);
     return $d_id;
 }
 

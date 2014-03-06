@@ -246,7 +246,27 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                         );
 
                         list ($p['time_from'], $p['time_to']) = fn_create_periods(null);
+                        list($balance, $search) = fn_uns__get_balance($p);
+                        $balance = fn_fvalue($balance[$_REQUEST['item_id']]['ko']);
 
+                        if ($balance<1) $balance = "<span title='Текущий остаток на Складе литья' style='cursor:pointer; color:red; font-weight:bold;'>$balance</span>";
+                        else $balance = "<span title='Текущий остаток на Складе литья' style='cursor:cursor; font-weight:bold;'>$balance</span>";
+                        $ajax->assign('balance', $balance);
+                        //----------------------------------------------------------
+                    }
+                    if ($_REQUEST['item_type'] == "D"){
+                        $balance = -12;
+                        $p = array(
+                            "plain"             => true,
+                            "all"               => true,
+                            "item_type"         => $_REQUEST['item_type'],
+                            "item_id"           => $_REQUEST['item_id'],
+                            "add_item_info"     => false,
+                            "view_all_position" => "Y",
+                            "with_weight"       => true,
+                        );
+
+                        list ($p['time_from'], $p['time_to']) = fn_create_periods(null);
                         list($balance, $search) = fn_uns__get_balance($p);
                         $balance = fn_fvalue($balance[$_REQUEST['item_id']]['ko']);
 

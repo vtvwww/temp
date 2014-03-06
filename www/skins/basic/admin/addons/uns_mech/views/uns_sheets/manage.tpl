@@ -67,6 +67,7 @@
     <form action="{""|fn_url}" method="post" name="{$controller}_form" class="{if ""|fn_check_form_permissions} cm-hide-inputs{/if}">
        {include file="common_templates/pagination.tpl"}
        <table cellpadding="0" cellspacing="0" border="0" width="100%" class="table">
+           <thead>
            <tr>
                {*<th width="1%">*}
                    {*<input type="checkbox" name="check_all" value="Y" title="{$lang.check_uncheck_all}" class="checkbox cm-check-items" />*}
@@ -80,6 +81,7 @@
                <th width="300px" style="text-align: center;">Детали</th>
                <th>&nbsp;</th>
            </tr>
+           </thead>
            {foreach from=$sheets item=i}
                {*<tr {cycle values="class=\"table-row\", "}>*}
                <tr class="sheet_{$i.status}">
@@ -95,16 +97,22 @@
                        {elseif $i.target_object == 14}
                            <span class="target_object mc2">2</span>
                        {elseif $i.target_object == 17}
-                           <span class="target_object kmp">КМП</span>
+                           <span class="target_object kmp" title="Склад Комплектующих">КМП</span>
+                       {elseif $i.target_object == 18}
+                           <span class="target_object su" title="Сборочный участок">Сб.Уч</span>
+                       {elseif $i.target_object == 19}
+                           <span class="target_object sgp" title="Склад Готовой Продукции">СГП</span>
                        {else}
                            <span title="Местонахождение деталей неизвестно! Необходимо исправить!" class="info_warning hand">Н/Д</span>
                        {/if}
                    </td>
                    <td style="border-left: 1px solid #808080;"> {*Статус*}
                        {if $i.status == "OP"}
-                           <img border="0" title="Открыт" src="skins/basic/admin/addons/uns_acc/images/circle_yellow.png">
+                           <img border="0" class="hand" title="Открыт" src="skins/basic/admin/addons/uns_acc/images/sl_open.png">
+                       {elseif $i.status == "PARTIALLYCL"}
+                           <img border="0" class="hand" title="Частично закрыт" src="skins/basic/admin/addons/uns_acc/images/sl_partiallyclose.png">
                        {elseif $i.status == "CL"}
-                           <img border="0" class="hand" title="Закрыт {if $i.date_close}{$i.date_close|date_format:"%a %d/%m/%y"}{else}Н/Д{/if}" src="skins/basic/admin/addons/uns_acc/images/done.png">
+                           <img border="0" class="hand" title="Закрыт {if $i.date_close}{$i.date_close|date_format:"%a %d/%m/%y"}{else}Н/Д{/if}" src="skins/basic/admin/addons/uns_acc/images/sl_close.png">
                        {elseif $i.status == "CN"}
                            <img border="0" title="Отменен" src="skins/basic/admin/addons/uns_acc/images/circle_red.png">
                        {/if}

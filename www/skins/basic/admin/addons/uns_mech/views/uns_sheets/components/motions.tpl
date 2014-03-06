@@ -76,7 +76,7 @@
                     id="add_MCP"
                     text="Сдать на Склад Комплектующих [2]"
                     act="edit"
-                    link_text="Сдать на Скл. КМП"
+                    link_text="Сдать на СКМП / Сб.Уч. / СГП"
                     href="`$controller`.motion.add?document_type=2&sheet_id=`$sheet.sheet_id`"
                     link_class="cm-dialog-auto-size"
                     tools_list=$smarty.capture.tools_items}</li>
@@ -128,18 +128,18 @@
                         </td>
                         <td{* align="center"*}>
                             {if $m.document_type_info.type == "PVP"}
-                                {assign var="doc_name" value="В производство"}
+                                {assign var="doc_name" value="В производство на `$objects_plain[$m.object_to].path`"}
                             {elseif $m.document_type_info.type == "MCP"}
-                                {assign var="doc_name" value="Сдать на Скл. КМП"}
+                                {assign var="doc_name" value="Сдать `$objects_plain[$m.object_from].path` => `$objects_plain[$m.object_to].path`"}
                             {elseif $m.document_type_info.type == "BRAK"}
-                                {assign var="doc_name" value="В брак"}
+                                {assign var="doc_name" value="Брак `$objects_plain[$m.object_from].path` => `$objects_plain[$m.object_to].o_name`"}
                             {elseif $m.document_type_info.type == "VCP"}
                                 {if $m.object_from == 10 and $m.object_to == 14}
-                                    {assign var="doc_name" value="МЦ1 => МЦ2"}
+                                    {assign var="doc_name" value="`$objects_plain[$m.object_from].path` => `$objects_plain[$m.object_to].path`"}
                                 {elseif $m.object_from == 14 and $m.object_to == 10}
-                                    {assign var="doc_name" value="МЦ1 <= МЦ2"}
+                                    {assign var="doc_name" value="`$objects_plain[$m.object_from].path` => `$objects_plain[$m.object_to].path`"}
                                 {else}
-                                    {assign var="doc_name" value="МЦ1 < ???? > МЦ2 - ОШИБКА!"}
+                                    {assign var="doc_name" value="`$objects_plain[$m.object_from].path` => `$objects_plain[$m.object_to].path`"}
                                 {/if}
                             {elseif $m.document_type_info.type == "VCP_COMPLETE"}
                                 {assign var="doc_name" value="Завершено"}
