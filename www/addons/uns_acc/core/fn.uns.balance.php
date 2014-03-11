@@ -1063,7 +1063,7 @@ function fn_uns__get_balance_sgp($params, $pump=false, $pump_frame=false, $pump_
     // ЗАПРОС БАЛАНСА СГП ПО ДЕТАЛЯМ
     if ($details == true){
         $p["prihod_doc_types"] = array("'AIO'", "'MCP'");
-        $p["rashod_doc_types"] = array("'AIO'", "'MCP'", "'BRAK'");
+        $p["rashod_doc_types"] = array("'AIO'", "'MCP'", "'BRAK'", "'RO'");
 
         $p["cond_prih"]    = " AND (
                                      (
@@ -1079,6 +1079,11 @@ function fn_uns__get_balance_sgp($params, $pump=false, $pump_frame=false, $pump_
                                 )
                                 ";
         $p["cond_rash"]    = " AND (
+                                     (
+                                            uns__acc_document_types.type        = 'RO'
+                                        and uns__acc_document_items.motion_type like '%O%'
+                                     )
+                                     OR
                                      (
                                             uns__acc_document_types.type        = 'MCP'
                                         and uns__acc_document_items.motion_type like '%O%'
