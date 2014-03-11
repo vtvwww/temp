@@ -37,7 +37,8 @@ function fn_uns__get_type_balance_for_object($o_id){
     return (is__more_0($o_id)?$types[$o_id]:false);
 }
 
-function fn_uns__get_balance($params = array()){
+function fn_uns__get_balance($params = array(), $time=false){
+    if ($time) $start_time = microtime_float();
     $default_params = array(
         'time_from' =>'',
         'time_to'=>'',
@@ -148,19 +149,21 @@ function fn_uns__get_balance($params = array()){
     // 3. Items
     $cond__items = '';
     if (fn_check_type($params['item_type'], UNS_ITEM_TYPES)){
-        if ($params['item_type'] == 'M'){
-            $cond__items .= db_quote(" AND uns__acc_document_items.item_type = ?s AND uns__acc_document_items.typesize = 'M' ", $params['item_type']);
-            if (is__more_0($params['item_id'])){
-                $cond__items .= db_quote(" AND uns__acc_document_items.item_id = ?i ", $params['item_id']);
-            }
-        }elseif ($params['item_type'] == 'D'){
-            $cond__items .= db_quote(" AND uns__acc_document_items.item_type = ?s AND uns__acc_document_items.typesize = 'M' ", $params['item_type']);
-            if ($params['item_id_array'] = to__array($params['item_id'])){
-                $cond__items .= db_quote(" AND uns__acc_document_items.item_id in (?n) ", $params['item_id_array']);
-            }
-        }elseif (fn_check_type($params['item_type'], UNS_ITEM_TYPES)){
-            $cond__items .= db_quote(" AND uns__acc_document_items.item_type = ?s ", $params['item_type']);
+        $cond__items .= db_quote(" AND uns__acc_document_items.item_type = ?s AND uns__acc_document_items.typesize = 'M' ", $params['item_type']);
+        if ($params['item_id_array'] = to__array($params['item_id'])){
+            $cond__items .= db_quote(" AND uns__acc_document_items.item_id in (?n) ", $params['item_id_array']);
         }
+//        if ($params['item_type'] == 'M'){
+//            if (is__more_0($params['item_id'])){
+//                $cond__items .= db_quote(" AND uns__acc_document_items.item_id = ?i ", $params['item_id']);
+//            }
+//        }elseif ($params['item_type'] == 'D'){
+//            if ($params['item_id_array'] = to__array($params['item_id'])){
+//                $cond__items .= db_quote(" AND uns__acc_document_items.item_id in (?n) ", $params['item_id_array']);
+//            }
+//        }elseif (fn_check_type($params['item_type'], UNS_ITEM_TYPES)){
+//            $cond__items .= db_quote(" AND uns__acc_document_items.item_type = ?s ", $params['item_type']);
+//        }
     }
 
     if (fn_check_type($params['package_type'], UNS_PACKAGE_TYPES) and is__more_0($params['package_id'])){
@@ -561,7 +564,7 @@ function fn_uns__get_balance($params = array()){
         }
     }
 
-    return array($data, $params);
+    return array($data, $params, ($time)?(microtime_float()-$start_time):0);
 }
 
 // Принадлежность насосов
@@ -1054,7 +1057,7 @@ function fn_uns__get_balance_sgp($params, $pump=false, $pump_frame=false, $pump_
     }
 
     // ЗАПРОСИТЬ БАЛАНС ПО НАСОСНЫМ АГРЕГАТАМ
-    if ($pump_frame == true){
+    if ($pump_agregat == true){
         $p["item_type"] = "PA";
         list($res[$p["item_type"]]) = fn_uns__get_balance($p);
     }

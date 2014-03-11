@@ -30,7 +30,7 @@
                        {include file="addons/uns/views/components/tools.tpl" type="edit" href="`$controller`.update?`$value`=`$id`"}
                    </td>
                    <td>
-                       <b>№{$id}</b> - {$document_types[$i.type].name}
+                       <b>№{$id}</b> - {$document_types[$i.type].name_short}
                        {if $i.type == $smarty.const.DOC_TYPE__VLC}
                            <br><span style="font-size: 12px; font-weight: bold;" class="date">Дата плавки: {$i.date_cast|date_format:"%a %d/%m/%Y"}</span>
                        {/if}
@@ -82,9 +82,9 @@
    </form>
 
    {capture name="tools"}
-       {include file="common_templates/tools.tpl" tool_href="`$controller`.add" prefix="top" link_text="Добавить документ движения по Складу литья"  hide_tools=true}
+       {include file="common_templates/tools.tpl" tool_href="`$controller`.add" prefix="top" link_text="Добавить документ"  hide_tools=true}
    {/capture}
 
 
 {/capture}
-{include file="common_templates/mainbox.tpl" title="Журнал документов" content=$smarty.capture.mainbox tools=$smarty.capture.tools}
+{include file="common_templates/mainbox.tpl" title="Журнал документов/движений по Складу ЛИТЬЯ" content=$smarty.capture.mainbox tools=$smarty.capture.tools}

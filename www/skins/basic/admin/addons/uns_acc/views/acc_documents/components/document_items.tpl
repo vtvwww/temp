@@ -31,10 +31,11 @@
             <th class="cm-non-cb" width="90px">Категория</th>
             <th class="cm-non-cb" width="140px">Наименование</th>
             {*<th class="cm-non-cb" width="10px">Исп.{include file="common_templates/tooltip.tpl" tooltip="Исполнение детали:<br><b>Номинальное / исп. А / исп. Б</b>"}</th>*}
-            <th class="cm-non-cb" width="88px">Кол-во</th>
+            <th class="cm-non-cb" width="50px">Кол-во</th>
+            <th class="cm-non-cb" width="1px">&nbsp;</th>
             <th class="cm-non-cb" width="10px">Ед. изм.</th>
-            <th class="cm-non-cb" width="10px">Вес{include file="common_templates/tooltip.tpl" tooltip="Вес одной единицы материала, кг"}</th>
-            <th class="cm-non-cb" width="10px">Вес{include file="common_templates/tooltip.tpl" tooltip="Общий вес всего количества, кг"}</th>
+            {*<th class="cm-non-cb" width="10px">Вес{include file="common_templates/tooltip.tpl" tooltip="Вес одной единицы материала, кг"}</th>*}
+            {*<th class="cm-non-cb" width="10px">Вес{include file="common_templates/tooltip.tpl" tooltip="Общий вес всего количества, кг"}</th>*}
         </tr>
     </tbody>
 
@@ -146,6 +147,8 @@
                                 f_simple=true
                                 f_number=true
                             }
+                        </td>
+                        <td class="cm-non-cb" align="right">
                             <div class="balance" style="display:block; float:right;"></div>
                         </td>
                         <td class="cm-non-cb" align="center">
@@ -163,25 +166,25 @@
                                 f_simple=true
                             }
                         </td>
-                        <td class="cm-non-cb" align="right">
-                            {include file="addons/uns/views/components/get_form_field.tpl"
-                                f_type="input"
-                                f_required=true f_integer=false
-                                f_name="`$e_n`[weight]"
-                                f_value=$i.weight|fn_fvalue
-                                f_readonly=true
-                                f_simple=true
-                            }
-                        </td>
-                        <td class="cm-non-cb" align="right">
-                            {assign var="total_weight" value=$i.quantity*$i.weight}
-                            {include file="addons/uns/views/components/get_form_field.tpl"
-                                f_type="input"
-                                f_required=true f_integer=false
-                                f_value=$total_weight
-                                f_simple_text=true
-                            }
-                        </td>
+                        {*<td class="cm-non-cb" align="right">*}
+                            {*{include file="addons/uns/views/components/get_form_field.tpl"*}
+                                {*f_type="input"*}
+                                {*f_required=true f_integer=false*}
+                                {*f_name="`$e_n`[weight]"*}
+                                {*f_value=$i.weight|fn_fvalue*}
+                                {*f_readonly=true*}
+                                {*f_simple=true*}
+                            {*}*}
+                        {*</td>*}
+                        {*<td class="cm-non-cb" align="right">*}
+                            {*{assign var="total_weight" value=$i.quantity*$i.weight}*}
+                            {*{include file="addons/uns/views/components/get_form_field.tpl"*}
+                                {*f_type="input"*}
+                                {*f_required=true f_integer=false*}
+                                {*f_value=$total_weight*}
+                                {*f_simple_text=true*}
+                            {*}*}
+                        {*</td>*}
                         <td class="right cm-non-cb">
                             {include file="buttons/multiple_buttons.tpl" item_id="`$id`_`$num`" tag_level="3" only_delete="Y"}
                         </td>
@@ -242,6 +245,8 @@
                     f_simple=true
                     f_number=true
                 }
+            </td>
+            <td class="cm-non-cb" align="right">
                 <div class="balance" style="display:block; float:right;"></div>
             </td>
             <td class="cm-non-cb" align="center">
@@ -252,18 +257,17 @@
                     f_simple=true
                 }
             </td>
-            <td class="cm-non-cb" align="right">
-                {include file="addons/uns/views/components/get_form_field.tpl"
-                    f_type="input"
-                    f_required=true f_integer=false
-                    f_name="`$e_n`[weight]"
-                    f_value=''
-                    f_readonly=true
-                    f_simple=true
-                }
-            </td>
-
-            <td class="cm-non-cb" align="right">&nbsp;</td>
+            {*<td class="cm-non-cb" align="right">*}
+                {*{include file="addons/uns/views/components/get_form_field.tpl"*}
+                    {*f_type="input"*}
+                    {*f_required=true f_integer=false*}
+                    {*f_name="`$e_n`[weight]"*}
+                    {*f_value=''*}
+                    {*f_readonly=true*}
+                    {*f_simple=true*}
+                {*}*}
+            {*</td>*}
+            {*<td class="cm-non-cb" align="right">&nbsp;</td>*}
             <td class="right cm-non-cb">
                 {include file="buttons/multiple_buttons.tpl" item_id="add_`$num`" tag_level="2"}
             </td>

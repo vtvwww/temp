@@ -209,6 +209,13 @@ function fn_uns__get_documents($params = array(), $items_per_page = 0){
         }
     }
 
+    // !НЕ ПО ОБЪЕКТАМ
+    if ($params["o_id_exclude_array"] = to__array($params["o_id_exclude"])){
+        if (array_sum($params["o_id_exclude_array"])){
+            $condition .= db_quote(" AND ($m_tbl.object_from not in (?n) AND $m_tbl.object_to not in (?n))", $params["o_id_exclude_array"], $params["o_id_exclude_array"]);
+        }
+    }
+
     // ПО РЕГИОНАМ
     if ($params["region_id_array"] = to__array($params["region_id"])){
         $condition .= db_quote(" AND $m_tbl.region_id in (?n) ", $params["region_id_array"]);

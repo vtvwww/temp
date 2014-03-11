@@ -173,6 +173,9 @@ $('select[name^="data[document_items]"][name$="[item_id]"]').live('change', func
     var item_weight      = $(this).parent().parent().find( 'input[name^="data[document_items]"][name$="[weight]"]');
     var item_balance     = $(this).parent().parent().find( 'div.balance');
 
+    var object_from     = $('select[name^="data[document]"][name$="[object_from]"]');
+    var object_to       = $('select[name^="data[document]"][name$="[object_to]"]');
+
     item_quantity   .val(1);
     item_u_id       .empty();
     item_typesize   .empty();
@@ -190,7 +193,9 @@ $('select[name^="data[document_items]"][name$="[item_id]"]').live('change', func
                     document_type   : document_type.val(),
                     item_type       : item_type.val(),
                     item_cat_id     : item_cat_id.val(),
-                    item_id         : item_id.val()
+                    item_id         : item_id.val(),
+                    object_to       : object_to.val(),
+                    object_from     : object_from.val(),
                 },
                 callback: function(data){
                     item_u_id       .append(data.options);

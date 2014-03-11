@@ -38,7 +38,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
     // 1. ПОЛУЧИТЬ ОБЕКТЫ "FROM"
     if (defined('AJAX_REQUEST') and $mode == 'get_object_from' and is__more_0($_REQUEST['type'])){
-        $objects_plain   = array_shift(fn_uns__get_objects(array('plain' => true, 'all' => true)));
+        $objects_plain   = array_shift(fn_uns__get_objects(array('plain' => true, 'all' => true, 'status' => "A")));
         $enabled_objects_from = array_keys(fn_uns__get_enabled_objects($_REQUEST['type']));
 
         $view->assign('f_simple_2',         true);
@@ -100,6 +100,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             case "change__item_type": // Произошла смена ТИПА ДЕТАЛИ
                 if(in_array($_REQUEST['item_type'], array('D', 'M', 'P', 'PF', 'PA'))){
                     $options = "<option value='0'>---</option>";
+                    //ДЕТАЛЬ
                     if($_REQUEST['item_type'] == "D"){
                         list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true));
                         $view->assign('f_type', 'dcategories_plain');
@@ -109,6 +110,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                         $view->assign('f_with_q_ty', false);
                         $view->assign('f_simple_2', true);
 
+                    //МАТЕРИАЛ
                     } elseif($_REQUEST['item_type'] == "M"){
                         $p = array( 'plain'         => true,
                                     'mcat_id'       => UNS_MATERIAL_CATEGORY__CAST,
@@ -122,6 +124,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                         $view->assign('f_with_q_ty', false);
                         $view->assign('f_simple_2', true);
 
+                    //НАСОС, НАСОС НА РАМЕ, НАСОСНЫЙ АГРЕГАТ
                     } elseif(in_array($_REQUEST['item_type'], array("P", "PF", "PA"))){
                         $p = array(
                             'only_active' => true,
@@ -147,6 +150,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                 // Произошла смена категории//серии Детали/Материала//Насоса
                 if(in_array($_REQUEST['item_type'], array("D", "M", "P", "PF", "PA")) && is__more_0($_REQUEST['item_cat_id'])){
                     $options = "<option value='0'>---</option>";
+
+                    //ДЕТАЛЬ
                     if($_REQUEST['item_type'] == "D"){
                         $p = array('dcat_id'            => $_REQUEST['item_cat_id'],
                                    'with_accounting'    => true,
@@ -161,6 +166,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                         $view->assign('f_option_value', 'format_name');
                         $view->assign('f_add_value', 'material_no');
                         $view->assign('f_simple_2', true);
+
+                    //МАТЕРИАЛ
                     } elseif($_REQUEST['item_type'] == "M"){
                         $p = array('mcat_id'         => $_REQUEST['item_cat_id'],
                                    'only_active'        => true,
@@ -172,6 +179,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                         $view->assign('f_option_id', 'material_id');
                         $view->assign('f_option_value', 'format_name');
                         $view->assign('f_simple_2', true);
+
+                    //НАСОС, НАСОС НА РАМЕ, НАСОСНЫЙ АГРЕГАТ
                     } elseif(in_array($_REQUEST['item_type'], array("P", "PF", "PA"))){
                         $p = array(
                             'ps_id'         => $_REQUEST['item_cat_id'],
@@ -192,51 +201,40 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             case "change__item_id":
                 // Произошла смена Детали/Материала
                 if(in_array($_REQUEST['item_type'], array("D", "M", "P", "PF", "PA")) && is__more_0($_REQUEST['item_id'])){
-                    if($_REQUEST['item_type'] == "D"){
-                        $p = array('detail_id' => $_REQUEST['item_id'],
-                                   'item_type' => $_REQUEST['item_type']);
-                    } else{
+                    list($document_types) = fn_uns__get_document_types(array('status'=>'A'));
+                    list($objects_plain) = fn_uns__get_objects(array('plain' => true, 'all' => true));
+
+                    // =========================================================
+                    // СКЛАД ЛИТЬЯ
+                    // ---------------------------------------------------------
+                    // или ВЫПУСК ЛИТ. ЦЕХА
+                    // или АКТ СПИСАНИЯ НА ЛИТ. ЦЕХ
+                    // или РАСХОДНЫЙ ОРДЕР
+                    // или АКТ ИЗМЕНЕНИЯ ОСТАТКА
+                    // ---------------------------------------------------------
+                    if (in_array($document_types[$_REQUEST["document_type"]]["type"], array("VLC", "AS_VLC", "RO", "AIO"))
+                            and $_REQUEST['item_type'] == "M"
+                            and $_REQUEST['object_to'] == "8"
+                    ){
+                        // UNITS
                         $p = array('material_id' => $_REQUEST['item_id'],
                                    'item_type'   => $_REQUEST['item_type'],
-                                   /*'u_id_add'    => array(UNS_UNIT_WEIGHT)*/
                         );
-                    }
-                    list ($units) = fn_uns__get_units($p);
+                        list ($units) = fn_uns__get_units($p);
+                        $view->assign('f_type',         'select');
+                        $view->assign('f_options',      $units);
+                        $view->assign('f_option_id',    'u_id');
+                        $view->assign('f_option_value', 'u_name');
+                        $view->assign('f_simple_2',     true);
+                        $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
+                        $ajax->assign('options', $options);
 
-                    $view->assign('f_type', 'select');
-                    $view->assign('f_options', $units);
-                    $view->assign('f_option_id', 'u_id');
-                    $view->assign('f_option_value', 'u_name');
-                    $view->assign('f_simple_2', true);
-
-                    $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
-
-                    $ajax->assign('options', $options);
-
-                    // ТИПОРАЗМЕР
-                    $typesizes = '';
-                    if ($_REQUEST['document_type'] == 1){
-                        // Лит цех
-                    }else{
-                        if($_REQUEST['item_type'] == "D"){
-                            list($detail) = fn_uns__get_details(array("detail_id" => $_REQUEST['item_id']));
-                            $detail = array_shift($detail);
-                            $view->assign('f_type', 'typesize');
-                            $view->assign('f_a', $detail['size_a']);
-                            $view->assign('f_b', $detail['size_b']);
-                            $view->assign('f_simple', true);
-                            $typesizes =  trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
-                        }
-                    }
-                    $ajax->assign('typesizes', $typesizes);
-
-                    // БАЛАНС
-                    if ($_REQUEST['item_type'] == "M"){
-                        $balance = -12;
+                        // БАЛАНС
+                        $balance = "н/д";
                         $p = array(
                             "plain"             => true,
                             "all"               => true,
-                            "o_id"              => array(8),  // Склад литья
+                            "o_id"              => array($_REQUEST['object_to']),  // Склад литья
                             "item_type"         => $_REQUEST['item_type'],
                             "item_id"           => $_REQUEST['item_id'],
                             "add_item_info"     => false,
@@ -246,53 +244,238 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                         );
 
                         list ($p['time_from'], $p['time_to']) = fn_create_periods(null);
-                        list($balance, $search) = fn_uns__get_balance($p);
+                        list($balance, $search, $time_exec) = fn_uns__get_balance($p, true);
+//                        fn_set_notification("N", "TIME EXEC BALANCE", fn_fvalue($time_exec, 6, false) . " сек.", "I");
                         $balance = fn_fvalue($balance[$_REQUEST['item_id']]['ko']);
+                        $balance_html = "<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_to']]["path"] . "::.' class='item_balance " . (($balance==0)?"zero":(($balance<0)?"neg":"pos")) . "'>" . $balance . "</span>";
 
-                        if ($balance<1) $balance = "<span title='Текущий остаток на Складе литья' style='cursor:pointer; color:red; font-weight:bold;'>$balance</span>";
-                        else $balance = "<span title='Текущий остаток на Складе литья' style='cursor:cursor; font-weight:bold;'>$balance</span>";
-                        $ajax->assign('balance', $balance);
-                        //----------------------------------------------------------
-                    }
-                    if ($_REQUEST['item_type'] == "D"){
-                        $balance = -12;
+
+                    // =========================================================
+                    // СКЛАД ГОТОВОЙ ПРОДУКЦИИ!
+                    // ---------------------------------------------------------
+                    // или РАСХОДНЫЙ ОРДЕР
+                    // или АКТ ИЗМЕНЕНИЯ ОСТАТКА
+                    // ---------------------------------------------------------
+                    }elseif (in_array($document_types[$_REQUEST["document_type"]]["type"], array("RO", "AIO"))
+                            and in_array($_REQUEST['item_type'], array("D", "P", "PF", "PA"))
+                            and $_REQUEST['object_to'] == "19" // СГП
+                    ){
+                        // UNITS
+                        $p = array('detail_id'  => $_REQUEST['item_id'],
+                                   'item_type'  => $_REQUEST['item_type'],
+                        );
+                        list ($units) = fn_uns__get_units($p);
+                        $view->assign('f_type',         'select');
+                        $view->assign('f_options',      $units);
+                        $view->assign('f_option_id',    'u_id');
+                        $view->assign('f_option_value', 'u_name');
+                        $view->assign('f_simple_2',     true);
+                        $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
+                        $ajax->assign('options', $options);
+
+                        // БАЛАНС
+                        $balance = "н/д";
+                        $p = array(
+                            "plain"             => true,
+                            "all"               => true,
+                            "o_id"              => array($_REQUEST['object_to']),  // Склад литья
+                            "item_type"         => $_REQUEST['item_type'],
+                            "item_id"           => $_REQUEST['item_id'],
+                            "add_item_info"     => false,
+                        );
+
+                        list ($p['time_from'], $p['time_to']) = fn_create_periods(null);
+
+                        if ($_REQUEST['item_type'] == "D"){
+                            list($balance) = fn_uns__get_balance_sgp($p, false, false, false, true);
+                        }elseif ($_REQUEST['item_type'] == "P"){
+                            list($balance) = fn_uns__get_balance_sgp($p, true, false, false, false);
+                        }elseif ($_REQUEST['item_type'] == "PF"){
+                            list($balance) = fn_uns__get_balance_sgp($p, false, true, false, false);
+                        }elseif ($_REQUEST['item_type'] == "PA"){
+                            list($balance) = fn_uns__get_balance_sgp($p, false, false, true, false);
+                        }
+
+                        $balance = fn_fvalue($balance[$_REQUEST['item_type']][$_REQUEST['item_id']]['ko']);
+                        $balance_html = "<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_to']]["path"] . "::.' class='item_balance " . (($balance==0)?"zero":(($balance<0)?"neg":"pos")) . "'>" . $balance . "</span>";
+
+
+                    // =========================================================
+                    // Сб. Уч. | СКМП | МЦ1 | МЦ2
+                    // ---------------------------------------------------------
+                    // или АКТ ИЗМЕНЕНИЯ ОСТАТКА
+                    // ---------------------------------------------------------
+                    }elseif (in_array($document_types[$_REQUEST["document_type"]]["type"], array("AIO"))
+                            and in_array($_REQUEST['item_type'], array("D"))
+                            and in_array($_REQUEST['object_to'], array(18, 17, 10, 14)) // Сб. Уч. | СКМП | МЦ1 | МЦ2
+                    ){
+                        // UNITS
+                        $p = array('detail_id'  => $_REQUEST['item_id'],
+                                   'item_type'  => $_REQUEST['item_type'],
+                        );
+                        list ($units) = fn_uns__get_units($p);
+                        $view->assign('f_type',         'select');
+                        $view->assign('f_options',      $units);
+                        $view->assign('f_option_id',    'u_id');
+                        $view->assign('f_option_value', 'u_name');
+                        $view->assign('f_simple_2',     true);
+                        $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
+                        $ajax->assign('options', $options);
+                        $p = array(
+                            "plain"             => true,
+                            "all"               => true,
+                            "o_id"              => array($_REQUEST['object_to']),  // Склад литья
+                            "item_type"         => $_REQUEST['item_type'],
+                            "item_id"           => $_REQUEST['item_id'],
+                            "add_item_info"     => false,
+                        );
+
+                        list ($p['time_from'], $p['time_to']) = fn_create_periods(null);
+                        if ($_REQUEST['object_to'] == 18){  //Сб. Уч.
+                            list($balance) = fn_uns__get_balance_mc_sk_su($p, false, false, true);
+                            $balance = fn_fvalue($balance[$_REQUEST['object_to']][$_REQUEST['item_id']]['ko']);
+                            $balance_html = "<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_to']]["path"] . "::.' class='item_balance " . (($balance==0)?"zero":(($balance<0)?"neg":"pos")) . "'>" . $balance . "</span>";
+
+                        }elseif ($_REQUEST['object_to'] == 17){ //С КМП
+                            list($balance) = fn_uns__get_balance_mc_sk_su($p, false, true, false);
+                            $balance = fn_fvalue($balance[$_REQUEST['object_to']][$_REQUEST['item_id']]['ko']);
+                            $balance_html = "<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_to']]["path"] . "::.' class='item_balance " . (($balance==0)?"zero":(($balance<0)?"neg":"pos")) . "'>" . $balance . "</span>";
+
+                        }elseif ($_REQUEST['object_to'] == 10 or $_REQUEST['object_to'] == 14){ // МЦ1 - МЦ2
+                            $p["add_item_info"] = true;
+                            list($balance) = fn_uns__get_balance_mc_sk_su($p, true, false, false);
+                            $group_items = array_shift($balance[$_REQUEST['object_to']]);
+                            $processing = fn_fvalue($group_items["items"][$_REQUEST['item_id']]["processing"]);
+                            $complete   = fn_fvalue($group_items["items"][$_REQUEST['item_id']]["complete"]);
+
+
+                            $balance = fn_fvalue($balance[$_REQUEST['object_to']][$_REQUEST['item_id']]['ko']);
+                            $balance_html  = "<b>{$objects_plain[$_REQUEST['object_to']]["o_name"]}:&nbsp;</b>" . "<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_to']]["path"] . "::. ОБРАБОТКА' class='item_balance " . (($processing==0)?"zero":(($processing<0)?"neg":"pos")) . "'>" . $processing . "</span>";
+                            $balance_html .= "&nbsp;<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_to']]["path"] . "::. ЗАВЕРШЕНО' class='item_balance " . (($complete==0)?"zero":(($complete<0)?"neg":"pos")) . "'>" . $complete . "</span>";
+
+                        }
+
+
+                    // =========================================================
+                    // MCP
+                    // ---------------------------------------------------------
+                    }elseif (in_array($document_types[$_REQUEST["document_type"]]["type"], array("MCP"))
+                            and in_array($_REQUEST['item_type'], array("D"))
+                            and in_array($_REQUEST['object_from'], array(10, 14, 17, 18))
+                            and in_array($_REQUEST['object_from'], array(10, 14, 17, 18, 19))
+                    ){
                         $p = array(
                             "plain"             => true,
                             "all"               => true,
                             "item_type"         => $_REQUEST['item_type'],
                             "item_id"           => $_REQUEST['item_id'],
                             "add_item_info"     => false,
-                            "view_all_position" => "Y",
-                            "with_weight"       => true,
                         );
 
                         list ($p['time_from'], $p['time_to']) = fn_create_periods(null);
-                        list($balance, $search) = fn_uns__get_balance($p);
-                        $balance = fn_fvalue($balance[$_REQUEST['item_id']]['ko']);
 
-                        if ($balance<1) $balance = "<span title='Текущий остаток на Складе литья' style='cursor:pointer; color:red; font-weight:bold;'>$balance</span>";
-                        else $balance = "<span title='Текущий остаток на Складе литья' style='cursor:cursor; font-weight:bold;'>$balance</span>";
-                        $ajax->assign('balance', $balance);
-                        //----------------------------------------------------------
+                        //------------------------------------------------------
+                        // МЦ1 <-> МЦ2
+                        if (($_REQUEST['object_from'] == 10 and $_REQUEST['object_to'] == 14)
+                            or ($_REQUEST['object_from'] == 14 and $_REQUEST['object_to'] == 10)
+                        ){
+                            $p["add_item_info"] = true;
+                            list($balance) = fn_uns__get_balance_mc_sk_su($p, true, false, false);
+                            $group_items_from = array_shift($balance[$_REQUEST['object_from']]);
+                            $group_items_to = array_shift($balance[$_REQUEST['object_to']]);
+
+
+                            $processing = fn_fvalue($group_items_from["items"][$_REQUEST['item_id']]["processing"]);
+                            $complete   = fn_fvalue($group_items_from["items"][$_REQUEST['item_id']]["complete"]);
+                            $balance_html  = "<b>{$objects_plain[$_REQUEST['object_from']]["o_name"]}:&nbsp;</b>" . "<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_from']]["path"] . "::. ОБРАБОТКА' class='item_balance " . (($processing==0)?"zero":(($processing<0)?"neg":"pos")) . "'>" . $processing . "</span>";
+                            $balance_html .= "&nbsp;<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_from']]["path"] . "::. ЗАВЕРШЕНО' class='item_balance " . (($complete==0)?"zero":(($complete<0)?"neg":"pos")) . "'>" . $complete . "</span>";
+                            $balance_html .= "<br>";
+                            $processing = fn_fvalue($group_items_to["items"][$_REQUEST['item_id']]["processing"]);
+                            $complete   = fn_fvalue($group_items_to["items"][$_REQUEST['item_id']]["complete"]);
+                            $balance_html .= "<b>{$objects_plain[$_REQUEST['object_to']]["o_name"]}:&nbsp;</b>" . "<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_to']]["path"] . "::. ОБРАБОТКА' class='item_balance " . (($processing==0)?"zero":(($processing<0)?"neg":"pos")) . "'>" . $processing . "</span>";
+                            $balance_html .= "&nbsp;<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_to']]["path"] . "::. ЗАВЕРШЕНО' class='item_balance " . (($complete==0)?"zero":(($complete<0)?"neg":"pos")) . "'>" . $complete . "</span>";
+
+                        //------------------------------------------------------
+                        // МЦ1/МЦ2 -> С КМП
+                        // МЦ1/МЦ2 -> Сб. Уч.
+                        }elseif (($_REQUEST['object_from'] == 10 and $_REQUEST['object_to'] == 17)
+                              or ($_REQUEST['object_from'] == 14 and $_REQUEST['object_to'] == 17)
+                              or ($_REQUEST['object_from'] == 10 and $_REQUEST['object_to'] == 18)
+                              or ($_REQUEST['object_from'] == 14 and $_REQUEST['object_to'] == 18)
+                        ){ //С КМП
+                            $p["add_item_info"] = true;
+                            list($balance) = fn_uns__get_balance_mc_sk_su($p, true, true, true);
+                            $group_items_from = array_shift($balance[$_REQUEST['object_from']]);
+                            $group_items_to = array_shift($balance[$_REQUEST['object_to']]);
+
+                            $processing = fn_fvalue($group_items_from["items"][$_REQUEST['item_id']]["processing"]);
+                            $complete   = fn_fvalue($group_items_from["items"][$_REQUEST['item_id']]["complete"]);
+                            $balance_html  = "<b>{$objects_plain[$_REQUEST['object_from']]["o_name"]}:&nbsp;</b>" . "<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_from']]["path"] . "::. ОБРАБОТКА' class='item_balance " . (($processing==0)?"zero":(($processing<0)?"neg":"pos")) . "'>" . $processing . "</span>";
+                            $balance_html .= "&nbsp;<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_from']]["path"] . "::. ЗАВЕРШЕНО' class='item_balance " . (($complete==0)?"zero":(($complete<0)?"neg":"pos")) . "'>" . $complete . "</span>";
+                            $balance_html .= "<br>";
+                            $processing = fn_fvalue($group_items_to["items"][$_REQUEST['item_id']]["konech"]);
+                            $balance_html .= "<b>" . str_replace(" ", "&nbsp;", $objects_plain[$_REQUEST['object_to']]["o_name"]) . ":&nbsp;</b>" . "<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_to']]["path"] . "::.' class='item_balance " . (($processing==0)?"zero":(($processing<0)?"neg":"pos")) . "'>" . $processing . "</span>";
+
+                        //------------------------------------------------------
+                        // МЦ1/МЦ2 -> СГП
+                        }elseif (($_REQUEST['object_from'] == 10 or $_REQUEST['object_from'] == 14) and $_REQUEST['object_to'] == 19){ // МЦ1 - МЦ2
+                            $p["add_item_info"] = true;
+                            list($balance) = fn_uns__get_balance_mc_sk_su($p, true, false, false);
+                            $group_items_from = array_shift($balance[$_REQUEST['object_from']]);
+                            $group_items_to = array_shift($balance[$_REQUEST['object_to']]);
+
+                            $processing = fn_fvalue($group_items_from["items"][$_REQUEST['item_id']]["processing"]);
+                            $complete   = fn_fvalue($group_items_from["items"][$_REQUEST['item_id']]["complete"]);
+                            $balance_html  = "<b>{$objects_plain[$_REQUEST['object_from']]["o_name"]}:&nbsp;</b>" . "<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_from']]["path"] . "::. ОБРАБОТКА' class='item_balance " . (($processing==0)?"zero":(($processing<0)?"neg":"pos")) . "'>" . $processing . "</span>";
+                            $balance_html .= "&nbsp;<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_from']]["path"] . "::. ЗАВЕРШЕНО' class='item_balance " . (($complete==0)?"zero":(($complete<0)?"neg":"pos")) . "'>" . $complete . "</span>";
+                            $balance_html .= "<br>";
+
+                            list($balance) = fn_uns__get_balance_sgp($p, false, false, false, true);
+                            $group_items = array_shift($balance[$_REQUEST['item_type']]);
+                            $balance = fn_fvalue($group_items['items'][$_REQUEST['item_id']]['konech']);
+                            $balance_html .= "<b>СГП:&nbsp;</b>" . "<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_to']]["path"] . ":: ' class='item_balance " . (($balance==0)?"zero":(($balance<0)?"neg":"pos")) . "'>" . $balance . "</span>";
+
+                        //------------------------------------------------------
+                        // C КМП -> Сб. Уч.
+                        }elseif ($_REQUEST['object_from'] == 17 and $_REQUEST['object_to'] == 18){
+                            $p["add_item_info"] = true;
+                            list($balance) = fn_uns__get_balance_mc_sk_su($p, false, true, true);
+                            $group_items_from = array_shift($balance[$_REQUEST['object_from']]);
+                            $group_items_to = array_shift($balance[$_REQUEST['object_to']]);
+
+                            $balance = fn_fvalue($group_items_from["items"][$_REQUEST['item_id']]["konech"]);
+                            $balance_html  = "<b>" . str_replace(" ", "&nbsp;", $objects_plain[$_REQUEST['object_from']]["o_name"]) . ":&nbsp;</b>" . "<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_from']]["path"] . "::.' class='item_balance " . (($balance==0)?"zero":(($balance<0)?"neg":"pos")) . "'>" . $balance . "</span>";
+                            $balance_html .= "<br>";
+                            $balance = fn_fvalue($group_items_to["items"][$_REQUEST['item_id']]["konech"]);
+                            $balance_html .= "<b>" . str_replace(" ", "&nbsp;", $objects_plain[$_REQUEST['object_to']]["o_name"]) . ":&nbsp;</b>" . "<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_to']]["path"] . "::.' class='item_balance " . (($balance==0)?"zero":(($balance<0)?"neg":"pos")) . "'>" . $balance . "</span>";
+
+                        //------------------------------------------------------
+                        // C КМП -> СГП.
+                        }elseif ($_REQUEST['object_from'] == 17 and $_REQUEST['object_to'] == 19){
+                            $p["add_item_info"] = true;
+                            list($balance) = fn_uns__get_balance_mc_sk_su($p, false, true, false);
+                            $group_items_from = array_shift($balance[$_REQUEST['object_from']]);
+                            $group_items_to = array_shift($balance[$_REQUEST['object_to']]);
+
+                            $balance = fn_fvalue($group_items_from["items"][$_REQUEST['item_id']]["konech"]);
+                            $balance_html  = "<b>" . str_replace(" ", "&nbsp;", $objects_plain[$_REQUEST['object_from']]["o_name"]) . ":&nbsp;</b>" . "<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_from']]["path"] . "::.' class='item_balance " . (($balance==0)?"zero":(($balance<0)?"neg":"pos")) . "'>" . $balance . "</span>";
+                            $balance_html .= "<br>";
+
+                            list($balance) = fn_uns__get_balance_sgp($p, false, false, false, true);
+                            $group_items = array_shift($balance[$_REQUEST['item_type']]);
+                            $balance = fn_fvalue($group_items['items'][$_REQUEST['item_id']]['konech']);
+                            $balance_html .= "<b>СГП:&nbsp;</b>" . "<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_to']]["path"] . ":: ' class='item_balance " . (($balance==0)?"zero":(($balance<0)?"neg":"pos")) . "'>" . $balance . "</span>";
+                        }
+                    }else{
+
                     }
 
+                    $ajax->assign('balance', $balance_html);
 
-                    // ВЕС
-                    $weight = 0;
-                    if($_REQUEST['item_type'] == "M"){
-                        $p = array('material_id'     => $_REQUEST['item_id'],
-                                   'with_accounting' => true,
-                                   /*'format_name'     => true,*/
-                        );
-                        $material = array_shift(array_shift(fn_uns__get_materials($p)));
-                        $weight = $material['accounting_data']['weight'];
-                        $ajax->assign('weight', fn_fvalue($weight));
-                        }
                     exit;
                 }
             break;
-            default:
-                break;
+            default: break;
         }
     }
     return array(CONTROLLER_STATUS_OK, $controller . "." . $suffix);
@@ -313,7 +496,7 @@ if($mode == 'manage' or $mode == 'update' or $mode == 'add'){
 if($mode == 'manage'){
     if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "M"; // Текущий месяц
     list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
-    $p = array("with_count_items" => true, "object_name" => true, "type"=>1);
+    $p = array("with_count_items" => true, "object_name" => true, "type"=>1, "o_id" => 8); // Только по складу литья!
 
     $p = array_merge($p, $_REQUEST);
     list($documents, $search) = fn_uns__get_documents($p, UNS_ITEMS_PER_PAGE);

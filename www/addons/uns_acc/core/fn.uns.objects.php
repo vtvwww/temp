@@ -77,9 +77,9 @@ function fn_uns__get_enabled_objects($document_type){
                 5=> true,           // СМП
                 18=> true,          // Сборочный участок
             ),
-            8 => array(             // Склад Литья
-                24=> true,          // Мех.цех -> Склад материалов
-            ),
+//            8 => array(             // Склад Литья
+//                24=> true,          // Мех.цех -> Склад материалов
+//            ),
 
             10 => array(
                 14 => true,
@@ -103,6 +103,7 @@ function fn_uns__get_enabled_objects($document_type){
                 10 => true,
                 14 => true,
                 17 => true,
+                19 => true,
             ),
 
 
@@ -110,6 +111,12 @@ function fn_uns__get_enabled_objects($document_type){
 
         ),
         DOC_TYPE__AIO => array(     // АКТ ИЗМЕНЕНИЕ ОСТАТКОВ
+            5 => array(             // Склад Литья
+                0=> true,          // Мех.цех -> Склад материалов
+            ),
+            6 => array(             // Склад Литья
+                0=> true,          // Мех.цех -> Склад материалов
+            ),
             8 => array(             // Склад Литья
                 0=> true,          // Мех.цех -> Склад материалов
             ),

@@ -25,7 +25,7 @@
     {assign var="item_type_detail"      value=true}
 
     {*Дополнительные элементы для P, PF и PA*}
-    {if $d.object_from == 19 or $d.object_to == 19} {*Склад готовой продукции*}
+    {if ($doc_type == $smarty.const.DOC_TYPE__AIO or $doc_type == $smarty.const.DOC_TYPE__RO) and $d.object_to == 19} {*Склад готовой продукции*}
         {assign var="is_SGP"        value=true}
         {assign var="item_type_p"   value=true}
         {assign var="item_type_pf"  value=true}
@@ -44,7 +44,9 @@
             <th class="cm-non-cb" width="90px">Категория/Серия</th>
             <th class="cm-non-cb" width="140px">Наименование</th>
             {*<th class="cm-non-cb" width="10px">Исп.{include file="common_templates/tooltip.tpl" tooltip="Исполнение детали:<br><b>Номинальное / исп. А / исп. Б</b>"}</th>*}
-            <th class="cm-non-cb" width="88px">Кол-во</th>
+            <th class="cm-non-cb" width="50px">Кол-во</th>
+            <th class="cm-non-cb" width="1px">&nbsp;</th>
+
             {if !$is_SGP}
             <th class="cm-non-cb" width="10px">{include file="common_templates/tooltip.tpl" tooltip="<u><b>Статус обработки:</b></u><br><br><b>Обр.</b> - деталь пока еще обрабатывается;<br><b>Зав.</b> - деталь уже обработана;" tooltip_mark="Статус"}</th>
             {/if}
@@ -192,6 +194,8 @@
                                 f_number=true
                                 f_simple=true
                             }
+                        </td>
+                        <td class="cm-non-cb" align="right">
                             <div class="balance" style="display:block; float:right;"></div>
                         </td>
                         {*<td class="cm-non-cb" align="center">*}
@@ -304,6 +308,8 @@
                     f_number=true
                     f_simple=true
                 }
+            </td>
+            <td class="cm-non-cb" align="right">
                 <div class="balance" style="display:block; float:right;"></div>
             </td>
             {*<td class="cm-non-cb" align="center">*}
