@@ -1,4 +1,6 @@
 {include file="common_templates/subheader.tpl" title="Движения"}
+<div class="subheader_block">
+
 &nbsp;
 <span class="action-add">
     {include    file="common_templates/table_tools_list.tpl"
@@ -67,16 +69,16 @@
 <div style="margin: 10px;">
     <a name="motions"></a>
     {if $documents|is__array}
-    <table class="simple">
+        <table class="table" cellspacing="0" cellpadding="0" border="0">
         <thead>
             <tr>
-                <th>№</th>
-                <th>Тип</th>
-                <th>Дата</th>
-                <th>?</th>
-                <th></th>
-                <th>Откуда/Куда</th>
-                <th>Деталь/Кол-во</th>
+                <th class="b1_r center">№</th>
+                <th class="b1_r center">Тип</th>
+                <th class="b1_r center">Дата</th>
+                <th class="b1_r center">?</th>
+                <th class="b1_r center"></th>
+                <th class="b1_r center">Откуда/Куда</th>
+                <th class="b1_r center">Деталь/Кол-во</th>
                 <th>&nbsp;</th>
             </tr>
         </thead>
@@ -85,10 +87,10 @@
             <tr>
                 {assign var="id" value=$d.document_id}
                 {assign var="value" value="document_id"}
-                <td>{$smarty.foreach.doc.iteration}</td>
+                <td align="center" class="b1_r"><b>{$smarty.foreach.doc.iteration}</b></td>
 
                 {* Тип *}
-                <td><a name="document_{$id}"></a>
+                <td class="b1_r"><a name="document_{$id}"></a>
                     {include    file="common_templates/table_tools_list.tpl"
                                 popup=true
                                 id="`$id`"
@@ -103,19 +105,19 @@
                 </td>
 
                 {* Дата *}
-                <td align="center">
+                <td align="center" class="b1_r">
                     {$d.date|date_format:"%d/%m/%y %H:%S"}
                 </td>
 
                 {* Комментарий *}
-                <td align="center">
+                <td align="center" class="b1_r">
                     {if strlen($d.comment)}
                         {include file="common_templates/tooltip.tpl" tooltip=$d.comment}
                     {/if}
                 </td>
 
                 {* Статус *}
-                <td>
+                <td class="b1_r">
                     {if $d.status == "A"}
                         <img border="0" title="Вкл" src="images/uns/circle_green.png">
                     {elseif $d.status == "D"}
@@ -124,12 +126,12 @@
                 </td>
 
                 {* Откуда/Куда *}
-                <td>
+                <td class="b1_r">
                     {$d.objects_info.object_from.path}<br>{$d.objects_info.object_to.path}
                 </td>
 
                 {* Детали *}
-                <td>
+                <td class="b1_r">
                     {foreach from=$d.items item="i" name="i"}
                         {if $i.item_type != "P" and $i.item_type != "PF"}
                             {$i.item_info.detail_name}{if $i.item_info.detail_no} [{$i.item_info.detail_no}]{/if}&nbsp;&nbsp;&nbsp;{if $i.change_type == "NEG"}-{/if}{$i.quantity|fn_fvalue} шт.
@@ -149,4 +151,5 @@
         </tbody>
     </table>
     {/if}
+</div>
 </div>

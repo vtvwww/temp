@@ -1360,7 +1360,7 @@ div#main_column {
 }
 #menu, #alt_menu {
 	list-style: none;
-	width: 100%px;
+	width: 100%;
 	height: 39px;
 	padding: 0px 30px 0px 30px;
 	background: #e5e5e5 url(images/mm_bg.gif) repeat-x;
@@ -2251,9 +2251,9 @@ table .hidden-inputs .input-text-medium, table .hidden-inputs .input-text, table
 }
 .table tr:hover td {
 	padding: 10px;
-	border-color: #cf9a68;
-	border-right: none;
-	border-left: none;
+	border-color: #ba845d;
+	/*border-right: 1px solid;*/
+	/*border-left:  1px solid;*/
 }
 
 

@@ -642,16 +642,18 @@ function fn_uns__get_info_of_the_last_movement($params){
 
 // Получить список движений по выбранному item-у
 function fn_uns__get_motions($params){
-
+    $cond_item_type = db_quote(" AND uns__acc_document_items.item_type in (?a) ", to__array($params['item_type']));
     $sql = UNS_DB_PREFIX . "
             SELECT
               uns__acc_documents.document_id,
               uns__acc_documents.date,
+              uns__acc_documents.comment,
               uns__acc_documents.date_cast,
               uns__acc_documents.package_id,
               uns__acc_documents.package_type,
 
               uns__acc_document_items.item_id,
+              uns__acc_document_items.item_type,
               uns__acc_document_items.quantity,
               uns__acc_document_types.type,
               uns__acc_document_types.dt_id,
@@ -664,7 +666,7 @@ function fn_uns__get_motions($params){
               , uns__acc_document_types
             WHERE 1
                   AND uns__acc_document_items.item_id   =  ".$params['item_id']."
-                  AND uns__acc_document_items.item_type = '".$params['item_type']."'
+                  {$cond_item_type}
                   AND uns__acc_document_items.typesize  = '".$params['typesize']."'
 
                   # UNS__ACC_DOCUMENTS
@@ -677,7 +679,7 @@ function fn_uns__get_motions($params){
                   # UNS__ACC_MOTIONS
                   AND uns__acc_motions.document_id = uns__acc_document_items.document_id
                   AND uns__acc_motions.motion_type IN ('I', 'O')
-                  AND uns__acc_motions.object_id IN (".implode(',', $params['o_id']).")
+                  AND uns__acc_motions.object_id IN (".implode(',', to__array($params['o_id'])).")
 
                   # ALL
                   AND uns__acc_documents.date BETWEEN {$params['time_from']} AND {$params['time_to']}
@@ -691,11 +693,11 @@ function fn_uns__get_motions($params){
                             AND uns__acc_document_items.change_type = 'NEG'
                             AND uns__acc_motions.motion_type = 'O')
                         OR (
-                            uns__acc_document_types.type IN ('VLC', 'PVP', 'MCP', 'RO', 'AS_VLC'))
+                            uns__acc_document_types.type IN ('VLC', 'PVP', 'MCP', 'RO', 'AS_VLC', 'VN'))
                   )
-            ORDER BY uns__acc_documents.date ASC
+            ORDER BY uns__acc_documents.date ASC, uns__acc_documents.document_id ASC
     ";
-    $data = db_get_hash_array($sql, "document_id");
+    $data = db_get_array($sql, "document_id");
 
     // Добавить привязку к СЛ
     if (is__array($data)){

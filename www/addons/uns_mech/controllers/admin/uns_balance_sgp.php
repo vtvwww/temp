@@ -86,8 +86,8 @@ if (defined('AJAX_REQUEST') and  $mode == 'motion'){
         return false;
     }
     $p = array(
-        "o_id"          => array(8),  // Склад литья
-        "item_type"     => "M",
+        "o_id"          => 19,  // Склад литья
+        "item_type"     => array("P", "PF", "PA"),
         "typesize"      => "M",
         "item_id"       => $_REQUEST['item_id'],
     );
@@ -100,6 +100,19 @@ if (defined('AJAX_REQUEST') and  $mode == 'motion'){
     // ДВИЖЕНИЯ
     $motions = fn_uns__get_motions($p);
     $view->assign('motions', $motions);
+
+    // ОТСТАКИ
+    $p = array(
+        "plain"             => true,
+        "all"               => true,
+        "item_type"         => $_REQUEST['item_type'],
+        "item_id"           => $_REQUEST['item_id'],
+        "add_item_info"     => false,
+    );
+    $p = array_merge($_REQUEST, $p);
+    list($balances) = fn_uns__get_balance_sgp($p, true, true, true, false);
+    $view->assign("balances", $balances);
+    $view->assign("item_id", $_REQUEST["item_id"]);
 
     // ТИПЫ ДОКУМЕНТОВ
     list($document_types) = fn_uns__get_document_types();

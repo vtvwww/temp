@@ -22,4 +22,4 @@
 {/capture}
 {assign var="last_date" value=$info_of_the_last_movement.date|fn_parse_date|date_format:"%d/%m/%Y"}
 {assign var="last_document_id" value=$info_of_the_last_movement.document_id}
-{include file="common_templates/mainbox.tpl" title="Баланс СКЛАДА ГОТОВОЙ ПРОДУКЦИИ `$last_date` [`$last_document_id`]" content=$smarty.capture.mainbox tools=$smarty.capture.tools}
+{include file="common_templates/mainbox.tpl" title="Баланс СКЛАДА ГОТОВОЙ ПРОДУКЦИИ `$last_date`" content=$smarty.capture.mainbox tools=$smarty.capture.tools}

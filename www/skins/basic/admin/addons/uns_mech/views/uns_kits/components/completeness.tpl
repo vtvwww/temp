@@ -1,4 +1,5 @@
 {include file="common_templates/subheader.tpl" title="Комплектность"}
+<div class="subheader_block">
 {*Добавить деталь*}
 &nbsp;
 <span class="action-add">
@@ -29,28 +30,28 @@
 
 <div style="margin: 10px;">
     {if $i.details|is__array}
-    <table class="simple">
+        <table class="table" cellspacing="0" cellpadding="0" border="0">
         <thead>
-            <tr>
-                <th rowspan="3">&nbsp;</th>
-                <th rowspan="3">Наименование</th>
-                <th rowspan="2" colspan="2">Требуемое<br>количество</th>
-                <th rowspan="3" width="70px" style="padding: 0px; margin: 0px;">Отложено<br>на Сб. уч.</th>
-                <th colspan="4" style="border-left: 2px solid  black; border-right: 2px solid  black;">Мех. цех</th>
-                <th rowspan="3" style="border-left: 2px solid  black;">Скл.<br>КМП.</th>
-                <th rowspan="3" style="border-left: 2px solid  black;">&nbsp;</th>
+            <tr style="background-color: #EDEDED;">
+                <th class="center b1_r" rowspan="3">&nbsp;</th>
+                <th class="center b1_r" rowspan="3">Наименование</th>
+                <th class="center b1_r b1_b" rowspan="2" colspan="2">Требуемое<br>количество</th>
+                <th class="center b1_r" rowspan="3" width="70px" style="padding: 0px; margin: 0px;">Отложено<br>на Сб. уч.</th>
+                <th class="center b1_r b1_b" colspan="4">Мех. цех</th>
+                <th class="center b1_r" rowspan="3">Скл.<br>КМП.</th>
+                <th class="center" rowspan="3">&nbsp;</th>
             </tr>
-            <tr>
-                <th colspan="2" style="border-left: 2px solid  black;">№1</th>
-                <th colspan="2" style="border-left: 2px solid  black;">№2</th>
+            <tr style="background-color: #EDEDED;">
+                <th class="center b1_r b1_b" colspan="2">№1</th>
+                <th class="center b1_r b1_b" colspan="2">№2</th>
             </tr>
-            <tr>
-                <th>на 1 ед.</th>
-                <th>на партию</th>
-                <th style="min-width: 20px; border-left: 2px solid  black;">О</th>
-                <th style="min-width: 20px;">З</th>
-                <th style="min-width: 20px; border-left: 2px solid  black;">О</th>
-                <th style="min-width: 20px;">З</th>
+            <tr style="background-color: #EDEDED;">
+                <th class="center b1_r">на 1 ед.</th>
+                <th class="center b1_r">на партию</th>
+                <th class="center b1_r" style="min-width: 20px;">О</th>
+                <th class="center b1_r" style="min-width: 20px;">З</th>
+                <th class="center b1_r" style="min-width: 20px;">О</th>
+                <th class="center b1_r" style="min-width: 20px;">З</th>
             </tr>
         </thead>
         <tbody>
@@ -63,8 +64,8 @@
                 {if $d.detail_no}
                     {assign var="d_name" value="`$d_name` [`$d.detail_no`]"}
                 {/if}
-                <td>{$smarty.foreach.d.iteration}</td>
-                <td>
+                <td class="b1_r">{$smarty.foreach.d.iteration}</td>
+                <td class="b1_r">
                     {include    file="common_templates/table_tools_list.tpl"
                                 popup=true
                                 id="`$d.pd_id`"
@@ -79,10 +80,10 @@
                 </td>
 
                 {*Кол-во на 1 ед.*}
-                <td align="center">{$d_q}</td>
+                <td class="b1_r" align="center">{$d_q}</td>
 
                 {*Кол-во на партию*}
-                <td align="center">
+                <td class="b1_r" align="center">
                     {assign var="k_q" value=$d.quantity}
                     {if $kit.kit_type == "D"}
                         {*Детали*}
@@ -100,7 +101,7 @@
                     {foreach from=$b_group.items item="b_item"}
                         {if $b_item.detail_id == $d.detail_id}
                             {math equation="-140+70*x/y" x=$b_item.konech y=$k_q assign="pos"}
-                            <td align="center" style="font-weight: bold; background-image: url('images/uns/bar.png'); background-position: {$pos}px center;">
+                            <td class="b1_r" align="center" style="font-weight: bold; background-image: url('images/uns/bar.png'); background-position: {$pos}px center;">
                                 {$b_item.konech}
                             </td>
                         {/if}
@@ -112,11 +113,11 @@
                     {foreach from=$b_group.items item="b_item"}
                         {if $b_item.detail_id == $d.detail_id}
                             {*МЕХ ЦЕХ - №1*}
-                            <td align="center" style="border-left: 2px solid  black;">
+                            <td class="center b1_r">
                                 {assign var="v" value=$b_item.processing}
                                 <span class="{if $v<0}info_warning_block{elseif $v==0}zero{/if}">{$v|fn_fvalue:2}</span>
                             </td>
-                            <td  align="center" style="border-left: 2px dashed #808080;">
+                            <td  class="center b1_r">
                                 {*{if $b_item.complete|fn_fvalue:0:0 > 0}*}
                                     {*<form action="{""|fn_url}" method="post">*}
                                         {*<input type="hidden" name="kit_id"      value="{$kit.kit_id}"/>*}
@@ -147,11 +148,11 @@
                     {foreach from=$b_group.items item="b_item"}
                         {if $b_item.detail_id == $d.detail_id}
                             {*МЕХ ЦЕХ - №2*}
-                            <td align="center" style="border-left: 2px solid  black;">
+                            <td class="center b1_r">
                                 {assign var="v" value=$b_item.processing}
                                 <span class="{if $v<0}info_warning_block{elseif $v==0}zero{/if}">{$v|fn_fvalue:2}</span>
                             </td>
-                            <td align="center" style="border-left: 2px dashed #808080;">
+                            <td class="center b1_r">
                                 {*{if $b_item.complete|fn_fvalue:0:0 > 0}*}
                                     {*<form action="{""|fn_url}" method="post">*}
                                         {*<input type="hidden" name="kit_id"      value="{$kit.kit_id}"/>*}
@@ -182,7 +183,7 @@
                     {foreach from=$b_group.items item="b_item"}
                         {if $b_item.detail_id == $d.detail_id}
                             {*Склад КМП*}
-                            <td align="center" style="border-left: 2px solid  black; border-right: 2px solid  black;">
+                            <td class="center b1_r">
                                 {*{if $b_item.konech|fn_fvalue:0:0 > 0}*}
                                     {*<form action="{""|fn_url}" method="post">*}
                                         {*<input type="hidden" name="kit_id"      value="{$kit.kit_id}"/>*}
@@ -215,5 +216,6 @@
         </tbody>
     </table>
     {/if}
+</div>
 </div>
 {*<pre>{$balances|print_r}</pre>*}

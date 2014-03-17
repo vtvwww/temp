@@ -31,6 +31,8 @@ function to__array($i) {
         return $i;
     } elseif(!is_array($i) && is_numeric($i) && $i > 0){
         return ((array) $i);
+//    } elseif(!is_array($i) && is_string($i) && strlen($i)){
+//        return ((array) $i);
     } else return false;
 }
 
