@@ -1,12 +1,12 @@
 {strip}
-    <table class="table">
+    <table class="table" cellspacing="0" cellpadding="0" border="0">
         <thead>
             <tr>
                 <th style="text-align: center;" width="300px">Движение</th>
-                <th style="text-align: center;" width="40px">Нач. Ост.</th>
-                <th style="text-align: center;" width="40px">Приход</th>
-                <th style="text-align: center;" width="40px">Расход</th>
-                <th style="text-align: center;" width="40px">Кон. Ост.</th>
+                <th style="text-align: center;" width="40px">НО</th>
+                <th style="text-align: center;" width="40px">П</th>
+                <th style="text-align: center;" width="40px">Р</th>
+                <th style="text-align: center;" width="40px">КО</th>
             </tr>
         </thead>
         {if is__array($motions)}

@@ -642,7 +642,7 @@ function fn_uns__get_info_of_the_last_movement($params){
 
 // Получить список движений по выбранному item-у
 function fn_uns__get_motions($params){
-    $cond_item_type = db_quote(" AND uns__acc_document_items.item_type in (?a) ", to__array($params['item_type']));
+    $cond_item_type = db_quote(" AND uns__acc_document_items.item_type in (?a) ", $params['item_type']);
     $sql = UNS_DB_PREFIX . "
             SELECT
               uns__acc_documents.document_id,
