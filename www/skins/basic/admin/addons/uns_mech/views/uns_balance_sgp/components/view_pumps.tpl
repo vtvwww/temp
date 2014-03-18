@@ -15,44 +15,41 @@
                     </th>
 
                     {*Насос*}
-                    <th colspan="{math equation="2+x" x=$orders|count}" align="center" style="text-align: center; border-left: 3px solid #000000; background-color: #D3D3D3;">НАСОС</th>
+                    <th colspan="{math equation="1+2*x" x=$orders|count}" align="center" style="text-align: center; border-left: 3px solid #000000; background-color: #D3D3D3;">НАСОС</th>
 
                     {*На раме*}
-                    <th colspan="{math equation="2+x" x=$orders|count}" align="center" style="text-align: center; border-left: 3px solid #000000; background-color: #D3D3D3;">НА РАМЕ</th>
+                    <th colspan="{math equation="1+2*x" x=$orders|count}" align="center" style="text-align: center; border-left: 3px solid #000000; background-color: #D3D3D3;">НА РАМЕ</th>
 
                     {*Агрегат*}
-                    <th colspan="{math equation="2+x" x=$orders|count}" align="center" style="text-align: center; border-left: 3px solid #000000; background-color: #D3D3D3;">АГРЕГАТ</th>
+                    <th colspan="{math equation="1+2*x" x=$orders|count}" align="center" style="text-align: center; border-left: 3px solid #000000; background-color: #D3D3D3;">АГРЕГАТ</th>
                 </tr>
                 <tr style="background-color: #EDEDED">
                     {*Насос*}
                     <th rowspan="2" style="text-align: center; border-left: 3px solid #000000; border-top : 1px solid #808080; background-color: #D3D3D3;">Тек.<br>ост.</th>
-                    <th colspan="{$orders|count}" style="text-align: center; border-left: 3px solid #000000; border-bottom: 1px solid #808080; border-top: 3px solid #000000;">Заказы</th>
-                    <th rowspan="2" style="text-align: center; border-left: 1px solid #808080; border-top : 3px solid #000000;">==</th>
+                    <th colspan="{math equation="2*x" x=$orders|count}" style="text-align: center; border-left: 3px solid #000000; border-bottom: 1px solid #808080; border-top: 3px solid #000000;">Заказы</th>
 
                     {*На раме*}
                     <th rowspan="2" style="text-align: center; border-left: 3px solid #000000; border-top : 1px solid #808080; background-color: #D3D3D3;">Тек.<br>ост.</th>
-                    <th colspan="{$orders|count}" style="text-align: center; border-left: 3px solid #000000; border-bottom: 1px solid #808080; border-top: 3px solid #000000;">Заказы</th>
-                    <th rowspan="2" style="text-align: center; border-left: 1px solid #808080; border-top : 3px solid #000000;">==</th>
+                    <th colspan="{math equation="2*x" x=$orders|count}" style="text-align: center; border-left: 3px solid #000000; border-bottom: 1px solid #808080; border-top: 3px solid #000000;">Заказы</th>
 
                     {*Агрегат*}
                     <th rowspan="2" style="text-align: center; border-left: 3px solid #000000; border-top : 1px solid #808080; background-color: #D3D3D3;">Тек.<br>ост.</th>
-                    <th colspan="{$orders|count}" style="text-align: center; border-left: 3px solid #000000; border-bottom: 1px solid #808080; border-top: 3px solid #000000;">Заказы</th>
-                    <th rowspan="2" style="text-align: center; border-left: 1px solid #808080; border-top : 3px solid #000000;">==</th>
+                    <th colspan="{math equation="2*x" x=$orders|count}" style="text-align: center; border-left: 3px solid #000000; border-bottom: 1px solid #808080; border-top: 3px solid #000000;">Заказы</th>
                 </tr>
                 <tr style="background-color: #EDEDED">
                     {*Насос*}
                     {foreach from=$orders item="o" name="o"}
-                        <th style="text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$regions[$o.region_id].name params="black" tooltip_mark="<b>`$regions[$o.region_id].name_short`</b>"}</th>
+                        <th colspan="2" style="text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$regions[$o.region_id].name params="black" tooltip_mark="<b>`$regions[$o.region_id].name_short`</b>"}</th>
                     {/foreach}
 
                     {*На раме*}
                     {foreach from=$orders item="o" name="o"}
-                        <th style="text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$regions[$o.region_id].name params="black" tooltip_mark="<b>`$regions[$o.region_id].name_short`</b>"}</th>
+                        <th colspan="2" style="text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$regions[$o.region_id].name params="black" tooltip_mark="<b>`$regions[$o.region_id].name_short`</b>"}</th>
                     {/foreach}
 
                     {*Агрегат*}
                     {foreach from=$orders item="o" name="o"}
-                        <th style="text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$regions[$o.region_id].name params="black" tooltip_mark="<b>`$regions[$o.region_id].name_short`</b>"}</th>
+                        <th colspan="2" style="text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$regions[$o.region_id].name params="black" tooltip_mark="<b>`$regions[$o.region_id].name_short`</b>"}</th>
                     {/foreach}
                 </tr>
             </thead>
@@ -64,7 +61,7 @@
                         {assign var="id" value=$group_id}
                         <tbody>
                             <tr  m_id={$m.id}>
-                                <td style="background-color: #d3d3d3; " colspan="{math equation="7+3*x" x=$orders|count}">
+                                <td style="background-color: #d3d3d3; " colspan="{math equation="4+3*2*x" x=$orders|count}">
                                     <img width="14" category_items="{$id}" height="9" border="0" title="Расширить список" class="hand {$id} plus {if !$expand_all} hidden {/if}" alt="Расширить список" src="skins/basic/admin/images/plus.gif">
                                     <img width="14" category_items="{$id}" height="9" border="0" title="Свернуть список" class="hand {$id} minus {if $expand_all} hidden {/if}" alt="Свернуть список" src="skins/basic/admin/images/minus.gif">
                                     &nbsp;<span style="color: #000000; font-weight: bold; font-size: 14px;">{$item.group}</span>
@@ -92,10 +89,8 @@
 
                             {if ($q_P > 0 or $q_P < 0) or ($q_PF > 0 or $q_PF < 0) or ($q_PA > 0 or $q_PA < 0) or ($q_P_orders > 0 or $q_PF_orders > 0 or $q_PA_orders > 0)}
                                 <tr class="category_items {$id} {if $expand_all} hidden {/if}" m_id={$m.id}>
-                                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <td style="min-width: 200px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         {assign var="n" value=$m.name}
-                                        {*{assign var="href" value="foundry_get_balance.motion?item_id=`$m.id`&period=`$search.period`&time_from=`$search.time_from`&time_to=`$search.time_to`&nach=`$m.nach`&current__in=`$m.current__in`&current__out=`$m.current__out`&konech=`$m.konech`"}*}
-                                        {*<b>{$n}</b>*}
                                         {assign var="href" value="uns_balance_sgp.motion?item_id=`$m.id`&period=`$search.period`&time_from=`$search.time_from`&time_to=`$search.time_to`"}
                                         <a  rev="content_item_{$m.id}" id="opener_item_{$m_id}" href="{$href|fn_url}" class="cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black bold" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$n}</a>
                                         <div id="content_item_{$m.id}" class="hidden" title="{$n|upper} по Складу ГОТОВОЙ ПРОДУКЦИИ"></div>
@@ -110,11 +105,13 @@
                                             {if $q_P >= 0}{assign var="total_q_P" value=$total_q_P+$q_P}{/if}
                                         </span>
                                     </td>
+                                    {assign var="quantity_preorders" value=0} {* Требуемое кол-во для предыдущих заказов*}
                                     {foreach from=$orders item="o" name="o"}
-                                        {if $o.data_for_tmp.P[$k_m].quantity > 0}
-                                            <td align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
-                                                <span class="{if $o.data_for_tmp.P[$k_m].quantity<0}info_warning_block{elseif $o.data_for_tmp.P[$k_m].quantity==0}zero{/if}">
-                                                    {assign var="q" value=$o.data_for_tmp.P[$k_m].quantity|fn_fvalue:2}
+                                        {assign var="quantity_currentorder" value=$o.data_for_tmp.P[$k_m].quantity} {* Требуемое кол-во текущего заказа*}
+                                        {if $quantity_currentorder > 0}
+                                            <td align="center" style="min-width:20px; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 2px solid #000000;{/if}">
+                                                <span class="{if $quantity_currentorder<0}info_warning_block{elseif $quantity_currentorder==0}zero{/if}">
+                                                    {assign var="q" value=$quantity_currentorder|fn_fvalue:2}
                                                     {if $o.data_for_tmp.P[$k_m].comment|strlen}
                                                         {include file="common_templates/tooltip.tpl" tooltip=$o.data_for_tmp.P[$k_m].comment tooltip_mark="<b>`$q`</b>"}
                                                     {else}
@@ -122,22 +119,26 @@
                                                     {/if}
                                                 </span>
                                             </td>
+                                            <td align="center" style="min-width:20px; border-left: 1px dashed #808080;">
+                                                {if ($q_P-$quantity_preorders-$quantity_currentorder) >= 0}
+                                                    <img border="0" src="skins/basic/admin/addons/uns_acc/images/ok.png">
+                                                {else}
+                                                    <span class="info_warning_block">
+                                                        {assign var="q" value=$q_P-$quantity_preorders-$quantity_currentorder}
+                                                            {$q|fn_fvalue:2}
+                                                    </span>
+                                                {/if}
+                                            </td>
+                                            {assign var="quantity_preorders" value=$quantity_preorders+$quantity_currentorder}
                                         {else}
-                                            <td align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
+                                            <td align="center" style="min-width:20px; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 2px solid #000000;{/if}">
+                                                &nbsp;
+                                            </td>
+                                            <td align="center" style="min-width:20px; border-left: 1px dashed #808080;">
                                                 &nbsp;
                                             </td>
                                         {/if}
                                     {/foreach}
-                                    <td align="center" style="border-left: 1px solid #808080;">
-                                        {if $q_P_orders > 0}
-                                            {assign var="diff" value=$q_P-$q_P_orders}
-                                            <span class="{if $diff<0}info_warning_block{elseif $diff==0}zero{/if}">
-                                                {$diff|fn_fvalue:2}
-                                            </span>
-                                        {else}
-                                            &nbsp;
-                                        {/if}
-                                    </td>
 
                                     {*************************************************************************************}
                                     {*НАСОС НА РАМЕ*}
@@ -148,11 +149,13 @@
                                             {if $q_PF >= 0}{assign var="total_q_PF" value=$total_q_PF+$q_PF}{/if}
                                         </span>
                                     </td>
+                                    {assign var="quantity_preorders" value=0} {* Требуемое кол-во для предыдущих заказов*}
                                     {foreach from=$orders item="o" name="o"}
-                                        {if $o.data_for_tmp.PF[$k_m].quantity > 0}
-                                            <td align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
-                                                <span class="{if $o.data_for_tmp.PF[$k_m].quantity<0}info_warning_block{elseif $o.data_for_tmp.PF[$k_m].quantity==0}zero{/if}">
-                                                    {assign var="q" value=$o.data_for_tmp.PF[$k_m].quantity|fn_fvalue:2}
+                                        {assign var="quantity_currentorder" value=$o.data_for_tmp.PF[$k_m].quantity} {* Требуемое кол-во текущего заказа*}
+                                        {if $quantity_currentorder > 0}
+                                            <td align="center" style="min-width:20px; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 2px solid #000000;{/if}">
+                                                <span class="{if $quantity_currentorder<0}info_warning_block{elseif $quantity_currentorder==0}zero{/if}">
+                                                    {assign var="q" value=$quantity_currentorder|fn_fvalue:2}
                                                     {if $o.data_for_tmp.PF[$k_m].comment|strlen}
                                                         {include file="common_templates/tooltip.tpl" tooltip=$o.data_for_tmp.PF[$k_m].comment tooltip_mark="<b>`$q`</b>"}
                                                     {else}
@@ -160,22 +163,26 @@
                                                     {/if}
                                                 </span>
                                             </td>
+                                            <td align="center" style="min-width:20px; border-left: 1px dashed #808080;">
+                                                {if ($q_PF-$quantity_preorders-$quantity_currentorder) >= 0}
+                                                    <img border="0" src="skins/basic/admin/addons/uns_acc/images/ok.png">
+                                                {else}
+                                                    <span class="info_warning_block">
+                                                        {assign var="q" value=$q_PF-$quantity_preorders-$quantity_currentorder}
+                                                            {$q|fn_fvalue:2}
+                                                    </span>
+                                                {/if}
+                                            </td>
+                                            {assign var="quantity_preorders" value=$quantity_preorders+$quantity_currentorder}
                                         {else}
-                                            <td align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
+                                            <td align="center" style="min-width:20px; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 2px solid #000000;{/if}">
+                                                &nbsp;
+                                            </td>
+                                            <td align="center" style="min-width:20px; border-left: 1px dashed #808080;">
                                                 &nbsp;
                                             </td>
                                         {/if}
                                     {/foreach}
-                                    <td align="center" style="border-left: 1px solid #808080;">
-                                        {if $q_PF_orders > 0}
-                                            {assign var="diff" value=$q_PF-$q_PF_orders}
-                                            <span class="{if $diff<0}info_warning_block{elseif $diff==0}zero{/if}">
-                                                {$diff|fn_fvalue:2}
-                                            </span>
-                                        {else}
-                                            &nbsp;
-                                        {/if}
-                                    </td>
 
                                     {*************************************************************************************}
                                     {*НАСОС АГРЕГАТ*}
@@ -186,11 +193,13 @@
                                             {if $q_PA >= 0}{assign var="total_q_PA" value=$total_q_PA+$q_PA}{/if}
                                         </span>
                                     </td>
+                                    {assign var="quantity_preorders" value=0} {* Требуемое кол-во для предыдущих заказов*}
                                     {foreach from=$orders item="o" name="o"}
-                                        {if $o.data_for_tmp.PA[$k_m].quantity > 0}
-                                            <td align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
-                                                <span class="{if $o.data_for_tmp.PA[$k_m].quantity<0}info_warning_block{elseif $o.data_for_tmp.PA[$k_m].quantity==0}zero{/if}">
-                                                    {assign var="q" value=$o.data_for_tmp.PA[$k_m].quantity|fn_fvalue:2}
+                                        {assign var="quantity_currentorder" value=$o.data_for_tmp.PA[$k_m].quantity} {* Требуемое кол-во текущего заказа*}
+                                        {if $quantity_currentorder > 0}
+                                            <td align="center" style="min-width:20px; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 2px solid #000000;{/if}">
+                                                <span class="{if $quantity_currentorder<0}info_warning_block{elseif $quantity_currentorder==0}zero{/if}">
+                                                    {assign var="q" value=$quantity_currentorder|fn_fvalue:2}
                                                     {if $o.data_for_tmp.PA[$k_m].comment|strlen}
                                                         {include file="common_templates/tooltip.tpl" tooltip=$o.data_for_tmp.PA[$k_m].comment tooltip_mark="<b>`$q`</b>"}
                                                     {else}
@@ -198,22 +207,26 @@
                                                     {/if}
                                                 </span>
                                             </td>
+                                            <td align="center" style="min-width:20px; border-left: 1px dashed #808080;">
+                                                {if ($q_PA-$quantity_preorders-$quantity_currentorder) >= 0}
+                                                    <img border="0" src="skins/basic/admin/addons/uns_acc/images/ok.png">
+                                                {else}
+                                                    <span class="info_warning_block">
+                                                        {assign var="q" value=$q_PA-$quantity_preorders-$quantity_currentorder}
+                                                            {$q|fn_fvalue:2}
+                                                    </span>
+                                                {/if}
+                                            </td>
+                                            {assign var="quantity_preorders" value=$quantity_preorders+$quantity_currentorder}
                                         {else}
-                                            <td align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
+                                            <td align="center" style="min-width:20px; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 2px solid #000000;{/if}">
+                                                &nbsp;
+                                            </td>
+                                            <td align="center" style="min-width:20px; border-left: 1px dashed #808080;">
                                                 &nbsp;
                                             </td>
                                         {/if}
                                     {/foreach}
-                                    <td align="center" style="border-left: 1px solid #808080;">
-                                        {if $q_PF_orders > 0}
-                                            {assign var="diff" value=$q_PA-$q_PA_orders}
-                                            <span class="{if $diff<0}info_warning_block{elseif $diff==0}zero{/if}">
-                                                {$diff|fn_fvalue:2}
-                                            </span>
-                                        {else}
-                                            &nbsp;
-                                        {/if}
-                                    </td>
                                 </tr>
                             {/if}
                         {foreachelse}
@@ -247,20 +260,17 @@
                         {/foreach}
 
                         {if $total_q_P_order > 0}
-                            <td align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
+                            <td colspan="2" align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 2px solid #000000;{/if}">
                                 <span class="{if $total_q_P_order<0}info_warning_block{elseif $total_q_P_order==0}zero{/if}">
                                     {$total_q_P_order|fn_fvalue:2}
                                 </span>
                             </td>
                         {else}
-                            <td align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
+                            <td colspan="2" align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
                                 &nbsp;
                             </td>
                         {/if}
                     {/foreach}
-                    <td rowspan="2" align="center" style="border-left: 1px solid #808080; border-bottom: 3px solid #000000;">
-                        <span class="zero">&nbsp;</span>
-                    </td>
 
                     {*************************************************************************************}
                     {* ИТОГО НАСОС НА РАМЕ*}
@@ -279,20 +289,17 @@
                         {/foreach}
 
                         {if $total_q_PF_order > 0}
-                            <td align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
+                            <td colspan="2" align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 2px solid #000000;{/if}">
                                 <span class="{if $total_q_PF_order<0}info_warning_block{elseif $total_q_PF_order==0}zero{/if}">
                                     {$total_q_PF_order|fn_fvalue:2}
                                 </span>
                             </td>
                         {else}
-                            <td align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
+                            <td colspan="2" align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
                                 &nbsp;
                             </td>
                         {/if}
                     {/foreach}
-                    <td rowspan="2" align="center" style="border-left: 1px solid #808080; border-bottom: 3px solid #000000;">
-                        <span class="zero">&nbsp;</span>
-                    </td>
 
                     {*************************************************************************************}
                     {* ИТОГО НАСОС АГРЕГАТ*}
@@ -311,47 +318,44 @@
                         {/foreach}
 
                         {if $total_q_PA_order > 0}
-                            <td align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
+                            <td colspan="2" align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 2px solid #000000;{/if}">
                                 <span class="{if $total_q_PA_order<0}info_warning_block{elseif $total_q_PA_order==0}zero{/if}">
                                     {$total_q_PA_order|fn_fvalue:2}
                                 </span>
                             </td>
                         {else}
-                            <td align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
+                            <td colspan="2" align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px dashed #808080;{/if}">
                                 &nbsp;
                             </td>
                         {/if}
                     {/foreach}
-                    <td rowspan="2" align="center" style="border-left: 1px solid #808080; border-bottom: 3px solid #000000;">
-                        <span class="zero">&nbsp;</span>
-                    </td>
                 </tr>
                 <tr>
                     {*Насос*}
                     {foreach from=$orders item="o" name="o"}
-                        <td style=" border-bottom: 3px solid #000000; text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$regions[$o.region_id].name params="black" tooltip_mark="<b>`$regions[$o.region_id].name_short`</b>"}</td>
+                        <td colspan="2" style=" border-bottom: 3px solid #000000; text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 2px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$regions[$o.region_id].name params="black" tooltip_mark="<b>`$regions[$o.region_id].name_short`</b>"}</td>
                     {/foreach}
 
                     {*На раме*}
                     {foreach from=$orders item="o" name="o"}
-                        <td style=" border-bottom: 3px solid #000000; text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$regions[$o.region_id].name params="black" tooltip_mark="<b>`$regions[$o.region_id].name_short`</b>"}</td>
+                        <td colspan="2" style=" border-bottom: 3px solid #000000; text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 2px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$regions[$o.region_id].name params="black" tooltip_mark="<b>`$regions[$o.region_id].name_short`</b>"}</td>
                     {/foreach}
 
                     {*Агрегат*}
                     {foreach from=$orders item="o" name="o"}
-                        <td style=" border-bottom: 3px solid #000000; text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$regions[$o.region_id].name params="black" tooltip_mark="<b>`$regions[$o.region_id].name_short`</b>"}</td>
+                        <td colspan="2" style=" border-bottom: 3px solid #000000; text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 2px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$regions[$o.region_id].name params="black" tooltip_mark="<b>`$regions[$o.region_id].name_short`</b>"}</td>
                     {/foreach}
                 </tr>
 
                 <tr>
-                    <td colspan="{math equation="2+x" x=$orders|count}" align="center" style="text-align: center; border-bottom: 3px solid #000000; border-left: 3px solid #000000; background-color: #D3D3D3;"><b>НАСОС</b></td>
-                    <td colspan="{math equation="2+x" x=$orders|count}" align="center" style="text-align: center; border-bottom: 3px solid #000000; border-left: 3px solid #000000; background-color: #D3D3D3;"><b>НА РАМЕ</b></td>
-                    <td colspan="{math equation="2+x" x=$orders|count}" align="center" style="text-align: center; border-bottom: 3px solid #000000; border-left: 3px solid #000000; border-right: 3px solid #000000; background-color: #D3D3D3;"><b>АГРЕГАТ</b></td>
+                    <td colspan="{math equation="1+2*x" x=$orders|count}" align="center" style="text-align: center; border-bottom: 3px solid #000000; border-left: 3px solid #000000; background-color: #D3D3D3;"><b>НАСОС</b></td>
+                    <td colspan="{math equation="1+2*x" x=$orders|count}" align="center" style="text-align: center; border-bottom: 3px solid #000000; border-left: 3px solid #000000; background-color: #D3D3D3;"><b>НА РАМЕ</b></td>
+                    <td colspan="{math equation="1+2*x" x=$orders|count}" align="center" style="text-align: center; border-bottom: 3px solid #000000; border-left: 3px solid #000000; border-right: 3px solid #000000; background-color: #D3D3D3;"><b>АГРЕГАТ</b></td>
                 </tr>
 
                 {* ОБЩИЙ ИТОГО *}
                 <tr>
-                    <td align="center" style="border-left: 3px solid #000000; border-bottom: 3px solid #000000; border-right: 3px solid #000000; background-color: #D3D3D3;" colspan="{math equation="6+3*x" x=$orders|count}">
+                    <td align="center" style="border-left: 3px solid #000000; border-bottom: 3px solid #000000; border-right: 3px solid #000000; background-color: #D3D3D3;" colspan="{math equation="3*(1+2*x)" x=$orders|count}">
                         <span class="{if $total_q_P<0}info_warning_block{elseif $total_q_P==0}zero{/if}">
                             <span style="font-size: 15px; font-weight: bold; text-align: right;">{$total_q_P+$total_q_PF+$total_q_PA|fn_fvalue:2}</span>
                         </span>

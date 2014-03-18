@@ -111,7 +111,7 @@
 
    {capture name="tools"}
        {include file="common_templates/tools.tpl" tool_href="`$controller`.add.pump"    prefix="top" link_text="Добавить Партию насоса"  hide_tools=true}
-       {include file="common_templates/tools.tpl" tool_href="`$controller`.add.details" prefix="top" link_text="Добавить Партию деталей"  hide_tools=true}
+       {*{include file="common_templates/tools.tpl" tool_href="`$controller`.add.details" prefix="top" link_text="Добавить Партию деталей"  hide_tools=true}*}
    {/capture}
 
 
