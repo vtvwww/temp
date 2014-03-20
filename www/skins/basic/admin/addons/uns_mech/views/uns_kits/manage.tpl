@@ -42,7 +42,7 @@
                </th>
                <th width="1px">&nbsp;</th>
                <th width="10px">№</th>
-               <th width="10px">Тип</th>
+               {*<th width="10px">Тип</th>*}
                <th width="10px">(?)</th>
                {*<th width="150px">Сроки выполнения</th>*}
                <th width="20px">Статус</th>
@@ -62,13 +62,13 @@
                    <td> {*№ партии*}
                        {$id}
                    </td>
-                   <td> {* Тип *}
-                       {if $i.kit_type == "D"}
-                           Дет.
-                       {elseif $i.kit_type == "P"}
-                           Нас.
-                       {/if}
-                   </td>
+                   {*<td> *}{* Тип *}
+                       {*{if $i.kit_type == "D"}*}
+                           {*Дет.*}
+                       {*{elseif $i.kit_type == "P"}*}
+                           {*Нас.*}
+                       {*{/if}*}
+                   {*</td>*}
                    {*<td> Сроки выполнения *}
                        {*<b>{$i.date_begin|date_format:"%d/%m/%y"} - {$i.date_end|date_format:"%d/%m/%y"}</b>*}
                    {*</td>*}
