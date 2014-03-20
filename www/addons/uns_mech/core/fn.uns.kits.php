@@ -97,6 +97,7 @@ function fn_acc__get_kits($params = array(), $items_per_page = 0){
         $tmp_p = array(
             'kit_id'=>array_keys($data),
             'with_weight' => true,
+            'full_info' => true,
         );
         list($details) = fn_acc__get_kit_details($tmp_p);
         if (is__array($details)){
@@ -253,6 +254,7 @@ function fn_acc__get_kit_details($params = array(), $items_per_page = 0){
         $p = array();
         $p["detail_id"] = array_keys($data);
         $p["with_accounting"] = true;
+        $p["with_material_info"] = true;
         list($details) = fn_uns__get_details($p);
         if (is__array($details)){
             foreach ($data as $k_data=>$v_data){
