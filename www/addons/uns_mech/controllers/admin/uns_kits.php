@@ -245,7 +245,7 @@ if ($mode == "detail_update"){
 if ($mode == "m_detail_update"){
     if (!is__more_0($_REQUEST["kit_id"])) return false;
     $kit = array_shift(array_shift(fn_acc__get_kits(array("kit_id"=>$_REQUEST["kit_id"]))));
-    $set = fn_uns__get_packing_list_by_pump($kit["p_id"], "D");
+    $set = fn_uns__get_packing_list_by_pump($kit["p_id"], "D", true);
     $pump = array_shift(array_shift(fn_uns__get_pumps(array("p_id"=>$kit["p_id"]))));
     list($details) = fn_uns__get_details(array("detail_id"=>array_keys($set), "with_material_info" => true));
     foreach ($details as $k=>$v){
