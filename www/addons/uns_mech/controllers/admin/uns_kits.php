@@ -144,11 +144,13 @@ if($mode == 'manage'){
     $view->assign('kits', $kits);
     $view->assign('search', $search);
 
+    // Насосы
     list($pumps) = fn_uns__get_pumps();
     $view->assign('pumps', $pumps);
 
-//    fn_print_r($kits);
-//    fn_print_r($pumps);
+    // Серии насосов
+    list($pump_series) = fn_uns__get_pump_series(array('only_active' => true,'group_by_types'=>true,));
+    $view->assign('pump_series', $pump_series);
 
 }
 
@@ -308,6 +310,7 @@ function fn_uns_kits__search ($controller){
         'period',
         'time_from',
         'time_to',
+        'ps_id',
     );
     fn_uns_search_set_get_params($controller, $params);
     return true;

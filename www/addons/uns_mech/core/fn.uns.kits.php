@@ -54,6 +54,11 @@ function fn_acc__get_kits($params = array(), $items_per_page = 0){
         $condition .= db_quote(" AND ($m_tbl.date_begin between ?i and ?i OR $m_tbl.date_end between ?i and ?i )", $params['time_from'], $params['time_to'], $params['time_from'], $params['time_to']);
     }
 
+    if ($params["ps_id_array"] = to__array($params["ps_id"])){
+        $condition .= db_quote(" AND ?:pumps.ps_id in (?n) ", $params["ps_id"]);
+        $join .= db_quote(" LEFT JOIN ?:pumps ON (?:pumps.p_id  = $m_tbl.p_id) ");
+    }
+
     // *************************************************************************
     // 2. ПРИСОЕДИНИТЬ ТАБЛИЦЫ
     // *************************************************************************

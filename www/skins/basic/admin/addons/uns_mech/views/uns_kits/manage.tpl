@@ -2,10 +2,33 @@
 {capture name="mainbox"}
     {capture name="search_content"}
         {include file="addons/uns/views/components/search/s_time.tpl"}
-        {*{include file="addons/uns/views/components/search/s_materials.tpl" material_classes_as_input=true}*}
-        {*{include file="addons/uns/views/components/search/s_mode_report.tpl"}*}
-        {*{include file="addons/uns/views/components/search/s_view_all_position.tpl"}*}
-        {*{include file="addons/uns/views/components/search/s_accessory_pumps.tpl"}*}
+        {strip}
+            <hr>
+            {*СЕРИИ НАСОСОВ*}
+            <table cellpadding="10" cellspacing="0" border="0" class="search-header materials" id="search_form_materials">
+                <tr>
+                    <td class="nowrap search-field">
+                        <label>{$lang.uns_pump_series}:</label>
+                        <div class="break">
+                            {include file="addons/uns/views/components/get_form_field.tpl"
+                                f_type="select_by_group"
+                                f_required=true f_integer=false
+                                f_name="ps_id"
+                                f_options="pump_series"
+                                f_option_id="ps_id"
+                                f_option_value="ps_name"
+                                f_optgroups=$pump_series
+                                f_optgroup_label="pt_name_short"
+                                f_option_target_id=$search.ps_id
+                                f_simple=true
+                                f_blank=true
+                            }
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <hr>
+        {/strip}
     {/capture}
     {include file="addons/uns/views/components/search/search.tpl" dispatch="`$controller`.manage" search_content=$smarty.capture.search_content}
 
@@ -94,7 +117,7 @@
                </tr>
                {foreachelse}
                <tr class="no-items">
-                   <td colspan="5"><p>{$lang.no_items}</p></td>
+                   <td colspan="20"><p>{$lang.no_items}</p></td>
                </tr>
            {/foreach}
        </table>
