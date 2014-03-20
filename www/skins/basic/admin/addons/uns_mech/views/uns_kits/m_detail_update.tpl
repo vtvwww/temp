@@ -35,6 +35,7 @@
                         </th>
                         <th>№</th>
                         <th>Наименование</th>
+                        <th>Клм</th>
                         <th>Кол-во</th>
                     </tr>
                 </thead>
@@ -49,6 +50,7 @@
                             </td>
                             <td align="center"><b>{$smarty.foreach.d.iteration}</b></td>
                             <td><label for="detail_id_{$d.detail_id}">{$d.detail_name}{if $d.detail_no} [{$d.detail_no}]{/if}</label></td>
+                            <td align="center">{if $d.material_no}<span class="info_warning">{$d.material_no}</span>{else}&nbsp;{/if}</label></td>
                             <td>
                                 {include file="addons/uns/views/components/get_form_field.tpl"
                                     f_type="select_range"

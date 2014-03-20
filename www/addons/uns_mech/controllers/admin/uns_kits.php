@@ -188,16 +188,18 @@ if($mode == 'update'){
 //    fn_print_r($documents);
 
     // BALANCE *****************************************************************
-    $p = array();
-    list ($p['time_from'], $p['time_to']) = fn_create_periods($p);
-    $p["detail_id"] = $p["item_id"] = array_keys($kit["details"]);
-    $p["period"]             = "A";
-    $p["check_dcat_id"]      = false;
-    $p["su"]["package_id"]   = $_REQUEST['kit_id'];
-    $p["su"]["package_type"] = UNS_PACKAGE_TYPE__PN;
-    list($balances, $search) = fn_uns__get_balance_mc_sk_su($p, true, true, true);
-    $view->assign('balances', $balances);
+    if (is__array($kit["details"])){
+        $p = array();
+        list ($p['time_from'], $p['time_to']) = fn_create_periods($p);
+        $p["detail_id"] = $p["item_id"] = array_keys($kit["details"]);
+        $p["period"]             = "A";
+        $p["check_dcat_id"]      = false;
+        $p["su"]["package_id"]   = $_REQUEST['kit_id'];
+        $p["su"]["package_type"] = UNS_PACKAGE_TYPE__PN;
+        list($balances, $search) = fn_uns__get_balance_mc_sk_su($p, true, true, true);
+        $view->assign('balances', $balances);
 //    fn_print_r($balances);
+    }
 
     // CATEGORIES **************************************************************
     list($mcategories_plain) = fn_uns__get_materials_categories(array('plain' => true, 'with_q_ty' => false, 'mcat_include_target' => ''));
@@ -245,7 +247,7 @@ if ($mode == "m_detail_update"){
     $kit = array_shift(array_shift(fn_acc__get_kits(array("kit_id"=>$_REQUEST["kit_id"]))));
     $set = fn_uns__get_packing_list_by_pump($kit["p_id"], "D");
     $pump = array_shift(array_shift(fn_uns__get_pumps(array("p_id"=>$kit["p_id"]))));
-    list($details) = fn_uns__get_details(array("detail_id"=>array_keys($set)));
+    list($details) = fn_uns__get_details(array("detail_id"=>array_keys($set), "with_material_info" => true));
     foreach ($details as $k=>$v){
         $details[$k] = array_merge($details[$k], $set[$k]);
     }

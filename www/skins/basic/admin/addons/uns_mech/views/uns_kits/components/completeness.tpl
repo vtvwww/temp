@@ -35,6 +35,7 @@
             <tr style="background-color: #EDEDED;">
                 <th class="center b1_r" rowspan="3">&nbsp;</th>
                 <th class="center b1_r" rowspan="3">Наименование</th>
+                <th class="center b1_r" rowspan="3">Клм</th>
                 <th class="center b1_r b1_b" rowspan="2" colspan="2">Требуемое<br>количество</th>
                 <th class="center b1_r" rowspan="3" width="70px" style="padding: 0px; margin: 0px;">Отложено<br>на Сб. уч.</th>
                 <th class="center b1_r b1_b" colspan="4">Мех. цех</th>
@@ -78,6 +79,9 @@
                                 tools_list=$smarty.capture.tools_items}
 
                 </td>
+
+                {*Клеймо*}
+                <td class="b1_r" align="center">{if $d.material_no}<span class="info_warning">{$d.material_no}</span>{else}&nbsp;{/if}</label></td>
 
                 {*Кол-во на 1 ед.*}
                 <td class="b1_r" align="center">{$d_q}</td>
