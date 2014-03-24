@@ -69,6 +69,7 @@
         f_to=200
         f_value=$kit.p_quantity|default:"0"
         f_disabled=$disabled
+        f_plus_minus=true
     }
 {/if}
 

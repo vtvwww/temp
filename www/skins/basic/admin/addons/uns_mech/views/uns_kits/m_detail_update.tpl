@@ -60,6 +60,7 @@
                                     f_to=200
                                     f_value=$d.quantity
                                     f_simple=true
+                                    f_plus_minus=true
                                 }
                             </td>
                         </tr>

@@ -157,6 +157,21 @@ span.series_item_R{
 
 }
 
+.select_plus_minus{
+    font-size: 15px;
+    height: 23px;
+    margin: 0;
+    padding: 0 2px;
+    width: 23px;
+    font-weight: bold;
+}
+
+.select_plus_minus:not(:hover){
+    border: none;
+    background: transparent;
+}
+
+
 /* Item DISABLED or VERIFICATION_REQUIRED */
 .item_disabled{
     color: red;
