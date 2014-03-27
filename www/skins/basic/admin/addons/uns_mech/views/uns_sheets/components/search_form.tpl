@@ -1,5 +1,5 @@
 {capture name="section"}
-    <form action="{""|fn_url}" name="acc_ostatki_search_form" method="get">
+    <form action="{""|fn_url}" name="uns_sheet_search_form" id="uns_sheet_search_form" method="get">
         <hr>
         <table cellpadding="10" cellspacing="0" border="0" class="search-header">
             <tr>
@@ -49,6 +49,7 @@
                         {include file="addons/uns/views/components/get_form_field.tpl"
                             f_type="mcategories_plain"
                             f_required=true f_integer=false
+                            f_id="mcat_id"
                             f_name="mcat_id"
                             f_options=$mcategories_plain
                             f_option_id="mcat_id"
@@ -61,6 +62,37 @@
                         }
                     </div>
                 </td>
+                <td class="nowrap search-field">
+                    <label>Клеймо отливки:</label>
+                    <div class="break">
+                        {include file="addons/uns/views/components/get_form_field.tpl"
+                            f_type="input"
+                            f_required=false f_integer=false
+                            f_name="material_no"
+                            f_value=$search.material_no
+                            f_simple=true
+                        }
+                    </div>
+                </td>
+                <td class="nowrap search-field">
+                    <label>Насос:</label>
+                    <div class="break">
+                        {include file="addons/uns/views/components/get_form_field.tpl"
+                            f_type="input"
+                            f_required=false f_integer=false
+                            f_name="pump_name"
+                            f_value=$search.pump_name
+                            f_class="input-text-long"
+                            f_simple=true
+                        }
+                    </div>
+                </td>
+                {*<td class="nowrap search-field">*}
+                    {*<label>&nbsp;</label>*}
+                    {*<div class="break">*}
+                        {*<input type="reset" value="Сбросить"/>*}
+                    {*</div>*}
+                {*</td>*}
                 {*<td class="nowrap search-field">*}
                     {*<label>{$lang.uns_detail_categories}:</label>*}
                     {*<div class="break">*}

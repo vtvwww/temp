@@ -131,6 +131,14 @@ tbody .cm-row-item.hide-row{
     font-size: 11px;
 }
 
+.filtered_text{
+    background-color: #F78E8E;
+    border: 1px solid #FF0000;
+    border-radius: 4px;
+    color: #000000;
+}
+
+
 span.uns_title_1{
     font-size: 14px;
     display: inline-block;
