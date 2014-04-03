@@ -23,11 +23,18 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 }
 
 if ($mode == 'manage'){
+    if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "D"; // Текущий месяц
+    list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
+
     list($pumps) = fn_uns__get_pumps(array("group_by_series"=>true));
     $view->assign('pumps', $pumps);
+    $view->assign('search', $_REQUEST);
+
 }
 
 if ($mode == 'get_report'){
+    if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "D"; // Текущий месяц
+    list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
     switch ($action){
         case "foundry":
             $data = array();
@@ -255,6 +262,11 @@ if ($mode == 'get_report'){
             fn_rpt__general_report(array("report_VLC"=>$report_VLC, "sales_VLC"=>$sales_VLC, "vn_SGP"=>$vn_SGP, "sales_SGP"=>$sales_SGP, "regions"=>$regions));
 
         break;
+
+        case "planning_report":
+            fn_rpt__planning_report();
+        break;
+
     }
     exit;
 }

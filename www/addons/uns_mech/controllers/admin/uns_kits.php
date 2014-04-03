@@ -136,8 +136,9 @@ if($mode == 'manage'){
     list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
     $p = array();
     $p = array(
-        "with_details" => true,
-        "sorting_schemas" => "view_1"
+        "with_details"      => true,
+        "sorting_schemas"   => "view_1",
+        "with_doc_type_VN"  => true,
     );
     $p = array_merge($_REQUEST, $p);
     list($kits, $search) = fn_acc__get_kits($p, UNS_ITEMS_PER_PAGE);
