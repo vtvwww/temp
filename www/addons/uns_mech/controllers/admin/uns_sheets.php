@@ -135,6 +135,12 @@ if($mode == 'manage'){
         "with_material_quantity_BRAK"   => true, // Кол*во выданного литья по СЛ
     );
 
+    if (strlen($_REQUEST["pump_name"])){
+        $_REQUEST["pump_name"] = mb_convert_case ($_REQUEST["pump_name"], MB_CASE_UPPER, "UTF-8");
+        $view->assign('pump_name', $_REQUEST["pump_name"]);
+    }
+
+
     $p = array_merge($_REQUEST, $p);
 
     list($sheets, $search) = fn_acc__get_sheets($p, UNS_ITEMS_PER_PAGE);
@@ -310,6 +316,8 @@ function fn_uns_sheets__search ($controller){
         'target_object',
         'mcat_id',
         'dcat_id',
+        'material_no',
+        'pump_name',
     );
     fn_uns_search_set_get_params($controller, $params);
     return true;

@@ -191,10 +191,14 @@ function fn_uns__get_documents($params = array(), $items_per_page = 0){
         $condition .= db_quote(" AND $m_tbl.type = ?i", $params['type']);
     }
 
+    if ($params['only_active']) {
+        $condition .= db_quote(" AND $m_tbl.status = 'A' ");
+    }
+
     // Привязка к ПАКЕТАМ ДОКУМЕНТОВ
-    if (is__more_0($params["package_id"]) and fn_check_type($params["package_type"], UNS_PACKAGE_TYPES)){
+    if (($params["package_id_array"] = to__array($params["package_id"])) and fn_check_type($params["package_type"], UNS_PACKAGE_TYPES)){
         $params["package_state"] = "Y";
-        $condition .= db_quote(" AND $m_tbl.package_id = ?i AND $m_tbl.package_type = ?s ", $params['package_id'], $params['package_type']);
+        $condition .= db_quote(" AND $m_tbl.package_id in (?n) AND $m_tbl.package_type = ?s ", $params['package_id_array'], $params['package_type']);
     }else{
         $params["package_state"] = "N";
         if (is__array($params["packages"])){
@@ -274,6 +278,7 @@ function fn_uns__get_documents($params = array(), $items_per_page = 0){
             "info_category" => ($params["info_category"] === false)?false:true,
             "info_item"     => ($params["info_item"]     === false)?false:true,
             "info_unit"     => ($params["info_unit"]     === false)?false:true,
+            "item_type"     => (isset($params["item_type"]))?$params["item_type"]:false,
             /*"with_accounting"=>true,*/
         );
 
@@ -366,6 +371,10 @@ function fn_uns__get_document_items($params = array()){
 
     if ($params['document_id_array'] = to__array($params['document_id'])){
         $condition .= db_quote(" AND $m_table.document_id in (?n)", $params['document_id_array']);
+    }
+
+    if (isset($params['item_type']) and $params['item_type'] !== false){
+        $condition .= db_quote(" AND $m_table.item_type in (?a)", $params['item_type']);
     }
 
     $limit = $join = $group_by = '';

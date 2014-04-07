@@ -7,6 +7,7 @@ function fn_acc__get_kits($params = array(), $items_per_page = 0){
         'kit_id' => 0,
         'page' => 1,
         'limit' => 0,
+        'only_opened' => false,
         'sorting_schemas' => 'view',
 
     );
@@ -25,8 +26,7 @@ function fn_acc__get_kits($params = array(), $items_per_page = 0){
         "$m_tbl.description",
         "$m_tbl.comment",
         "$m_tbl.status",
-        "$m_tbl.date_begin",
-        "$m_tbl.date_end",
+        "$m_tbl.date_open",
         "$m_tbl.p_id",
         "$m_tbl.p_quantity",
     );
@@ -51,12 +51,16 @@ function fn_acc__get_kits($params = array(), $items_per_page = 0){
     }
 
     if ($params["time_from"]>=0 and $params["time_to"]>0){
-        $condition .= db_quote(" AND ($m_tbl.date_begin between ?i and ?i OR $m_tbl.date_end between ?i and ?i )", $params['time_from'], $params['time_to'], $params['time_from'], $params['time_to']);
+        $condition .= db_quote(" AND ($m_tbl.date_open between ?i and ?i)", $params['time_from'], $params['time_to']);
     }
 
     if ($params["ps_id_array"] = to__array($params["ps_id"])){
         $condition .= db_quote(" AND ?:pumps.ps_id in (?n) ", $params["ps_id"]);
         $join .= db_quote(" LEFT JOIN ?:pumps ON (?:pumps.p_id  = $m_tbl.p_id) ");
+    }
+
+    if ($params["only_opened"]){
+        $condition .= db_quote(" AND $m_tbl.status != 'Z' ");
     }
 
     // *************************************************************************
@@ -107,6 +111,38 @@ function fn_acc__get_kits($params = array(), $items_per_page = 0){
         }
     }
 
+    // Запросить информацию о выпуске насосов по каждой партии
+    if ($params['with_doc_type_VN']){
+        $p = array(
+            "type"                      => 13, /*Выпуск насосов*/
+            "package_id"                => array_keys($data),
+            "package_type"              => "PN",
+            "only_active"               => true,
+
+            //WITH_ITEMS
+            "with_items"                => true,
+            "info_category"             => true,
+            "info_item"                 => false,
+            "info_unit"                 => false,
+            "item_type"                 => array('P', 'PN', 'PA'),
+
+        );
+        list($documents) = fn_uns__get_documents($p);
+//        fn_print_r($documents);
+        if (is__array($documents)){
+            foreach ($documents as $d){
+                foreach ($d["items"] as $i){
+                    $data[$d["package_id"]]["VN"][] = array(
+                        "date"      => $d["date"],
+                        "item_type" => $i["item_type"],
+                        "quantity"  => $i["quantity"],
+                        "name"      => $i["item_info"]["p_name"],
+                    );
+                }
+            }
+        }
+    }
+
     return array($data, $params);
 }
 
@@ -136,8 +172,7 @@ function fn_acc__upd_kit_info($id, $data){
     $d = array();
     $d["description"]   = $data["description"];
     $d["comment"]       = (strlen($data["comment"]))?$data["description"]:"";
-    $d["date_begin"]    = fn_parse_date($data["date_begin"]);
-    $d["date_end"]      = fn_parse_date($data["date_end"]);
+    $d["date_open"]    = fn_parse_date($data["date_open"]);
     $d["status"]        = (fn_check_type($data["status"], UNS_KIT_STATUS))?$data["status"]:UNS_KIT_STATUS__O;
     ;
 

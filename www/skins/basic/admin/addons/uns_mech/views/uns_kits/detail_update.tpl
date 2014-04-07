@@ -46,6 +46,7 @@
                     f_to=200
                     f_value=$detail.quantity|default:1
                     f_simple=true
+                    f_plus_minus=true
                 }
             </div>
         </div>

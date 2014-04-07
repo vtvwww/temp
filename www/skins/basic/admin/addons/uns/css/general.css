@@ -131,6 +131,14 @@ tbody .cm-row-item.hide-row{
     font-size: 11px;
 }
 
+.filtered_text{
+    background-color: #F78E8E;
+    border: 1px solid #FF0000;
+    border-radius: 4px;
+    color: #000000;
+}
+
+
 span.uns_title_1{
     font-size: 14px;
     display: inline-block;
@@ -156,6 +164,21 @@ span.series_item_R{
     text-decoration: line-through;
 
 }
+
+.select_plus_minus{
+    font-size: 15px;
+    height: 23px;
+    margin: 0;
+    padding: 0 2px;
+    width: 23px;
+    font-weight: bold;
+}
+
+.select_plus_minus:not(:hover){
+    border: none;
+    background: transparent;
+}
+
 
 /* Item DISABLED or VERIFICATION_REQUIRED */
 .item_disabled{

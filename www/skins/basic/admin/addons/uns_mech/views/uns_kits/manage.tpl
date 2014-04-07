@@ -1,3 +1,25 @@
+{literal}
+    <style type="text/css">
+        tr.status td{
+            font-weight: bold;
+        }
+
+        tr.status.U td{
+            background-color: rgba(1, 128, 0, 0.49);
+        }
+
+        tr.status.Z td{
+            background-color: rgba(0, 81, 255, 0.2);
+            color: #808080;
+            font-weight: normal;
+        }
+
+        tr.status.K td{
+            background-color: rgba(255, 218, 72, 0.68);
+        }
+    </style>
+{/literal}
+
 {script src="js/tabs.js"}
 {capture name="mainbox"}
     {capture name="search_content"}
@@ -37,45 +59,32 @@
        {include file="common_templates/pagination.tpl"}
        <table cellpadding="0" cellspacing="0" border="0" width="100%" class="table">
            <tr>
-               <th width="1%">
-                   <input type="checkbox" name="check_all" value="Y" title="{$lang.check_uncheck_all}" class="checkbox cm-check-items" />
-               </th>
                <th width="1px">&nbsp;</th>
-               <th width="10px">№</th>
-               <th width="10px">Тип</th>
+               <th class="b1_l" width="10px">№</th>
+               <th class="b1_l" width="80px">{include file="common_templates/tooltip.tpl" tooltip="Дата открытия партии" tooltip_mark="<b>Дата открытия</b>"}</th>
                <th width="10px">(?)</th>
-               {*<th width="150px">Сроки выполнения</th>*}
-               <th width="20px">Статус</th>
-               <th>Описание</th>
-               <th>&nbsp;</th>
+               <th class="b1_l" width="20px">Ст.</th>
+               <th class="" width="100px">Наменование насоса, кол-во</th>
+               <th class="b1_l center">Собрано насосов из партии</th>
+               <th class="b1_l" width="10px">&nbsp;</th>
            </tr>
            {foreach from=$kits item=i}
-               <tr {cycle values="class=\"table-row\", "}>
+               <tr class="status {$i.status}">
                    {assign var="id" value=$i.kit_id}
                    {assign var="value" value="kit_id"}
-                   <td style="{if $id == "`$smarty.session.mark_item.$controller`"}border-left: 10px solid #FF9D1F;{/if}">
-                       <input type="checkbox" name="document_ids[]" value="{$id}" class="checkbox cm-item" />
-                   </td>
-                   <td>
+                   <td align="right" style="{if $id == "`$smarty.session.mark_item.$controller`"}border-left: 10px solid #FF9D1F;{else}border-left: 10px solid transparent;{/if}">
                        {include file="addons/uns/views/components/tools.tpl" type="edit" href="`$controller`.update?`$value`=`$id`"}
                    </td>
-                   <td> {*№ партии*}
+                   <td class="b1_l center"> {*№ партии*}
                        {$id}
                    </td>
-                   <td> {* Тип *}
-                       {if $i.kit_type == "D"}
-                           Дет.
-                       {elseif $i.kit_type == "P"}
-                           Нас.
-                       {/if}
+                   <td class="b1_l">
+                       {$i.date_open|date_format:"%a %d/%m/%y"}
                    </td>
-                   {*<td> Сроки выполнения *}
-                       {*<b>{$i.date_begin|date_format:"%d/%m/%y"} - {$i.date_end|date_format:"%d/%m/%y"}</b>*}
-                   {*</td>*}
                    <td class="nowrap">
                        {include file="common_templates/tooltip.tpl" tooltip="`$i.description`"}
                    </td>
-                   <td> {* Статус *}
+                   <td class="b1_l"> {* Статус *}
                        <b>
                        {if      $i.status == "O"}
                            В ожидании
@@ -84,7 +93,7 @@
                        {elseif  $i.status == "U"}
                            <img class="hand" border="0" title="Укомплектована" src="skins/basic/admin/addons/uns_acc/images/circle_green.png">
                        {elseif  $i.status == "Z"}
-                           <img class="hand" border="0" title="Закрыт" src="skins/basic/admin/addons/uns_acc/images/done.png">
+                           <img style="opacity: 0.4;" class="hand" border="0" title="Закрыт" src="skins/basic/admin/addons/uns_acc/images/done.png">
                        {elseif  $i.status == "A"}
                            Аннулирована
                        {/if}
@@ -100,7 +109,18 @@
                            {/foreach}
                        {/if}
                    </td>
-                   <td class="nowrap right">
+
+                   <td class="b1_l">{* Собрано *}
+                       {if $i.VN|is__array}
+                           <ol style="color: #606060; margin: 0;">
+                               {foreach from=$i.VN item="vn" name="vn"}
+                               <li {if !$smarty.foreach.vn.last}style="border-bottom:1px dashed #A3A3A3;"{/if}>{$vn.date|date_format:"%a %d/%m/%y"}&nbsp;&nbsp;&nbsp;&nbsp;<b>{$vn.name}{if $vn.item_type == "PF"} на раме{/if}</b>, {$vn.quantity|fn_fvalue} шт</li>
+                               {/foreach}
+                           </ol>
+                       {/if}
+                   </td>
+
+                   <td class="nowrap right b1_l center">
                        {capture name="tools_items"}
                            <li><a class="cm-confirm" href="{"`$controller`.delete?`$value`=`$id`"|fn_url}">
                                    <img border="0" src="skins/basic/admin/addons/uns_acc/images/delete.png">

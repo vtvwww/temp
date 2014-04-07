@@ -157,6 +157,12 @@ function fn_uns_mark_item($controller, $mode) {
                     $mark_item = $_REQUEST['sheet_id'];
                 }
                 break;
+
+            case "uns_kits":
+                if(is__more_0($_REQUEST['kit_id'])){
+                    $mark_item = $_REQUEST['kit_id'];
+                }
+                break;
         }
         $_SESSION['mark_item'][$controller] = $mark_item;
     }

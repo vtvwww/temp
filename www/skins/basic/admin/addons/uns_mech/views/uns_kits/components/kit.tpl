@@ -64,34 +64,25 @@
         f_id="kit_pump_quantity"
         f_name="`$e_n`[p_quantity]"
         f_required=true f_integer_more_0=true
-        f_description="Кол-во"
+        f_description="Количество"
         f_from=0
         f_to=200
         f_value=$kit.p_quantity|default:"0"
         f_disabled=$disabled
+        f_plus_minus=true
     }
 {/if}
 
 
 {* Сроки выполнения KIT*}
 <div class="form-field">
-    <label class="cm-required" for="kit_dates">Сроки выполнения:</label>
+    <label class="cm-required" for="kit_dates">Дата открытия партии:</label>
     {include file="addons/uns/views/components/get_form_field.tpl"
-        f_id="_kit_date_begin_`$kit_id`"
+        f_id="_kit_date_open_`$kit_id`"
         f_type="date"
         f_required=true
-        f_name="`$e_n`[date_begin]"
-        f_value=$kit.date_begin
-        f_simple=true
-        f_disabled=$disabled
-    }
-    &nbsp;&mdash;&nbsp;
-    {include file="addons/uns/views/components/get_form_field.tpl"
-        f_id="_kit_date_begin_`$kit_id`"
-        f_type="date"
-        f_required=true
-        f_name="`$e_n`[date_end]"
-        f_value=$kit.date_end
+        f_name="`$e_n`[date_open]"
+        f_value=$kit.date_open
         f_simple=true
         f_disabled=$disabled
     }
@@ -108,15 +99,24 @@
 }
 
 
-{* Статус *}
 <div class="form-field">
-    <label class="cm-required" for="kit_status">Состояние:</label>
-    <select name="{$e_n}[status]" id="kit_status">
-        <option value="">---</option>
-        <option value="O" {if $kit.status == "O"}selected="selected"{/if}>Партия в ожидании</option>
-        <option value="K" {if $kit.status == "K"}selected="selected"{/if} {if $mode=="add"}selected="selected"{/if}>Партия комплектуется</option>
-        <option value="U" {if $kit.status == "U"}selected="selected"{/if}>Партия укоплектована</option>
-        <option value="Z" {if $kit.status == "Z"}selected="selected"{/if}>Партия закрыта</option>
-        <option value="A" {if $kit.status == "A"}selected="selected"{/if}>Партия аннулирована</option>
-    </select>
+    <label for="kit_status" class="cm-required">Статус:</label>
+    {include file="addons/uns/views/components/get_form_field.tpl"
+        f_type="radio_button"
+        f_id="kit_status"
+        f_name="`$e_n`[status]"
+        f_simple=true
+        f_value=$kit.status
+
+        f1_value="K"
+        f1_default=true
+        f1_title="Партия комплектуется"
+
+        f2_value="U"
+        f2_title="Партия укоплектована"
+
+        f3_value="Z"
+        f3_title="Партия закрыта"
+    }
 </div>
+

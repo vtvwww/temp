@@ -125,22 +125,24 @@
         {* ДЕТАЛЬ *}
         <div class="form-field">
             <label for="detail_id" class="cm-required cm-integer-more-0">Деталь:</label>
-            <table class="simple">
+            <table class="table" border="0" cellspacing="0" cellpadding="0">
+            {*<table class="simple">*}
                 <thead>
-                    <tr>
-                        <th>
-                            <input checked type="checkbox" name="check_all" value="Y" title="{$lang.check_uncheck_all}" class="checkbox cm-check-items-{$document_type_name}_{$document_id}" id="cm-check-items-{$document_type_name}_{$document_id}" />
+                    <tr style="background-color: #EDEDED;">
+                        <th style="text-align: center;" class="b1_r">
+                            <input type="checkbox" name="check_all" value="Y" title="{$lang.check_uncheck_all}" class="checkbox cm-check-items-{$document_type_name}_{$document_id}" id="cm-check-items-{$document_type_name}_{$document_id}" />
                         </th>
-                        <th>№</th>
-                        <th><label style="padding: 0; margin: 0; color: #000000; float: none;" for="cm-check-items-{$document_type_name}_{$document_id}">Наименование</label></th>
-                        <th>
-                            Кол-во<br>
+                        <th style="text-align: center;" class="b1_r">№</th>
+                        <th style="text-align: center;" class="b1_r"><label style="padding: 0; margin: 0; color: #000000; float: none;" for="cm-check-items-{$document_type_name}_{$document_id}">Наименование</label></th>
+                        <th style="text-align: center;">
+                            Количество<br>
                             {include file="addons/uns/views/components/get_form_field.tpl"
                                 f_type="select_range"
                                 f_onchange="multi_select($(this))"
                                 f_from=0
                                 f_to=200
                                 f_simple=true
+                                f_plus_minus=true
                             }
                         </th>
                     </tr>
@@ -157,9 +159,9 @@
                             {/if}
                         {/foreach}
                         <tr>
-                            <td>
+                            <td class="b1_r">
                                 <input type="hidden"    name="{$e_n}[state]"            value="N"/>
-                                <input type="checkbox"  name="{$e_n}[state]"            value="Y" id="detail_{$document_type_name}_{$d.detail_id}" {if $d_a|is__array}checked{/if} class="checkbox cm-item-{$document_type_name}_{$document_id}" />
+                                <input type="checkbox"  name="{$e_n}[state]"            value="Y" id="detail_{$document_type_name}_{$d.detail_id}" {if $d_a|is__array}checked{/if} class="checkbox cm-item-{$document_type_name}_{$document_id}"{* onchange="if ($(this).attr('checked')) $('label[for=' + $(this).attr('id') + ']').addClass('bold'); else $('label[for=' + $(this).attr('id') + ']').removeClass('bold');"*} />
                                 <input type="hidden"    name="{$e_n}[item_id]"          value="{$d.detail_id}"/>
                                 <input type="hidden"    name="{$e_n}[item_type]"        value="D"/>
                                 <input type="hidden"    name="{$e_n}[processing]"       value="C"/>
@@ -175,9 +177,9 @@
                                     <input type="hidden"    name="{$e_n}[weight]"       value="{$d_a.weight}"/>
                                 {/if}
                             </td>
-                            <td align="center"><b>{$smarty.foreach.d.iteration}</b></td>
-                            <td><label style="padding: 0; margin: 0; color: #000000; float: none;" for="detail_{$document_type_name}_{$d.detail_id}">{$d.detail_name}{if $d.detail_no} [{$d.detail_no}]{/if}</label></td>
-                            <td>
+                            <td align="center" class="b1_r"><b>{$smarty.foreach.d.iteration}</b></td>
+                            <td class="b1_r center"><label style="line-height:20px; text-align:left; padding: 0; margin: 0; color: #000000; float: none; display: block; width: 100%; height: 100%;" for="detail_{$document_type_name}_{$d.detail_id}">{$d.detail_name}{if $d.detail_no} [{$d.detail_no}]{/if}</label></td>
+                            <td align="center">
                                 {assign var="q_min" value=0}
                                 {assign var="q_max" value=200}
                                 {assign var="q" value=0}
@@ -196,6 +198,7 @@
                                     f_to=$q_max
                                     f_value=$q
                                     f_simple=true
+                                    f_plus_minus=true
                                 }
                             </td>
                         </tr>
@@ -274,6 +277,7 @@
                                     f_to=$q_max
                                     f_value=$q
                                     f_simple=true
+                                    f_plus_minus=true
                                 }
                             </td>
                         </tr>
@@ -324,6 +328,7 @@
                             f_to=$q_max
                             f_value=$q
                             f_simple=true
+                            f_plus_minus=true
                         }
                     </td>
                 </tr>

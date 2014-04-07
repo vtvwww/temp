@@ -121,7 +121,7 @@
                        <span class="material_type {$i.material_type}">{$i.material_type}</span>
                    </td>
                    <td style="border-left: 1px solid #808080;"> {*Исходный материал*}
-                        {if strlen($i.material_no)}[{$i.material_no}] {/if}{$i.material_name}
+                        {if strlen($i.material_no)}[{if strlen($smarty.request.material_no)}{$i.material_no|replace:$smarty.request.material_no:"<span class='filtered_text'>`$smarty.request.material_no`</span>"}{else}{$i.material_no}{/if}] {/if}{$i.material_name}
                    </td>
                    <td align="center" style="border-left: 1px solid #808080;"> {*Исходный материал*}
                        {$i.material_quantity_by_PVP|fn_fvalue}{if $i.material_quantity_by_BRAK|is__more_0}<span class="info_warning">-{$i.material_quantity_by_BRAK|fn_fvalue}</span>{/if}
@@ -129,7 +129,7 @@
                    <td style="border-left: 1px solid #808080;"> {*Детали*}
                        {if is__array($i.details)}
                            {foreach from=$i.details item="d" name="d"}
-                               {*{$smarty.foreach.d.iteration}. *}{$d.detail_name} [{$d.detail_no}]{* - {$d.quantity} шт.*}{if !$smarty.foreach.d.last}<br>{/if}
+                               {*{$smarty.foreach.d.iteration}. *}{$d.detail_name} [{if strlen($pump_name)}{$d.detail_no|replace:$pump_name:"<span class='filtered_text'>`$pump_name`</span>"}{else}{$d.detail_no}{/if}]{* - {$d.quantity} шт.*}{if !$smarty.foreach.d.last}<br>{/if}
                            {/foreach}
                        {else}
                            <span class="info_warning">Ошибка!</span>
