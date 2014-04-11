@@ -13,12 +13,12 @@
                 </tr>
             </thead>
             <tbody>
-            {foreach from=$orders item="o"}
+            {foreach from=$orders item="o" name="o"}
                 <tr>
-                    <td style="text-align: center;">{$o.order_id}</td>
+                    <td style="text-align: center;">{$smarty.foreach.o.iteration}</td>
                     <td style="border-left: 1px solid #808080;">{$o.date_finished|date_format:"%a %d/%m/%y"} (осталось {$o.remaining_time} дней)</td>
                     <td style="border-left: 1px solid #808080;"><b>{$regions[$o.region_id].name_short}</b> - {$regions[$o.region_id].name}</td>
-                    <td style="border-left: 1px solid #808080;">{$o.comment}</td>
+                    <td style="border-left: 1px solid #808080;">{$o.comment}&nbsp;</td>
                 </tr>
             {/foreach}
             </tbody>
