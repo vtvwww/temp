@@ -98,7 +98,11 @@
    </form>
 
    {capture name="tools"}
-       {include file="common_templates/tools.tpl" tool_href="`$controller`.add" prefix="top" link_text="Добавить документ"  hide_tools=true}
+       {include file="common_templates/tools.tpl" tool_href="`$controller`.add"                              prefix="top" link_text="Добавить документ" hide_tools=true tool_title="Добавить новый документ"}
+       {include file="common_templates/tools.tpl" tool_href="`$controller`.add&document_type=7&object_to=19" prefix="top" link_text="РО по СГП"         hide_tools=true tool_title="Добавить Расходный ордер по Складу Готовой продукции"}
+       {include file="common_templates/tools.tpl" tool_href="`$controller`.add&document_type=8&object_to=17" prefix="top" link_text="АИО по Склад КМП"  hide_tools=true tool_title="Добавить Акт изменения остатка по Складу Комплектующих"}
+       {include file="common_templates/tools.tpl" tool_href="`$controller`.add&document_type=8&object_to=14" prefix="top" link_text="АИО по МЦ2"        hide_tools=true tool_title="Добавить Акт изменения остатка по МЦ2"}
+       {include file="common_templates/tools.tpl" tool_href="`$controller`.add&document_type=8&object_to=10" prefix="top" link_text="АИО по МЦ1"        hide_tools=true tool_title="Добавить Акт изменения остатка по МЦ1"}
    {/capture}
 
 

@@ -11,11 +11,13 @@
 		{include file="common_templates/help.tpl" content=$notes id=$notes_id}
 	{/if}
 
-	{if $tools}{$tools}{/if}
-
-	<h1 class="mainbox-title{if $title_extra} float-left{/if}">
+	<h1 class="mainbox-title{if $title_extra} float-left{/if} float-left">
 		{$title|default:"&nbsp;"}
 	</h1>
+
+    <div class="tools-containers">
+        {if $tools}{$tools}{/if}
+    </div>
 
 	{if $title_extra}<div class="title">-&nbsp;</div>
 		{$title_extra}

@@ -349,6 +349,11 @@ if($mode == 'add'){
 
     $document_types_enabled = array('AIO', 'BRAK', 'MCP', 'RO');
     $view->assign('document_types_enabled', $document_types_enabled);
+
+    // OBJECTS *****************************************************************
+    list($objects_plain, $search) = fn_uns__get_objects(array('plain' => true,
+                                                              'all'   => true));
+    $view->assign('objects_plain', $objects_plain);
 }
 
 

@@ -377,7 +377,7 @@
             {/if}
         </select>
     {else}
-        <div class="form-field">
+        <div class="form-field {if $f_hidden}hidden{/if}">
             <label class="{if $f_required}cm-required{/if} {if $f_integer_more_0}cm-integer-more-0{/if}" {if $f_full_name} for="{$f_id}" {else} for="{$f_name}_{$f_id}" {/if}>{$f_description}:</label>
             <select {if $f_full_name} name="{$f_full_name}" {if $f_id} id="{$f_id}"{/if} {else} name="data[{$f_name}]" id="{$f_name}_{$f_id}" {/if} {if $f_disabled} disabled="disabled" {/if}>
                 {if $f_blank}<option value="0" {if $f_target.o_id == 0} selected="selected" {/if}>{if $f_blank_name}{$f_blank_name}{else}---{/if}</option>{/if}

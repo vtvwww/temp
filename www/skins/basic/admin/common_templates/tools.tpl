@@ -17,7 +17,7 @@
 		{if !$hide_actions}
 			{if !("COMPANY_ID"|defined && !$tool_href|fn_check_view_permissions)}
 				<span class="action-add">
-					<a{if $tool_id} id="{$tool_id}"{/if}{if $tool_href} href="{$tool_href|fn_url}"{/if}{if $tool_onclick} onclick="{$tool_onclick}; return false;"{/if}>{$link_text|default:$lang.add}</a>
+					<a{if $tool_title} title="{$tool_title}"{/if}{if $tool_id} id="{$tool_id}"{/if}{if $tool_href} href="{$tool_href|fn_url}"{/if}{if $tool_onclick} onclick="{$tool_onclick}; return false;"{/if}>{$link_text|default:$lang.add}</a>
 				</span>
 			{/if}
 		{/if}

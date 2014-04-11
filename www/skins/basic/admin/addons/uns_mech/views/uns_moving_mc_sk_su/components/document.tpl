@@ -7,12 +7,23 @@
     {assign var="disabled"          value=false}
     {assign var="date_cast_hide"    value=true}
 
+    {*РЕАЛИЗАЦИЯ БЫСТРОГО ДОБАВЛЕНИЯ ДОКУМЕНТА*}
+    {assign var="document_type"     value=$smarty.request.document_type}
+    {assign var="object_to"         value=$smarty.request.object_to}
+    {if $document_type|is__more_0:$object_to}
+        {assign var="fast_add_document" value=true}
+        {if $document_type == 8 or $document_type == 7} {*Акт изменения остатка or Расходный ордер*}
+            {assign var="object_from_hide" value=true}
+        {else}
+        {/if}
+    {/if}
 
 {elseif $mode == "update"}
     {assign var="document_id"       value=$d.document_id}
     {assign var="document_items"    value=$d.items}
     {assign var="disabled"          value=true}
     {assign var="date_cast_hide"    value=true}
+    {assign var="document_type"     value=$d.type}
     {if $d.type == $smarty.const.DOC_TYPE__VLC}
         {assign var="date_cast_hide" value=false}
     {/if}
@@ -37,7 +48,7 @@
         f_options=$document_types
         f_enabled_items=$document_types_enabled
         f_with_id=true
-        f_target=$d.type
+        f_target=$document_type
         f_disabled=$disabled
         f_blank=true
         f_description="Тип документа"
@@ -64,31 +75,54 @@
         f_description="Дата плавки"
     }
 
-    {include file="addons/uns/views/components/get_form_field.tpl"
-        f_id="object_from"
-        f_type="objects_plain"
-        f_full_name="`$e_n`[object_from]"
-        f_required=true f_integer=true f_integer_more_0=true
-        f_target=$d.object_from
-        f_options=$objects_plain
-        f_option_id="o_id"
-        f_option_value="o_name"
-        f_disabled=$disabled
-        f_description="Склад Откуда"
-    }
+    {if $fast_add_document}
+        {include file="addons/uns/views/components/get_form_field.tpl"
+            f_id="object_from"
+            f_type="objects_plain"
+            f_full_name="`$e_n`[object_from]"
+            f_target=$d.object_from
+            f_options=$objects_plain
+            f_option_id="o_id"
+            f_option_value="o_name"
+            f_disabled=$disabled
+            f_hidden=$object_from_hide
+            f_description="Склад Откуда"
+        }
 
-    {include file="addons/uns/views/components/get_form_field.tpl"
-        f_id="object_to"
-        f_type="objects_plain"
-        f_full_name="`$e_n`[object_to]"
-        f_required=true f_integer=true f_integer_more_0=true
-        f_target=$d.object_to
-        f_options=$objects_plain
-        f_option_id="o_id"
-        f_option_value="o_name"
-        f_disabled=$disabled
-        f_description="Склад Куда"
-    }
+        <div class="form-field">
+            <label class="cm-required cm-integer-more-0" for="object_to">Склад Куда:</label>
+            <select name="{$e_n}[object_to]" id="object_to">
+                <option value="{$object_to}">{$objects_plain[$object_to].path}</option>
+            </select>
+        </div>
+    {else}
+        {include file="addons/uns/views/components/get_form_field.tpl"
+            f_id="object_from"
+            f_type="objects_plain"
+            f_full_name="`$e_n`[object_from]"
+            f_required=true f_integer=true f_integer_more_0=true
+            f_target=$d.object_from
+            f_options=$objects_plain
+            f_option_id="o_id"
+            f_option_value="o_name"
+            f_disabled=$disabled
+            f_hidden=$object_from_hide
+            f_description="Склад Откуда"
+        }
+
+        {include file="addons/uns/views/components/get_form_field.tpl"
+            f_id="object_to"
+            f_type="objects_plain"
+            f_full_name="`$e_n`[object_to]"
+            f_required=true f_integer=true f_integer_more_0=true
+            f_target=$d.object_to
+            f_options=$objects_plain
+            f_option_id="o_id"
+            f_option_value="o_name"
+            f_disabled=$disabled
+            f_description="Склад Куда"
+        }
+    {/if}
 
     {if $mode == 'update' and $d.type == $smarty.const.DOC_TYPE__RO}
     {include file="addons/uns/views/components/get_form_field.tpl"
