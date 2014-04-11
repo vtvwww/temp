@@ -245,6 +245,23 @@ input.radio:checked + label.radio {
 }
 
 /* BORDER 1 px */
+.b1_t_black{
+    border-top: 2px solid #000;
+}
+
+.b1_r_black{
+    border-right: 1px solid #000;
+}
+
+.b1_b_black{
+    border-bottom: 1px solid #000;
+}
+
+.b1_l_black{
+    border-left: 1px solid #000;
+}
+
+/* BORDER 1 px */
 .b1_t{
     border-top: 2px solid #808080;
 }
@@ -263,19 +280,19 @@ input.radio:checked + label.radio {
 
 /* BORDER 2 px */
 .b2_t{
-    border-top: 2px solid #000000;
+    border-top: 2px solid #808080 !important;
 }
 
 .b2_r{
-    border-right: 2px solid #000000;
+    border-right: 2px solid #808080 !important;
 }
 
 .b2_b{
-    border-bottom: 2px solid #000000;
+    border-bottom: 2px solid #808080 !important;
 }
 
 .b2_l{
-    border-left: 2px solid #000000;
+    border-left: 2px solid #808080 !important;
 }
 
 /* BORDER 3 px */
@@ -398,6 +415,9 @@ a.black:hover{
     text-decoration: underline;
 }
 
+td.done{
+    background: url("../../uns_acc/images/ok.png") center center no-repeat !important;
+}
 
 /*ПРОСТАЯ ТАБЛИЦА*/
 table.simple{
