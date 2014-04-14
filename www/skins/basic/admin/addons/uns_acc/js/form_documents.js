@@ -176,7 +176,7 @@ $('select[name^="data[document_items]"][name$="[item_id]"]').live('change', func
     var object_from     = $('select[name^="data[document]"][name$="[object_from]"]');
     var object_to       = $('select[name^="data[document]"][name$="[object_to]"]');
 
-    item_quantity   .val(1);
+//    item_quantity   .val(1);
     item_u_id       .empty();
     item_typesize   .empty();
     item_weight     .empty();

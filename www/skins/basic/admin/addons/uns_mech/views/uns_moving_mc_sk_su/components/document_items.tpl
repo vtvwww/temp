@@ -1,6 +1,5 @@
 {assign var="doc_type" value=$d.type}
 
-
 {* Тип позиции *}
 {assign var="item_type_detail"      value=false}
 {assign var="item_type_material"    value=false}
@@ -43,15 +42,12 @@
             <th class="cm-non-cb" width="10px">Тип</th>
             <th class="cm-non-cb" width="90px">Категория/Серия</th>
             <th class="cm-non-cb" width="140px">Наименование</th>
-            {*<th class="cm-non-cb" width="10px">Исп.{include file="common_templates/tooltip.tpl" tooltip="Исполнение детали:<br><b>Номинальное / исп. А / исп. Б</b>"}</th>*}
             <th class="cm-non-cb" width="50px">Кол-во</th>
             <th class="cm-non-cb" width="1px">&nbsp;</th>
-
+            <th class="cm-non-cb" width="1px">&nbsp;</th>
             {if !$is_SGP}
             <th class="cm-non-cb" width="10px">{include file="common_templates/tooltip.tpl" tooltip="<u><b>Статус обработки:</b></u><br><br><b>Обр.</b> - деталь пока еще обрабатывается;<br><b>Зав.</b> - деталь уже обработана;" tooltip_mark="Статус"}</th>
             {/if}
-            {*<th class="cm-non-cb" width="10px">Вес{include file="common_templates/tooltip.tpl" tooltip="Вес одной единицы материала, кг"}</th>*}
-            {*<th class="cm-non-cb" width="10px">Вес{include file="common_templates/tooltip.tpl" tooltip="Общий вес всего количества, кг"}</th>*}
         </tr>
     </tbody>
 
@@ -169,17 +165,7 @@
                                 {/if}
                             {/if}
                         </td>
-{*
-                        <td class="cm-non-cb" align="center">
-                            {include file="addons/uns/views/components/get_form_field.tpl"
-                                f_type="typesize"
-                                f_name="`$e_n`[typesize]"
-                                f_value=$i.typesize
-                                f_disabled=!$typesize_disabled
-                                f_simple=true
-                            }
-                        </td>
-*}
+
                         {assign var="q" value=$i.quantity}
                         {if $i.change_type == 'NEG'}
                             {assign var="q" value="-`$i.quantity`"}
@@ -195,53 +181,22 @@
                                 f_simple=true
                             }
                         </td>
+                        <td class="cm-non-cb" +align="right">
+                            <img class="hand" border="0" title="Получить текущий остаток позиции" src="skins/basic/admin/addons/uns_acc/images/refresh.png" onclick="var s=$(this).parent().prev().prev().find('select'); if (s.val()>0) s.change();">
+                        </td>
                         <td class="cm-non-cb" align="right">
                             <div class="balance" style="display:block; float:right;"></div>
                         </td>
-                        {*<td class="cm-non-cb" align="center">*}
-                            {*{include file="addons/uns/views/components/get_form_field.tpl"*}
-                                {*f_id=$id*}
-                                {*f_type="select"*}
-                                {*f_required=true f_integer=false*}
-                                {*f_class=$series_item_class*}
-                                {*f_name="`$e_n`[u_id]"*}
-                                {*f_options=$i.units*}
-                                {*f_option_id="u_id"*}
-                                {*f_option_value="u_name"*}
-                                {*f_option_target_id=$i.u_id*}
-                                {*f_simple_text=$is_series_item*}
-                                {*f_simple=true*}
-                            {*}*}
-                        {*</td>*}
-                        {*<td class="cm-non-cb" align="right">*}
-                            {*{include file="addons/uns/views/components/get_form_field.tpl"*}
-                                {*f_type="input"*}
-                                {*f_required=true f_integer=false*}
-                                {*f_name="`$e_n`[weight]"*}
-                                {*f_value=$i.weight|fn_fvalue*}
-                                {*f_readonly=true*}
-                                {*f_simple=true*}
-                            {*}*}
-                        {*</td>*}
-                        {*<td class="cm-non-cb" align="right">*}
-                            {*{assign var="total_weight" value=$i.quantity*$i.weight}*}
-                            {*{include file="addons/uns/views/components/get_form_field.tpl"*}
-                                {*f_type="input"*}
-                                {*f_required=true f_integer=false*}
-                                {*f_value=$total_weight*}
-                                {*f_simple_text=true*}
-                            {*}*}
-                        {*</td>*}
 
                         <td class="cm-non-cb" align="right">
-                            {*{if !$is_SGP}*}
+                            {if !$is_SGP}
                             {include file="addons/uns/views/components/get_form_field.tpl"
                                 f_type="processing"
                                 f_name="`$e_n`[processing]"
                                 f_value=$i.processing
                                 f_simple=true
                             }
-                            {*{/if}*}
+                            {/if}
                         </td>
 
                         <td class="right cm-non-cb">
@@ -290,14 +245,6 @@
                     f_simple=true
                 }
             </td>
-{*            <td class="cm-non-cb" align="center">
-                {include file="addons/uns/views/components/get_form_field.tpl"
-                    f_type="typesize"
-                    f_name="`$e_n`[typesize]"
-                    f_disabled=!$typesize_disabled
-                    f_simple=true
-                }
-            </td>*}
             <td class="cm-non-cb" align="left">
                 {include file="addons/uns/views/components/get_form_field.tpl"
                     f_type="input"
@@ -310,41 +257,24 @@
                 }
             </td>
             <td class="cm-non-cb" align="right">
+                <img class="hand" border="0" title="Получить текущий остаток позиции" src="skins/basic/admin/addons/uns_acc/images/refresh.png" onclick="var s=$(this).parent().prev().prev().find('select'); if (s.val()>0) s.change();">
+            </td>
+            <td class="cm-non-cb" align="right">
                 <div class="balance" style="display:block; float:right;"></div>
             </td>
-            {*<td class="cm-non-cb" align="center">*}
-                {*{include file="addons/uns/views/components/get_form_field.tpl"*}
-                    {*f_type="select"*}
-                    {*f_required=true f_integer=false*}
-                    {*f_name="`$e_n`[u_id]"*}
-                    {*f_simple=true*}
-                {*}*}
-            {*</td>*}
-            {*<td class="cm-non-cb" align="right">*}
-                {*{include file="addons/uns/views/components/get_form_field.tpl"*}
-                    {*f_type="input"*}
-                    {*f_required=true f_integer=false*}
-                    {*f_name="`$e_n`[weight]"*}
-                    {*f_value=''*}
-                    {*f_readonly=true*}
-                    {*f_simple=true*}
-                {*}*}
-            {*</td>*}
-            {*<td class="cm-non-cb" align="right">&nbsp;</td>*}
             <td class="cm-non-cb" align="right">
-                {*{if !$is_SGP}*}
+                {if !$is_SGP}
                 {include file="addons/uns/views/components/get_form_field.tpl"
                     f_type="processing"
                     f_name="`$e_n`[processing]"
                     f_value=""
                     f_simple=true
                 }
-                {*{/if}*}
+                {/if}
             </td>
             <td class="right cm-non-cb">
                 {include file="buttons/multiple_buttons.tpl" item_id="add_`$num`" tag_level="2"}
             </td>
         </tr>
     </tbody>
-
 </table>
