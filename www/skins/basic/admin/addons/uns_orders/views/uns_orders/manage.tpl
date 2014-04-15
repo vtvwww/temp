@@ -16,17 +16,17 @@
                <th width="10px">№</th>
                <th width="1px">&nbsp;</th>
                <th width="10px">Статус</th>
-               <th width="300px">Регион</th>
+               <th width="300px">Клиент</th>
                <th width="10px">Дата отгрузки</th>
                <th width="10px">Позиций</th>
                <th>&nbsp;</th>
            </tr>
-           {foreach from=$orders item=i}
+           {foreach from=$orders item="i" name="o"}
                <tr class="{if  $i.status == "Close"}CL{else}OP{/if}">
                    {assign var="id" value=$i.order_id}
                    {assign var="value" value="order_id"}
-                   <td> {*№ партии*}
-                       {$id}
+                   <td>
+                       {math equation="a-b" a=$orders|count b=$smarty.foreach.o.index}
                    </td>
                    <td>
                        {include file="addons/uns/views/components/tools.tpl" type="edit" href="`$controller`.update?`$value`=`$id`"}
@@ -38,11 +38,11 @@
                            <img class="hand" border="0" title="Закрыт" src="skins/basic/admin/addons/uns_acc/images/done.png">
                        {/if}
                    </td>
-                   <td> {*РЕГИОН*}
+                   <td> {*КЛИЕНТ*}
                        {if      $i.status == "Open"}
-                           <b>{$regions[$i.region_id].name}</b>
+                           <b>{$customers[$i.customer_id].name}</b>
                        {elseif  $i.status == "Close"}
-                           {$regions[$i.region_id].name}
+                           {$customers[$i.customer_id].name}
                        {/if}
                    </td>
                    <td> {*ДАТА ОТГРУЗКИ*}

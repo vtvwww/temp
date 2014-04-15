@@ -21,16 +21,16 @@
 
 {*РЕГИОН*}
 {include file="addons/uns/views/components/get_form_field.tpl"
-    f_id="region_id"
+    f_id="customer_id"
     f_type="select"
     f_required=true f_integer=true f_integer_more_0=true
-    f_name="`$e_n`[region_id]"
+    f_name="`$e_n`[customer_id]"
     f_blank=true
     f_full=true
-    f_options=$regions
-    f_option_id="region_id"
+    f_options=$customers
+    f_option_id="customer_id"
     f_option_value="name"
-    f_option_target_id=$o.region_id
+    f_option_target_id=$o.customer_id
     f_description="Регион"
 }
 

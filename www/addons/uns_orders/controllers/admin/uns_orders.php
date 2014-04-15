@@ -52,22 +52,17 @@ if($mode == 'manage'){
     list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
     $p = array();
     $p = array(
-//        "with_items" => true,
         "full_info" => true,
         "with_count" => true,
     );
     $p = array_merge($_REQUEST, $p);
     list($orders, $search) = fn_acc__get_orders($p, UNS_ITEMS_PER_PAGE);
-//    fn_print_r($orders);
-
     $view->assign('orders', $orders);
     $view->assign('search', $search);
 
-
-    // REGIONS
-    list($regions) = fn_uns__get_regions();
-    $view->assign('regions', $regions);
-
+    // CUSTOMERS
+    list($customers) = fn_uns__get_customers();
+    $view->assign('customers', $customers);
 }
 
 
@@ -77,9 +72,9 @@ if($mode == 'add'){
     list($pumps) = fn_uns__get_pumps(array("group_by_series"=>true));
     $view->assign('pumps', $pumps);
 
-    // REGIONS
-    list($regions) = fn_uns__get_regions();
-    $view->assign('regions', $regions);
+    // customerS
+    list($customers) = fn_uns__get_customers();
+    $view->assign('customers', $customers);
 
     // PUMP_SERIES
     $p = array(
@@ -108,9 +103,9 @@ if($mode == 'update'){
     list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true));
     $view->assign('dcategories_plain', $dcategories_plain);
 
-    // REGIONS
-    list($regions) = fn_uns__get_regions();
-    $view->assign('regions', $regions);
+    // customerS
+    list($customers) = fn_uns__get_customers();
+    $view->assign('customers', $customers);
 
     // PUMP_SERIES
     $p = array(

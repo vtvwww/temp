@@ -8,7 +8,7 @@
                 <tr>
                     <th>№</th>
                     <th style="text-align: center; border-left: 1px solid #808080;">Дата отгрузки</th>
-                    <th style="text-align: center; border-left: 1px solid #808080;">Регион</th>
+                    <th style="text-align: center; border-left: 1px solid #808080;">Клиент</th>
                     <th style="text-align: center; border-left: 1px solid #808080;">Комментарий</th>
                 </tr>
             </thead>
@@ -17,7 +17,7 @@
                 <tr>
                     <td style="text-align: center;">{$smarty.foreach.o.iteration}</td>
                     <td style="border-left: 1px solid #808080;">{$o.date_finished|date_format:"%a %d/%m/%y"} (осталось {$o.remaining_time} дней)</td>
-                    <td style="border-left: 1px solid #808080;"><b>{$regions[$o.region_id].name_short}</b> - {$regions[$o.region_id].name}</td>
+                    <td style="border-left: 1px solid #808080;"><b>{$customers[$o.customer_id].name_short}</b> - {$customers[$o.customer_id].name}</td>
                     <td style="border-left: 1px solid #808080;">{$o.comment}&nbsp;</td>
                 </tr>
             {/foreach}
