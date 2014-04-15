@@ -70,7 +70,7 @@ function fn_rpt__planning_report($data){
 
     // СБОР ДАННЫХ: 4. Заказы
     $orders = array_shift(fn_acc__get_orders(array("with_items"=>true, "only_active"=>true)));
-    $regions = array_shift(fn_uns__get_regions());
+    $customers = array_shift(fn_uns__get_customers());
 
     // СБОР ДАННЫХ: 5. План
     $plan = fn_planning_report__get_plan($_REQUEST["planning"]["month"], $_REQUEST["planning"]["year"]);
@@ -123,7 +123,7 @@ function fn_rpt__planning_report($data){
                 if (is__array($o["items"])){
                     foreach ($o["items"] as $o_i){
                         if (in_array($o_i["p_id"], $pumps_ids)){
-                            $data_orders[$o["order_id"]]["region_id"] = $o["region_id"];
+                            $data_orders[$o["order_id"]]["customer_id"] = $o["customer_id"];
                             $data_orders[$o["order_id"]]["quantity"] += $o_i["quantity"];
                         }
                     }
@@ -173,7 +173,7 @@ function fn_rpt__planning_report($data){
         $pdf->MultiCell(20,  4, " ",         0, $align, false, 0);
         if (is__array($orders)){
             foreach ($orders as $o){
-                $pdf->MultiCell(10,  4, $regions[$o["region_id"]]["name_short"], $border, $align, false, 0);
+                $pdf->MultiCell(10,  4, $customers[$o["customer_id"]]["name_short"], $border, $align, false, 0);
             }
             if (count($orders) > 1){
                 $pdf->MultiCell(10,  4, "==",       $border, $align, false, 0);

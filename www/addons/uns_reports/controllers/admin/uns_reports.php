@@ -256,10 +256,10 @@ if ($mode == 'get_report'){
             list($sales_SGP) = fn_uns__get_documents(array_merge($_REQUEST, $p));
 //            fn_print_r($sales_SGP);
 
-            list($regions) = fn_uns__get_regions(array('status'=>'A'));
+            list($customers) = fn_uns__get_customers(array('status'=>'A'));
 //            fn_print_r($regions);
 
-            fn_rpt__general_report(array("report_VLC"=>$report_VLC, "sales_VLC"=>$sales_VLC, "vn_SGP"=>$vn_SGP, "sales_SGP"=>$sales_SGP, "regions"=>$regions));
+            fn_rpt__general_report(array("report_VLC"=>$report_VLC, "sales_VLC"=>$sales_VLC, "vn_SGP"=>$vn_SGP, "sales_SGP"=>$sales_SGP, "customers"=>$customers));
 
         break;
 

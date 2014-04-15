@@ -156,7 +156,7 @@ function fn_uns__get_documents($params = array(), $items_per_page = 0){
         "$m_tbl.date_cast",
         "$m_tbl.package_id",
         "$m_tbl.package_type",
-        "$m_tbl.region_id",
+        "$m_tbl.customer_id",
         //        "$j_tbl_1.date_cast",
     );
 
@@ -221,8 +221,8 @@ function fn_uns__get_documents($params = array(), $items_per_page = 0){
     }
 
     // ПО РЕГИОНАМ
-    if ($params["region_id_array"] = to__array($params["region_id"])){
-        $condition .= db_quote(" AND $m_tbl.region_id in (?n) ", $params["region_id_array"]);
+    if ($params["customer_id_array"] = to__array($params["customer_id"])){
+        $condition .= db_quote(" AND $m_tbl.customer_id in (?n) ", $params["customer_id_array"]);
     }
 
 
@@ -750,8 +750,8 @@ function fn_uns__upd_document_info($id = 0, $doc){;
     }
 
     // REGION
-    if (is__more_0($doc["region_id"])){
-        $d["region_id"]  = $doc["region_id"];
+    if (is__more_0($doc["customer_id"])){
+        $d["customer_id"]  = $doc["customer_id"];
     }
 
 
