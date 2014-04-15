@@ -17,6 +17,7 @@ if (is_numeric($_SESSION['auth']['usergroup_ids'][0])){
         "uns_acc",
         "uns_foundry",
         "uns_mech",
+        "uns_orders",
     );
     // Блокировать все контроллеры
     foreach ($arr_addons as $addon){
@@ -43,6 +44,10 @@ if (is_numeric($_SESSION['auth']['usergroup_ids'][0])){
             foreach (fn_get_dir_contents(DIR_ADDONS . "uns_mech/controllers/admin", false, true, 'php') as $controller){
                 $schema['controllers'][substr($controller, 0, -4)]['modes']['manage']['permissions'] = true;
             }
+            // uns_mech
+            foreach (fn_get_dir_contents(DIR_ADDONS . "uns_orders/controllers/admin", false, true, 'php') as $controller){
+                $schema['controllers'][substr($controller, 0, -4)]['modes']['manage']['permissions'] = true;
+            }
             break;
 
         case USER_GROUP__FOUNDRY:
@@ -50,10 +55,7 @@ if (is_numeric($_SESSION['auth']['usergroup_ids'][0])){
             $schema['controllers']['foundry_get_balance']['modes']['manage']['permissions'] = true;
             $schema['controllers']['foundry_get_report']['modes']['manage']['permissions'] = true;
 
-
             $schema['controllers']['uns_balance_mc_sk_su']['modes']['manage']['permissions'] = true;
-
-
 
             $schema['controllers']['uns_balance_sgp']['modes']['manage']['permissions'] = true;
 

@@ -4,5 +4,5 @@
 //	$schema['exim']['allow']['cron_export'] = true;
 //}
 
-// Разрешить работу $controller="uns_db" с $mode="backup" без авторизации на сайте
+// Разрешить работу $controller="uns_db" с $mode="backup" без авторизации на сайте для выполнения резервного копирования
 $schema['uns_db']['allow']['backup'] = true;
