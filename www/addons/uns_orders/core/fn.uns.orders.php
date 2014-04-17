@@ -45,6 +45,11 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
         $condition .= db_quote(" AND $m_tbl.$m_key in (?n)", $params["{$m_key}_array"]);
     }
 
+    // customer_id
+    if ($params["customer_id_array"] = to__array($params["customer_id"])){
+        $condition .= db_quote(" AND $m_tbl.customer_id in (?n)", $params["customer_id_array"]);
+    }
+
     if ($params['only_active']) {
         $condition .= db_quote(" AND $m_tbl.status = 'Open' ");
     }

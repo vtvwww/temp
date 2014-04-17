@@ -220,7 +220,7 @@ function fn_uns__get_documents($params = array(), $items_per_page = 0){
         }
     }
 
-    // ПО РЕГИОНАМ
+    // ПО клиентам
     if ($params["customer_id_array"] = to__array($params["customer_id"])){
         $condition .= db_quote(" AND $m_tbl.customer_id in (?n) ", $params["customer_id_array"]);
     }

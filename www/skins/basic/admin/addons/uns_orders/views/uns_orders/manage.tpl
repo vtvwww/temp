@@ -16,8 +16,8 @@
                <th width="10px">№</th>
                <th width="1px">&nbsp;</th>
                <th width="10px">Статус</th>
-               <th width="300px">Клиент</th>
                <th width="10px">Дата отгрузки</th>
+               <th width="300px">Клиент</th>
                <th width="10px">Позиций</th>
                <th>&nbsp;</th>
            </tr>
@@ -38,15 +38,15 @@
                            <img class="hand" border="0" title="Закрыт" src="skins/basic/admin/addons/uns_acc/images/done.png">
                        {/if}
                    </td>
+                   <td> {*ДАТА ОТГРУЗКИ*}
+                       {$i.date_finished|date_format:"%a %d/%m/%y"}
+                   </td>
                    <td> {*КЛИЕНТ*}
                        {if      $i.status == "Open"}
                            <b>{$customers[$i.customer_id].name}</b>
                        {elseif  $i.status == "Close"}
                            {$customers[$i.customer_id].name}
                        {/if}
-                   </td>
-                   <td> {*ДАТА ОТГРУЗКИ*}
-                       {$i.date_finished|date_format:"%a %d/%m/%y"}
                    </td>
                    <td> {*ПОЗИЦИЙ*}
                        {$i.count}
@@ -77,6 +77,7 @@
 
    {capture name="tools"}
        {include file="common_templates/tools.tpl" tool_href="`$controller`.add"    prefix="top" link_text="Добавить ЗАКАЗ"  hide_tools=true}
+       {include file="common_templates/tools.tpl" tool_href="`$controller`.add"    prefix="top" link_text="Добавить КЛИЕНТА"  hide_tools=true}
    {/capture}
 
 

@@ -1,7 +1,37 @@
 <?php
 /*******************************************************************************
- * РЕГИОНЫ
+ * КЛИЕНТЫ
  *******************************************************************************/
+// Удаление КЛИЕНТОВ + проверка
+function fn_uns__del_customer ($id){
+    if (!($id = to__array($id))) return false;
+    // Внести запрет на удаление клиента,
+    // если по нему существует оформленный заказ или расходный ордер
+    foreach ($id as $i){
+        $orders      = array_shift(fn_acc__get_orders(array("customer_id"=>$i)));
+        $documents   = array_shift(fn_uns__get_documents(array("customer_id"=>$i, "type" => 7))); // type=7 -- расходный ордер
+        if (count($orders) or count($documents)){
+            if (count($orders))     fn_set_notification("E", "Удаление невозможно", "По этому клиенту существуют заказы!");
+            if (count($documents))  fn_set_notification("E", "Удаление невозможно", "По этому клиенту существуют расходные ордеры!");
+        }else{
+            db_query(UNS_DB_PREFIX . "DELETE FROM ?:_acc_customers WHERE customer_id IN (?n)", $id);
+        }
+    }
+    return true;
+}
+
+// Обновление информации о клиентах
+function fn_uns__upd_customer($id, $data){
+    $data = trim__data($data);
+    if (is__more_0($id) and is__array($data) and is__more_0(db_get_field(UNS_DB_PREFIX . "SELECT customer_id FROM ?:_acc_customers WHERE customer_id = $id"))){
+        db_query(UNS_DB_PREFIX . "UPDATE ?:_acc_customers SET ?u WHERE customer_id = ?i", $data, $id);
+    }else{
+        $id = db_query(UNS_DB_PREFIX . "INSERT INTO ?:_acc_customers ?e", $data);
+    }
+    return $id;
+}
+
+// Получить информацию о клиентах
 function fn_uns__get_customers($params = array(), $items_per_page = 0){
     $default_params = array(
         'customer_id' => 0,
@@ -28,9 +58,9 @@ function fn_uns__get_customers($params = array(), $items_per_page = 0){
 
     $sorting_schemas = array(
         'view' => array(
-            "$m_table.position"    => 'asc',
-            "$m_table.name"  => 'asc',
-            "$m_table.customer_id"      => 'asc',
+            "$m_table.position"     => 'asc',
+            "$m_table.name"         => 'asc',
+            "$m_table.customer_id"  => 'asc',
         )
     );
 
@@ -75,3 +105,4 @@ function fn_uns__get_customers($params = array(), $items_per_page = 0){
 
     return array($data, $params, $total);
 }
+

@@ -50,7 +50,6 @@ if($mode == 'manage' or $mode == 'update' or $mode == 'add'){
 if($mode == 'manage'){
     if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "M"; // Текущий месяц
     list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
-    $p = array();
     $p = array(
         "full_info" => true,
         "with_count" => true,
