@@ -21,16 +21,17 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
         "$m_tbl.status",
         "$m_tbl.date_updated",
         "$m_tbl.date_finished",
-        "$m_tbl.region_id",
+        "$m_tbl.customer_id",
     );
 
     $sorting_schemas = array(
         "view" => array(
             "$m_tbl.status"  => "asc",
-            "$m_tbl.date_finished"  => "asc",
+            "$m_tbl.date_finished"  => "desc",
         ),
-        "view_1" => array(
-            "$m_tbl.$m_key"  => "desc",
+        "view_in_sgp" => array(
+//            "$m_tbl.status"  => "asc",
+            "$m_tbl.date_finished"  => "asc",
         ),
     );
 
@@ -42,6 +43,11 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
     // По ID
     if ($params["{$m_key}_array"] = to__array($params[$m_key])){
         $condition .= db_quote(" AND $m_tbl.$m_key in (?n)", $params["{$m_key}_array"]);
+    }
+
+    // customer_id
+    if ($params["customer_id_array"] = to__array($params["customer_id"])){
+        $condition .= db_quote(" AND $m_tbl.customer_id in (?n)", $params["customer_id_array"]);
     }
 
     if ($params['only_active']) {
@@ -189,7 +195,7 @@ function fn_acc__upd_order_info($id, $data){
     $d["comment"]       = (strlen($data["comment"]))?$data["comment"]:"";
     $d["date_finished"] = fn_parse_date($data["date_finished"]);
     $d["status"]        = (fn_check_type($data["status"], "|Open|Close|"))?$data["status"]:"Open";
-    $d["region_id"]     = $data["region_id"];
+    $d["customer_id"]   = $data["customer_id"];
     $d["date_updated"]  = TIME;
 
     if ($operation == "update"){

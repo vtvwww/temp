@@ -290,9 +290,9 @@ if($mode == 'manage'){
     list($document_types) = fn_uns__get_document_types(array('status'=>'A'));
     $view->assign('document_types', $document_types);
 
-    // REGIONS
-    list($regions) = fn_uns__get_regions(array('status'=>'A'));
-    $view->assign('regions', $regions);
+    // customerS
+    list($customers) = fn_uns__get_customers(array('status'=>'A'));
+    $view->assign('customers', $customers);
 }
 
 
@@ -337,9 +337,9 @@ if($mode == 'update' or $mode == 'view'){
     list($pump_series) = fn_uns__get_pump_series($p);
     $view->assign('pump_series', $pump_series);
 
-    // REGIONS
-    list($regions) = fn_uns__get_regions(array('status'=>'A'));
-    $view->assign('regions', $regions);
+    // customerS
+    list($customers) = fn_uns__get_customers(array('status'=>'A'));
+    $view->assign('customers', $customers);
 }
 
 

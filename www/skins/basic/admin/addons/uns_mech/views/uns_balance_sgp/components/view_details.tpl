@@ -21,7 +21,7 @@
                 </tr>
                 <tr style="background-color: #EDEDED">
                     {foreach from=$orders item="o" name="o"}
-                        <th style="text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{$regions[$o.region_id].name_short}</th>
+                        <th style="text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{$customers[$o.customer_id].name_short}</th>
                     {/foreach}
                 </tr>
             </thead>

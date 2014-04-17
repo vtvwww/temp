@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<addon scheme="2.0">
+	<id>uns_orders</id>
+	<name>UNS_ORDERS</name>
+	<description>Заказы и клиенты</description>
+	<version>1.0</version>
+	<priority>120</priority>
+	<position>2</position>
+	<status>active</status>
+    <language_variables>
+    </language_variables>
+</addon>

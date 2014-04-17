@@ -11,9 +11,9 @@
     <div id="content_group">
         <form action="{""|fn_url}" method="post" name="update_{$controller}_form_{$id}" class="cm-form-highlight">
             <hr>
-            {include file="addons/uns_mech/views/uns_orders/components/order.tpl"}
+            {include file="addons/uns_orders/views/uns_orders/components/order.tpl"}
             <hr>
-            {include file="addons/uns_mech/views/uns_orders/components/items.tpl"}
+            {include file="addons/uns_orders/views/uns_orders/components/items.tpl"}
 
             <div class="buttons-container cm-toggle-button buttons-bg">
                 {if $mode == "add"}
@@ -24,10 +24,6 @@
             </div>
         </form>
         <br>
-        {*{if $id>0}*}
-            {*{include file="addons/uns_mech/views/uns_orders/components/completeness.tpl"}*}
-            {*{include file="addons/uns_mech/views/uns_orders/components/motions.tpl"}*}
-        {*{/if}*}
     </div>
 {/capture}
 {if $id > 0}
@@ -37,6 +33,3 @@
 {/if}
 {include file="common_templates/mainbox.tpl" title=$title content=$smarty.capture.mainbox}
 
-{*<hr>*}
-{*<pre>{$documents|print_r}</pre>*}
-{*<pre>{$pumps|print_r}</pre>*}

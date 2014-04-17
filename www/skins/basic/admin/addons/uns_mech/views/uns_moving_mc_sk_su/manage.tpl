@@ -45,10 +45,10 @@
                        {include file="common_templates/tooltip.tpl" tooltip=$i.comment}
                    </td>
                    <td>
-                       {if $i.region_id|is__more_0}
+                       {if $i.customer_id|is__more_0}
                            <span style="font-size: 11px; font-weight:bold;">{$objects_plain[$i.object_to].path}&nbsp;</span>
                            <hr style="margin: 3px 0">
-                           <span style="font-size: 11px; font-weight:bold;">{$regions[$i.region_id].name}&nbsp;</span>
+                           <span style="font-size: 11px; font-weight:bold;">{$customers[$i.customer_id].name}&nbsp;</span>
                        {else}
                            <span style="font-size: 11px; font-weight:bold;">{$objects_plain[$i.object_from].path}&nbsp;</span>
                            <hr style="margin: 3px 0">

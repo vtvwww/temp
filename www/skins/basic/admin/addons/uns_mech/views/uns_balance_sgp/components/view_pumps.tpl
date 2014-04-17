@@ -35,17 +35,17 @@
         <tr style="background-color: #EDEDED">
             {*Насос*}
             {foreach from=$orders item="o" name="o"}
-                <th colspan="2" style="text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$regions[$o.region_id].name params="black" tooltip_mark="<b>`$regions[$o.region_id].name_short`</b>"}</th>
+                <th colspan="2" style="text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$customers[$o.customer_id].name params="black" tooltip_mark="<b>`$customers[$o.customer_id].name_short`</b>"}</th>
             {/foreach}
 
             {*На раме*}
             {foreach from=$orders item="o" name="o"}
-                <th colspan="2" style="text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$regions[$o.region_id].name params="black" tooltip_mark="<b>`$regions[$o.region_id].name_short`</b>"}</th>
+                <th colspan="2" style="text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$customers[$o.customer_id].name params="black" tooltip_mark="<b>`$customers[$o.customer_id].name_short`</b>"}</th>
             {/foreach}
 
             {*Агрегат*}
             {foreach from=$orders item="o" name="o"}
-                <th colspan="2" style="text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$regions[$o.region_id].name params="black" tooltip_mark="<b>`$regions[$o.region_id].name_short`</b>"}</th>
+                <th colspan="2" style="text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$customers[$o.customer_id].name params="black" tooltip_mark="<b>`$customers[$o.customer_id].name_short`</b>"}</th>
             {/foreach}
         </tr>
         {/if}
@@ -321,17 +321,17 @@
         <tr>
             {*Насос*}
             {foreach from=$orders item="o" name="o"}
-                <td colspan="2" style="border-top: 1px solid #000000; border-bottom: 3px solid #000000; text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$regions[$o.region_id].name params="black" tooltip_mark="<b>`$regions[$o.region_id].name_short`</b>"}</td>
+                <td colspan="2" style="border-top: 1px solid #000000; border-bottom: 3px solid #000000; text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$customers[$o.customer_id].name params="black" tooltip_mark="<b>`$customers[$o.customer_id].name_short`</b>"}</td>
             {/foreach}
 
             {*На раме*}
             {foreach from=$orders item="o" name="o"}
-                <td colspan="2" style="border-top: 1px solid #000000; border-bottom: 3px solid #000000; text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$regions[$o.region_id].name params="black" tooltip_mark="<b>`$regions[$o.region_id].name_short`</b>"}</td>
+                <td colspan="2" style="border-top: 1px solid #000000; border-bottom: 3px solid #000000; text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$customers[$o.customer_id].name params="black" tooltip_mark="<b>`$customers[$o.customer_id].name_short`</b>"}</td>
             {/foreach}
 
             {*Агрегат*}
             {foreach from=$orders item="o" name="o"}
-                <td colspan="2" style="border-top: 1px solid #000000; border-bottom: 3px solid #000000; text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$regions[$o.region_id].name params="black" tooltip_mark="<b>`$regions[$o.region_id].name_short`</b>"}</td>
+                <td colspan="2" style="border-top: 1px solid #000000; border-bottom: 3px solid #000000; text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$customers[$o.customer_id].name params="black" tooltip_mark="<b>`$customers[$o.customer_id].name_short`</b>"}</td>
             {/foreach}
         </tr>
 

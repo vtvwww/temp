@@ -1,0 +1,4 @@
+<uns_orders>
+    <item title="uns_orders"        dispatch="uns_orders.manage"/>
+    <item title="uns_customers"     dispatch="uns_customers.manage"/>
+</uns_orders>

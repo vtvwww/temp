@@ -43,14 +43,15 @@ if($mode == 'manage'){
         "only_active"       => true,
         "data_for_tmp"      => true,
         "remaining_time"    => true,
+        "sorting_schemas"   => "view_in_sgp"
     );
     list($orders, $search) = fn_acc__get_orders(array_merge($_REQUEST, $p));
 //    fn_print_r($orders);
     $view->assign('orders', $orders);
 
-    // REGIONS
-    list($regions) = fn_uns__get_regions();
-    $view->assign('regions', $regions);
+    // customerS
+    list($customers) = fn_uns__get_customers();
+    $view->assign('customers', $customers);
 
     // Запрос категорий
     list($dcategories_plain) = fn_uns__get_details_categories(array("plain" => true, "with_q_ty"=>false));
