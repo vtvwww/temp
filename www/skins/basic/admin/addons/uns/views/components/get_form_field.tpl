@@ -568,11 +568,12 @@
     {if $f_simple}
         <select name="{$f_name}" {if $f_id} id="{$f_id}" {/if} {if $f_disabled}disabled="disabled"{/if} >
             <option {if $f_value == 0} selected="selected" {/if} value="0">---</option>
-            {if $f_detail}  <option {if $f_value == "D"} selected="selected" {/if} {if $f_disabled_detail}  disabled="disabled" {/if} value="D">Дет.</option>{/if}
-            {if $f_material}<option {if $f_value == "M"} selected="selected" {/if} {if $f_disabled_material}disabled="disabled" {/if} value="M">Мат.</option>{/if}
-            {if $f_p}       <option {if $f_value == "P"} selected="selected" {/if} {if $f_disabled_p}       disabled="disabled" {/if} value="P">Насос</option>{/if}
-            {if $f_pf}      <option {if $f_value == "PF"} selected="selected" {/if} {if $f_disabled_pf}     disabled="disabled" {/if} value="PF">Н на раме</option>{/if}
-            {if $f_pa}      <option {if $f_value == "PA"} selected="selected" {/if} {if $f_disabled_pa}     disabled="disabled" {/if} value="PA">Н агрегат</option>{/if}
+            {if $f_pump_series} <option {if $f_value == "S"}  selected="selected" {/if} {if $f_disabled_pump_series}disabled="disabled" {/if} value="S" title="Серия насоса">Насос</option>{/if}
+            {if $f_detail}      <option {if $f_value == "D"}  selected="selected" {/if} {if $f_disabled_detail}     disabled="disabled" {/if} value="D">Дет.</option>{/if}
+            {if $f_material}    <option {if $f_value == "M"}  selected="selected" {/if} {if $f_disabled_material}   disabled="disabled" {/if} value="M">Мат.</option>{/if}
+            {if $f_p}           <option {if $f_value == "P"}  selected="selected" {/if} {if $f_disabled_p}          disabled="disabled" {/if} value="P">Насос</option>{/if}
+            {if $f_pf}          <option {if $f_value == "PF"} selected="selected" {/if} {if $f_disabled_pf}         disabled="disabled" {/if} value="PF">Н на раме</option>{/if}
+            {if $f_pa}          <option {if $f_value == "PA"} selected="selected" {/if} {if $f_disabled_pa}         disabled="disabled" {/if} value="PA">Н агрегат</option>{/if}
         </select>
     {else}
     {/if}

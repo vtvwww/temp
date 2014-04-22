@@ -216,7 +216,7 @@ function fn_acc__get_sheets($params = array(), $items_per_page = 0){
 
     // Клеймо
     if (strlen(trim($params["material_no"]))){
-        $condition .= db_quote(" AND ($j_tbl_1.material_no like ?l) ", "%{$params['material_no']}%");
+        $condition .= db_quote(" AND ($j_tbl_1.material_no like ?l) ", "{$params['material_no']}");
     }
 
     // *************************************************************************
