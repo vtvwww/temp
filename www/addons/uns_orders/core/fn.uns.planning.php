@@ -6,6 +6,12 @@
  */
 class planning {
 
+    public function __construct(){
+        require('lib/pChart2.1.4/class/pData.class.php');
+        require('lib/pChart2.1.4/class/pDraw.class.php');
+        require('lib/pChart2.1.4/class/pImage.class.php');
+    }
+
     /**
      * Расчет плана производства
      * @param $params
@@ -23,16 +29,185 @@ class planning {
 
         // 2. Получить статистику продаж по указанным сериям за последние YEARS_FOR_ANALYSIS
         $sales = self::get_sales(array_keys($pump_series), $years_for_analysis, $ref_month, $ref_year);
-        fn_print_r($sales);
+//        fn_print_r($sales);
 
         // 3. Произвести анализ по каждой серии
         $analysis = self::analysis_sales($sales, $ref_month, $ref_year);
-        fn_print_r($analysis);
+//        fn_print_r($analysis);
 
         // 4. Выполнить постороение графиков
-        $graphs = self::create_graphs($sales, $analysis);
+//        $graphs = self::create_graphs_test();
+        $graphs = self::create_graphs($pump_series, $sales, $analysis, $ref_month);
 
     }
+
+
+    private function create_graphs ($pump_series, $sales, $analysis, $ref_month){
+        if (is__array($pump_series) and is__array($sales) and is__array($analysis)){
+            foreach ($pump_series as $ps_id=>$ps){
+                $data = array(
+                    "series"    => $sales[$ps_id],
+                    "analysis"  => $analysis[$ps_id],
+                    "ref_month" => $ref_month,
+                );
+                self::create_graph (DIR_ROOT_CACHE."ps_{$ps_id}.png", $data);
+            }
+        }
+    }
+
+    private function create_graph ($file_name, $data){
+//        fn_print_r($data);
+        // Размеры графика
+        $size = array("w" => 460, "h" => 300);
+        $margin = 20;
+
+
+        /* Create and populate the pData object */
+        $MyData = new pData();
+
+        // Ось абсцисс
+        $MyData->addPoints(array("", "I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII", ""),"Labels");
+        $MyData->setAbscissa("Labels");
+
+        /* Create the pChart object */
+        $myPicture = new pImage($size["w"],$size["h"],$MyData);
+
+        // Определить максимальное значения рядов
+
+        list($min, $max) = self::_get_min_max($data["series"], true);
+
+        $i = 0;
+        foreach ($data["series"] as $k_s=>$s){
+            $i ++;
+
+            if ($i==1){
+                $MyData->addPoints(array_merge(array(VOID),$s,array(VOID)),$k_s);
+            }elseif ($i == 2){ // график за текущий год
+                $p = array();
+                for ($m=1; $m<=12; $m++){
+                    if ($m<$data["ref_month"]){
+                        $p[] = $s[$m];
+                    }else{
+                        $p[] = VOID;
+                    }
+                }
+                $MyData->addPoints(array_merge(array(VOID),$p,array(VOID)),$k_s);
+            }
+
+            if ($i==1){
+                $myPicture->setGraphArea(1.5*$margin, $margin,              $size["w"]-$margin, $size["h"]/2-$margin);
+            }elseif ($i == 2){
+                $myPicture->setGraphArea(1.5*$margin, $margin+$size["h"]/2, $size["w"]-$margin, $size["h"]-$margin);
+            }
+            $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/pf_arma_five.ttf","FontSize"=>12));
+
+            /* Координатная плоскость */
+            $AxisBoundaries = array(0=>array("Min"=>$min,"Max"=>$max));
+            $ScaleSettings  = array(
+                "Mode"=>SCALE_MODE_MANUAL, "ManualScale"=>$AxisBoundaries,
+                "CycleBackground"=>TRUE,
+                "DrawSubTicks"=>TRUE,
+                "DrawXLines"=>false,
+                "GridR"=>0,"GridG"=>0,"GridB"=>0,
+            );
+            $myPicture->drawScale($ScaleSettings);
+
+            /* Описание оси абсцисс */
+            $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/pf_arma_five.ttf","FontSize"=>12));
+            if ($i==1){
+                $myPicture->drawText($size["w"]-40, $size["h"]/2-5, $k_s, TEXT_ALIGN_TOPRIGHT);
+            }elseif ($i == 2){
+                $myPicture->drawText($size["w"]-40, $size["h"]-5, $k_s, TEXT_ALIGN_TOPRIGHT);
+            }
+
+            /* Прямоугольники */
+            $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/pf_arma_five.ttf","FontSize"=>12));
+            $myPicture->drawBarChart(array(
+                    "DisplayPos"=>LABEL_POS_OUTSIDE,
+                    "DisplayOrientation"=>ORIENTATION_VERTICAL,
+                    "DisplayValues"=>TRUE,
+                    "Surrounding"=>-20,"InnerSurrounding"=>20,
+                )
+            );
+
+            /* Среднее значение */
+            $avr = $data["analysis"][$k_s]["for_year"]["avr"];
+
+            if ($avr){
+                $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/pf_arma_five.ttf","FontSize"=>12));
+//                $myPicture->drawThreshold($avr,array(
+//                        "WriteCaption"=>TRUE,"Caption"=>"avr",
+//                        "CaptionAlpha" => 100,
+//                        "CaptionR"  => 255,
+//                        "CaptionG"  => 255,
+//                        "CaptionB"  => 255,
+//                        "CaptionOffset"=>-16,
+//                        "CaptionAlign"=>CAPTION_LEFT_TOP,
+//                        "BoxR"      => 0,
+//                        "BoxG"      => 0,
+//                        "BoxB"      => 0,
+//                        "BoxAlpha"  => 100,
+//                        "BorderOffset"=>3,
+//
+//                        "R" => 0,
+//                        "G" => 0,
+//                        "B" => 0,
+//                        "Alpha" => 35,
+//                        "Ticks" => 10,
+//                        "Weight"=>0.5,
+//                        "Wide"  =>true,
+//
+//                    ));
+                $myPicture->drawThreshold($avr,array(
+                        "WriteCaption"=>TRUE,"Caption"=>fn_fvalue($avr,1),
+                        "CaptionAlpha" => 100,
+                        "CaptionR"  => 255,
+                        "CaptionG"  => 255,
+                        "CaptionB"  => 255,
+                        "CaptionOffset"=>-26,
+                        "CaptionAlign"=>CAPTION_RIGHT_BOTTOM,
+                        "BoxR"      => 0,
+                        "BoxG"      => 0,
+                        "BoxB"      => 0,
+                        "BoxAlpha"  => 100,
+                        "BorderOffset"=>3,
+
+                        "R" => 0,
+                        "G" => 0,
+                        "B" => 0,
+                        "Alpha" => 35,
+                        "Ticks" => 10,
+                        "Weight"=>0.5,
+                        "Wide"  =>true,
+                    ));
+            }
+
+
+
+            $MyData->removeSerie($k_s);
+        }
+        $myPicture->Render($file_name);
+    }
+
+    private function _get_min_max ($data, $round=false, $f=5){
+        $min = $max = 0;
+        foreach ($data as $d){
+            $_min = min($d);
+            $_max = round(max($d));
+
+            if ($min>$_min) $min = $_min;
+            if ($max<$_max) $max = $_max;
+        }
+        if ($round){
+            $min = ceil($min/$f) * $f;
+            $max = ceil($max/$f) * $f;
+        }
+
+        if (!$max) $max = $f;
+
+        return array($min, $max);
+    }
+
 
 
     /**
@@ -40,9 +215,150 @@ class planning {
      * @param $sales
      * @param $analysis
      */
-    private function create_graphs ($sales, $analysis){
-        // 1. Выполнить подключение библиотеки
+    private function create_graphs_test ($sales, $analysis){
+        /* Create and populate the pData object */
+        $MyData = new pData();
+        $size = array("w" => 600, "h" => 300);
 
+        // Ось абсцисс
+        $MyData->addPoints(array("", "Янв","Фев","Мар","Апр","Май","Июн","Июл","Авг","Сен","Окт","Ноя","Дек", ""),"Labels");
+        $MyData->setAbscissa("Labels");
+
+        // Данные
+        $MyData->addPoints(array(VOID, 38,10,24,25,25,0,23,22,20,12,10,2, VOID),"Temperature");
+//        $MyData->removeSerie("Temperature");
+//        $MyData->addPoints(array(2,4,6,4,5,3,6,4,5,8,6,1),"Pressure");
+
+//        $MyData->setSerieDrawable("Temperature",TRUE);
+//        $MyData->setSerieDrawable("Pressure",FALSE);
+
+
+
+
+
+
+
+
+        /* Create the pChart object */
+        $myPicture = new pImage($size["w"],$size["h"],$MyData);
+
+        /* Draw the background */
+//        $Settings = array("R"=>170, "G"=>183, "B"=>87, "Dash"=>1, "DashR"=>190, "DashG"=>203, "DashB"=>107);
+//        $myPicture->drawFilledRectangle(0,0,700,390,$Settings);
+
+        /* Overlay with a gradient */
+//        $Settings = array("StartR"=>219, "StartG"=>231, "StartB"=>139, "EndR"=>1, "EndG"=>138, "EndB"=>68, "Alpha"=>50);
+//        $myPicture->drawGradientArea(0,0,700,390,DIRECTION_VERTICAL,$Settings);
+
+        /* Add a border to the picture */
+//        $myPicture->drawRectangle(0,0,$size["w"]-1,$size["h"]-1,array("R"=>0,"G"=>0,"B"=>0));
+
+
+        /* Write the chart title */
+//        $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/courbd.ttf","FontSize"=>11));
+//        $t = "Продажи К20/30 за последние 2 года";
+//        $myPicture->drawText($size["w"]/2,8,$t,array("FontSize"=>15,"Align"=>TEXT_ALIGN_TOPMIDDLE));
+
+        $margin = 20;
+
+
+
+
+        /* Define the 1st chart area */
+        $myPicture->setGraphArea(1.5*$margin,$margin,$size["w"]-$margin,$size["h"]/2-$margin);
+        $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/PFOnlineTwoPro-Single.ttf","FontSize"=>11));
+
+        /* Координатная плоскость */
+        $AxisBoundaries = array(0=>array("Min"=>0,"Max"=>50));
+        $ScaleSettings  = array(
+            "Mode"=>SCALE_MODE_MANUAL, "ManualScale"=>$AxisBoundaries,
+            "CycleBackground"=>TRUE,
+            "DrawSubTicks"=>TRUE,
+            "DrawXLines"=>false,
+            "GridR"=>0,"GridG"=>0,"GridB"=>0,
+        );
+        $myPicture->drawScale($ScaleSettings);
+
+        /* Описание оси абсцисс */
+        $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/PFOnlineTwoPro-Double.ttf","FontSize"=>11));
+        $myPicture->drawText($size["w"]-54, $size["h"]/2-5, "2013", TEXT_ALIGN_TOPRIGHT);
+
+        /* Прямоугольники */
+        $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/PFOnlineTwoPro-Double.ttf","FontSize"=>11));
+        $myPicture->drawBarChart(array(
+                "DisplayPos"=>LABEL_POS_OUTSIDE,
+                "DisplayOrientation"=>ORIENTATION_VERTICAL,
+                "DisplayValues"=>TRUE,
+                "Surrounding"=>-20,"InnerSurrounding"=>20,
+            )
+        );
+
+        /* Среднее значение */
+        $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/PFOnlineTwoPro-Double.ttf","FontSize"=>10));
+        $myPicture->drawThreshold(17,array(
+                "WriteCaption"=>TRUE,"Caption"=>"Ср.зн.",
+                "CaptionAlpha" => 100,
+                "CaptionR"  => 255,
+                "CaptionG"  => 255,
+                "CaptionB"  => 255,
+                "CaptionOffset"=>-16,
+                "CaptionAlign"=>CAPTION_LEFT_TOP,
+                "BoxR"      => 0,
+                "BoxG"      => 0,
+                "BoxB"      => 0,
+                "BoxAlpha"  => 100,
+                "BorderOffset"=>3,
+
+                "R" => 0,
+                "G" => 0,
+                "B" => 0,
+                "Alpha" => 35,
+                "Ticks" => 10,
+                "Weight"=>0.5,
+                "Wide"  =>true,
+
+            ));
+        $myPicture->drawThreshold(17,array(
+                "WriteCaption"=>TRUE,"Caption"=>"19",
+                "CaptionAlpha" => 100,
+                "CaptionR"  => 255,
+                "CaptionG"  => 255,
+                "CaptionB"  => 255,
+                "CaptionOffset"=>-16,
+                "CaptionAlign"=>CAPTION_RIGHT_BOTTOM,
+                "BoxR"      => 0,
+                "BoxG"      => 0,
+                "BoxB"      => 0,
+                "BoxAlpha"  => 100,
+                "BorderOffset"=>3,
+
+                "R" => 0,
+                "G" => 0,
+                "B" => 0,
+                "Alpha" => 0,
+                "Ticks" => 0,
+                "Weight"=>0,
+//                "Wide"  =>true,
+
+            ));
+
+
+        /* Define the 2nd chart area */
+        $myPicture->setGraphArea(1.5*$margin,$margin+$size["h"]/2,$size["w"]-$margin,$size["h"]-$margin);
+        $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/PFOnlineTwoPro-Single.ttf","FontSize"=>8));
+
+        /* Draw the scale */
+        $scaleSettings = array("DrawSubTicks"=>TRUE,"CycleBackground"=>TRUE,);
+        $MyData->setSerieDrawable("Temperature",FALSE);
+        $MyData->setSerieDrawable("Pressure",TRUE);
+//        $MyData->setAxisName(0,"Pressure");
+        $myPicture->drawScale($scaleSettings);
+        $myPicture->drawBarChart(array("Surrounding"=>-30,"InnerSurrounding"=>30));
+
+        /* Render the picture (choose the best way) */
+        $myPicture->Render(DIR_ROOT_CACHE."simple.png");
+//        $myPicture->Stroke();
+//        $myPicture->autoOutput("pictures/example.drawBarChart.simple.png");
     }
 
     /**

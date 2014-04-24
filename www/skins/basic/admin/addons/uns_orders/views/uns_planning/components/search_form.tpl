@@ -64,9 +64,9 @@
                     <select name="years_for_analysis">
                         <option value="0">---</option>
                         <option value="2"  {if $search.years_for_analysis == 2}selected="selected"{/if}>за последних 2 года</option>
-                        <option value="3"  {if $search.years_for_analysis == 3}selected="selected"{/if}>за последних 3 года</option>
-                        <option value="4"  {if $search.years_for_analysis == 4}selected="selected"{/if}>за последних 4 года</option>
-                        <option value="5"  {if $search.years_for_analysis == 5}selected="selected"{/if}>за последних 5 лет</option>
+                        <option value="3" disabled  {if $search.years_for_analysis == 3}selected="selected"{/if}>за последних 3 года</option>
+                        <option value="4" disabled {if $search.years_for_analysis == 4}selected="selected"{/if}>за последних 4 года</option>
+                        <option value="5" disabled {if $search.years_for_analysis == 5}selected="selected"{/if}>за последних 5 лет</option>
                     </select>
                 </div>
             </td>

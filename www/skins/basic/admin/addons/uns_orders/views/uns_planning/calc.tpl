@@ -4,6 +4,7 @@
 
     <form action="{""|fn_url}" method="post" name="{$controller}_form" class="{if ""|fn_check_form_permissions} cm-hide-inputs{/if}">
         {include file="common_templates/pagination.tpl"}
+        <img style="border: 1px solid" src="var/cache/simple.png" alt=""/>
         <table cellpadding="0" cellspacing="0" border="0" width="" class="table">
             <tr>
                 <th width="10px">&nbsp;</th>
@@ -12,6 +13,9 @@
                 <th width="10px">Кол-во</th>
                 <th width="300px">Коментарий</th>
                 <th>&nbsp;</th>
+            </tr>
+            <tr>
+                <td colspan="10"></td>
             </tr>
             {foreach from=$plans item="i" name="p"}
                 <tr>
