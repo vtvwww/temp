@@ -17,10 +17,19 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 if ($mode == "calc"){
     if (!is__more_0($_REQUEST["month"], $_REQUEST["year"], $_REQUEST["week_supply"], $_REQUEST["years_for_analysis"])){
-        fn_set_notification("E", "Ошибка", "Правильно укажите исходные данные");
+        $view->assign("error", "Y");
+        $p = array(
+            "month"             => date('n', TIME),
+            "year"              => date('Y', TIME),
+            "week_supply"       => 4,
+            "years_for_analysis"=> 2,
+            "koef_plan_prodazh" => 20,
+        );
+        $view->assign('search', $p);
+        return;
     }
 
-    $ps_id = array(29,37,77,76,65,66); // только К8/18 --- К290/30
+    $ps_id = array(29,37/*,77,76,65,66*/); // только К8/18 --- К290/30
 
     // 1. Параметры для расчета плана производства
     $params = array(
@@ -29,18 +38,20 @@ if ($mode == "calc"){
         "year"              => $_REQUEST["year"],
         "week_supply"       => $_REQUEST["week_supply"],
         "years_for_analysis"=> $_REQUEST["years_for_analysis"],
+        "koef_plan_prodazh" => $_REQUEST["koef_plan_prodazh"],
     );
 
     // 2. Расчет плана производства
-    $plan = $pl->calc($params);
-    $view->assign('plan', $plan);
+    list($pump_series, $sales, $analysis) = $pl->calc($params);
+    $view->assign('pump_series',$pump_series);
+    $view->assign('sales',      $sales);
+    $view->assign('analysis',   $analysis);
 
-    // Серии насосов
-    list($pump_series) = fn_uns__get_pump_series(array('only_active' => true,));
-    $view->assign('pump_series', $pump_series);
-
+//    fn_print_r($pump_series, $sales, $analysis);
 
     $view->assign('search', $_REQUEST);
+    $months = array(1=>"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь");
+    $view->assign('months', $months);
 
     /*
     //    fn_print_r("получить список месяцев за текущий и предыдущий года");
@@ -127,6 +138,7 @@ function fn_uns_planning__search ($controller){
         "year",
         "week_supply",
         "years_for_analysis",
+        "koef_plan_prodazh",
     );
     fn_uns_search_set_get_params($controller, $params);
     return true;

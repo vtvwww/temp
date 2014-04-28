@@ -172,9 +172,12 @@ function fn_acc__upd_kit_info($id, $data){
     $d = array();
     $d["description"]   = $data["description"];
     $d["comment"]       = (strlen($data["comment"]))?$data["description"]:"";
-    $d["date_open"]    = fn_parse_date($data["date_open"]);
+    $d["date_open"]     = fn_parse_date($data["date_open"]);
     $d["status"]        = (fn_check_type($data["status"], UNS_KIT_STATUS))?$data["status"]:UNS_KIT_STATUS__O;
-    ;
+    $d["date_close"]    = 0;
+    if ($d["status"] == UNS_KIT_STATUS__Z){
+        $d["date_close"]= TIME;
+    }
 
     if ($operation == "update"){
         // ОБНОВИТЬ

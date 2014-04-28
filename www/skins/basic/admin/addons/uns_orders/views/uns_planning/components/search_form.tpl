@@ -1,4 +1,11 @@
 {capture name="search_content"}
+    {literal}
+        <style>
+            .search-field label{
+                margin: 0; padding: 0; height: 50px;
+            }
+        </style>
+    {/literal}
     <table cellpadding="10" cellspacing="0" border="0" class="search-header">
         <tr>
             <td class="nowrap search-field">
@@ -43,7 +50,7 @@
                 </div>
             </td>
             <td class="nowrap search-field">
-                <label>Требуемый запас продукции на конец месяца:</label>
+                <label>Требуемый запас продукции<br>на конец расчетного месяца:<br>равен <b><u>X неделям</u></b> продаж</label>
                 <div class="break">
                     <select name="week_supply">
                         <option value="0">---</option>
@@ -59,7 +66,7 @@
                 </div>
             </td>
             <td class="nowrap search-field">
-                <label>Кол-во лет для анализа:</label>
+                <label>Кол-во лет<br>для статистического<br>анализа продаж:</label>
                 <div class="break">
                     <select name="years_for_analysis">
                         <option value="0">---</option>
@@ -67,6 +74,23 @@
                         <option value="3" disabled  {if $search.years_for_analysis == 3}selected="selected"{/if}>за последних 3 года</option>
                         <option value="4" disabled {if $search.years_for_analysis == 4}selected="selected"{/if}>за последних 4 года</option>
                         <option value="5" disabled {if $search.years_for_analysis == 5}selected="selected"{/if}>за последних 5 лет</option>
+                    </select>
+                </div>
+            </td>
+            <td class="nowrap search-field">
+                <label>Если <b>ПЛАН ПРОДАЖ &le; УЖЕ ИМЕЮЩИМСЯ ЗАКАЗАМ</b>,<br>тогда <b>ПЛАН ПРОДАЖ = ИМЕЮЩИЕСЯ ЗАКАЗЫ + X%</b>:</label>
+                <div class="break">
+                    <select name="koef_plan_prodazh">
+                        <option value="0">0</option>
+                        <option value="10" {if $search.koef_plan_prodazh == 10}selected="selected"{/if}>+10% от имеющихся заказов</option>
+                        <option value="20" {if $search.koef_plan_prodazh == 10}selected="selected"{/if}>+20% от имеющихся заказов</option>
+                        <option value="30" {if $search.koef_plan_prodazh == 10}selected="selected"{/if}>+30% от имеющихся заказов</option>
+                        <option value="40" {if $search.koef_plan_prodazh == 10}selected="selected"{/if}>+40% от имеющихся заказов</option>
+                        <option value="50" {if $search.koef_plan_prodazh == 10}selected="selected"{/if}>+50% от имеющихся заказов</option>
+                        <option value="60" {if $search.koef_plan_prodazh == 10}selected="selected"{/if}>+60% от имеющихся заказов</option>
+                        <option value="70" {if $search.koef_plan_prodazh == 10}selected="selected"{/if}>+70% от имеющихся заказов</option>
+                        <option value="80" {if $search.koef_plan_prodazh == 10}selected="selected"{/if}>+80% от имеющихся заказов</option>
+                        <option value="90" {if $search.koef_plan_prodazh == 10}selected="selected"{/if}>+90% от имеющихся заказов</option>
                     </select>
                 </div>
             </td>

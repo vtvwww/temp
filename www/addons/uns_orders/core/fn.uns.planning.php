@@ -6,6 +6,9 @@
  */
 class planning {
 
+    /**
+     *
+     */
     public function __construct(){
         require('lib/pChart2.1.4/class/pData.class.php');
         require('lib/pChart2.1.4/class/pDraw.class.php');
@@ -17,11 +20,12 @@ class planning {
      * @param $params
      */
     public function calc ($params){
-        $years_for_analysis = $params["years_for_analysis"];
+        $ps_id              = $params["ps_id"];
         $ref_month          = $params["month"];
         $ref_year           = $params["year"];
-        $week_supply        = $params["week_supply"];
-        $ps_id              = $params["ps_id"];
+        $week_supply        = $params["week_supply"];       // Запас по продажам
+        $years_for_analysis = $params["years_for_analysis"];
+        $koef_plan_prodazh  = $params["koef_plan_prodazh"];
 
         // 1. Получить список серий насосов
         $pump_series = array_shift(fn_uns__get_pump_series(array("ps_id"=> $ps_id)));
@@ -36,12 +40,159 @@ class planning {
 //        fn_print_r($analysis);
 
         // 4. Выполнить постороение графиков
-//        $graphs = self::create_graphs_test();
         $graphs = self::create_graphs($pump_series, $sales, $analysis, $ref_month);
+//        fn_print_r($graphs);
+
+        // 5. Выполнить расчет плана
+        $planning = self::planning($pump_series, $sales, $analysis, $ref_month, $ref_year, $week_supply, $koef_plan_prodazh);
+
+        return array($pump_series, $sales, $analysis, $planning);
+    }
+
+
+    /**
+     * @param $pump_series
+     * @param $sales
+     * @param $analysis
+     * @param $ref_month
+     * @param $ref_year
+     * @param $week_supply
+     */
+    private function planning($pump_series, $sales, $analysis, $ref_month, $ref_year, $week_supply, $koef_plan_prodazh){
+        $res = array();
+        if (is__array($pump_series) and is__array($sales) and is__array($analysis)){
+            $ps_ids = array_keys($pump_series);
+
+            // 1. Определить НАЧАЛЬНЫЙ ОСТАТОК ПРОДУКЦИИ на начало расчетного месяца ref_month/ref_year
+            $nach_ostatok   = self::_get_nach_ostatok($ps_ids, $ref_month, $ref_year);
+
+            // 2. Определить ИМЕЮЩИЙСЯ ЗАДЕЛ по сериям по открытым партиям насосов на 01/ref_month/ref_year 00:00:00
+            $zadel          = self::_get_zadel($ps_ids, $ref_month, $ref_year);
+
+            // 3. Определить ИМЕЮЩИЕСЯ ЗАКАЗЫ по сериям на 01/ref_month/ref_year 00:00:00
+            $zakaz          = self::_get_zakaz($ps_ids, $ref_month, $ref_year);
+
+            // 4. Определить ПЛАН ПРОДАЖ на расчетный месяц
+            // Если расчетный ПЛАН ПРОДАЖ <= ИМЕЮЩИМСЯ ЗАКАЗАМ, тогда необходимо увеличить
+            // ПЛАН ПРОДАЖ до величины ИМЕЮЩИХСЯ ЗАКАЗОВ + xx% "koef_plan_prodazh"
+            $plan_prodazh   = self::_get_plan_prodazh ($ps_ids, $zakaz, $ref_month, $ref_year, $koef_plan_prodazh);
+
+            // 5. Определить КОНЕЧНЫЙ ОСТАТОК на конец расчетного месяца
+            $konech_ostatok = self::_get_konech_ostatok($ps_ids, $plan_prodazh, $week_supply);
+
+            // 6. Выполнить ПЛАН ПРОИЗВОДСТВА на расчетный месяц
+            // Кон. Ост. = Нач. Ост. + Задел + План Производства - Продажи;
+            // План Производства = Кон. Ост. - Нач. Ост. - Задел + Продажи;
+            $production_plan= self::_get_production_plan ($ps_ids, $nach_ostatok, $zadel, $plan_prodazh, $konech_ostatok);
+
+            foreach ($pump_series as $ps_id=>$ps){
+                $res[$ps_id] = array(
+                    "nach_ostatok"  => $nach_ostatok[$ps_id],
+                    "zadel"         => $zadel[$ps_id],
+                    "zakaz"         => $zakaz[$ps_id],
+                    "plan_prodazh"  => $plan_prodazh[$ps_id],
+                    "konech_ostatok"=> $konech_ostatok[$ps_id],
+                    "production_plan"=> $production_plan
+                );
+            }
+        }
+        return $res;
+    }
+
+    /**
+     * Выполнить ПЛАН ПРОИЗВОДСТВА на расчетный месяц
+     * Кон. Ост. = Нач. Ост. + Задел + План Производства - Продажи;
+     * План Производства = Кон. Ост. - Нач. Ост. - Задел + Продажи;
+     */
+    private function _get_production_plan (){
 
     }
 
 
+    /**
+     * Определить КОНЕЧНЫЙ ОСТАТОК на конец расчетного месяца
+     *
+     */
+    private function _get_konech_ostatok (){
+
+    }
+
+
+    /**
+     * Определить ПЛАН ПРОДАЖ на расчетный месяц
+     */
+    private function _get_plan_prodazh (){
+
+    }
+
+    /**
+     * Определить ИМЕЮЩИЕСЯ ЗАКАЗЫ по сериям на 01/ref_month/ref_year 00:00:00
+     * @param $ps_id
+     * @param $ref_month
+     * @param $ref_year
+     */
+    private function _get_zakaz ($ps_id, $ref_month, $ref_year){
+        $res = array();
+        $time_from  = strtotime("$ref_year/$ref_month/01 00:00:00");
+        $time_to    = strtotime("$ref_year/$ref_month/01 00:00:01");
+        $pumps      = array_shift(fn_uns__get_pumps(array("ps_id"=>$ps_ids, "only_active"=>true,)));
+        $orders     = array_shift(fn_acc__get_orders());
+    }
+
+
+    /**
+     * Определить ИМЕЮЩИЙСЯ ЗАДЕЛ по сериям по открытым партиям насосов на 01/ref_month/ref_year 00:00:00
+     * @param $ps_id
+     * @param $ref_month
+     * @param $ref_year
+     */
+    private function _get_zadel ($ps_id, $ref_month, $ref_year){
+
+    }
+
+
+
+    /**
+     * Определить НАЧАЛЬНЫЙ ОСТАТОК ПРОДУКЦИИ на начало расчетного месяца ref_month/ref_year
+     * @param $ps_ids
+     * @param $ref_month
+     * @param $ref_year
+     * @return array
+     */
+    private function _get_nach_ostatok ($ps_ids, $ref_month, $ref_year){
+        $res = array();
+        $time_from = strtotime("$ref_year/$ref_month/01 00:00:00");
+        $time_to   = strtotime("$ref_year/$ref_month/01 00:00:01");
+        $pumps = array_shift(fn_uns__get_pumps(array("ps_id"=>$ps_ids, "only_active"=>true,)));
+        list($balances) = fn_uns__get_balance_sgp(array("time_from"=>$time_from, "time_to"=>$time_to), true, true, true);
+        if (is__array($balances)){
+            foreach ($balances as $type){
+                foreach ($type as $groups){
+                    foreach ($groups["items"] as $p){
+                        $ps_id = $pumps[$p["id"]]["ps_id"];
+                        if (in_array($ps_id, $ps_ids)){
+                            $res[$ps_id] += $p["konech"];
+                        }
+                    }
+                }
+            }
+        }
+        return $res;
+    }
+
+
+
+
+
+
+
+    /**
+     * Выполнить постороение графиков
+     * @param $pump_series
+     * @param $sales
+     * @param $analysis
+     * @param $ref_month
+     */
     private function create_graphs ($pump_series, $sales, $analysis, $ref_month){
         if (is__array($pump_series) and is__array($sales) and is__array($analysis)){
             foreach ($pump_series as $ps_id=>$ps){
@@ -50,12 +201,17 @@ class planning {
                     "analysis"  => $analysis[$ps_id],
                     "ref_month" => $ref_month,
                 );
-                self::create_graph (DIR_ROOT_CACHE."ps_{$ps_id}.png", $data);
+                self::_create_graph (DIR_ROOT . "/skins/basic/admin/images/uns_charts/"."ps_{$ps_id}.png", $data);
             }
         }
     }
 
-    private function create_graph ($file_name, $data){
+    /**
+     * Постороение графика
+     * @param $file_name
+     * @param $data
+     */
+    private function _create_graph ($file_name, $data){
 //        fn_print_r($data);
         // Размеры графика
         $size = array("w" => 460, "h" => 300);
@@ -66,7 +222,7 @@ class planning {
         $MyData = new pData();
 
         // Ось абсцисс
-        $MyData->addPoints(array("", "I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII", ""),"Labels");
+        $MyData->addPoints(array("I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII", ""),"Labels");
         $MyData->setAbscissa("Labels");
 
         /* Create the pChart object */
@@ -81,7 +237,7 @@ class planning {
             $i ++;
 
             if ($i==1){
-                $MyData->addPoints(array_merge(array(VOID),$s,array(VOID)),$k_s);
+                $MyData->addPoints(array_merge($s,array(VOID)),$k_s);
             }elseif ($i == 2){ // график за текущий год
                 $p = array();
                 for ($m=1; $m<=12; $m++){
@@ -91,7 +247,7 @@ class planning {
                         $p[] = VOID;
                     }
                 }
-                $MyData->addPoints(array_merge(array(VOID),$p,array(VOID)),$k_s);
+                $MyData->addPoints(array_merge($p,array(VOID)),$k_s);
             }
 
             if ($i==1){
@@ -115,9 +271,9 @@ class planning {
             /* Описание оси абсцисс */
             $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/pf_arma_five.ttf","FontSize"=>12));
             if ($i==1){
-                $myPicture->drawText($size["w"]-40, $size["h"]/2-5, $k_s, TEXT_ALIGN_TOPRIGHT);
+                $myPicture->drawText($size["w"]-40, $size["h"]/2-6, $k_s, TEXT_ALIGN_TOPRIGHT);
             }elseif ($i == 2){
-                $myPicture->drawText($size["w"]-40, $size["h"]-5, $k_s, TEXT_ALIGN_TOPRIGHT);
+                $myPicture->drawText($size["w"]-40, $size["h"]-6, $k_s, TEXT_ALIGN_TOPRIGHT);
             }
 
             /* Прямоугольники */
@@ -135,29 +291,6 @@ class planning {
 
             if ($avr){
                 $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/pf_arma_five.ttf","FontSize"=>12));
-//                $myPicture->drawThreshold($avr,array(
-//                        "WriteCaption"=>TRUE,"Caption"=>"avr",
-//                        "CaptionAlpha" => 100,
-//                        "CaptionR"  => 255,
-//                        "CaptionG"  => 255,
-//                        "CaptionB"  => 255,
-//                        "CaptionOffset"=>-16,
-//                        "CaptionAlign"=>CAPTION_LEFT_TOP,
-//                        "BoxR"      => 0,
-//                        "BoxG"      => 0,
-//                        "BoxB"      => 0,
-//                        "BoxAlpha"  => 100,
-//                        "BorderOffset"=>3,
-//
-//                        "R" => 0,
-//                        "G" => 0,
-//                        "B" => 0,
-//                        "Alpha" => 35,
-//                        "Ticks" => 10,
-//                        "Weight"=>0.5,
-//                        "Wide"  =>true,
-//
-//                    ));
                 $myPicture->drawThreshold($avr,array(
                         "WriteCaption"=>TRUE,"Caption"=>fn_fvalue($avr,1),
                         "CaptionAlpha" => 100,
@@ -181,14 +314,18 @@ class planning {
                         "Wide"  =>true,
                     ));
             }
-
-
-
             $MyData->removeSerie($k_s);
         }
         $myPicture->Render($file_name);
     }
 
+    /**
+     * Определение MIN и MAX из массивов, а также задать им кратность
+     * @param $data
+     * @param bool $round
+     * @param int $f
+     * @return array
+     */
     private function _get_min_max ($data, $round=false, $f=5){
         $min = $max = 0;
         foreach ($data as $d){
@@ -208,158 +345,6 @@ class planning {
         return array($min, $max);
     }
 
-
-
-    /**
-     * Выполнить постороение графиков
-     * @param $sales
-     * @param $analysis
-     */
-    private function create_graphs_test ($sales, $analysis){
-        /* Create and populate the pData object */
-        $MyData = new pData();
-        $size = array("w" => 600, "h" => 300);
-
-        // Ось абсцисс
-        $MyData->addPoints(array("", "Янв","Фев","Мар","Апр","Май","Июн","Июл","Авг","Сен","Окт","Ноя","Дек", ""),"Labels");
-        $MyData->setAbscissa("Labels");
-
-        // Данные
-        $MyData->addPoints(array(VOID, 38,10,24,25,25,0,23,22,20,12,10,2, VOID),"Temperature");
-//        $MyData->removeSerie("Temperature");
-//        $MyData->addPoints(array(2,4,6,4,5,3,6,4,5,8,6,1),"Pressure");
-
-//        $MyData->setSerieDrawable("Temperature",TRUE);
-//        $MyData->setSerieDrawable("Pressure",FALSE);
-
-
-
-
-
-
-
-
-        /* Create the pChart object */
-        $myPicture = new pImage($size["w"],$size["h"],$MyData);
-
-        /* Draw the background */
-//        $Settings = array("R"=>170, "G"=>183, "B"=>87, "Dash"=>1, "DashR"=>190, "DashG"=>203, "DashB"=>107);
-//        $myPicture->drawFilledRectangle(0,0,700,390,$Settings);
-
-        /* Overlay with a gradient */
-//        $Settings = array("StartR"=>219, "StartG"=>231, "StartB"=>139, "EndR"=>1, "EndG"=>138, "EndB"=>68, "Alpha"=>50);
-//        $myPicture->drawGradientArea(0,0,700,390,DIRECTION_VERTICAL,$Settings);
-
-        /* Add a border to the picture */
-//        $myPicture->drawRectangle(0,0,$size["w"]-1,$size["h"]-1,array("R"=>0,"G"=>0,"B"=>0));
-
-
-        /* Write the chart title */
-//        $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/courbd.ttf","FontSize"=>11));
-//        $t = "Продажи К20/30 за последние 2 года";
-//        $myPicture->drawText($size["w"]/2,8,$t,array("FontSize"=>15,"Align"=>TEXT_ALIGN_TOPMIDDLE));
-
-        $margin = 20;
-
-
-
-
-        /* Define the 1st chart area */
-        $myPicture->setGraphArea(1.5*$margin,$margin,$size["w"]-$margin,$size["h"]/2-$margin);
-        $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/PFOnlineTwoPro-Single.ttf","FontSize"=>11));
-
-        /* Координатная плоскость */
-        $AxisBoundaries = array(0=>array("Min"=>0,"Max"=>50));
-        $ScaleSettings  = array(
-            "Mode"=>SCALE_MODE_MANUAL, "ManualScale"=>$AxisBoundaries,
-            "CycleBackground"=>TRUE,
-            "DrawSubTicks"=>TRUE,
-            "DrawXLines"=>false,
-            "GridR"=>0,"GridG"=>0,"GridB"=>0,
-        );
-        $myPicture->drawScale($ScaleSettings);
-
-        /* Описание оси абсцисс */
-        $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/PFOnlineTwoPro-Double.ttf","FontSize"=>11));
-        $myPicture->drawText($size["w"]-54, $size["h"]/2-5, "2013", TEXT_ALIGN_TOPRIGHT);
-
-        /* Прямоугольники */
-        $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/PFOnlineTwoPro-Double.ttf","FontSize"=>11));
-        $myPicture->drawBarChart(array(
-                "DisplayPos"=>LABEL_POS_OUTSIDE,
-                "DisplayOrientation"=>ORIENTATION_VERTICAL,
-                "DisplayValues"=>TRUE,
-                "Surrounding"=>-20,"InnerSurrounding"=>20,
-            )
-        );
-
-        /* Среднее значение */
-        $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/PFOnlineTwoPro-Double.ttf","FontSize"=>10));
-        $myPicture->drawThreshold(17,array(
-                "WriteCaption"=>TRUE,"Caption"=>"Ср.зн.",
-                "CaptionAlpha" => 100,
-                "CaptionR"  => 255,
-                "CaptionG"  => 255,
-                "CaptionB"  => 255,
-                "CaptionOffset"=>-16,
-                "CaptionAlign"=>CAPTION_LEFT_TOP,
-                "BoxR"      => 0,
-                "BoxG"      => 0,
-                "BoxB"      => 0,
-                "BoxAlpha"  => 100,
-                "BorderOffset"=>3,
-
-                "R" => 0,
-                "G" => 0,
-                "B" => 0,
-                "Alpha" => 35,
-                "Ticks" => 10,
-                "Weight"=>0.5,
-                "Wide"  =>true,
-
-            ));
-        $myPicture->drawThreshold(17,array(
-                "WriteCaption"=>TRUE,"Caption"=>"19",
-                "CaptionAlpha" => 100,
-                "CaptionR"  => 255,
-                "CaptionG"  => 255,
-                "CaptionB"  => 255,
-                "CaptionOffset"=>-16,
-                "CaptionAlign"=>CAPTION_RIGHT_BOTTOM,
-                "BoxR"      => 0,
-                "BoxG"      => 0,
-                "BoxB"      => 0,
-                "BoxAlpha"  => 100,
-                "BorderOffset"=>3,
-
-                "R" => 0,
-                "G" => 0,
-                "B" => 0,
-                "Alpha" => 0,
-                "Ticks" => 0,
-                "Weight"=>0,
-//                "Wide"  =>true,
-
-            ));
-
-
-        /* Define the 2nd chart area */
-        $myPicture->setGraphArea(1.5*$margin,$margin+$size["h"]/2,$size["w"]-$margin,$size["h"]-$margin);
-        $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/PFOnlineTwoPro-Single.ttf","FontSize"=>8));
-
-        /* Draw the scale */
-        $scaleSettings = array("DrawSubTicks"=>TRUE,"CycleBackground"=>TRUE,);
-        $MyData->setSerieDrawable("Temperature",FALSE);
-        $MyData->setSerieDrawable("Pressure",TRUE);
-//        $MyData->setAxisName(0,"Pressure");
-        $myPicture->drawScale($scaleSettings);
-        $myPicture->drawBarChart(array("Surrounding"=>-30,"InnerSurrounding"=>30));
-
-        /* Render the picture (choose the best way) */
-        $myPicture->Render(DIR_ROOT_CACHE."simple.png");
-//        $myPicture->Stroke();
-//        $myPicture->autoOutput("pictures/example.drawBarChart.simple.png");
-    }
 
     /**
      * Выполнить анализ продаж
@@ -383,7 +368,7 @@ class planning {
                     $total_for_months_ref_year += $year[$m];
                 }
 
-                $avr_for_months_ref_year = ($ref_month==1)?0:$total_for_months_ref_year/($ref_month-1);
+                $avr_for_months_ref_year = fn_fvalue(($ref_month==1)?0:$total_for_months_ref_year/($ref_month-1),1);
                 $for_months_ref_year = array(
                     "total" => $total_for_months_ref_year,
                     "avr"   => $avr_for_months_ref_year,
@@ -392,8 +377,8 @@ class planning {
 
                 // За год --------------------------------------------------
                 $for_year = array(
-                    "total" => ($k_y==$ref_year)?$avr_for_months_ref_year*12:array_sum($year),
-                    "avr"   => ($k_y==$ref_year)?$avr_for_months_ref_year:array_sum($year)/count($year),
+                    "total" => fn_fvalue(($k_y==$ref_year)?$avr_for_months_ref_year*12:array_sum($year),0),
+                    "avr"   => fn_fvalue(($k_y==$ref_year)?$avr_for_months_ref_year:array_sum($year)/count($year),1),
                 );
 
                 // Результаты --------------------------------------------------
@@ -415,13 +400,12 @@ class planning {
     private function get_sales ($ps_id, $years_for_analysis, $ref_month, $ref_year){
         $sales = false;
         // 1. Получить список месячных интервалов
-        $months = self::get_months($years_for_analysis, $ref_year);
-//        fn_print_r($months);
+        $months = self::_get_months($years_for_analysis, $ref_year);
 
         // 2. Cобрать помесячные продажи
         foreach ($months as $k_y=>$year){
             foreach ($year as $k_m=>$month){
-                $balance = self::get_sales_pump_series_by_period($ps_id, $month["timestamp"]["begin"], $month["timestamp"]["end"]);
+                $balance = self::_get_sales_pump_series_by_period($ps_id, $month["timestamp"]["begin"], $month["timestamp"]["end"]);
                 foreach ($ps_id as $ps){
                     $sales[$ps][$k_y][$k_m] = $balance[$ps]?:0;
                 }
@@ -430,7 +414,14 @@ class planning {
         return $sales;
     }
 
-    private function get_sales_pump_series_by_period ($ps_id, $begin, $end){
+    /**
+     * Получить продажи по сериям за указанный период
+     * @param $ps_id
+     * @param $begin
+     * @param $end
+     * @return array|null
+     */
+    private function _get_sales_pump_series_by_period ($ps_id, $begin, $end){
         //todo необходимо оптимизировать функцию!!! 2014-04-23
         list($pumps) = fn_uns__get_pumps(array("only_active"=>true, ));
         $params = array(
@@ -467,7 +458,7 @@ class planning {
      * @param $time
      * @return array
      */
-    public function get_months($years_for_analysis, $ref_year){
+    public function _get_months($years_for_analysis, $ref_year){
         $res = array();
         for ($year=$ref_year-$years_for_analysis+1; $year<=$ref_year; $year++){
             for ($month=1; $month<=12; $month++){
@@ -481,84 +472,4 @@ class planning {
         }
         return $res;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //==========================================================================
-    // OLD FUNCTIONS
-    //==========================================================================
-
-    /**
-     * Получить список отчетных месяцев
-     * @param $time
-     * @return array
-     */
-    public function get_last_months_old ($time){
-        $curr_year  = date("Y", $time);
-        $curr_month = date("Y", $time);
-
-
-        $res = array();
-        foreach (array($curr_year-1, $curr_year) as $year){
-            foreach (array(1,2,3,4,5,6,7,8,9,10,11,12) as $month){
-                $begin = $year . "-" . $month . "-" . "1";
-                $res[$year][$month]["date"]["begin"] = $begin;
-                $res[$year][$month]["date"]["end"]          = $year . "-" . $month . "-" . date("t", strtotime($begin));
-            }
-        }
-        return $res;
-    }
-
-
-    public function get_sales_old ($periods){
-        foreach ($periods as $k_y=>$y){
-            foreach ($y as $k_m=>$m){
-                $balance = self::get_sales_by_month_old($m["date"]);
-                $periods[$k_y][$k_m]["balance"] = $balance;
-                $periods[$k_y][$k_m]["total_balance"] = array_sum($balance);
-            }
-        }
-        return $periods;
-    }
-
-    private function get_sales_by_month_old ($m){
-        list($pumps) = fn_uns__get_pumps(array("only_active"=>true, ));
-        $params = array(
-            "time_from"     => strtotime($m["begin"]),
-            "time_to"       => strtotime($m["end"]),
-            "type"          => 7,           // Расходные ордера
-            "o_id"          => 19,          // Склад готовой продукции
-            "only_active"   => true,
-            "item_type"     => array("P", "PF", "PA"),
-            "with_items"    => true,
-            "info_category" => false,
-            "info_item"     => true,
-            "info_unit"     => false,
-        );
-        list($docs) = fn_uns__get_documents($params);
-
-        if(!is__array($docs)) return null;
-
-        $res = array();
-        foreach ($docs as $d){
-            if (is__array($d["items"])){
-                foreach ($d["items"] as $i){
-                    $res[$pumps[$i["item_id"]]["ps_name"]] += $i["quantity"];
-                }
-            }
-        }
-
-        return $res;
-    }
-
 }
