@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Class planning
- * Для расчета планирования
+ * Class plan_of_sales
+ * Для расчета плана продаж
  */
-class planning {
+class plan_of_sales {
 
     /**
      *
@@ -19,38 +19,92 @@ class planning {
      * Расчет плана производства
      * @param $params
      */
-    public function calc ($params){
+    public function calculation ($params){
         $ps_id              = $params["ps_id"];
         $ref_month          = $params["month"];
         $ref_year           = $params["year"];
         $week_supply        = $params["week_supply"];       // Запас по продажам
-        $years_for_analysis = $params["years_for_analysis"];
         $koef_plan_prodazh  = $params["koef_plan_prodazh"];
 
         // 1. Получить список серий насосов
-        $pump_series = array_shift(fn_uns__get_pump_series(array("ps_id"=> $ps_id)));
+        $pump_series = array_shift(fn_uns__get_pump_series(array("ps_id"=> $ps_id, "in_plan"=>"Y",)));
 //        fn_print_r($pump_series);
 
-        // 2. Получить статистику продаж по указанным сериям за последние YEARS_FOR_ANALYSIS
-        $sales = self::get_sales(array_keys($pump_series), $years_for_analysis, $ref_month, $ref_year);
+        // 2. Получить статистику продаж по указанным сериям за последние 2 года
+        $sales = self::get_sales(array_keys($pump_series), $ref_month, $ref_year);
 //        fn_print_r($sales);
 
-        // 3. Произвести анализ по каждой серии
-        $analysis = self::analysis_sales($sales, $ref_month, $ref_year);
+        // 3. Произвести анализ по каждой серии насосов
+        $analysis   = self::analysis_sales($sales, $ref_month, $ref_year);
 //        fn_print_r($analysis);
 
-        // 4. Выполнить постороение графиков
-        $graphs = self::create_graphs($pump_series, $sales, $analysis, $ref_month);
+        // 5. Список имеющихся заказов
+        list($order_ps, $ps_order) = self::get_orders(array_keys($pump_series), $ref_month, $ref_year);
+//        fn_print_r($plan);
+
+        // 5. Выполнить расчет плана на расчетный месяц
+        $plan       = self::planning($pump_series, $sales, $analysis, $order_ps, $ps_order, $ref_month, $ref_year, $week_supply, $koef_plan_prodazh);
+//        fn_print_r($plan);
+
+        // 6. Выполнить постороение графиков
+        $graphs     = self::create_graphs($params["graphs_key"], $pump_series, $sales, $analysis, $plan, $ref_month, $ref_year);
 //        fn_print_r($graphs);
 
-        // 5. Выполнить расчет плана
-        $planning = self::planning($pump_series, $sales, $analysis, $ref_month, $ref_year, $week_supply, $koef_plan_prodazh);
-
-        return array($pump_series, $sales, $analysis, $planning);
+        return array($pump_series, $sales, $analysis, $plan, $ps_order);
     }
 
 
     /**
+     * Список имеющихся заказов на расчетный период
+     * @param $pump_series
+     * @param $ref_month
+     * @param $ref_year
+     */
+    private function get_orders ($ps_id, $ref_month, $ref_year){
+        $order_ps = array(); // Order_x => ps_1, ps_2, ps_3
+        $ps_order = array(); // ps_x => order_1, order_2, order_3
+
+        $begin      = $ref_year . "-" . $ref_month . "-" . "1" . " 00:00:00";
+        $end        = $ref_year . "-" . $ref_month . "-" . date("t", strtotime($begin))  . " 23:59:59";
+        $orders     = array_shift(fn_acc__get_orders(array("with_items"=>true, "only_active"=>true, "date_finished_begin"=> strtotime($begin), "date_finished_end"=>strtotime($end),)));
+        if (is__array($orders)){
+            $pumps      = array_shift(fn_uns__get_pumps(array("ps_id"=>$ps_id, "only_active"=>true,)));
+            foreach ($orders as $o){
+                foreach ($o["items"] as $i){
+                    $__ps_id = $pumps[$i["p_id"]]["ps_id"];
+                    if (in_array($i["item_type"], array("P", "PF", "PA")) and in_array($__ps_id, $ps_id)){
+                        $order_ps[$o["order_id"]][$__ps_id] += $i["quantity"];
+                        $ps_order[$__ps_id][$o["order_id"]] += $i["quantity"];
+                    }
+                }
+            }
+        }
+
+
+
+
+
+//            $res = array();
+//            if (is__array($orders)){
+//                $pumps      = array_shift(fn_uns__get_pumps(array("ps_id"=>$ps_id, "only_active"=>true,)));
+//                foreach ($orders as $o){
+//                    foreach ($o["items"] as $i){
+//                        $__ps_id = $pumps[$i["p_id"]]["ps_id"];
+//                        if (in_array($i["item_type"], array("P", "PF", "PA")) and in_array($__ps_id, $ps_id)){
+//                            $res[$__ps_id] += $i["quantity"];
+//                        }
+//                    }
+//                }
+//            }
+//            return $res;
+
+
+        return array($order_ps, $ps_order);
+    }
+
+
+    /**
+     * Выполнить расчет плана продаж
      * @param $pump_series
      * @param $sales
      * @param $analysis
@@ -58,43 +112,47 @@ class planning {
      * @param $ref_year
      * @param $week_supply
      */
-    private function planning($pump_series, $sales, $analysis, $ref_month, $ref_year, $week_supply, $koef_plan_prodazh){
+    private function planning($pump_series, $sales, $analysis, $order_ps, $ps_order, $ref_month, $ref_year, $week_supply, $koef_plan_prodazh){
         $res = array();
         if (is__array($pump_series) and is__array($sales) and is__array($analysis)){
             $ps_ids = array_keys($pump_series);
 
-            // 1. Определить НАЧАЛЬНЫЙ ОСТАТОК ПРОДУКЦИИ на начало расчетного месяца ref_month/ref_year
-            $nach_ostatok   = self::_get_nach_ostatok($ps_ids, $ref_month, $ref_year);
-
-            // 2. Определить ИМЕЮЩИЙСЯ ЗАДЕЛ по сериям по открытым партиям насосов на 01/ref_month/ref_year 00:00:00
-            $zadel          = self::_get_zadel($ps_ids, $ref_month, $ref_year);
-
-            // 3. Определить ИМЕЮЩИЕСЯ ЗАКАЗЫ по сериям на 01/ref_month/ref_year 00:00:00
-            $zakaz          = self::_get_zakaz($ps_ids, $ref_month, $ref_year);
-
-            // 4. Определить ПЛАН ПРОДАЖ на расчетный месяц
+            // 2. Определить ПЛАН ПРОДАЖ на расчетный месяц
             // Если расчетный ПЛАН ПРОДАЖ <= ИМЕЮЩИМСЯ ЗАКАЗАМ, тогда необходимо увеличить
             // ПЛАН ПРОДАЖ до величины ИМЕЮЩИХСЯ ЗАКАЗОВ + xx% "koef_plan_prodazh"
-            $plan_prodazh   = self::_get_plan_prodazh ($ps_ids, $zakaz, $ref_month, $ref_year, $koef_plan_prodazh);
-
-            // 5. Определить КОНЕЧНЫЙ ОСТАТОК на конец расчетного месяца
-            $konech_ostatok = self::_get_konech_ostatok($ps_ids, $plan_prodazh, $week_supply);
-
-            // 6. Выполнить ПЛАН ПРОИЗВОДСТВА на расчетный месяц
-            // Кон. Ост. = Нач. Ост. + Задел + План Производства - Продажи;
-            // План Производства = Кон. Ост. - Нач. Ост. - Задел + Продажи;
-            $production_plan= self::_get_production_plan ($ps_ids, $nach_ostatok, $zadel, $plan_prodazh, $konech_ostatok);
+            $plan_prodazh   = self::_get_plan_prodazh ($ps_ids, $sales, $ps_order, $ref_month, $ref_year, $koef_plan_prodazh);
 
             foreach ($pump_series as $ps_id=>$ps){
+                $v_total_orders             = array_sum($ps_order[$ps_id]);
+
+                $v_plan_prodazh_statistical = $plan_prodazh[$ps_id];                    // Статистическое значение
+                $v_plan_prodazh_calc        = fn_fvalue($v_plan_prodazh_statistical, 0);// Расчетное значение
+                $v_plan_prodazh_recalc      = "N";
+
+                // Пересчет плана продаж если абсолютная разность между статистическим планом и имеющимися заказами составляет более $koef_plan_prodazh процентов
+                if (is__more_0($koef_plan_prodazh, $v_plan_prodazh_calc) and $v_plan_prodazh_calc <= $v_total_orders){
+                    $v_plan_prodazh_calc    = fn_fvalue($v_total_orders+$koef_plan_prodazh*$v_total_orders/100,0);
+                    $v_plan_prodazh_recalc  = "Y1";
+
+                }
+
+                $v_potrebnost               = $v_plan_prodazh_calc + fn_fvalue($week_supply*$v_plan_prodazh_calc/4, 0);
+
+
+
+
+
                 $res[$ps_id] = array(
-                    "nach_ostatok"  => $nach_ostatok[$ps_id],
-                    "zadel"         => $zadel[$ps_id],
-                    "zakaz"         => $zakaz[$ps_id],
-                    "plan_prodazh"  => $plan_prodazh[$ps_id],
-                    "konech_ostatok"=> $konech_ostatok[$ps_id],
-                    "production_plan"=> $production_plan
+                    "orders"                    => $ps_order[$ps_id],
+                    "total_orders"              => $v_total_orders,
+                    "plan_prodazh_statistical"  => $v_plan_prodazh_statistical,
+                    "plan_prodazh_calc"         => $v_plan_prodazh_calc,
+                    "plan_prodazh_recalc"       => $v_plan_prodazh_recalc,
+                    "potrebnost"                => $v_potrebnost,
                 );
+
             }
+
         }
         return $res;
     }
@@ -120,23 +178,75 @@ class planning {
 
     /**
      * Определить ПЛАН ПРОДАЖ на расчетный месяц
+     * @param $ps_ids
+     * @param $sales
+     * @param $zakaz
+     * @param $ref_month
+     * @param $ref_year
+     * @param $koef_plan_prodazh
+     * @param int $sample_range - выборка по месяцам
      */
-    private function _get_plan_prodazh (){
+    private function _get_plan_prodazh ($ps_ids, $sales, $zakaz, $ref_month, $ref_year, $koef_plan_prodazh, $sample_range=3 ){
+        $res = array();
+        foreach ($ps_ids as $id){
+            $avr = self::__calc_average($sales[$id], $ref_month, $ref_year, $sample_range);
+            $res[$id] = $avr;
+        }
+        return $res;
+    }
 
+
+    private function __calc_average ($sales, $ref_month, $ref_year, $sample_range){
+        $res = array();
+        $months = array();
+        foreach ($sales as $s){
+            $months = array_merge($months, $s);
+        }
+
+        $vars = array();
+        $begin = 12+$ref_month-$sample_range-1;
+        $end = 12+$ref_month-2;
+        for ($j=$begin; $j<=$end; $j++){
+            $vars[] = $months[$j];
+        }
+
+
+        if ($sample_range == 3){
+            $a = array(0.1, 0.2, 0.7);
+            $a = array(0.1, 0.3, 0.6);
+            $a = array(0.2, 0.3, 0.5);
+            $res = $a[0]*$vars[0]+$a[1]*$vars[1]+$a[2]*$vars[2];
+        }
+
+        return $res;
     }
 
     /**
-     * Определить ИМЕЮЩИЕСЯ ЗАКАЗЫ по сериям на 01/ref_month/ref_year 00:00:00
+     * Определить ИМЕЮЩИЕСЯ ЗАКАЗЫ по сериям
+     * на период с 01/ref_month/ref_year 00:00:00 по 31/ref_month/ref_year 23:59:59
+     * с открытым статусом
+     *
      * @param $ps_id
      * @param $ref_month
      * @param $ref_year
      */
     private function _get_zakaz ($ps_id, $ref_month, $ref_year){
         $res = array();
-        $time_from  = strtotime("$ref_year/$ref_month/01 00:00:00");
-        $time_to    = strtotime("$ref_year/$ref_month/01 00:00:01");
-        $pumps      = array_shift(fn_uns__get_pumps(array("ps_id"=>$ps_ids, "only_active"=>true,)));
-        $orders     = array_shift(fn_acc__get_orders());
+        $begin      = $ref_year . "-" . $ref_month . "-" . "1" . " 00:00:00";
+        $end        = $ref_year . "-" . $ref_month . "-" . date("t", strtotime($begin))  . " 23:59:59";
+        $orders     = array_shift(fn_acc__get_orders(array("with_items"=>true, "only_active"=>true, "date_finished_begin"=> strtotime($begin), "date_finished_end"=>strtotime($end),)));
+        if (is__array($orders)){
+            $pumps      = array_shift(fn_uns__get_pumps(array("ps_id"=>$ps_id, "only_active"=>true,)));
+            foreach ($orders as $o){
+                foreach ($o["items"] as $i){
+                    $__ps_id = $pumps[$i["p_id"]]["ps_id"];
+                    if (in_array($i["item_type"], array("P", "PF", "PA")) and in_array($__ps_id, $ps_id)){
+                        $res[$__ps_id] += $i["quantity"];
+                    }
+                }
+            }
+        }
+        return $res;
     }
 
 
@@ -193,15 +303,17 @@ class planning {
      * @param $analysis
      * @param $ref_month
      */
-    private function create_graphs ($pump_series, $sales, $analysis, $ref_month){
+    private function create_graphs ($graphs_key, $pump_series, $sales, $analysis, $plan, $ref_month, $ref_year){
         if (is__array($pump_series) and is__array($sales) and is__array($analysis)){
             foreach ($pump_series as $ps_id=>$ps){
                 $data = array(
                     "series"    => $sales[$ps_id],
                     "analysis"  => $analysis[$ps_id],
+                    "plan"      => $plan[$ps_id],
                     "ref_month" => $ref_month,
+                    "ref_year"  => $ref_year,
                 );
-                self::_create_graph (DIR_ROOT . "/skins/basic/admin/images/uns_charts/"."ps_{$ps_id}.png", $data);
+                self::_create_graph (DIR_ROOT . "/skins/basic/admin/images/uns_charts/".$graphs_key."_ps_{$ps_id}.png", $data);
             }
         }
     }
@@ -228,8 +340,7 @@ class planning {
         /* Create the pChart object */
         $myPicture = new pImage($size["w"],$size["h"],$MyData);
 
-        // Определить максимальное значения рядов
-
+        // Определить минимальное и максимальное значения рядов
         list($min, $max) = self::_get_min_max($data["series"], true);
 
         $i = 0;
@@ -249,6 +360,9 @@ class planning {
                 }
                 $MyData->addPoints(array_merge($p,array(VOID)),$k_s);
             }
+
+            $MyData->setPalette($k_s,array("R"=>140,"G"=>140,"B"=>140));
+
 
             if ($i==1){
                 $myPicture->setGraphArea(1.5*$margin, $margin,              $size["w"]-$margin, $size["h"]/2-$margin);
@@ -316,6 +430,26 @@ class planning {
             }
             $MyData->removeSerie($k_s);
         }
+
+        // Добавить на график расчетное значение плана продаж на расчетный месяц
+        $d = array(VOID, VOID, VOID, VOID, VOID, VOID, VOID, VOID, VOID, VOID, VOID, VOID);
+        $d[$data["ref_month"]-1] = fn_fvalue($data["plan"]["plan_prodazh_calc"], 0);
+        $MyData->addPoints($d,"PLAN");
+        $MyData->setSerieShape("PLAN",SERIE_SHAPE_FILLEDDIAMOND);
+        $MyData->setPalette("PLAN",array("R"=>0,"G"=>0,"B"=>0));
+        $myPicture->drawPlotChart(array(
+                "BorderSize"=>0,
+                "Surrounding"=>40,
+                "BorderAlpha"=>100,
+                "PlotSize"=>4,
+                "PlotBorder"=>TRUE,
+                "DisplayValues"=>TRUE,
+                "DisplayColor"=>DISPLAY_MANUAL,
+            ));
+
+
+
+
         $myPicture->Render($file_name);
     }
 
@@ -397,10 +531,10 @@ class planning {
      * @param $ref_month
      * @param $ref_year
      */
-    private function get_sales ($ps_id, $years_for_analysis, $ref_month, $ref_year){
+    private function get_sales ($ps_id, $ref_month, $ref_year){
         $sales = false;
         // 1. Получить список месячных интервалов
-        $months = self::_get_months($years_for_analysis, $ref_year);
+        $months = self::_get_months(2, $ref_year);
 
         // 2. Cобрать помесячные продажи
         foreach ($months as $k_y=>$year){
@@ -472,4 +606,56 @@ class planning {
         }
         return $res;
     }
+
+
+
+    public function test_graph (){
+        /* Create and populate the pData object */
+        $MyData = new pData();
+        $MyData->addPoints(array(150,220,300,-250,-420,-200,300,200,100),"Server A");
+        $MyData->addPoints(array(140,0,340,-300,-320,-300,200,100,50),"Server B");
+        $MyData->setAxisName(0,"Hits");
+        $MyData->addPoints(array("January","February","March","April","May","Juin","July","August","September"),"Months");
+        $MyData->setSerieDescription("Months","Month");
+        $MyData->setAbscissa("Months");
+
+        /* Create the pChart object */
+        $myPicture = new pImage(700,230,$MyData);
+
+        /* Turn of Antialiasing */
+        $myPicture->Antialias = FALSE;
+
+        /* Add a border to the picture */
+        $myPicture->drawGradientArea(0,0,700,230,DIRECTION_VERTICAL,array("StartR"=>240,"StartG"=>240,"StartB"=>240,"EndR"=>180,"EndG"=>180,"EndB"=>180,"Alpha"=>100));
+        $myPicture->drawGradientArea(0,0,700,230,DIRECTION_HORIZONTAL,array("StartR"=>240,"StartG"=>240,"StartB"=>240,"EndR"=>180,"EndG"=>180,"EndB"=>180,"Alpha"=>20));
+        $myPicture->drawRectangle(0,0,699,229,array("R"=>0,"G"=>0,"B"=>0));
+
+        /* Set the default font */
+        $myPicture->setFontProperties(array("FontName"=>"../fonts/pf_arma_five.ttf","FontSize"=>6));
+
+        /* Define the chart area */
+        $myPicture->setGraphArea(60,40,650,200);
+
+        /* Draw the scale */
+        $scaleSettings = array("GridR"=>200,"GridG"=>200,"GridB"=>200,"DrawSubTicks"=>TRUE,"CycleBackground"=>TRUE);
+        $myPicture->drawScale($scaleSettings);
+
+        /* Write the chart legend */
+        $myPicture->drawLegend(580,12,array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL));
+
+        /* Turn on shadow computing */
+        $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>10));
+
+        /* Draw the chart */
+        $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>10));
+        $settings = array("Surrounding"=>-30,"InnerSurrounding"=>30);
+        $myPicture->drawBarChart($settings);
+
+        /* Render the picture (choose the best way) */
+        //$myPicture->autoOutput("pictures/example.drawBarChart.simple.png");
+                $myPicture->Render("si.png");
+
+    }
+
+
 }
