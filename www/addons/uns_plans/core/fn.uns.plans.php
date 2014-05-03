@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Получить ПЛАНЫ ПРОИЗВОДСТВА
+ * Получить ПЛАНЫ продаж
  * @param array $params
  * @param int $items_per_page
  * @return array
@@ -25,6 +25,7 @@ function fn_uns__get_plans($params = array(), $items_per_page = 0){
 
     $fields = array(
         "$m_tbl.$m_key",
+        "$m_tbl.type",
         "$m_tbl.month",
         "$m_tbl.year",
         "$m_tbl.status",
@@ -47,6 +48,11 @@ function fn_uns__get_plans($params = array(), $items_per_page = 0){
     // По ID
     if ($params["{$m_key}_array"] = to__array($params[$m_key])){
         $condition .= db_quote(" AND $m_tbl.$m_key in (?n)", $params["{$m_key}_array"]);
+    }
+
+    // type's
+    if (in_array($params["type"], array("sales"))){
+        $condition .= db_quote(" AND $m_tbl.type = ?s ", $params["type"]);
     }
 
     // month
@@ -146,6 +152,7 @@ function fn_uns__get_plan_items($params = array(), $items_per_page = 0){
         "$m_tbl.item_type",
         "$m_tbl.item_id",
         "$m_tbl.quantity",
+        "$m_tbl.quantity_add",
         "$m_tbl.plan_id",
     );
 
@@ -241,10 +248,11 @@ function fn_uns__upd_plan_items($id, $data){
     foreach ($data as $i){
         if (is__more_0($i['item_id']) and  is_numeric($i['quantity']) and fn_check_type($i['item_type'], "|S|D|")){
             $v = array(
-                'plan_id'   => $id,
-                'item_type' => $i['item_type'],
-                'item_id'   => $i['item_id'],
-                'quantity'  => abs($i['quantity']),
+                'plan_id'       => $id,
+                'item_type'     => $i['item_type'],
+                'item_id'       => $i['item_id'],
+                'quantity'      => abs($i['quantity']),
+                'quantity_add'  => is__more_0(abs($i['quantity_add']))?abs($i['quantity_add']):abs($i['quantity']),
             );
 
             if (is__more_0($i['pi_id']) and is__more_0(db_get_field(UNS_DB_PREFIX . "SELECT pi_id FROM $m_table WHERE pi_id = ?i", $i['pi_id']))){

@@ -1,6 +1,10 @@
 <uns_plans>
     <item title="uns_plan_of_sales"     dispatch="uns_plan_of_sales.calculation"/>
-        <subitem item="uns_plan_of_sales"       title="uns_plan_of_sales__calculation" href="%INDEX_SCRIPT?dispatch=uns_plan_of_sales.calculation" />
-        <subitem item="uns_plan_of_sales"       title="uns_plan_of_sales__manage"   href="%INDEX_SCRIPT?dispatch=uns_plan_of_sales.manage" />
-        <subitem item="uns_plan_of_sales"       title="uns_plan_of_sales__tracking" href="%INDEX_SCRIPT?dispatch=uns_plan_of_sales.tracking" />
+        <subitem item="uns_plan_of_sales"       title="uns_plan_of_sales__calculation"  href="%INDEX_SCRIPT?dispatch=uns_plan_of_sales.calculation" />
+        <subitem item="uns_plan_of_sales"       title="uns_plan_of_sales__manage"       href="%INDEX_SCRIPT?dispatch=uns_plan_of_sales.manage" />
+        <subitem item="uns_plan_of_sales"       title="uns_plan_of_sales__tracking"     href="%INDEX_SCRIPT?dispatch=uns_plan_of_sales.tracking" />
+
+    <item title="uns_plans"             dispatch="uns_plans.manage"/>
+        <subitem item="uns_plans"               title="uns_plans"                       href="%INDEX_SCRIPT?dispatch=uns_plans.manage" />
+        <subitem item="uns_plans"               title="uns_planning_calc"               href="%INDEX_SCRIPT?dispatch=uns_planning.calc" />
 </uns_plans>

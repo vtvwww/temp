@@ -27,7 +27,7 @@ class plan_of_sales {
         $koef_plan_prodazh  = $params["koef_plan_prodazh"];
 
         // 1. Получить список серий насосов
-        $pump_series = array_shift(fn_uns__get_pump_series(array("ps_id"=> $ps_id, "in_plan"=>"Y",)));
+        $pump_series = array_shift(fn_uns__get_pump_series(array("ps_id"=> $ps_id, "view_in_plan"=>"Y",)));
 //        fn_print_r($pump_series);
 
         // 2. Получить статистику продаж по указанным сериям за последние 2 года
@@ -79,26 +79,6 @@ class plan_of_sales {
                 }
             }
         }
-
-
-
-
-
-//            $res = array();
-//            if (is__array($orders)){
-//                $pumps      = array_shift(fn_uns__get_pumps(array("ps_id"=>$ps_id, "only_active"=>true,)));
-//                foreach ($orders as $o){
-//                    foreach ($o["items"] as $i){
-//                        $__ps_id = $pumps[$i["p_id"]]["ps_id"];
-//                        if (in_array($i["item_type"], array("P", "PF", "PA")) and in_array($__ps_id, $ps_id)){
-//                            $res[$__ps_id] += $i["quantity"];
-//                        }
-//                    }
-//                }
-//            }
-//            return $res;
-
-
         return array($order_ps, $ps_order);
     }
 
@@ -138,10 +118,6 @@ class plan_of_sales {
 
                 $v_potrebnost               = $v_plan_prodazh_calc + fn_fvalue($week_supply*$v_plan_prodazh_calc/4, 0);
 
-
-
-
-
                 $res[$ps_id] = array(
                     "orders"                    => $ps_order[$ps_id],
                     "total_orders"              => $v_total_orders,
@@ -155,24 +131,6 @@ class plan_of_sales {
 
         }
         return $res;
-    }
-
-    /**
-     * Выполнить ПЛАН ПРОИЗВОДСТВА на расчетный месяц
-     * Кон. Ост. = Нач. Ост. + Задел + План Производства - Продажи;
-     * План Производства = Кон. Ост. - Нач. Ост. - Задел + Продажи;
-     */
-    private function _get_production_plan (){
-
-    }
-
-
-    /**
-     * Определить КОНЕЧНЫЙ ОСТАТОК на конец расчетного месяца
-     *
-     */
-    private function _get_konech_ostatok (){
-
     }
 
 
@@ -212,8 +170,8 @@ class plan_of_sales {
 
 
         if ($sample_range == 3){
-            $a = array(0.1, 0.2, 0.7);
-            $a = array(0.1, 0.3, 0.6);
+//            $a = array(0.1, 0.2, 0.7);
+//            $a = array(0.1, 0.3, 0.6);
             $a = array(0.2, 0.3, 0.5);
             $res = $a[0]*$vars[0]+$a[1]*$vars[1]+$a[2]*$vars[2];
         }

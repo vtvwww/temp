@@ -5,19 +5,60 @@ if(!defined('AREA')){
 }
 
 fn_uns_defaul_functions($controller, $mode);
-
 $pl = new plan_of_sales();
 
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
+    $suffix = '';
+
+    if($mode == 'update'){
+        $id = fn_uns__upd_plan($_REQUEST['plan_id'], $_REQUEST['data']);
+        if($id !== false){
+            fn_set_notification("N", $_REQUEST['data']['o_name'], UNS_DATA_UPDATED);
+        }
+        fn_delete_notification('changes_saved');
+        $suffix = "update&plan_id={$id}&selected_section={$_REQUEST['selected_section']}";
+    }
+
+
+    if (defined('AJAX_REQUEST') and $mode == 'plan_items'){
+        switch ($_REQUEST['event']){
+            case "change__item_type": // Произошла смена ТИПА
+                if(in_array($_REQUEST['item_type'], array('D', 'S'))){
+                    $options = "<option value='0'>---</option>";
+                    if ($_REQUEST["item_type"] == "S"){
+                        $p = array(
+                            'only_active' => true,
+                            'group_by_types'=>true,
+                        );
+                        list($pump_series) = fn_uns__get_pump_series($p);
+                        $view->assign("f_type", "select_by_group");
+                        $view->assign("f_options", "pump_series");
+                        $view->assign("f_option_id", "ps_id");
+                        $view->assign("f_option_value", "ps_name");
+                        $view->assign("f_optgroups", $pump_series);
+                        $view->assign("f_optgroup_label", "pt_name_short");
+                        $view->assign('f_simple_2', true);
+                    }
+                }
+                $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
+                $ajax->assign('options', $options);
+            break;
+        }
+        exit;
+    }
+    return array(CONTROLLER_STATUS_OK, $controller . "." . $suffix);
 }
+
+
+// Общие шаблоны
+$months = array(1=>"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь");
+$view->assign('months', $months);
+
+
+
 //**************************************************************************
 // Анализ продаж
 //**************************************************************************
-
-if ($mode == "test_graph"){
-    $pl->test_graph($params);
-}
-
 if ($mode == "calculation"){
     if (!is__more_0($_REQUEST["month"], $_REQUEST["year"], $_REQUEST["week_supply"])){
         $view->assign("error", "Y");
@@ -31,7 +72,7 @@ if ($mode == "calculation"){
         return;
     }
 
-//    $ps_id = array(/*29,37,77,*/76/*,65,66,78,79,80*/); // только К8/18 --- К290/30
+    $ps_id = array(29,37,77,76,65,66,78,79,80); // только К8/18 --- К290/30
 
     // 1. Параметры для расчета плана производства
     $graphs_key = substr(md5(microtime().mt_rand()), 0, 10);
@@ -58,8 +99,6 @@ if ($mode == "calculation"){
 
 
     $view->assign('search', $_REQUEST);
-    $months = array(1=>"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь");
-    $view->assign('months', $months);
 
     // 3. Список имеющихся заказов
     $orders = array_shift(fn_acc__get_orders(array("only_active"=>true)));
@@ -69,83 +108,46 @@ if ($mode == "calculation"){
     list($customers) = fn_uns__get_customers();
     $view->assign('customers', $customers);
 
-
-
-
-
-
-
-
-
-
-
-
-    /*
-    //    fn_print_r("получить список месяцев за текущий и предыдущий года");
-        $year_months = $pl->get_last_months(TIME);
-
-        // Получить Фактические продажи насосов по каждому месяцу
-    //    $sales = $pl->get_sales($year_months);
-
-        $char_config = array("dir_charts"=>DIR_ROOT."/var/charts/");
-        $chart = new uns_chart($char_config);
-        $chart_data = array(
-            array(
-                "Янв"=>12,
-                "Фев"=>12,
-                "Мар"=>13,
-                "Май"=>13,
-                "Апр"=>13,
-                "Июн"=>13,
-                "Июл"=>13,
-                "Авг"=>13,
-                "Сен"=>13,
-                "Окт"=>13,
-                "Ноя"=>13,
-                "Дек"=>13,
-            ),
-        );
-
-        $chart->get_chart($chart_data);
-
-    //    fn_print_r($sales);
-
-
-        $data = array(
-            2013 => array(
-                "months" => array(
-                    1=> array(
-                        "pump_series" => array(
-                            29 => array(
-                                "quantity"=>6,
-                            ),
-                        ),
-                    ),
-                    2=> array(),
-                    3=> array(),
-                    4=> array(),
-                    5=> array(),
-                    6=> array(),
-                    7=> array(),
-                    8=> array(),
-                    9=> array(),
-                   10=> array(),
-                   11=> array(),
-                   12=> array(),
-                ),
-            ),
-
-        );
-
-
-        $view->assign('planning', $data);*/
-
-
 }
 
 
+//**************************************************************************
+// УПРАВЛЕНИЕ ПЛАНАМИ ПРОДАЖ
+//**************************************************************************
+if ($mode == "manage") {
+    $p = array(
+        "with_count" => true,
+    );
+    $p = array_merge($_REQUEST, $p);
+    list($plans, $search) = fn_uns__get_plans($p, UNS_ITEMS_PER_PAGE);
+    $view->assign('plans', $plans);
+    $view->assign('search', $search);
+}
 
+if($mode == 'update'){
+    if(!is__more_0($_REQUEST['plan_id']) or !is__more_0(db_get_field(UNS_DB_PREFIX . "SELECT plan_id FROM ?:_plans WHERE plan_id = ?i", $_REQUEST['plan_id']))){
+        return array(CONTROLLER_STATUS_REDIRECT, $controller . ".manage");
+    }
+    $p = array(
+        "with_items"=> true,
+        "plan_id"   => $_REQUEST['plan_id'],
+        "type"      => "sales
+        ",
+    );
+    $plan = array_shift(array_shift(fn_uns__get_plans($p)));
+    $view->assign('plan', $plan);
 
+    // Серии насосов
+    list($pump_series) = fn_uns__get_pump_series(array('only_active' => true,'group_by_types'=>true, "view_in_plan"=>"Y",));
+    $view->assign('pump_series', $pump_series);
+}
+
+if($mode == 'delete'){
+    if (is__more_0($_REQUEST["plan_id"])){
+        fn_uns__del_plan($_REQUEST['plan_id']);
+    }
+    return array(CONTROLLER_STATUS_REDIRECT, $controller . ".manage");
+}
 
 
 
