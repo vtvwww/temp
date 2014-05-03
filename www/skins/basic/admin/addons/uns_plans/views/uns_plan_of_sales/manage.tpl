@@ -9,7 +9,7 @@
                 <th width="10px">&nbsp;</th>
                 <th width="50px">Месяц</th>
                 <th width="50px">Год</th>
-                <th width="10px">Кол-во</th>
+                <th width="50px">Кол-во</th>
                 <th width="300px">Коментарий</th>
                 <th>&nbsp;</th>
             </tr>
@@ -26,8 +26,9 @@
                     <td align="left"> {* Год *}
                         {$i.year}
                     </td>
-                    <td align="right">  {*ПОЗИЦИЙ*}
-                        {$i.count}
+                    <td align="center">  {*ПОЗИЦИЙ*}
+                        {*{$i.count} ({$i.sum_q}/{$i.sum_q_add})*}
+                        {$i.sum_q}/{$i.sum_q_add}
                     </td>
                     <td>  {*Комментарий*}
                         {$i.comment}&nbsp;

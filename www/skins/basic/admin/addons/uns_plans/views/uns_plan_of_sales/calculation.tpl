@@ -41,7 +41,8 @@
             {/foreach}
         {/if}
 
-        {include file="addons/uns_plans/views/uns_plan_of_sales/components/summary_table.tpl"}
+        {*{include file="addons/uns_plans/views/uns_plan_of_sales/components/summary_table.tpl"}*}
+        {include file="addons/uns_plans/views/uns_plan_of_sales/components/summary_table_for_save_in_plans.tpl"}
 
     {/if}
 {/capture}

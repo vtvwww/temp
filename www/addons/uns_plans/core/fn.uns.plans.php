@@ -112,6 +112,16 @@ function fn_uns__get_plans($params = array(), $items_per_page = 0){
         }
     }
 
+    if ($params["with_sum"]){
+        $counts = db_get_hash_array(UNS_DB_PREFIX . "SELECT plan_id, sum(quantity) as sum_q, sum(quantity_add) as sum_q_add FROM ?:_plan_items WHERE plan_id in (?n) GROUP BY plan_id", "plan_id", array_keys($data));
+        if (is__array($counts)){
+            foreach ($data as $k_d=>$v_d){
+                $data[$k_d]["sum_q"] = $counts[$k_d]["sum_q"];
+                $data[$k_d]["sum_q_add"] = $counts[$k_d]["sum_q_add"];
+            }
+        }
+    }
+
     if ($params["with_items"]){
         $p = array(
             'plan_id'=>array_keys($data),
@@ -283,6 +293,12 @@ function fn_uns__upd_plan_items($id, $data){
  */
 function fn_uns__upd_plan_info($id, $data){
     $data = trim__data($data);
+
+    // План продаж сохраняется при расчете плана продаж
+    if ($data["override"] == "Y"){
+        $id = db_get_field(UNS_DB_PREFIX . "SELECT plan_id FROM ?:_plans WHERE type = ?s AND month = ?i and year = ?i ", $data["type"], $data["month"], $data["year"]);
+    }
+
     if (is__more_0($id) and is__array($data) and is__more_0(db_get_field(UNS_DB_PREFIX . "SELECT plan_id FROM ?:_plans WHERE plan_id = $id"))){
         db_query(UNS_DB_PREFIX . "UPDATE ?:_plans SET ?u WHERE plan_id = ?i", $data, $id);
     }else{

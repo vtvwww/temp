@@ -27,7 +27,7 @@ class plan_of_sales {
         $koef_plan_prodazh  = $params["koef_plan_prodazh"];
 
         // 1. Получить список серий насосов
-        $pump_series = array_shift(fn_uns__get_pump_series(array("ps_id"=> $ps_id, "view_in_plan"=>"Y",)));
+        $pump_series = array_shift(fn_uns__get_pump_series(array("ps_id"=> $ps_id, "view_in_plans"=>"Y",)));
 //        fn_print_r($pump_series);
 
         // 2. Получить статистику продаж по указанным сериям за последние 2 года

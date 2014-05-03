@@ -21,7 +21,7 @@
 
 {include file="addons/uns/views/components/get_form_field.tpl"
     f_type="hidden"
-    f_name="type"
+    f_name="`$e_n`[type]"
     f_value="sales"}
 
 {*МЕСЯЦ*}

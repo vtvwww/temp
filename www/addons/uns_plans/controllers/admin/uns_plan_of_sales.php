@@ -11,7 +11,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $suffix = '';
 
     if($mode == 'update'){
-        $id = fn_uns__upd_plan($_REQUEST['plan_id'], $_REQUEST['data']);
+        $id = fn_uns__upd_plan(is__more_0($_REQUEST['plan_id'])?$_REQUEST['plan_id']:0, $_REQUEST['data']);
         if($id !== false){
             fn_set_notification("N", $_REQUEST['data']['o_name'], UNS_DATA_UPDATED);
         }
@@ -63,7 +63,7 @@ if ($mode == "calculation"){
     if (!is__more_0($_REQUEST["month"], $_REQUEST["year"], $_REQUEST["week_supply"])){
         $view->assign("error", "Y");
         $p = array(
-            "month"             => date('n', TIME)+1,
+            "month"             => date('n', TIME),
             "year"              => date('Y', TIME),
             "week_supply"       => 2,
             "koef_plan_prodazh" => 20,
@@ -72,7 +72,8 @@ if ($mode == "calculation"){
         return;
     }
 
-    $ps_id = array(29,37,77,76,65,66,78,79,80); // только К8/18 --- К290/30
+//    $ps_id = array(29,37,77,76,65,66,78,79,80); // только К8/18 --- К290/30
+//    $ps_id = array(76,65,66); // только К8/18 --- К290/30
 
     // 1. Параметры для расчета плана производства
     $graphs_key = substr(md5(microtime().mt_rand()), 0, 10);
@@ -114,9 +115,15 @@ if ($mode == "calculation"){
 //**************************************************************************
 // УПРАВЛЕНИЕ ПЛАНАМИ ПРОДАЖ
 //**************************************************************************
+if($mode == 'update' or $mode == 'add'){
+    fn_add_breadcrumb("Планы продаж", $controller . ".manage");
+    fn_uns_navigation_tabs(array('general' => fn_get_lang_var('general'),));
+}
+
 if ($mode == "manage") {
     $p = array(
         "with_count" => true,
+        "with_sum" => true,
     );
     $p = array_merge($_REQUEST, $p);
     list($plans, $search) = fn_uns__get_plans($p, UNS_ITEMS_PER_PAGE);
@@ -130,9 +137,9 @@ if($mode == 'update'){
     }
     $p = array(
         "with_items"=> true,
+        "with_sum"  => true,
         "plan_id"   => $_REQUEST['plan_id'],
-        "type"      => "sales
-        ",
+        "type"      => "sales",
     );
     $plan = array_shift(array_shift(fn_uns__get_plans($p)));
     $view->assign('plan', $plan);
