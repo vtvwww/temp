@@ -219,8 +219,8 @@
     {elseif $f_simple_2}
         {if $f_blank}<option value="0">---</option>{/if}
         {if is__array($f_options)}
-        {foreach from=$f_options item="j"}
-            <option class="{if $j.material_status == "D" or $j.detail_status == "D"} item_disabled {/if}{if $j.checked == "N"} item_verification_required {/if}" title="{if $j.material_status == "D" or $j.detail_status == "D"} Деталь выключена. {/if}{if $j.checked == "N"}Деталь требует проверки. {/if}" value="{$j.$f_option_id}" {if $j.$f_option_id == $f_option_target_id} selected="selected" {/if}>{if $f_value_prefix}{$f_value_prefix}{/if}{$j.$f_option_value}{if $f_option_value_add && $j.$f_option_value_add} ({$j.$f_option_value_add}) {/if}{if $f_value_suffix}{$f_value_suffix}{/if}{if $f_add_value and strlen($j.$f_add_value)}&nbsp;&nbsp;&nbsp;({$j.$f_add_value}){/if}</option>
+        {foreach from=$f_options item="j" name="s"}
+            <option class="{if $j.material_status == "D" or $j.detail_status == "D"} item_disabled {/if}{if $j.checked == "N"} item_verification_required {/if}" title="{if $j.material_status == "D" or $j.detail_status == "D"} Деталь выключена. {/if}{if $j.checked == "N"}Деталь требует проверки. {/if}" value="{$j.$f_option_id}" {if $j.$f_option_id == $f_option_target_id} selected="selected" {/if} {*{if $smarty.foreach.s.index == 0} selected="selected" {/if}*} >{if $f_value_prefix}{$f_value_prefix}{/if}{$j.$f_option_value}{if $f_option_value_add && $j.$f_option_value_add} ({$j.$f_option_value_add}) {/if}{if $f_value_suffix}{$f_value_suffix}{/if}{if $f_add_value and strlen($j.$f_add_value)}&nbsp;&nbsp;&nbsp;({$j.$f_add_value}){/if}</option>
         {/foreach}
         {/if}
     {else}

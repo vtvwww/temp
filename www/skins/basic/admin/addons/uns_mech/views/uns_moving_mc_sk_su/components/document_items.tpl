@@ -199,7 +199,7 @@
                             {/if}
                         </td>
 
-                        <td class="right cm-non-cb">
+                        <td class="right cm-non-cb" style="border-left: 1px solid #808080;">
                             {include file="buttons/multiple_buttons.tpl" item_id="`$id`_`$num`" tag_level="3" only_delete="Y"}
                         </td>
                     </tr>
@@ -272,7 +272,7 @@
                 }
                 {/if}
             </td>
-            <td class="right cm-non-cb">
+            <td class="right cm-non-cb" style="border-left: 1px solid #808080;">
                 {include file="buttons/multiple_buttons.tpl" item_id="add_`$num`" tag_level="2"}
             </td>
         </tr>

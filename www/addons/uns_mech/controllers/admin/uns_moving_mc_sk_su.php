@@ -384,6 +384,7 @@ function fn_uns_moving_mc_sk_su__search ($controller){
         'o_id',
         'include_sheets',
         'include_kits',
+        'type',
     );
     fn_uns_search_set_get_params($controller, $params);
     return true;

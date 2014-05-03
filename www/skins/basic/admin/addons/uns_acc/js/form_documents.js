@@ -124,88 +124,96 @@ $(function () {
         }
     });
 
-// Смена КАТЕГОРИИ позиции
-$('select[name^="data[document_items]"][name$="[item_cat_id]"]').live('change', function (e) {
-    var document_type    = $('select#document_type');
-    var item_type        = $(this).parent().parent().find('select[name^="data[document_items]"][name$="[item_type]"]');
-    var item_cat_id      = $(this);
-    var item_name_id     = $(this).parent().parent().find('select[name^="data[document_items]"][name$="[item_id]"]');
-    var item_quantity    = $(this).parent().parent().find( 'input[name^="data[document_items]"][name$="[quantity]"]');
-    var item_u_id        = $(this).parent().parent().find('select[name^="data[document_items]"][name$="[u_id]"]');
-    var item_typesize    = $(this).parent().parent().find('select[name^="data[document_items]"][name$="[typesize]"]');
-    var item_weight      = $(this).parent().parent().find('select[name^="data[document_items]"][name$="[weight]"]');
+    // Смена КАТЕГОРИИ позиции
+    $('select[name^="data[document_items]"][name$="[item_cat_id]"]').live('change', function (e) {
+        var document_type    = $('select#document_type');
+        var item_type        = $(this).parent().parent().find('select[name^="data[document_items]"][name$="[item_type]"]');
+        var item_cat_id      = $(this);
+        var item_name_id     = $(this).parent().parent().find('select[name^="data[document_items]"][name$="[item_id]"]');
+        var item_quantity    = $(this).parent().parent().find( 'input[name^="data[document_items]"][name$="[quantity]"]');
+        var item_u_id        = $(this).parent().parent().find('select[name^="data[document_items]"][name$="[u_id]"]');
+        var item_typesize    = $(this).parent().parent().find('select[name^="data[document_items]"][name$="[typesize]"]');
+        var item_weight      = $(this).parent().parent().find('select[name^="data[document_items]"][name$="[weight]"]');
 
-    item_name_id    .empty();
-    item_quantity   .val(1);
-    item_u_id       .empty();
-    item_typesize   .empty();
-    item_weight     .empty();
+        item_name_id    .empty();
+        item_quantity   .val(1);
+        item_u_id       .empty();
+        item_typesize   .empty();
+        item_weight     .empty();
 
-    if (item_cat_id.val() > 0){
-        $.ajaxRequest(
-            fn_url('acc_documents.document_items'),
-            {
-                hidde: false,
-                method: 'post',
-                data: {
-                    event           : "change__item_cat_id",
-                    document_type   : document_type.val(),
-                    item_type       : item_type.val(),
-                    item_cat_id     : item_cat_id.val()
-                },
-                callback: function(data){
-                    item_name_id.append(data.options);
+        if (item_cat_id.val() > 0){
+            $.ajaxRequest(
+                fn_url('acc_documents.document_items'),
+                {
+                    hidde: false,
+                    method: 'post',
+                    data: {
+                        event           : "change__item_cat_id",
+                        document_type   : document_type.val(),
+                        item_type       : item_type.val(),
+                        item_cat_id     : item_cat_id.val()
+                    },
+                    callback: function(data){
+                        item_name_id.append(data.options);
+//                        item_name_id.change();
+                    }
                 }
-            }
-        );
-    }
-});
+            );
+        }
+    });
 
-// Смена ПОЗИЦИИ
-$('select[name^="data[document_items]"][name$="[item_id]"]').live('change', function (e) {
-    var document_type    = $('select#document_type');
-    var item_type        = $(this).parent().parent().find('select[name^="data[document_items]"][name$="[item_type]"]');
-    var item_cat_id      = $(this).parent().parent().find('select[name^="data[document_items]"][name$="[item_cat_id]"]');
-    var item_id          = $(this);
-    var item_quantity    = $(this).parent().parent().find( 'input[name^="data[document_items]"][name$="[quantity]"]');
-    var item_u_id        = $(this).parent().parent().find('select[name^="data[document_items]"][name$="[u_id]"]');
-    var item_typesize    = $(this).parent().parent().find('select[name^="data[document_items]"][name$="[typesize]"]');
-    var item_weight      = $(this).parent().parent().find( 'input[name^="data[document_items]"][name$="[weight]"]');
-    var item_balance     = $(this).parent().parent().find( 'div.balance');
+    // Смена ПОЗИЦИИ
+    $('select[name^="data[document_items]"][name$="[item_id]"]').live('change', function (e) {
+        var document_type    = $('select#document_type');
+        var item_type        = $(this).parent().parent().find('select[name^="data[document_items]"][name$="[item_type]"]');
+        var item_cat_id      = $(this).parent().parent().find('select[name^="data[document_items]"][name$="[item_cat_id]"]');
+        var item_id          = $(this);
+        var item_quantity    = $(this).parent().parent().find( 'input[name^="data[document_items]"][name$="[quantity]"]');
+        var item_u_id        = $(this).parent().parent().find('select[name^="data[document_items]"][name$="[u_id]"]');
+        var item_typesize    = $(this).parent().parent().find('select[name^="data[document_items]"][name$="[typesize]"]');
+        var item_weight      = $(this).parent().parent().find( 'input[name^="data[document_items]"][name$="[weight]"]');
+        var item_balance     = $(this).parent().parent().find( 'div.balance');
 
-    var object_from     = $('select[name^="data[document]"][name$="[object_from]"]');
-    var object_to       = $('select[name^="data[document]"][name$="[object_to]"]');
+        var object_from     = $('select[name^="data[document]"][name$="[object_from]"]');
+        var object_to       = $('select[name^="data[document]"][name$="[object_to]"]');
 
-//    item_quantity   .val(1);
-    item_u_id       .empty();
-    item_typesize   .empty();
-    item_weight     .empty();
-    item_balance    .empty();
+    //    item_quantity   .val(1);
+        item_u_id       .empty();
+        item_typesize   .empty();
+        item_weight     .empty();
+        item_balance    .empty();
 
-    if (item_id.val() > 0){
-        $.ajaxRequest(
-            fn_url('acc_documents.document_items'),
-            {
-                hidde: false,
-                method: 'post',
-                data: {
-                    event           : "change__item_id",
-                    document_type   : document_type.val(),
-                    item_type       : item_type.val(),
-                    item_cat_id     : item_cat_id.val(),
-                    item_id         : item_id.val(),
-                    object_to       : object_to.val(),
-                    object_from     : object_from.val(),
-                },
-                callback: function(data){
-                    item_u_id       .append(data.options);
-                    item_typesize   .append(data.typesizes);
-                    item_weight     .val(data.weight);
-                    item_balance    .append(data.balance);
+        if (item_id.val() > 0){
+            $.ajaxRequest(
+                fn_url('acc_documents.document_items'),
+                {
+                    hidde: false,
+                    method: 'post',
+                    data: {
+                        event           : "change__item_id",
+                        document_type   : document_type.val(),
+                        item_type       : item_type.val(),
+                        item_cat_id     : item_cat_id.val(),
+                        item_id         : item_id.val(),
+                        object_to       : object_to.val(),
+                        object_from     : object_from.val(),
+                    },
+                    callback: function(data){
+                        item_u_id       .append(data.options);
+                        item_typesize   .append(data.typesizes);
+                        item_weight     .val(data.weight);
+                        item_balance    .append(data.balance);
+                        item_quantity   .focus().select();
+                    }
                 }
-            }
-        );
-    }
-});
+            );
+        }
+    });
 
+    // дублирование строки через клавиатуру
+    $(document).keypress(function (e) {
+        if (e.keyCode == 45){ // кнопка @INSERT@
+            $("img[name='clone']").last().click();
+        }
+    });
 });
