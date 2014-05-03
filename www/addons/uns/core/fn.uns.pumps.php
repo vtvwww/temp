@@ -198,6 +198,10 @@ function fn_uns__get_pump_series($params = array(), $items_per_page = 0){
         $condition .= db_quote(" AND $m_table.pt_id in (?n)", $params['pt_id_array']);
     }
 
+    if ($params['in_plan'] == "Y") {
+        $condition .= db_quote(" AND $m_table.view_in_plans = 'Y' ");
+    }
+
     $join .= db_quote(" LEFT JOIN $j_table ON ($j_table.pt_id = $m_table.pt_id ) ");
 
     if ($params['pump_q_ty']){
