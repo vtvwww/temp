@@ -145,7 +145,7 @@ if($mode == 'update'){
     $view->assign('plan', $plan);
 
     // Серии насосов
-    list($pump_series) = fn_uns__get_pump_series(array('only_active' => true,'group_by_types'=>true, "view_in_plan"=>"Y",));
+    list($pump_series) = fn_uns__get_pump_series(array('only_active' => true,'group_by_types'=>true, "view_in_plans"=>"Y",));
     $view->assign('pump_series', $pump_series);
 }
 
@@ -157,15 +157,97 @@ if($mode == 'delete'){
 }
 
 
+//******************************************************************************
+// ОТСЛЕЖИВАНИЕ
+//******************************************************************************
+if ($mode == "tracking") {
+    if (is__more_0($_REQUEST["month"], $_REQUEST["year"])){
+
+        // СЕРИИ НАСОСОВ
+        list($pump_series) = fn_uns__get_pump_series(array('only_active' => true,'group_by_types'=>true, "view_in_plans"=>"Y",));
+        $view->assign('pump_series', $pump_series);
 
 
+        // ПЛАН ПРОДАЖ на выбранный месяц
+        $p = array(
+            "with_count"        => true,
+            "with_sum"          => true,
+            "with_items"        => true,
+            "group_by_item"     => true,
+        );
+        $p = array_merge($_REQUEST, $p);
+        $plan = array_shift(array_shift(fn_uns__get_plans($p)));
+        $view->assign('plan', $plan);
+        $view->assign('search', $p);
 
+        // ФАКТИЧЕСКИЕ ПРОДАЖИ на выбранный месяц
+        $pump_series = array_shift(fn_uns__get_pump_series(array('only_active' => true, "view_in_plans"=>"Y",)));
+        $begin  = $_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1" . " 00:00:00";
+        $end    = $_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . date("t", strtotime($begin))  . " 23:59:59";
+        $sales = fn_uns__get_sales_pump_series_by_period(array_keys($pump_series), strtotime($begin), strtotime($end));
+        $view->assign('sales', $sales);
 
+        // ПОЛУЧИТЬ ПРОЦЕНТЫ ВЫПОЛНЕНИЯ ПЛАНА ПРОДАЖ
+        $percs = array();
+        foreach (array_keys($pump_series) as $id){
+            $p = (int) $plan["group_by_item"]["S"][$id]["quantity"];
+            $s = (int) $sales[$id];
+            $done   = 0;
+            $left   = 0;
+            $right  = 0;
+            if ($p > 0 and $s > 0){
+                if ($p > $s){
+                    $done     = fn_fvalue(100*$s/$p, 0);
+                    $left     = $done;
+                    $right    = 0;
+                }elseif ($p < $s) {
+                    $done     = "+" . fn_fvalue(100*$s/$p-100, 0);
+                    $left     = 100;
+                    $right    = fn_fvalue(100*$s/$p, 0);
+                }elseif ($p == $s) {
+                    $done     = 100;
+                    $left     = 100;
+                    $right    = 0;
+                }
+            }elseif ($p == 0 and $s > 0){
+                $done     = "+" . fn_fvalue(100*$s/1, 0);
+                $left     = 0;
+                $right    = fn_fvalue(100*$s/1, 0);
 
+            }elseif ($p > 0 and $s == 0){
+                $done     = 0;
+                $left     = 0;
+                $right    = 0;
+            }elseif ($p == 0 and $s == 0){
+                $done     = 0;
+                $left     = 0;
+                $right    = 0;
+            }
 
+            $percs[$id]["done"]     = $done;
+            $percs[$id]["left"]     = $left;
+            $percs[$id]["right"]    = $right;
 
+            if ($left > 0 and $right == 0){
+                $percs[$id]["d"]    = $left;
+                $percs[$id]["o"]    = 0;
+                $percs[$id]["title"]= "Выполнено $done%";
 
+            }elseif ($left == 0 and $right > 0){
+                $percs[$id]["d"]    = 100;
+                $percs[$id]["o"]    = 0;
+                $percs[$id]["title"]= "Перевыполнение на $done%";
 
+            }elseif ($left > 0 and $right > 0){
+                $percs[$id]["d"]    = 100;
+                $percs[$id]["o"]    = 0;
+                $percs[$id]["title"]= "Перевыполнение на $done%";
+
+            }
+        }
+        $view->assign('percs', $percs);
+    }
+}
 
 
 function fn_uns_plan_of_sales__search ($controller){

@@ -48,6 +48,10 @@ function fn_uns__get_pump_types($params = array(), $items_per_page = 0){
         $condition .= db_quote(" AND $m_table.pt_id in (?n)", $params['pt_id']);
     }
 
+    if ($params['view_in_plans'] == "Y") {
+        $condition .= db_quote(" AND $m_table.view_in_plans = 'Y' ");
+    }
+
     if ($params['only_active']) {
         $condition .= db_quote(" AND $m_table.pt_status in ('A') ");
     } else {
@@ -200,6 +204,7 @@ function fn_uns__get_pump_series($params = array(), $items_per_page = 0){
 
     if ($params['view_in_plans'] == "Y") {
         $condition .= db_quote(" AND $m_table.view_in_plans = 'Y' ");
+        $condition .= db_quote(" AND $j_table.view_in_plans = 'Y' ");
     }
 
     $join .= db_quote(" LEFT JOIN $j_table ON ($j_table.pt_id = $m_table.pt_id ) ");
@@ -227,20 +232,8 @@ function fn_uns__get_pump_series($params = array(), $items_per_page = 0){
 
     $data = db_get_hash_array(UNS_DB_PREFIX . "SELECT " . implode(', ', $fields) . " FROM $m_table $join WHERE 1 $condition $sorting $limit", "ps_id");
 
-/*    if ($params['number_of_parts'] and is__array($data)) {
-        foreach ($data as $k_d => $v_d) {
-            $qs = db_get_hash_array(
-                UNS_DB_PREFIX . "select  ppl_item_part, count(*) as q
-                       from  ?:pumps_packing_list
-                      where  ppl_item_type='series' and ppl_item_id=?i
-                   group by  ppl_item_part
-                   order by  ppl_item_part asc", "ppl_item_part", $k_d);
-            $data[$k_d]['number_of_parts'] = $qs;
-        }
-    }*/
-
     if ($params["group_by_types"] and is__array($data)){
-        list($pump_types) = fn_uns__get_pump_types();
+        list($pump_types) = fn_uns__get_pump_types($params);
         if (is__array($pump_types)){
             foreach ($pump_types as $k=>$v){
                 foreach ($data as $k_u=>$v_u){

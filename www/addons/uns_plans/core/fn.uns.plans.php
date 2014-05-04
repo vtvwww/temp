@@ -134,6 +134,15 @@ function fn_uns__get_plans($params = array(), $items_per_page = 0){
         }
     }
 
+    // Сгруппировать позиции плана по item_type и item_id
+    if ($params["with_items"] and $params["group_by_item"]) {
+        foreach ($data as $k_d=>$v_d){
+            foreach ($v_d["items"] as $k_i=>$v_i){
+                $data[$k_d]["group_by_item"][$v_i["item_type"]][$v_i["item_id"]] = $v_i;
+            }
+        }
+    }
+
     return array($data, $params);
 }
 

@@ -1466,7 +1466,7 @@ div#main_column {
 	background-color: #fff;
 }
 .dropdown-second-level {
-	width: 200px;
+	width: 250px;
 	background-color: #fff;
     box-shadow: 0 3px 3px rgba(0,0,0,0.25);
     -moz-box-shadow: 0 3px 3px rgba(0,0,0,0.25);
@@ -1571,7 +1571,7 @@ div#main_column {
 }
 #menu li ul li.sub-level li {
 	background: none;
-	width: 200px;
+	width: 250px;
 }
 #menu li ul li.sub-level li a, #menu li.active ul li.sub-level li a {
 	background: none;
