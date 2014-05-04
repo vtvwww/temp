@@ -58,6 +58,7 @@
                         <option value="3"  {if $search.week_supply == 3}selected="selected"{/if}>+ 3-х недельные продажи</option>
                         <option value="4"  {if $search.week_supply == 4}selected="selected"{/if}>+ 4-х недельные продажи</option>
                         <option value="5"  {if $search.week_supply == 5}selected="selected"{/if}>+ 5-ти недельные продажи</option>
+                        <option value="6"  {if $search.week_supply == 6}selected="selected"{/if}>+ 6-ти недельные продажи</option>
                     </select>
                 </div>
             </td>
