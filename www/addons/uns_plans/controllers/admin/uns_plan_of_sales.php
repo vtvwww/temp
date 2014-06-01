@@ -88,18 +88,15 @@ if ($mode == "calculation"){
     $view->assign("graphs_key",     $graphs_key);
 
     // 2. Расчет плана производства
-    list($pump_series, $sales, $analysis, $plan, $ps_order) = $pl->calculation($params);
+    list($pump_series, $sales, $sales_ukr_exp, $analysis, $plan, $ps_order) = $pl->calculation($params);
     $view->assign('pump_series',    $pump_series);
     $view->assign('sales',          $sales);
+    $view->assign('$sales_ukr_exp', $sales_ukr_exp);
     $view->assign('analysis',       $analysis);
     $view->assign('plan',           $plan);
     $view->assign('ps_order',       $ps_order);
     $view->assign('search',         $params);
-
-//    fn_print_r($pump_series, $sales, $analysis);
-
-
-    $view->assign('search', $_REQUEST);
+    $view->assign('search',         $_REQUEST);
 
     // 3. Список имеющихся заказов
     $orders = array_shift(fn_acc__get_orders(array("only_active"=>true)));
@@ -108,7 +105,6 @@ if ($mode == "calculation"){
     // КЛИЕНТЫ
     list($customers) = fn_uns__get_customers();
     $view->assign('customers', $customers);
-
 }
 
 

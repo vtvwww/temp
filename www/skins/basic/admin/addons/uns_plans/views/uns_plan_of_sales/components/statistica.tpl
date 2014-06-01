@@ -1,4 +1,4 @@
-<span style="font-size: 14px; font-weight: bold;">Статистика продаж {$ps.ps_name} за последние 2 года</span>
+<span style="font-size: 14px; font-weight: bold;">{if $zone == "EXP"}ЭКСПОРТ: {elseif $zone == "UKR"}УКРАИНА: {/if}Статистика продаж {*{$ps.ps_name} *}за последние 2 года</span>
 {capture name="month_period"}
     {if $search.month == 1}
     {elseif $search.month == 2}
@@ -30,8 +30,8 @@
     <thead>
         <tr>
             <th rowspan="2" width="50px" align="center">ГОД</th>
-            <th colspan="2" width="100px">За год</th>
             <th colspan="2" width="100px">{$smarty.capture.month_period}</th>
+            <th colspan="2" width="100px">За год</th>
         </tr>
         <tr>
             <th>Ср.зн.</th>
@@ -41,11 +41,13 @@
         </tr>
     </thead>
     <tbody>
-        {foreach from=$analysis.$ps_id item="d" key="year" name="d"}
+        {foreach from=$analysis.$zone.$ps_id item="d" key="year" name="d"}
             <tr>
                 <td align="center">
                     <span style="font-size: 14px; font-weight: bold;">{$year}</span>
                 </td>
+                <td align="center"><span style="font-size: 14px; font-weight: bold;">{$d.for_months_ref_year.avr}</span></td>
+                <td align="center"><span style="font-size: 14px; font-weight: bold;">{$d.for_months_ref_year.total}</span></td>
                 <td align="center">
                     {if $smarty.foreach.d.last}
                         <span style="font-size: 12px; font-style: italic;">{$d.for_year.avr}*</span>
@@ -60,9 +62,6 @@
                         <span style="font-size: 14px; font-weight: bold;">{$d.for_year.total}</span>
                     {/if}
                 </td>
-
-                <td align="center"><span style="font-size: 14px; font-weight: bold;">{$d.for_months_ref_year.avr}</span></td>
-                <td align="center"><span style="font-size: 14px; font-weight: bold;">{$d.for_months_ref_year.total}</span></td>
             </tr>
         {/foreach}
     </tbody>

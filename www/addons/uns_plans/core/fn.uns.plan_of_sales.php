@@ -26,31 +26,35 @@ class plan_of_sales {
         $week_supply        = $params["week_supply"];       // Запас по продажам
         $koef_plan_prodazh  = $params["koef_plan_prodazh"];
 
+        // 0. Получить список клиентов
+        $customers = array_shift(fn_uns__get_customers()) ;
+
         // 1. Получить список серий насосов
         $pump_series = array_shift(fn_uns__get_pump_series(array("ps_id"=> $ps_id, "view_in_plans"=>"Y",)));
 //        fn_print_r($pump_series);
 
         // 2. Получить статистику продаж по указанным сериям за последние 2 года
-        $sales = self::get_sales(array_keys($pump_series), $ref_month, $ref_year);
+        $sales = self::get_sales(array_keys($pump_series), $ref_month, $ref_year, $customers);
+        $sales_ukr_exp = self::group_sales_ukr_exp($sales, $customers);
 //        fn_print_r($sales);
 
         // 3. Произвести анализ по каждой серии насосов
-        $analysis   = self::analysis_sales($sales, $ref_month, $ref_year);
+        $analysis   = self::analysis_sales($sales_ukr_exp, $ref_month, $ref_year, $customers);
 //        fn_print_r($analysis);
 
-        // 5. Список имеющихся заказов
+        // 5. Список имеющихся заказов по каждой серии
         list($order_ps, $ps_order) = self::get_orders(array_keys($pump_series), $ref_month, $ref_year);
 //        fn_print_r($plan);
 
         // 5. Выполнить расчет плана на расчетный месяц
-        $plan       = self::planning($pump_series, $sales, $analysis, $order_ps, $ps_order, $ref_month, $ref_year, $week_supply, $koef_plan_prodazh);
+        $plan       = self::planning($pump_series, $sales, $sales_ukr_exp, $analysis, $order_ps, $ps_order, $ref_month, $ref_year, $week_supply, $koef_plan_prodazh);
 //        fn_print_r($plan);
 
         // 6. Выполнить постороение графиков
-        $graphs     = self::create_graphs($params["graphs_key"], $pump_series, $sales, $analysis, $plan, $ref_month, $ref_year);
+        $graphs     = self::create_graphs($params["graphs_key"], $pump_series, $sales, $sales_ukr_exp, $analysis, $plan, $ref_month, $ref_year);
 //        fn_print_r($graphs);
 
-        return array($pump_series, $sales, $analysis, $plan, $ps_order);
+        return array($pump_series, $sales, $sales_ukr_exp, $analysis, $plan, $ps_order);
     }
 
 
@@ -92,43 +96,40 @@ class plan_of_sales {
      * @param $ref_year
      * @param $week_supply
      */
-    private function planning($pump_series, $sales, $analysis, $order_ps, $ps_order, $ref_month, $ref_year, $week_supply, $koef_plan_prodazh){
+    private function planning($pump_series, $sales, $sales_ukr_exp, $analysis, $order_ps, $ps_order, $ref_month, $ref_year, $week_supply, $koef_plan_prodazh){
         $res = array();
-        if (is__array($pump_series) and is__array($sales) and is__array($analysis)){
+        if (is__array($pump_series) and is__array($sales) and is__array($sales_ukr_exp) and is__array($analysis)){
             $ps_ids = array_keys($pump_series);
 
             // 2. Определить ПЛАН ПРОДАЖ на расчетный месяц
             // Если расчетный ПЛАН ПРОДАЖ <= ИМЕЮЩИМСЯ ЗАКАЗАМ, тогда необходимо увеличить
             // ПЛАН ПРОДАЖ до величины ИМЕЮЩИХСЯ ЗАКАЗОВ + xx% "koef_plan_prodazh"
-            $plan_prodazh   = self::_get_plan_prodazh ($ps_ids, $sales, $ps_order, $ref_month, $ref_year, $koef_plan_prodazh);
+            $plan_prodazh   = self::_get_plan_prodazh ($ps_ids, $sales, $sales_ukr_exp, $ps_order, $ref_month, $ref_year, $koef_plan_prodazh);
 
-            foreach ($pump_series as $ps_id=>$ps){
-                $v_total_orders             = array_sum($ps_order[$ps_id]);
+            foreach (array("UKR", "EXP") as $zone_id){
+                foreach ($pump_series as $ps_id=>$ps){
+                    $v_total_orders = ($zone_id == "EXP")?array_sum($ps_order[$ps_id]):0;
 
-                $v_plan_prodazh_statistical = $plan_prodazh[$ps_id];                    // Статистическое значение
-                $v_plan_prodazh_calc        = fn_fvalue($v_plan_prodazh_statistical, 0);// Расчетное значение
-                $v_plan_prodazh_recalc      = "N";
+                    $v_plan_prodazh_statistical = $plan_prodazh[$zone_id][$ps_id];          // Статистическое значение
+                    $v_plan_prodazh_calc        = fn_fvalue($v_plan_prodazh_statistical, 0);// Расчетное значение
+                    $v_plan_prodazh_recalc      = "N";
 
-                // Пересчет плана продаж если абсолютная разность между статистическим планом и имеющимися заказами составляет более $koef_plan_prodazh процентов
-                if (is__more_0($koef_plan_prodazh, $v_plan_prodazh_calc) and $v_plan_prodazh_calc <= $v_total_orders){
-                    $v_plan_prodazh_calc    = fn_fvalue($v_total_orders+$koef_plan_prodazh*$v_total_orders/100,0);
-                    $v_plan_prodazh_recalc  = "Y1";
+                    // Пересчет плана продаж если абсолютная разность между статистическим планом и имеющимися заказами составляет более $koef_plan_prodazh процентов
+                    if (is__more_0($koef_plan_prodazh, $v_plan_prodazh_calc) and $v_plan_prodazh_calc <= $v_total_orders){
+                        $v_plan_prodazh_calc    = fn_fvalue($v_total_orders+$koef_plan_prodazh*$v_total_orders/100,0);
+                        $v_plan_prodazh_recalc  = "Y1";
 
+                    }
+
+                    $res[$zone_id][$ps_id] = array(
+                        "orders"                    => $ps_order[$ps_id],
+                        "total_orders"              => $v_total_orders,
+                        "plan_prodazh_statistical"  => $v_plan_prodazh_statistical,
+                        "plan_prodazh_calc"         => $v_plan_prodazh_calc,
+                        "plan_prodazh_recalc"       => $v_plan_prodazh_recalc,
+                    );
                 }
-
-                $v_potrebnost               = $v_plan_prodazh_calc + fn_fvalue($week_supply*$v_plan_prodazh_calc/4, 0);
-
-                $res[$ps_id] = array(
-                    "orders"                    => $ps_order[$ps_id],
-                    "total_orders"              => $v_total_orders,
-                    "plan_prodazh_statistical"  => $v_plan_prodazh_statistical,
-                    "plan_prodazh_calc"         => $v_plan_prodazh_calc,
-                    "plan_prodazh_recalc"       => $v_plan_prodazh_recalc,
-                    "potrebnost"                => $v_potrebnost,
-                );
-
             }
-
         }
         return $res;
     }
@@ -144,11 +145,13 @@ class plan_of_sales {
      * @param $koef_plan_prodazh
      * @param int $sample_range - выборка по месяцам
      */
-    private function _get_plan_prodazh ($ps_ids, $sales, $zakaz, $ref_month, $ref_year, $koef_plan_prodazh, $sample_range=3 ){
+    private function _get_plan_prodazh ($ps_ids, $sales, $sales_ukr_exp, $zakaz, $ref_month, $ref_year, $koef_plan_prodazh, $sample_range=3 ){
         $res = array();
-        foreach ($ps_ids as $id){
-            $avr = self::__calc_average($sales[$id], $ref_month, $ref_year, $sample_range);
-            $res[$id] = $avr;
+        foreach ($sales_ukr_exp as $zone_id=>$s){
+            foreach ($ps_ids as $id){
+                $avr = self::__calc_average($s[$id], $ref_month, $ref_year, $sample_range);
+                $res[$zone_id][$id] = $avr;
+            }
         }
         return $res;
     }
@@ -261,17 +264,43 @@ class plan_of_sales {
      * @param $analysis
      * @param $ref_month
      */
-    private function create_graphs ($graphs_key, $pump_series, $sales, $analysis, $plan, $ref_month, $ref_year){
-        if (is__array($pump_series) and is__array($sales) and is__array($analysis)){
+    private function create_graphs ($graphs_key, $pump_series, $sales, $sales_ukr_exp, $analysis, $plan, $ref_month, $ref_year){
+        if (is__array($pump_series) and is__array($sales) and is__array($sales_ukr_exp) and is__array($analysis)){
             foreach ($pump_series as $ps_id=>$ps){
+                // UKR----------------------------------------------------------
                 $data = array(
-                    "series"    => $sales[$ps_id],
-                    "analysis"  => $analysis[$ps_id],
-                    "plan"      => $plan[$ps_id],
+                    "zone_id"   => "UKR",
+                    "series"    => $sales_ukr_exp["UKR"][$ps_id],
+                    "analysis"  => $analysis["UKR"][$ps_id],
+                    "plan"      => $plan["UKR"][$ps_id],
                     "ref_month" => $ref_month,
                     "ref_year"  => $ref_year,
                 );
-                self::_create_graph (DIR_ROOT . "/skins/basic/admin/images/uns_charts/".$graphs_key."_ps_{$ps_id}.png", $data);
+                if (!is_dir(DIR_ROOT . "/skins/basic/admin/images/uns_charts/")) mkdir(DIR_ROOT . "/skins/basic/admin/images/uns_charts/");
+                self::_create_graph (DIR_ROOT . "/skins/basic/admin/images/uns_charts/".$graphs_key."_ps_{$ps_id}_ukr.png", $data);
+
+                // EXP----------------------------------------------------------
+                $data = array(
+                    "zone_id"   => "EXP",
+                    "series"    => $sales_ukr_exp["EXP"][$ps_id],
+                    "analysis"  => $analysis["EXP"][$ps_id],
+                    "plan"      => $plan["EXP"][$ps_id],
+                    "ref_month" => $ref_month,
+                    "ref_year"  => $ref_year,
+                );
+                if (!is_dir(DIR_ROOT . "/skins/basic/admin/images/uns_charts/")) mkdir(DIR_ROOT . "/skins/basic/admin/images/uns_charts/");
+                self::_create_graph (DIR_ROOT . "/skins/basic/admin/images/uns_charts/".$graphs_key."_ps_{$ps_id}_exp.png", $data);
+
+//                // TOTAL--------------------------------------------------------
+//                $data = array(
+//                    "zone_id"   => "TOTAL",
+//                    "series"    => array("UKR"=>$sales_ukr_exp["UKR"][$ps_id],  "EXP"=>$sales_ukr_exp["EXP"][$ps_id]),
+//                    "analysis"  => array("UKR"=>$analysis["UKR"][$ps_id],       "EXP"=>$analysis["EXP"][$ps_id]),
+//                    "plan"      => array("UKR"=>$plan["UKR"][$ps_id],           "EXP"=>$plan["EXP"][$ps_id]),
+//                    "ref_month" => $ref_month,
+//                    "ref_year"  => $ref_year,
+//                );
+//                self::_create_graph (DIR_ROOT . "/skins/basic/admin/images/uns_charts/".$graphs_key."_ps_{$ps_id}_total.png", $data);
             }
         }
     }
@@ -301,15 +330,13 @@ class plan_of_sales {
         $i = 0;
         foreach ($data["series"] as $k_s=>$s){
             $i ++;
-            $export = array(3,3,3,3,3,3,3,3,3,3,3,3,);
-
 
             // ДАННЫЕ ==========================================================
             if ($i==1){         // за предыдущий год
                 // По Украине
                 $MyData->addPoints(array_merge($s,array(VOID)),$k_s);
                 // Вне Украины
-                $MyData->addPoints($export, $k_s . "_export");
+//                $MyData->addPoints($export, $k_s . "_export");
             }elseif ($i == 2){ //  за текущий год
                 $p = array();
                 $p_export = array();
@@ -322,12 +349,12 @@ class plan_of_sales {
                     }
                 }
                 $MyData->addPoints(array_merge($p,array(VOID)),$k_s);
-                $MyData->addPoints($p_export, $k_s . "_export");
+//                $MyData->addPoints($p_export, $k_s . "_export");
             }
 
             // СТИЛИ СЕРИЙ
             $MyData->setPalette($k_s,               array("R"=>200,"G"=>200,"B"=>200));
-            $MyData->setPalette($k_s . "_export",   array("R"=>100,"G"=>100,"B"=>100));
+//            $MyData->setPalette($k_s . "_export",   array("R"=>100,"G"=>100,"B"=>100));
 
             // РАСПОЛОЖЕНИЕ ГРАФИКОВ
             if ($i==1){
@@ -338,7 +365,7 @@ class plan_of_sales {
             $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/pf_arma_five.ttf","FontSize"=>12));
 
             // Определить минимальное и максимальное значения рядов
-            list($min, $max) = self::_get_min_max($data["series"] + array(array(fn_fvalue($data["plan"]["plan_prodazh_calc"], 0))) + $export, true);
+            list($min, $max) = self::_get_min_max($data["series"] + array(array(fn_fvalue($data["plan"]["plan_prodazh_calc"], 0)))/* + $export*/, true);
 
             /* Координатная плоскость */
             $AxisBoundaries = array(0=>array("Min"=>$min,"Max"=>$max));
@@ -401,7 +428,7 @@ class plan_of_sales {
 
 
             $MyData->removeSerie($k_s);
-            $MyData->removeSerie($k_s . "_export");
+//            $MyData->removeSerie($k_s . "_export");
         }
 
         // Добавить на график расчетное значение плана продаж на расчетный месяц
@@ -460,37 +487,38 @@ class plan_of_sales {
      * @param $ref_year
      * @return array|null
      */
-    private function analysis_sales ($sales, $ref_month, $ref_year){
-        if (!is__array($sales)) return null;
-
+    private function analysis_sales ($sales_ukr_exp, $ref_month, $ref_year, $customers){
+        if (!is__array($sales_ukr_exp)) return null;
         $analysis = array();
-        foreach ($sales as $ps_id => $ps){
-            foreach ($ps as $k_y=>$year){
-                $for_year = array();
-                $for_months_ref_year = array();
+        foreach ($sales_ukr_exp as $zone_id=>$sales){
+            foreach ($sales as $ps_id => $ps){
+                foreach ($ps as $k_y=>$year){
+                   $for_year = array();
+                   $for_months_ref_year = array();
 
-                // С начала года -------------------------------------------
-                $total_for_months_ref_year = 0;
-                for ($m=1; $m<$ref_month; $m++){
-                    $total_for_months_ref_year += $year[$m];
+                   // С начала года -------------------------------------------
+                   $total_for_months_ref_year = 0;
+                   for ($m=1; $m<$ref_month; $m++){
+                       $total_for_months_ref_year += $year[$m];
+                   }
+
+                   $avr_for_months_ref_year = fn_fvalue(($ref_month==1)?0:$total_for_months_ref_year/($ref_month-1),1);
+                   $for_months_ref_year = array(
+                       "total" => $total_for_months_ref_year,
+                       "avr"   => $avr_for_months_ref_year,
+                       "amount_months" => $ref_month-1,
+                   );
+
+                   // За год --------------------------------------------------
+                   $for_year = array(
+                       "total" => fn_fvalue(($k_y==$ref_year)?$avr_for_months_ref_year*12:array_sum($year),0),
+                       "avr"   => fn_fvalue(($k_y==$ref_year)?$avr_for_months_ref_year:array_sum($year)/count($year),1),
+                   );
+
+                   // Результаты --------------------------------------------------
+                   $analysis[$zone_id][$ps_id][$k_y]["for_year"] = $for_year;
+                   $analysis[$zone_id][$ps_id][$k_y]["for_months_ref_year"] = $for_months_ref_year;
                 }
-
-                $avr_for_months_ref_year = fn_fvalue(($ref_month==1)?0:$total_for_months_ref_year/($ref_month-1),1);
-                $for_months_ref_year = array(
-                    "total" => $total_for_months_ref_year,
-                    "avr"   => $avr_for_months_ref_year,
-                    "amount_months" => $ref_month-1,
-                );
-
-                // За год --------------------------------------------------
-                $for_year = array(
-                    "total" => fn_fvalue(($k_y==$ref_year)?$avr_for_months_ref_year*12:array_sum($year),0),
-                    "avr"   => fn_fvalue(($k_y==$ref_year)?$avr_for_months_ref_year:array_sum($year)/count($year),1),
-                );
-
-                // Результаты --------------------------------------------------
-                $analysis[$ps_id][$k_y]["for_year"] = $for_year;
-                $analysis[$ps_id][$k_y]["for_months_ref_year"] = $for_months_ref_year;
             }
         }
         return $analysis;
@@ -504,7 +532,7 @@ class plan_of_sales {
      * @param $ref_month
      * @param $ref_year
      */
-    private function get_sales ($ps_id, $ref_month, $ref_year){
+    private function get_sales ($ps_id, $ref_month, $ref_year, $customers){
         $sales = false;
         // 1. Получить список месячных интервалов
         $months = self::_get_months(2, $ref_year);
@@ -513,13 +541,39 @@ class plan_of_sales {
         foreach ($months as $k_y=>$year){
             foreach ($year as $k_m=>$month){
                 $balance = self::_get_sales_pump_series_by_period($ps_id, $month["timestamp"]["begin"], $month["timestamp"]["end"]);
-                foreach ($ps_id as $ps){
-                    $sales[$ps][$k_y][$k_m] = $balance[$ps]?:0;
+                foreach ($customers as $c){
+                    foreach ($ps_id as $ps){
+                        $sales[$ps][$c["customer_id"]][$k_y][$k_m] = $balance[$c["customer_id"]][$ps]?:0;
+                    }
                 }
             }
         }
         return $sales;
     }
+
+    /**
+     * СГРУППИРОВАТЬ ПРОДАЖИ UKR и EXP
+     * @param $sales
+     * @param $customers
+     * @return bool
+     */
+    private function group_sales_ukr_exp ($sales, $customers){
+        $s = false;
+        foreach ($sales as $ps_id=>$customer_sales){
+            foreach ($customer_sales as $customer_id=>$years){
+                foreach ($years as $y=>$months){
+                    foreach ($months as $month=>$q){
+                        $k = ($customers[$customer_id]["to_export"]=="N")?"UKR":"EXP";
+                        $s[$k][$ps_id][$y][$month] += $q;
+                    }
+                }
+            }
+        }
+        return $s;
+    }
+
+
+
 
     /**
      * Получить продажи по сериям за указанный период

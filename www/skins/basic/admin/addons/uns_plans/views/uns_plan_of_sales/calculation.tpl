@@ -9,23 +9,46 @@
             <table cellpadding="0" cellspacing="0" border="0" width="100%" class="simple" style="margin: 10px; 0">
                 <thead>
                     <tr>
-                        <th colspan="2" style="text-align: left; font-size: 17px;">{$smarty.foreach.ps.iteration}. Насос {$ps.ps_name}</th>
+                        <th colspan="2" style="text-align: left; font-size: 18px;">{$smarty.foreach.ps.iteration}. Насос {$ps.ps_name}</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {* UKRAINE ------------------------------------------------- *}
                     <tr>
                         <td width="460px" valign="top" align="center" rowspan="2" style="border-right: 2px solid #808080; ">
-                            <b>Графики продаж {$ps.ps_name} за последние 2 года</b>
+                            <b>УКРАИНА: графики продаж {$ps.ps_name} за последние 2 года</b>
                             <br/>
-                            <img src="skins/basic/admin/images/uns_charts/{$graphs_key}_ps_{$id}.png" alt=""/>
+                            <img src="skins/basic/admin/images/uns_charts/{$graphs_key}_ps_{$id}_ukr.png" alt=""/>
                         </td>
                         <td align="left" valign="top" style="height: 1px; padding: 5px 20px;">
-                            {include file="addons/uns_plans/views/uns_plan_of_sales/components/statistica.tpl" ps_id=$id}
+                            {include file="addons/uns_plans/views/uns_plan_of_sales/components/statistica.tpl" ps_id=$id zone="UKR"}
                         </td>
                     </tr>
                     <tr>
                         <td align="left" valign="top" style="height: 1px; padding: 5px 20px;">
-                            {include file="addons/uns_plans/views/uns_plan_of_sales/components/planning.tpl" ps_id=$id}
+                            {include file="addons/uns_plans/views/uns_plan_of_sales/components/planning.tpl" ps_id=$id zone="UKR"}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2" style="background-color: #ececec;">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    {* EXPORT -------------------------------------------------- *}
+                    <tr>
+                        <td width="460px" valign="top" align="center" rowspan="2" style="border-right: 2px solid #808080; ">
+                            <b>ЭКСПОРТ: графики продаж {$ps.ps_name} за последние 2 года</b>
+                            <br/>
+                            <img src="skins/basic/admin/images/uns_charts/{$graphs_key}_ps_{$id}_exp.png" alt=""/>
+                        </td>
+                        <td align="left" valign="top" style="height: 1px; padding: 5px 20px;">
+                            {include file="addons/uns_plans/views/uns_plan_of_sales/components/statistica.tpl" ps_id=$id zone="EXP"}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="top" style="height: 1px; padding: 5px 20px;">
+                            {include file="addons/uns_plans/views/uns_plan_of_sales/components/planning.tpl" ps_id=$id zone="EXP"}
                         </td>
                     </tr>
                 </tbody>
@@ -33,7 +56,7 @@
 
             {*Разрыв страницы при печати*}
             {assign var="pump_count" value=$pump_count+1 }
-            {if $pump_count >= 3}
+            {if $pump_count >= 1}
                 {assign var="pump_count" value=0 }
                 <span style="page-break-before:always;"></span>
             {/if}
