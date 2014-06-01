@@ -13,7 +13,7 @@
             <hr>
             {include file="addons/uns_plans/views/uns_plan_of_sales/components/plan.tpl"}
             <hr>
-            <b>Продажи / Плановая потребность = {$p.sum_q} / {$p.sum_q_add} шт.</b>
+            <b>Продажи / Плановая потребность = {$p.sum_ukr_curr} / {$p.sum_ukr_next} / {$p.sum_exp_curr} / {$p.sum_exp_next} шт.</b>
             <hr>
             {include file="addons/uns_plans/views/uns_plan_of_sales/components/items.tpl"}
 

@@ -10,12 +10,15 @@
 
 <table cellpadding="0" cellspacing="0" class="table">
     <tbody>
-        <tr class="first-sibling">
+        <tr class="first-sibling" style="background-color: #F3F3F3;">
             <th width="10px" class="cm-non-cb">№</th>
             <th class="cm-non-cb" width="10px">Тип</th>
             <th class="cm-non-cb" width="140px">Наименование</th>
-            <th class="cm-non-cb" width="40px">Кол. продаж</th>
-            <th class="cm-non-cb" width="40px">Кол. потребность</th>
+            <th class="cm-non-cb" width="80px">Украина<br>тек.мес.</th>
+            <th class="cm-non-cb" width="80px">Украина<br>след.мес.</th>
+            <th class="cm-non-cb" width="80px">Экспорт<br>тек.мес.</th>
+            <th class="cm-non-cb" width="80px">Экспорт<br>след.мес.</th>
+            <th class="cm-non-cb">&nbsp;</th>
         </tr>
     </tbody>
 
@@ -83,12 +86,12 @@
                             {*{/if}*}
                         {*</td>*}
 
-                        {assign var="q" value=$i.quantity}
+                        {assign var="q" value=$i.ukr_curr}
                         <td class="cm-non-cb" align="left">
                             {include file="addons/uns/views/components/get_form_field.tpl"
                                 f_type="input"
                                 f_required=true f_integer=false
-                                f_name="`$e_n`[quantity]"
+                                f_name="`$e_n`[ukr_curr]"
                                 f_value=$q|fn_fvalue
                                 f_autocomplete="off"
                                 f_number=true
@@ -97,12 +100,40 @@
                             }
                         </td>
 
-                        {assign var="q" value=$i.quantity_add}
+                        {assign var="q" value=$i.ukr_next}
                         <td class="cm-non-cb" align="left">
                             {include file="addons/uns/views/components/get_form_field.tpl"
                                 f_type="input"
                                 f_required=true f_integer=false
-                                f_name="`$e_n`[quantity_add]"
+                                f_name="`$e_n`[ukr_next]"
+                                f_value=$q|fn_fvalue
+                                f_autocomplete="off"
+                                f_number=true
+                                f_style="width: 50px;"
+                                f_simple=true
+                            }
+                        </td>
+
+                        {assign var="q" value=$i.exp_curr}
+                        <td class="cm-non-cb" align="left">
+                            {include file="addons/uns/views/components/get_form_field.tpl"
+                                f_type="input"
+                                f_required=true f_integer=false
+                                f_name="`$e_n`[exp_curr]"
+                                f_value=$q|fn_fvalue
+                                f_autocomplete="off"
+                                f_number=true
+                                f_style="width: 50px;"
+                                f_simple=true
+                            }
+                        </td>
+
+                        {assign var="q" value=$i.exp_next}
+                        <td class="cm-non-cb" align="left">
+                            {include file="addons/uns/views/components/get_form_field.tpl"
+                                f_type="input"
+                                f_required=true f_integer=false
+                                f_name="`$e_n`[exp_next]"
                                 f_value=$q|fn_fvalue
                                 f_autocomplete="off"
                                 f_number=true
@@ -169,7 +200,7 @@
                 {include file="addons/uns/views/components/get_form_field.tpl"
                     f_type="input"
                     f_required=true f_integer=false
-                    f_name="`$e_n`[quantity]"
+                    f_name="`$e_n`[ukr_curr]"
                     f_value=""
                     f_style="width: 50px;"
                     f_autocomplete="off"
@@ -181,7 +212,31 @@
                 {include file="addons/uns/views/components/get_form_field.tpl"
                     f_type="input"
                     f_required=true f_integer=false
-                    f_name="`$e_n`[quantity_add]"
+                    f_name="`$e_n`[ukr_next]"
+                    f_value=""
+                    f_style="width: 50px;"
+                    f_autocomplete="off"
+                    f_number=true
+                    f_simple=true
+                }
+            </td>
+            <td class="cm-non-cb" align="left">
+                {include file="addons/uns/views/components/get_form_field.tpl"
+                    f_type="input"
+                    f_required=true f_integer=false
+                    f_name="`$e_n`[exp_curr]"
+                    f_value=""
+                    f_style="width: 50px;"
+                    f_autocomplete="off"
+                    f_number=true
+                    f_simple=true
+                }
+            </td>
+            <td class="cm-non-cb" align="left">
+                {include file="addons/uns/views/components/get_form_field.tpl"
+                    f_type="input"
+                    f_required=true f_integer=false
+                    f_name="`$e_n`[exp_next]"
                     f_value=""
                     f_style="width: 50px;"
                     f_autocomplete="off"

@@ -113,11 +113,13 @@ function fn_uns__get_plans($params = array(), $items_per_page = 0){
     }
 
     if ($params["with_sum"]){
-        $counts = db_get_hash_array(UNS_DB_PREFIX . "SELECT plan_id, sum(quantity) as sum_q, sum(quantity_add) as sum_q_add FROM ?:_plan_items WHERE plan_id in (?n) GROUP BY plan_id", "plan_id", array_keys($data));
+        $counts = db_get_hash_array(UNS_DB_PREFIX . "SELECT plan_id, sum(ukr_curr) as sum_ukr_curr, sum(ukr_next) as sum_ukr_next, sum(exp_curr) as sum_exp_curr, sum(exp_next) as sum_exp_next FROM ?:_plan_items WHERE plan_id in (?n) GROUP BY plan_id", "plan_id", array_keys($data));
         if (is__array($counts)){
             foreach ($data as $k_d=>$v_d){
-                $data[$k_d]["sum_q"] = $counts[$k_d]["sum_q"];
-                $data[$k_d]["sum_q_add"] = $counts[$k_d]["sum_q_add"];
+                $data[$k_d]["sum_ukr_curr"] = $counts[$k_d]["sum_ukr_curr"];
+                $data[$k_d]["sum_ukr_next"] = $counts[$k_d]["sum_ukr_next"];
+                $data[$k_d]["sum_exp_curr"] = $counts[$k_d]["sum_exp_curr"];
+                $data[$k_d]["sum_exp_next"] = $counts[$k_d]["sum_exp_next"];
             }
         }
     }
@@ -170,8 +172,10 @@ function fn_uns__get_plan_items($params = array(), $items_per_page = 0){
         "$m_tbl.$m_key",
         "$m_tbl.item_type",
         "$m_tbl.item_id",
-        "$m_tbl.quantity",
-        "$m_tbl.quantity_add",
+        "$m_tbl.ukr_curr",
+        "$m_tbl.ukr_next",
+        "$m_tbl.exp_curr",
+        "$m_tbl.exp_next",
         "$m_tbl.plan_id",
     );
 
@@ -265,13 +269,15 @@ function fn_uns__upd_plan_items($id, $data){
     $m_table = "?:_plan_items";
     $pi_ids = array();
     foreach ($data as $i){
-        if (is__more_0($i['item_id']) and  is_numeric($i['quantity']) and fn_check_type($i['item_type'], "|S|D|")){
+        if (is__more_0($i['item_id']) and  is_numeric($i['ukr_curr']) and  is_numeric($i['ukr_next']) and  is_numeric($i['exp_curr']) and  is_numeric($i['exp_next']) and fn_check_type($i['item_type'], "|S|D|")){
             $v = array(
                 'plan_id'       => $id,
                 'item_type'     => $i['item_type'],
                 'item_id'       => $i['item_id'],
-                'quantity'      => abs($i['quantity']),
-                'quantity_add'  => is__more_0(abs($i['quantity_add']))?abs($i['quantity_add']):abs($i['quantity']),
+                'ukr_curr'      => $i['ukr_curr'],
+                'ukr_next'      => $i['ukr_next'],
+                'exp_curr'      => $i['exp_curr'],
+                'exp_next'      => $i['exp_next'],
             );
 
             if (is__more_0($i['pi_id']) and is__more_0(db_get_field(UNS_DB_PREFIX . "SELECT pi_id FROM $m_table WHERE pi_id = ?i", $i['pi_id']))){
