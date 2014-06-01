@@ -8,6 +8,7 @@ define("USER_GROUP__CHIEF",         8);  // Группа Начальник ПД
 define("USER_GROUP__DEPUTY_CHIEF",  6);  // Заместитель начальника ПДО
 define("USER_GROUP__FOUNDRY",       7);  // Литейный цех
 define("USER_GROUP__MECH_DEP",      9);  // Литейный цех
+define("USER_GROUP__SALES_DEP",     10);  // Коммерческий отдел
 
 
 if (is_numeric($_SESSION['auth']['usergroup_ids'][0])){
@@ -80,7 +81,17 @@ if (is_numeric($_SESSION['auth']['usergroup_ids'][0])){
             $schema['controllers']['uns_moving_mc_sk_su']['modes']['manage']['permissions'] = true;
             $schema['controllers']['uns_sheets']['modes']['manage']['permissions'] = true;
 
+            $schema['controllers']['uns_plan_of_mech_dep']['modes']['manage']['permissions'] = true;
         break;
+
+        case USER_GROUP__SALES_DEP:
+            $schema['controllers']['foundry_get_balance']   ['modes']['manage']     ['permissions'] = true;
+            $schema['controllers']['uns_balance_sgp']       ['modes']['manage']     ['permissions'] = true;
+            $schema['controllers']['uns_balance_mc_sk_su']  ['modes']['manage']     ['permissions'] = true;
+            $schema['controllers']['uns_plan_of_mech_dep']  ['modes']['manage']     ['permissions'] = true;
+            $schema['controllers']['uns_plan_of_sales']     ['modes']['manage']     ['permissions'] = true;
+            $schema['controllers']['uns_plan_of_sales']     ['modes']['tracking']   ['permissions'] = true;
+            break;
 
     }
 

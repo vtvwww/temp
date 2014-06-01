@@ -391,6 +391,7 @@ function fn_uns__get_balance($params = array(), $time=false){
                         if ($mcats_k == $materials_v["mcat_id"]){
                             $mcat_items[$mcats_k]["group"]  = $mcats_v["mcat_name"];
                             $mcat_items[$mcats_k]["group_id"]  = $mcats_v["mcat_id"];
+                            $mcat_items[$mcats_k]["group_comment"]  = $mcats_v["mcat_comment"];
                             $mcat_items[$mcats_k]["items"][$materials_k]["id"]                      = $materials_v["material_id"];
                             $mcat_items[$mcats_k]["items"][$materials_k]["material_id"]             = $materials_v["material_id"];
                             $mcat_items[$mcats_k]["items"][$materials_k]["name"]                    = $materials_v["material_name"];
@@ -716,7 +717,7 @@ function fn_uns__get_motions($params){
 
 //******************************************************************************
 // Запрос баланса по МЕХ ЦЕХУ, скл. компл., сб.уч.
-function fn_uns__get_balance_mc_sk_su($params, $mc=true, $sk=true, $su=false){
+function fn_uns__get_balance_mc_sk_su($params, $mc=true, $sk=true, $su=false, $print=false){
     $res = array();
     $p = array(
         "plain"                     => true,
@@ -733,9 +734,9 @@ function fn_uns__get_balance_mc_sk_su($params, $mc=true, $sk=true, $su=false){
     );
 
     $p = array_merge($p, $params);
-//    if ($p["check_dcat_id"]){
-//        if (!is__more_0($p["dcat_id"]) and !is__array($p["dcat_id"])) return array(array(), $p);
-//    }
+    if ($p["check_dcat_id"] and $_REQUEST["all_details"] == "N"){
+        if (!is__more_0($p["dcat_id"]) and !is__array($p["dcat_id"])) return array(array(), $p);
+    }
     // ЗАПРОСИТЬ БАЛАНС МЕХ. ЦЕХА
     if ($mc == true){
         $mc_processing = $mc_complete = array();
@@ -803,7 +804,8 @@ function fn_uns__get_balance_mc_sk_su($params, $mc=true, $sk=true, $su=false){
                                             and uns__acc_document_items.processing  = 'P'
                                          )
                                     )";
-            list($mc_processing[$o_id]) = fn_uns__get_balance($p);
+            list($mc_processing[$o_id], , $time) = fn_uns__get_balance($p, true);
+            if ($print) fn_print_r($o_id . " (processing) = " . fn_fvalue($time, 3));
             if (is__array($mc_processing[$o_id])){
                 foreach ($mc_processing[$o_id] as $k_gr=>$v_gr){
                     foreach ($v_gr["items"] as $k_d=>$v_d){
@@ -876,7 +878,8 @@ function fn_uns__get_balance_mc_sk_su($params, $mc=true, $sk=true, $su=false){
                                             and uns__acc_document_items.processing  = 'C'
                                          )
                                     )";
-            list($mc_complete[$o_id]) = fn_uns__get_balance($p);
+            list($mc_complete[$o_id], , $time) = fn_uns__get_balance($p, true);
+            if ($print) fn_print_r($o_id . " (complete) = " . fn_fvalue($time, 3));
             if (is__array($mc_complete[$o_id])){
                 foreach ($mc_complete[$o_id] as $k_gr=>$v_gr){
                     foreach ($v_gr["items"] as $k_d=>$v_d){
@@ -928,7 +931,8 @@ function fn_uns__get_balance_mc_sk_su($params, $mc=true, $sk=true, $su=false){
                                         and uns__acc_document_items.motion_type like '%O%'
                                      )
                                 )";
-        list($res[$o_id]) = fn_uns__get_balance($p);
+        list($res[$o_id], , $time) = fn_uns__get_balance($p, true);
+        if ($print) fn_print_r($o_id . " = " . fn_fvalue($time, 3));
     }
 
     //--------------------------------------------------------------------------

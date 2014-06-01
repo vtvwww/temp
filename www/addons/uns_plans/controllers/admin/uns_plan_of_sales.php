@@ -73,7 +73,7 @@ if ($mode == "calculation"){
     }
 
 //    $ps_id = array(29,37,77,76,65,66,78,79,80); // только К8/18 --- К290/30
-//    $ps_id = array(76,65,66); // только К8/18 --- К290/30
+    $ps_id = array(76,66); // только К8/18 --- К290/30
 
     // 1. Параметры для расчета плана производства
     $graphs_key = substr(md5(microtime().mt_rand()), 0, 10);
@@ -192,6 +192,7 @@ if ($mode == "tracking") {
         foreach (array_keys($pump_series) as $id){
             $p = (int) $plan["group_by_item"]["S"][$id]["quantity"];
             $s = (int) $sales[$id];
+            $ovf    = "N"; // Флаг переполнения
             $done   = 0;
             $left   = 0;
             $right  = 0;
@@ -201,6 +202,7 @@ if ($mode == "tracking") {
                     $left     = $done;
                     $right    = 0;
                 }elseif ($p < $s) {
+                    $ovf      = "Y";
                     $done     = "+" . fn_fvalue(100*$s/$p-100, 0);
                     $left     = 100;
                     $right    = fn_fvalue(100*$s/$p, 0);
@@ -210,6 +212,7 @@ if ($mode == "tracking") {
                     $right    = 0;
                 }
             }elseif ($p == 0 and $s > 0){
+                $ovf      = "Y";
                 $done     = "+" . fn_fvalue(100*$s/1, 0);
                 $left     = 0;
                 $right    = fn_fvalue(100*$s/1, 0);
@@ -227,6 +230,7 @@ if ($mode == "tracking") {
             $percs[$id]["done"]     = $done;
             $percs[$id]["left"]     = $left;
             $percs[$id]["right"]    = $right;
+            $percs[$id]["ovf"]      = $ovf;
 
             if ($left > 0 and $right == 0){
                 $percs[$id]["d"]    = $left;
@@ -245,6 +249,9 @@ if ($mode == "tracking") {
 
             }
         }
+
+
+
         $view->assign('percs', $percs);
     }
 }

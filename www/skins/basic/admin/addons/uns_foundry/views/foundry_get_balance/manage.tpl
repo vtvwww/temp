@@ -34,12 +34,12 @@
                     {include file="common_templates/tooltip.tpl" tooltip='Начальный остаток'  tooltip_mark="<b>НО</b>"}
                 </th>
                 <th class="b1_r b1_l" style="text-align: center;" width="30px">{include file="common_templates/tooltip.tpl" tooltip='Приход'  tooltip_mark="<b>П</b>"}</th>
-                <th class="b1_r b1_l" style="text-align: center;" width="30px">{include file="common_templates/tooltip.tpl" tooltip='Расход'  tooltip_mark="<b>Р</b>"}</th>
-                <th class="b1_r b1_l" style="text-align: center;" width="30px">
+                <th class="b1_l" style="text-align: center;" width="30px">{include file="common_templates/tooltip.tpl" tooltip='Расход'  tooltip_mark="<b>Р</b>"}</th>
+                <th class="b_l" style="background-color: #d3d3d3; text-align: center;" width="30px">
                     {include file="common_templates/tooltip.tpl" tooltip='Конечный остаток'  tooltip_mark="<b>КО</b>"}
                 </th>
                 {if $search.accessory_pumps == "Y"}
-                    <th>Принадлежность к насосам</th>
+                    <th class="b_l">Принадлежность к насосам</th>
                 {/if}
             </tr>
         </thead>

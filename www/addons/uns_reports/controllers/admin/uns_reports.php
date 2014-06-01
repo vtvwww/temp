@@ -170,7 +170,7 @@ if ($mode == 'get_report'){
             list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
             $balances = array();
             $_REQUEST["dcat_id"] = array(7,6,4,2,35,15,9,8,38,36,5,13,14,20,26,37,24);
-//            $_REQUEST["dcat_id"] = array(2);
+//            $_REQUEST["dcat_id"] = array(9);
             $_REQUEST["accessory_pumps"] = "Y";
             list($balances, $search) = fn_uns__get_balance_mc_sk_su($_REQUEST, true, true, true);
             // Запрос категорий
@@ -189,7 +189,7 @@ if ($mode == 'get_report'){
 
         case "test":
             // 1/ Выборка серий насосов
-            $p = array("ps_id" => array(
+//            $p = array("ps_id" => array(
 //                78,
 //                79,
 //                80,
@@ -204,31 +204,34 @@ if ($mode == 'get_report'){
 //                78, 79, 80, 29, 37, 77, 76, 65, 66, 36, 39, 48, 40, 58, 62, 52,
 //                63, 68, 75, 74, 69, 38, 42, 51, 47, 61, 57, 64, 30, 31, 60, 67,
 //                70, 88, 89, 90, 92, 91, 99, 94, 72, 71, 93, 106, 84, 105, 100,
-                95, 97, 73, 85, 87, 83, 86, 82, 107, 101, 102, 108, 103, 104, 109, 110,
-            ));
-            if (is__array($pump_series = array_shift(fn_uns__get_pump_series($p)))){
-                foreach ($pump_series as $k_ps=>$v_ps){
-                    if (is__array($pumps = array_shift(fn_uns__get_pumps(array("ps_id" => $k_ps, "only_active"=>true))))){
-                        foreach ($pumps as $k_p=>$v_p){
-                            $list_details = fn_uns__get_packing_list_by_pump($k_p, "D", true);
-                            $p_details = array_shift(fn_uns__get_details(array(
-                                                "detail_id" => array_keys($list_details),
-                                                "with_materials" => true,
-                                                "with_accessory_pumps" => true,
-                                            )));
-                            if (is__array($p_details)){
-                                foreach ($p_details as $k_p_details=>$v_p_details){
-                                    $p_details[$k_p_details]["quantity"] = $list_details[$k_p_details]["quantity"];
+//                95, 97, 73, 85, 87, 83, 86, 82, 107, 101, 102, 108, 103, 104, 109, 110,
+//            ));
+            if (is__more_0($_REQUEST["ps_id"])){
+                $p = array("ps_id" => $_REQUEST["ps_id"]);
+                if (is__array($pump_series = array_shift(fn_uns__get_pump_series($p)))){
+                    foreach ($pump_series as $k_ps=>$v_ps){
+                        if (is__array($pumps = array_shift(fn_uns__get_pumps(array("ps_id" => $k_ps, "only_active"=>true))))){
+                            foreach ($pumps as $k_p=>$v_p){
+                                $list_details = fn_uns__get_packing_list_by_pump($k_p, "D", true);
+                                $p_details = array_shift(fn_uns__get_details(array(
+                                                    "detail_id" => array_keys($list_details),
+                                                    "with_materials" => true,
+                                                    "with_accessory_pumps" => true,
+                                                )));
+                                if (is__array($p_details)){
+                                    foreach ($p_details as $k_p_details=>$v_p_details){
+                                        $p_details[$k_p_details]["quantity"] = $list_details[$k_p_details]["quantity"];
+                                    }
                                 }
-                            }
 
-                            $pumps[$k_p]["details"] = $p_details;
+                                $pumps[$k_p]["details"] = $p_details;
+                            }
+                            $pump_series[$k_ps]["pumps"] = $pumps;
                         }
-                        $pump_series[$k_ps]["pumps"] = $pumps;
                     }
                 }
+                fn_rpt__test(array("ps"=>$pump_series));
             }
-            fn_rpt__test(array("ps"=>$pump_series));
         break;
 
         // отчет работы предприятия

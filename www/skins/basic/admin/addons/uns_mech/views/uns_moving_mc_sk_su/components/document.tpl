@@ -156,6 +156,16 @@
         f_value=$d.comment
         f_description="Комментарий"
     }
+
+    {* Автоматический выбор "Наименования" *}
+    <div class="form-field">
+        <label class="" for="auto_select_name">Автомат. выбор:{include file="common_templates/tooltip.tpl" tooltip="Автоматический выбор первого элемента НАИМЕНОВАНИЯ при выборе КАТЕГОРИИ/СЕРИИ"}</label>
+        <select id="auto_select_name">
+            <option value="N">Нет</option>
+            <option value="Y">Да</option>
+        </select>
+    </div>
+
 {/capture}
 
 {* ФОРМИРОВАНИЕ ДОКУМЕНТА *}

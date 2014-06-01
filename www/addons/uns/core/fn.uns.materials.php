@@ -204,6 +204,7 @@ function fn_uns__get_materials_categories($params = array())
         '?:material_categories.mcat_id',
         '?:material_categories.mcat_parent_id',
         '?:material_categories.mcat_name',
+        '?:material_categories.mcat_comment',
         '?:material_categories.mcat_id_path',
         '?:material_categories.mcat_position',
         '?:material_categories.mcat_status'

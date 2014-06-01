@@ -155,7 +155,10 @@ $(function () {
                     },
                     callback: function(data){
                         item_name_id.append(data.options);
-//                        item_name_id.change();
+                        // Для автоматического выбора первой позиции
+                        if ($("select#auto_select_name").val() == "Y"){
+                            item_name_id.find("option:nth-child(2)").attr("selected", "selected").change();
+                        }
                     }
                 }
             );
@@ -208,6 +211,18 @@ $(function () {
                 }
             );
         }
+    });
+
+    // Смена Кол-ва
+    $('[name^="data[document_items]"][name$="[quantity]"]').on('input', function () {
+        var q = $('input[name^="data[document_items]"][name$="[quantity]"]');
+        q.each(function(){
+            if ($(this).attr("q") == $(this).val()){
+                $(this).removeClass("q_changed");
+            }else{
+                $(this).addClass("q_changed");
+            }
+        });
     });
 
     // дублирование строки через клавиатуру

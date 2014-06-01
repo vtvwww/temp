@@ -298,30 +298,38 @@ class plan_of_sales {
         /* Create the pChart object */
         $myPicture = new pImage($size["w"],$size["h"],$MyData);
 
-        // Определить минимальное и максимальное значения рядов
-        list($min, $max) = self::_get_min_max($data["series"], true);
-
         $i = 0;
         foreach ($data["series"] as $k_s=>$s){
             $i ++;
+            $export = array(3,3,3,3,3,3,3,3,3,3,3,3,);
 
-            if ($i==1){
+
+            // ДАННЫЕ ==========================================================
+            if ($i==1){         // за предыдущий год
+                // По Украине
                 $MyData->addPoints(array_merge($s,array(VOID)),$k_s);
-            }elseif ($i == 2){ // график за текущий год
+                // Вне Украины
+                $MyData->addPoints($export, $k_s . "_export");
+            }elseif ($i == 2){ //  за текущий год
                 $p = array();
+                $p_export = array();
                 for ($m=1; $m<=12; $m++){
                     if ($m<$data["ref_month"]){
                         $p[] = $s[$m];
+                        $p_export[] = $export[$m];
                     }else{
-                        $p[] = VOID;
+                        $p[] = $p_export[] = VOID;
                     }
                 }
                 $MyData->addPoints(array_merge($p,array(VOID)),$k_s);
+                $MyData->addPoints($p_export, $k_s . "_export");
             }
 
-            $MyData->setPalette($k_s,array("R"=>140,"G"=>140,"B"=>140));
+            // СТИЛИ СЕРИЙ
+            $MyData->setPalette($k_s,               array("R"=>200,"G"=>200,"B"=>200));
+            $MyData->setPalette($k_s . "_export",   array("R"=>100,"G"=>100,"B"=>100));
 
-
+            // РАСПОЛОЖЕНИЕ ГРАФИКОВ
             if ($i==1){
                 $myPicture->setGraphArea(1.5*$margin, $margin,              $size["w"]-$margin, $size["h"]/2-$margin);
             }elseif ($i == 2){
@@ -329,11 +337,14 @@ class plan_of_sales {
             }
             $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/pf_arma_five.ttf","FontSize"=>12));
 
+            // Определить минимальное и максимальное значения рядов
+            list($min, $max) = self::_get_min_max($data["series"] + array(array(fn_fvalue($data["plan"]["plan_prodazh_calc"], 0))) + $export, true);
+
             /* Координатная плоскость */
             $AxisBoundaries = array(0=>array("Min"=>$min,"Max"=>$max));
             $ScaleSettings  = array(
                 "Mode"=>SCALE_MODE_MANUAL, "ManualScale"=>$AxisBoundaries,
-                "CycleBackground"=>TRUE,
+                "CycleBackground"=>false,
                 "DrawSubTicks"=>TRUE,
                 "DrawXLines"=>false,
                 "GridR"=>0,"GridG"=>0,"GridB"=>0,
@@ -348,20 +359,11 @@ class plan_of_sales {
                 $myPicture->drawText($size["w"]-40, $size["h"]-6, $k_s, TEXT_ALIGN_TOPRIGHT);
             }
 
-            /* Прямоугольники */
-            $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/pf_arma_five.ttf","FontSize"=>12));
-            $myPicture->drawBarChart(array(
-                    "DisplayPos"=>LABEL_POS_OUTSIDE,
-                    "DisplayOrientation"=>ORIENTATION_VERTICAL,
-                    "DisplayValues"=>TRUE,
-                    "Surrounding"=>-20,"InnerSurrounding"=>20,
-                )
-            );
+//            /* Тренд */
+//            $myPicture->drawBestFit();
 
             /* Среднее значение */
-            $avr = $data["analysis"][$k_s]["for_year"]["avr"];
-
-            if ($avr){
+            if (is__more_0($avr = $data["analysis"][$k_s]["for_year"]["avr"])){
                 $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/pf_arma_five.ttf","FontSize"=>12));
                 $myPicture->drawThreshold($avr,array(
                         "WriteCaption"=>TRUE,"Caption"=>fn_fvalue($avr,1),
@@ -386,7 +388,20 @@ class plan_of_sales {
                         "Wide"  =>true,
                     ));
             }
+
+            /* ПРОДАЖИ */
+            $myPicture->setFontProperties(array("FontName"=>"lib/pChart2.1.4/fonts/pf_arma_five.ttf","FontSize"=>12));
+            $myPicture->drawStackedBarChart(array(
+                    "DisplayValues"         =>TRUE,
+                    "DisplayPos"            =>LABEL_POS_OUTSIDE,
+                    "DisplayOrientation"    =>ORIENTATION_VERTICAL,
+                    "FontFactor"            => 5,
+                )
+            );
+
+
             $MyData->removeSerie($k_s);
+            $MyData->removeSerie($k_s . "_export");
         }
 
         // Добавить на график расчетное значение плана продаж на расчетный месяц
@@ -494,7 +509,7 @@ class plan_of_sales {
         // 1. Получить список месячных интервалов
         $months = self::_get_months(2, $ref_year);
 
-        // 2. Cобрать помесячные продажи
+        // 2. Cобрать помесячные продажи с разбивкой по клиентам
         foreach ($months as $k_y=>$year){
             foreach ($year as $k_m=>$month){
                 $balance = self::_get_sales_pump_series_by_period($ps_id, $month["timestamp"]["begin"], $month["timestamp"]["end"]);
@@ -536,7 +551,7 @@ class plan_of_sales {
             if (is__array($d["items"])){
                 foreach ($d["items"] as $i){
                     if (in_array($pumps[$i["item_id"]]["ps_id"], $ps_id)){
-                        $res[$pumps[$i["item_id"]]["ps_id"]] += $i["quantity"];
+                        $res[$d["customer_id"]][$pumps[$i["item_id"]]["ps_id"]] += $i["quantity"];
                     }
                 }
             }

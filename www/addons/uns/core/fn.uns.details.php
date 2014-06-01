@@ -382,6 +382,7 @@ function fn_uns__get_details($params = array(), $items_per_page = 0){
     if ($params["with_material_info"]){
         $j_materials            = "?:materials";
         $j_detail__and__items   = "?:detail__and__items";
+        $fields[] = "$j_materials.mclass_id";
         $fields[] = "$j_materials.material_id";
         $fields[] = "$j_materials.material_name";
         $fields[] = "$j_materials.material_no";

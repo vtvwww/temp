@@ -4,6 +4,24 @@
         {include file="addons/uns/views/components/search/s_time.tpl"}
         {include file="addons/uns/views/components/search/s_details.tpl"}
         {include file="addons/uns/views/components/search/s_accessory_pumps.tpl"}
+        {*Отобразить по всем категориям*}
+        <table cellpadding="10" cellspacing="0" border="0" class="search-header">
+            <tr>
+                <td class="nowrap search-field">
+                    <label for="all_details">Отобразить все детали:</label>
+                    {*<div class="break">*}
+                        {include file="addons/uns/views/components/get_form_field.tpl"
+                            f_type="checkbox"
+                            f_id="all_details"
+                            f_name="all_details"
+                            f_value=$search.all_details
+                            f_style="margin-top:5px;"
+                            f_simple=true
+                        }
+                    {*</div>*}
+                </td>
+            </tr>
+        </table>
     {/capture}
     {include file="addons/uns/views/components/search/search.tpl" dispatch="`$controller`.manage" search_content=$smarty.capture.search_content}
 
@@ -43,7 +61,7 @@
             {else}
                 <tbody>
                     <tr class="no-items">
-                        <td colspan="7"><p>{$lang.no_data}</p></td>
+                        <td colspan="10" style="background-color: #F7F7F7;"><p>{$lang.no_data}</p></td>
                     </tr>
                 </tbody>
             {/if}

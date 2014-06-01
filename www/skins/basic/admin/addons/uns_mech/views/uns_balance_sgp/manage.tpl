@@ -1,7 +1,23 @@
 {script src="js/tabs.js"}
 {capture name="mainbox"}
     {capture name="search_content"}
-        {include file="addons/uns/views/components/search/s_time.tpl"}
+        <table cellpadding="10" cellspacing="0" border="0" class="search-header">
+            <tr>
+                <td class="nowrap search-field">
+                    <label>Период:</label>
+                    <div class="break">
+                        {include file="common_templates/period_selector.tpl" period=$search.period}
+                    </div>
+                </td>
+                <td class="b1_l nowrap search-field">
+                    <label for="view_all_pumps">Показать все насосы:</label>
+                    <div class="break">
+                        <input type="hidden" value="N" name="view_all_pumps"/>
+                        <input id="view_all_pumps" type="checkbox" value="Y" name="view_all_pumps" {if $search.view_all_pumps == "Y"}checked="checked"{/if} />
+                    </div>
+                </td>
+            </tr>
+        </table>
     {/capture}
     {include file="addons/uns/views/components/search/search.tpl" dispatch="`$controller`.manage" search_content=$smarty.capture.search_content}
 

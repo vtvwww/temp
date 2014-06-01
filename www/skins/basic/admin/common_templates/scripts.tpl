@@ -1,4 +1,4 @@
-{script src="lib/js/jquery/jquery.min.js"}
+{script src="lib/js/jquery/jquery-1.7.min.js"}
 {script src="lib/js/jqueryui/jquery-ui.custom.min.js"}
 
 {script src="lib/js/appear/jquery.appear-1.1.1.js"}

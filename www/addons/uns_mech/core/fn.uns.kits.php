@@ -128,12 +128,13 @@ function fn_acc__get_kits($params = array(), $items_per_page = 0){
 
         );
         list($documents) = fn_uns__get_documents($p);
-//        fn_print_r($documents);
         if (is__array($documents)){
             foreach ($documents as $d){
                 foreach ($d["items"] as $i){
+                    $data[$d["package_id"]]["date_close"] = $d["date"];
                     $data[$d["package_id"]]["VN"][] = array(
                         "date"      => $d["date"],
+                        "item_id"   => $i["item_id"],
                         "item_type" => $i["item_type"],
                         "quantity"  => $i["quantity"],
                         "name"      => $i["item_info"]["p_name"],

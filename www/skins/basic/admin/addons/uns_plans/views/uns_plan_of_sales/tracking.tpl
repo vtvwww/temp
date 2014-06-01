@@ -62,7 +62,7 @@
                     <td>&nbsp;&nbsp;{$ps.ps_name}</td>
                     <td class="b1_l center bold"><span class="{if !$t_plan}zero{/if}">{$t_plan}</span></td>
                     <td class="b1_l center bold"><span class="{if !$t_sale}zero{/if}">{$t_sale}</span></td>
-                    <td class="b1_l right">{$percs.$ps_id.done}%</td>
+                    <td class="b1_l right" {if $percs.$ps_id.ovf == "Y"}style="font-weight: bold; color: #ff0000;" {/if}>{$percs.$ps_id.done}%</td>
                     <td class="b1_l" title="{$percs.$ps_id.title}">
                         <div class="progress-bar">
                             <div class="done"     style="width: {$percs.$ps_id.d}%"></div>
@@ -75,14 +75,18 @@
             {/foreach}
             <tr>
                 <td style="text-align: right;"><b>Итого:</b></td>
-                <td class="b1_l center"><span style="font-weight: bold; font-size: 14px;">{$total_plan}</span></td>
-                <td class="b1_l center"><span style="font-weight: bold; font-size: 14px;">{$total_sales}</span></td>
-                <td class="b1_l right">{*{$percs.total.done}%*}</td>
+                <td class="b1_l center"><span style="font-weight: bold; font-size: 17px;">{$total_plan}</span></td>
+                <td class="b1_l center"><span style="font-weight: bold; font-size: 17px;">{$total_sales}</span></td>
+                {assign var="total_perc" value=0}
+                {if $total_plan>0 and  $total_sales>=0}
+                    {math assign="total_perc" equation="100*total_sales/total_plan" total_sales=$total_sales total_plan=$total_plan format="%.0d"}
+                {/if}
+                <td class="b1_l right"><span style="font-weight: bold; font-size: 17px;">{$total_perc}%</span></td>
                 <td class="b1_l" title="{$percs.total.title}">
-                    {*<div class="progress-bar">
-                        <div class="done"     style="width: {$percs.total.d}%"></div>
-                        <div class="overflow" style="width: {$percs.total.o}%"></div>
-                    </div>*}
+                    <div class="progress-bar" style="border: 1px solid red">
+                        <div class="done"     style="background-color: rgba(255, 23, 0, 0.62); width: {$total_perc}%"></div>
+                        <div class="overflow"></div>
+                    </div>
                 </td>
             </tr>
         </table>

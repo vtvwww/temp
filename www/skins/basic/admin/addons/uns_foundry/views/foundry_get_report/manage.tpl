@@ -1,5 +1,5 @@
 {script src="js/tabs.js"}
-
+{strip}
 {capture name="mainbox"}
     {include file="addons/uns/views/components/search/form.tpl" dispatch="`$controller`.manage" s_time=true}
     <br>
@@ -25,7 +25,7 @@
     <table cellpadding="0" cellspacing="0" border="0" width="" class="table">
         <tr>
             <th width="1px" class="b1_r" style="text-align: center;">№</th>
-            <th width="120px" class="b1_r" style="text-align: center;">Наименование</th>
+            <th colspan="2" width="180px" class="b1_r" style="text-align: center;">Наименование</th>
             <th width="120px" class="b1_r" style="text-align: center;">Дата плавки</th>
             <th width="10px" class="" style="text-align: center;">Чугун{include file="common_templates/tooltip.tpl" tooltip="Чугун, кг"}</th>
             <th width="10px" class="b1_l" style="text-align: center;">Сталь{include file="common_templates/tooltip.tpl" tooltip="Сталь, кг"}</th>
@@ -40,7 +40,7 @@
               {assign var="name" value=$i.document_type}
               {assign var="doc_name" value="<b>№`$id`</b> - `$document_types[$i.type].name_short`" }
               <td align="left" class="b1_r">{$smarty.foreach.doc.total-$smarty.foreach.doc.index}</td>
-              <td class="b1_r">
+              <td class="">
                   {include    file="common_templates/table_tools_list.tpl"
                               popup=true
                               id="`$controller`_`$id`"
@@ -51,6 +51,9 @@
                               prefix=$id
                               link_class="cm-dialog-auto-size black"
                               tools_list=$smarty.capture.tools_items}
+              </td>
+              <td class="b1_r" align="right">
+                {if strlen($i.comment)}{include file="common_templates/tooltip.tpl" tooltip=$i.comment}{else}&nbsp;{/if}
               </td>
               <td class="b1_r" align="center">
                   <span class="date">{$i.date_cast|fn_parse_date|date_format:"%a %d/%m/%Y"}</span>
@@ -79,3 +82,4 @@
 
 {/capture}
 {include file="common_templates/mainbox.tpl" title="Выпуск Литейного цеха" content=$smarty.capture.mainbox tools=$smarty.capture.tools}
+{/strip}

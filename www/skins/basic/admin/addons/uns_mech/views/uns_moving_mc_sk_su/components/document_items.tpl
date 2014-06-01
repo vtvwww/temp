@@ -179,9 +179,12 @@
                                 f_autocomplete="off"
                                 f_number=true
                                 f_simple=true
+                                f_attr="q"
+                                f_attr_val=$q|fn_fvalue
+                                f_title=$q|fn_fvalue
                             }
                         </td>
-                        <td class="cm-non-cb" +align="right">
+                        <td class="cm-non-cb" align="right">
                             <img class="hand" border="0" title="Получить текущий остаток позиции" src="skins/basic/admin/addons/uns_acc/images/refresh.png" onclick="var s=$(this).parent().prev().prev().find('select'); if (s.val()>0) s.change();">
                         </td>
                         <td class="cm-non-cb" align="right">
