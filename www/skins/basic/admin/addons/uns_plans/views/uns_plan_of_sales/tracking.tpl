@@ -53,7 +53,7 @@
                 <td colspan="10" style="background-color: #E6E2DA;"><b>{$pt.pt_name}</b></td>
             </tr>
                 {foreach from=$pt.pump_series item="ps" key="ps_id" name="ps"}
-                {assign var="t_plan" value=$plan.group_by_item.S.$ps_id.quantity|default:0}
+                {assign var="t_plan" value=$plan.group_by_item.S.$ps_id.ukr_curr+$plan.group_by_item.S.$ps_id.exp_curr}
                 {assign var="t_sale" value=$sales.$ps_id|default:0}
 
                 {assign var="total_plan" value=$total_plan+$t_plan}

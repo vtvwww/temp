@@ -48,20 +48,20 @@
                     </select>
                 </div>
             </td>
-            <td class="nowrap search-field" style="border-left: 1px solid #808080;">
-                <label>Дополнительный запас продукции<br>на конец расчетного месяца</label>
-                <div class="break">
-                    <select name="week_supply">
-                        <option value="0">---</option>
-                        <option value="1"  {if $search.week_supply == 1}selected="selected"{/if}>+ 1-о недельные продажи</option>
-                        <option value="2"  {if $search.week_supply == 2}selected="selected"{/if}>+ 2-х недельные продажи</option>
-                        <option value="3"  {if $search.week_supply == 3}selected="selected"{/if}>+ 3-х недельные продажи</option>
-                        <option value="4"  {if $search.week_supply == 4}selected="selected"{/if}>+ 4-х недельные продажи</option>
-                        <option value="5"  {if $search.week_supply == 5}selected="selected"{/if}>+ 5-ти недельные продажи</option>
-                        <option value="6"  {if $search.week_supply == 6}selected="selected"{/if}>+ 6-ти недельные продажи</option>
-                    </select>
-                </div>
-            </td>
+            {*<td class="nowrap search-field" style="border-left: 1px solid #808080;">*}
+                {*<label>Дополнительный запас продукции<br>на конец расчетного месяца</label>*}
+                {*<div class="break">*}
+                    {*<select name="week_supply">*}
+                        {*<option value="0">---</option>*}
+                        {*<option value="1"  {if $search.week_supply == 1}selected="selected"{/if}>+ 1-о недельные продажи</option>*}
+                        {*<option value="2"  {if $search.week_supply == 2}selected="selected"{/if}>+ 2-х недельные продажи</option>*}
+                        {*<option value="3"  {if $search.week_supply == 3}selected="selected"{/if}>+ 3-х недельные продажи</option>*}
+                        {*<option value="4"  {if $search.week_supply == 4}selected="selected"{/if}>+ 4-х недельные продажи</option>*}
+                        {*<option value="5"  {if $search.week_supply == 5}selected="selected"{/if}>+ 5-ти недельные продажи</option>*}
+                        {*<option value="6"  {if $search.week_supply == 6}selected="selected"{/if}>+ 6-ти недельные продажи</option>*}
+                    {*</select>*}
+                {*</div>*}
+            {*</td>*}
             {*<td class="nowrap search-field">*}
                 {*<label>Кол-во лет<br>для статистического<br>анализа продаж:</label>*}
                 {*<div class="break">*}

@@ -10,13 +10,15 @@
     {capture name="mainbox"}
         {include file="addons/uns_plans/views/uns_plan_of_mech_dep/components/search_form_manage.tpl" dispatch="`$controller`.$mode" search_content=$smarty.capture.search_content but_text="ВЫПОЛНИТЬ АНАЛИЗ"}
         {if is__array($pump_series)}
+            &nbsp;&nbsp;&nbsp;<span style="color: red;"><img src="skins/basic/admin/addons/uns_plans/images/prohibition.png" alt="X"/> - запрет на производство насоса, так как по нему уже есть 2-х месячный запас для продаж.</span>
             <table cellpadding="0" cellspacing="0" border="0" class="table" style="margin: 10px; 0">
                 <thead>
                     <tr style="background-color: #D4D0C8;">
                         <th style="text-transform: none;"               rowspan="3"             class="center">Наименование</th>
+                        <th style="text-transform: none;"               rowspan="3"             class="center">&nbsp;</th>
                         <th style="text-transform: none;"               rowspan="3"             class="center b_l">Склад<br>готовой<br>продукции<br>на<br>01/{$search.month|string_format:"%02d"}/{$search.year|substr:"-2":"2"}</th>
                         <th style="text-transform: none;"               rowspan="2" colspan="2" class="center b_l b1_b">План<br>продаж</th>
-                        <th style="text-transform: uppercase;"          rowspan="2" colspan="2" class="center b3_l b1_b">План<br>производства<br>Мех. цеха</th>
+                        <th style="text-transform: uppercase;"          rowspan="2" colspan="2" class="center b3_l b1_b">План<br>производства<br>насосов</th>
                         <th style="text-transform: uppercase;"                      colspan="4" class="center b3_l b1_b">Выполнение плана на {$search.current_day|fn_parse_date|date_format:"%d/%m/%y"}</th>
                         <th style="text-transform: none;"               rowspan="3"             class="center b3_l">Склад<br>готовой<br>продукции<br>на<br>{$search.current_day|fn_parse_date|date_format:"%d/%m/%y"}</th>
                     </tr>
@@ -37,7 +39,7 @@
                 {foreach from=$pump_series item="pt" name="pt"}
                 <tbody>
                 <tr>
-                    <td colspan="11" style="background-color: #E6E2DA; font-size: 14px; font-style: italic;"><b>{$pt.pt_name}</b></td>
+                    <td colspan="12" style="background-color: #E6E2DA; font-size: 14px; font-style: italic;"><b>{$pt.pt_name}</b></td>
                 </tr>
                     {foreach from=$pt.pump_series item="ps" key="ps_id" name="ps"}
                     <tr>
@@ -45,6 +47,10 @@
                         <td>
                             <a  rev="content_item_name_{$analysis_links.$ps_id.id}" id="opener_item_name_{$analysis_links.$ps_id.id}" href="{$analysis_links.$ps_id.href|fn_url}" class="block cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black bold" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$ps.ps_name}</a>
                             <div id="content_item_name_{$analysis_links.$ps_id.id}" class="hidden" title="Анализ насоса <u>{$analysis_links.$ps_id.name}</u>"></div>
+                        </td>
+
+                        <td>
+                            {if $prohibition.$ps_id == "Y"}<img src="skins/basic/admin/addons/uns_plans/images/prohibition.png" alt="X"/>{/if}
                         </td>
 
                         {*Склад Готовой Продукции*}
@@ -91,7 +97,7 @@
                 {*ИТОГО*}
                 <tbody>
                     <tr>
-                        <td class="b3_t b3_b bold" style="text-align: right; font-size: 14px;">ИТОГО:</td>
+                        <td class="b3_t b3_b bold" colspan="2" style="text-align: right; font-size: 14px;">ИТОГО:</td>
 
                         {*Склад Готовой Продукции*}
                         {assign var="q" value=$sgp.total|default:0}
@@ -131,6 +137,7 @@
                 <tbody>
                     <tr style="background-color: #D4D0C8;">
                         <th rowspan="3" style="text-transform: none;" class="center">Наименование</th>
+                        <th rowspan="3" style="text-transform: none;" class="center">&nbsp;</th>
                         <th rowspan="3" style="text-transform: none;" class="center b_l">Склад<br>готовой<br>продукции<br>на<br>01/{$search.month|string_format:"%02d"}/{$search.year|substr:"-2":"2"}</th>
                         <th style="text-transform: lowercase;" class="b_l center">{$tpl_curr_month}</th>
                         <th style="text-transform: lowercase;" class="b1_l center">{$tpl_next_month}</th>

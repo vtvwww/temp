@@ -78,7 +78,7 @@
                                 f_type="input"
                                 f_required=true f_integer=false
                                 f_name="`$e_n`[ukr_curr]"
-                                f_value=""
+                                f_value=$plan.UKR[$ps.ps_id].plan_prodazh_statistical|fn_fvalue:"0"
                                 f_style="width: 50px;text-align: center; font-weight: bold;"
                                 f_autocomplete="off"
                                 f_simple=true
@@ -89,7 +89,7 @@
                                 f_type="input"
                                 f_required=true f_integer=false
                                 f_name="`$e_n`[ukr_next]"
-                                f_value=""
+                                f_value=$plan.UKR[$ps.ps_id].plan_prodazh_statistical|fn_fvalue:"0"
                                 f_style="width: 50px;text-align: center; font-weight: bold;"
                                 f_autocomplete="off"
                                 f_simple=true
@@ -100,7 +100,7 @@
                                 f_type="input"
                                 f_required=true f_integer=false
                                 f_name="`$e_n`[exp_curr]"
-                                f_value=""
+                                f_value=$plan.EXP[$ps.ps_id].plan_prodazh_statistical|fn_fvalue:"0"
                                 f_style="width: 50px;text-align: center; font-weight: bold;"
                                 f_autocomplete="off"
                                 f_simple=true
@@ -111,7 +111,7 @@
                                 f_type="input"
                                 f_required=true f_integer=false
                                 f_name="`$e_n`[exp_next]"
-                                f_value=""
+                                f_value=$plan.EXP[$ps.ps_id].plan_prodazh_statistical|fn_fvalue:"0"
                                 f_style="width: 50px;text-align: center; font-weight: bold;"
                                 f_autocomplete="off"
                                 f_simple=true

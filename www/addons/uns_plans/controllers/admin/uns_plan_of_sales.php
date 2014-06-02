@@ -73,7 +73,7 @@ if ($mode == "calculation"){
     }
 
 //    $ps_id = array(29,37,77,76,65,66,78,79,80); // только К8/18 --- К290/30
-    $ps_id = array(76,66); // только К8/18 --- К290/30
+//    $ps_id = array(76,66); // только К8/18 --- К290/30
 
     // 1. Параметры для расчета плана производства
     $graphs_key = substr(md5(microtime().mt_rand()), 0, 10);
@@ -186,7 +186,7 @@ if ($mode == "tracking") {
         // ПОЛУЧИТЬ ПРОЦЕНТЫ ВЫПОЛНЕНИЯ ПЛАНА ПРОДАЖ
         $percs = array();
         foreach (array_keys($pump_series) as $id){
-            $p = (int) $plan["group_by_item"]["S"][$id]["quantity"];
+            $p = (int) ($plan["group_by_item"]["S"][$id]["ukr_curr"] + $plan["group_by_item"]["S"][$id]["exp_curr"]);
             $s = (int) $sales[$id];
             $ovf    = "N"; // Флаг переполнения
             $done   = 0;

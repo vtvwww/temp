@@ -47,8 +47,8 @@ if ($mode == "manage") {
         $plan = array_shift(array_shift(fn_uns__get_plans($p)));
         $requirement = array();
         foreach ($plan["group_by_item"]["S"] as $id=>$v){
-            $requirement["curr_month"][$id] = $v["quantity"];
-            $requirement["next_month"][$id] = $v["quantity_add"]-$v["quantity"];
+            $requirement["curr_month"][$id] = $v["ukr_curr"]+$v["exp_curr"];
+            $requirement["next_month"][$id] = $v["ukr_next"]+$v["exp_next"];
         }
         $requirement["curr_month"]["total"] = array_sum($requirement["curr_month"]);
         $requirement["next_month"]["total"] = array_sum($requirement["next_month"]);
@@ -179,6 +179,18 @@ if ($mode == "manage") {
         $done["total"] = array_sum($done);
         $view->assign("done", $done);
 
+
+        //======================================================================
+        // 3/2. РАСЧЕТ ЗАПРЕТА НА ИЗГОТОВЛЕНИЕ НАСОСА
+        //======================================================================
+        $prohibition = array();
+        list($pump_series) = fn_uns__get_pump_series(array("only_active" => true, "view_in_plans"=>"Y",));
+        foreach ($pump_series as $ps_id=>$ps){
+            // трехмесячные(1.5) или четырехмесячные(2) продажи
+            $s = 1*($requirement["curr_month"][$ps_id] + $requirement["next_month"][$ps_id]);
+            $prohibition[$ps_id] = (($sgp_current_day[$ps_id]+$zadel[$ps_id])>=$s)?"Y":"N";
+        }
+        $view->assign("prohibition", $prohibition);
 
         //======================================================================
         // 7. РАСЧЕТ "ОСТАЛОСЬ"

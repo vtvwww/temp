@@ -7,8 +7,8 @@
         <table cellpadding="0" cellspacing="0" border="0" width="" class="table">
             <tr>
                 <th width="10px">&nbsp;</th>
-                <th width="50px">Месяц</th>
                 <th width="50px">Год</th>
+                <th width="50px">Месяц</th>
                 <th width="150px">Кол-во</th>
                 <th width="300px">Коментарий</th>
                 <th>&nbsp;</th>
@@ -20,11 +20,11 @@
                     <td>
                         {include file="addons/uns/views/components/tools.tpl" type="edit" href="`$controller`.update?`$value`=`$id`"}
                     </td>
-                    <td align="right"> {* Месяц *}
-                        {$months[$i.month]}
-                    </td>
                     <td align="left"> {* Год *}
                         {$i.year}
+                    </td>
+                    <td align="right"> {* Месяц *}
+                        {$months[$i.month]}
                     </td>
                     <td align="left">  {*ПОЗИЦИЙ*}
                         {*{$i.count} ({$i.sum_q}/{$i.sum_q_add})*}
