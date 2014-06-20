@@ -291,12 +291,12 @@ $.extend({
 			
 			// Bind handler for "Check all / Uncheck all" links and "Check/Uncheck" checkbox
 			if (jelm.attr('name') == 'check_all') {
-				var flag = (jelm.hasClass('cm-on') || jelm.attr('checked'));
+				var flag = (jelm.hasClass('cm-on') || jelm.prop('checked'));
 
 				// Get class
 				var suffix = elm.className.match(/cm-check-items(-[^\s]+)?/i)[1] || '';
 
-				$('input.cm-item' + suffix + '[type=checkbox]:not(:disabled)', elm.form).attr('checked', (flag == true) ? 'checked' : '');
+				$('input.cm-item' + suffix + '[type=checkbox]:not(:disabled)', elm.form).prop('checked', (flag == true) ? true : false);
 
 			// Attach handler to submit, image buttons and set processing of "cm-process-items" meta tag
 			} else if (elm.form && (jelm.attr('type') == 'submit' || (jelm.attr('type') == 'image' && !elm.className.match(/cm-combination(-[\w]+)?/gi)))) {

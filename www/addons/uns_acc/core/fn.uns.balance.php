@@ -328,6 +328,8 @@ function fn_uns__get_balance($params = array(), $time=false){
         if (is__more_0($params['mcat_id'])){
             $p["mcat_id"] = $params['mcat_id'];
             $p["mcat_include_target"] = true;
+        }elseif (is__array($params['mcat_id'])){
+                $p["item_ids"] = $params['mcat_id'];
         }else{
             $p["mcat_id"] = 27; //Отливки 
         }
@@ -399,8 +401,12 @@ function fn_uns__get_balance($params = array(), $time=false){
                             $mcat_items[$mcats_k]["items"][$materials_k]["material_comment_1"]      = $materials_v["material_comment_1"];
                             $mcat_items[$mcats_k]["items"][$materials_k]["name_accounting"]         = $materials_v["material_name_accounting"];
                             $mcat_items[$mcats_k]["items"][$materials_k]["no"]                      = $materials_v["material_no"];
+
+                            $mcat_items[$mcats_k]["items"][$materials_k]["show_in_report_as_name"]  = $mcats_v["show_in_report_as_name"]; // Если "Y", тогда заготовки будут представлены их именами, а не списком принадлежности насосов
+                            $mcat_items[$mcats_k]["items"][$materials_k]["accessory_view"]          = $materials_v["accessory_view"];       // Способ отображения принадлежности: S - серия насосов, P - насос, M - вручную
                             $mcat_items[$mcats_k]["items"][$materials_k]["accessory_pumps"]         = $materials_v["accessory_pumps"];
                             $mcat_items[$mcats_k]["items"][$materials_k]["accessory_pump_series"]   = $materials_v["accessory_pump_series"];
+                            $mcat_items[$mcats_k]["items"][$materials_k]["accessory_pump_manual"]   = $materials_v["accessory_manual"];     // M - вручную
                             $mcat_items[$mcats_k]["items"][$materials_k]["weight"]                  = fn_fvalue($materials_v["accounting_data"]["weight"],2);
                             $mcat_items[$mcats_k]["items"][$materials_k]["mcat_id"]                 = $mcats_v["mcat_id"];
 
@@ -485,14 +491,14 @@ function fn_uns__get_balance($params = array(), $time=false){
                             $dcat_items[$dcats_k]["group_comment"]  = $dcats_v["dcat_comment"];
                             $dcat_items[$dcats_k]["items"][$details_k]["id"]                      = $details_v["detail_id"];
                             $dcat_items[$dcats_k]["items"][$details_k]["detail_id"]               = $details_v["detail_id"];
-                            $dcat_items[$dcats_k]["items"][$details_k]["accessory_view"]          = $details_v["accessory_view"];
                             $dcat_items[$dcats_k]["items"][$details_k]["name"]                    = $details_v["detail_name"];
                             $dcat_items[$dcats_k]["items"][$details_k]["name_accounting"]         = $details_v["detail_name_accounting"];
                             $dcat_items[$dcats_k]["items"][$details_k]["no"]                      = $details_v["detail_no"];
                             $dcat_items[$dcats_k]["items"][$details_k]["comment"]                 = $details_v["detail_comment"];
-                            $dcat_items[$dcats_k]["items"][$details_k]["accessory_pumps"]         = $details_v["accessory_pumps"];
-                            $dcat_items[$dcats_k]["items"][$details_k]["accessory_pump_series"]   = $details_v["accessory_pump_series"];
-                            $dcat_items[$dcats_k]["items"][$details_k]["accessory_pump_manual"]   = $details_v["accessory_manual"];
+                            $dcat_items[$dcats_k]["items"][$details_k]["accessory_view"]          = $details_v["accessory_view"];       // Способ отображения принадлежности: S - серия насосов, P - насос, M - вручную
+                            $dcat_items[$dcats_k]["items"][$details_k]["accessory_pumps"]         = $details_v["accessory_pumps"];      // S - серия насосов
+                            $dcat_items[$dcats_k]["items"][$details_k]["accessory_pump_series"]   = $details_v["accessory_pump_series"];// P - насос
+                            $dcat_items[$dcats_k]["items"][$details_k]["accessory_pump_manual"]   = $details_v["accessory_manual"];     // M - вручную
                             $dcat_items[$dcats_k]["items"][$details_k]["dcat_id"]                 = $dcats_v["dcat_id"];
                             $dcat_items[$dcats_k]["items"][$details_k]["material_id"]             = $details_v["material_id"];
                             $dcat_items[$dcats_k]["items"][$details_k]["material_no"]             = $details_v["material_no"];
@@ -599,7 +605,8 @@ function fn_uns__get_accessory_pumps ($item_type, $items){
                 LEFT JOIN uns_detail__and__items
                   ON (    uns_detail__and__items.detail_id = uns_pumps_packing_list.item_id)
             WHERE
-                  uns_pumps_packing_list.ppl_status             = 'A'
+                  uns_pumps.include_to_accessory                = 'Y'
+              AND uns_pumps_packing_list.ppl_status             = 'A'
               AND uns_pumps_packing_list.ppl_item_part          = 'P'
               AND uns_pumps_packing_list.ppl_item_type          = 'S'
               AND uns_pumps_packing_list.item_type              = 'D'

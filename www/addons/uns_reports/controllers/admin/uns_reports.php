@@ -88,8 +88,11 @@ if ($mode == 'get_report'){
 
             if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "M"; // Текущий месяц
             list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
-            $p = array_merge($_REQUEST, $p);
 
+            // Запросить категории заготовок склада литья разрешенные к отображению
+            $_REQUEST["mcat_id"] = array_keys(array_shift(fn_uns__get_materials_categories(array("view_in_reports" => true, "only_active"=>true, "mcat_id"=>27, "sorting_schemas"=>"mcat_position_accounting",))));
+
+            $p = array_merge($_REQUEST, $p);
             list($balance, $search) = fn_uns__get_balance($p);
             $exclude_items = array(412, 414, 426, // кольца сальника из болванок
                 428, // крышка патрубка 10
@@ -158,9 +161,6 @@ if ($mode == 'get_report'){
                     230=> "NA",
                 ),
             );
-
-
-
             fn_rpt__accounting(array('period'=>$_REQUEST['period'], 'time_from'=>$_REQUEST['time_from'], 'time_to'=>$_REQUEST['time_to'], 'balance'=>$balance, 'exclude_items'=>$exclude_items, 'rules'=>$rules));
         break;
 
@@ -169,8 +169,8 @@ if ($mode == 'get_report'){
             if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "M"; // Текущий месяц
             list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
             $balances = array();
-            $_REQUEST["dcat_id"] = array(7,6,4,2,35,15,9,8,38,36,5,13,14,20,26,37,24);
-//            $_REQUEST["dcat_id"] = array(9);
+            $_REQUEST["dcat_id"] = array_keys(array_shift(fn_uns__get_details_categories(array("view_in_reports" => true, "only_active"=>true))));
+//            $_REQUEST["dcat_id"] = array(7,6,4,2,35,15,9,8,38,36,5,13,14,20,26,37,24,28,40);
             $_REQUEST["accessory_pumps"] = "Y";
             list($balances, $search) = fn_uns__get_balance_mc_sk_su($_REQUEST, true, true, true);
             // Запрос категорий

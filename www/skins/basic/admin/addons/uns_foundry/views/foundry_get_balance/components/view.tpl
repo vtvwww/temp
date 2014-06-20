@@ -34,10 +34,12 @@
                     {if $m.material_comment_1|strlen}
                         <span class="info_warning">{$m.material_comment_1}</span>
                     {else}
-                        {if $m.accessory_pump_series}
-                            {$m.accessory_pump_series}
+                        {if $m.accessory_view == "M"}
+                            {$m.accessory_pump_manual} <span class="info_warning">({$m.accessory_view})</span>
+                        {elseif $m.accessory_view == "P"}
+                            {$m.accessory_pumps} <span class="info_warning">({$m.accessory_view})</span>
                         {else}
-                            {if $m.accessory_pumps}[{$m.accessory_pumps}]{/if}
+                            {$m.accessory_pump_series}
                         {/if}
                     {/if}
                 </td>

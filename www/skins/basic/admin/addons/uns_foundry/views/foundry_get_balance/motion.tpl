@@ -3,6 +3,7 @@
         <thead>
             <tr>
                 <th style="text-align: center;" width="300px">Движение</th>
+                <th style="text-align: center;" width="5px">&nbsp;</th>
                 <th style="text-align: center;" width="40px">НО</th>
                 <th style="text-align: center;" width="40px">П</th>
                 <th style="text-align: center;" width="40px">Р</th>
@@ -47,6 +48,7 @@
                             <a target='_blank' href='{$document_href}' title='{$document_types[$m.dt_id].name}' ><b>{$m.document_id}</b> - {$document_types[$m.dt_id].name_short}{if $m.type == "VLC"} за {$m.date_cast|fn_parse_date|date_format:"%a %d/%m/%y"}{/if}</a>
                         {/if}
                     </td>
+                    <td align="center">{if strlen($m.comment)}{include file="common_templates/tooltip.tpl" tooltip=$m.comment}{else}&nbsp;{/if}</td>
                     <td align="center"><span class="{if $no<0}info_warning_block{elseif $no==0}zero{/if}">{$no|fn_fvalue}</span></td>
                     <td align="center"><span class="{if $p<0} info_warning_block{elseif $p==0} zero{/if}">{if $p!=0}+{/if}{$p|fn_fvalue}</span></td>
                     <td align="center"><span class="{if $r<0} info_warning_block{elseif $r==0} zero{/if}">{if $r!=0}-{/if}{$r|fn_fvalue}</span></td>
@@ -57,7 +59,7 @@
         {/if}
         <tbody>
             <tr>
-                <td align="right"><b style="font-size: 15px;">Итого:</b></td>
+                <td align="right" colspan="2"><b style="font-size: 15px;">Итого:</b></td>
                 <td align="center"><b style="font-size: 14px;"><span class="{if $params.nach<0}         info_warning_block{elseif $params.nach==0}          zero{/if}">{$params.nach|fn_fvalue}</span></b></td>
                 <td align="center"><b style="font-size: 14px;"><span class="{if $params.current__in<0}  info_warning_block{elseif $params.current__in==0}   zero{/if}">{if $params.current__in!=0}+{/if}{$params.current__in|fn_fvalue}</span></b></td>
                 <td align="center"><b style="font-size: 14px;"><span class="{if $params.current__out<0} info_warning_block{elseif $params.current__out==0}  zero{/if}">{if $params.current__out!=0}-{/if}{$params.current__out|fn_fvalue}</span></b></td>

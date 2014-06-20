@@ -21,15 +21,15 @@
         {if count($orders)}
         <tr style="background-color: #EDEDED">
             {*Насос*}
-            <th rowspan="2" style="text-align: center; border-left: 3px solid #000000; border-top : 1px solid #808080; background-color: #D3D3D3;">Тек.<br>ост.</th>
+            <th rowspan="2" style="text-transform: none; text-align: center; border-left: 3px solid #000000; border-top : 1px solid #808080; background-color: #D3D3D3;">Тек.<br>ост.</th>
             <th colspan="{math equation="2*x" x=$orders|count}" style="text-align: center; border-left: 3px solid #000000; border-bottom: 1px solid #000000; border-top: 3px solid #000000;">Заказы</th>
 
             {*На раме*}
-            <th rowspan="2" style="text-align: center; border-left: 3px solid #000000; border-top : 1px solid #808080; background-color: #D3D3D3;">Тек.<br>ост.</th>
+            <th rowspan="2" style="text-transform: none; text-align: center; border-left: 3px solid #000000; border-top : 1px solid #808080; background-color: #D3D3D3;">Тек.<br>ост.</th>
             <th colspan="{math equation="2*x" x=$orders|count}" style="text-align: center; border-left: 3px solid #000000; border-bottom: 1px solid #000000; border-top: 3px solid #000000;">Заказы</th>
 
             {*Агрегат*}
-            <th rowspan="2" style="text-align: center; border-left: 3px solid #000000; border-top : 1px solid #808080; background-color: #D3D3D3;">Тек.<br>ост.</th>
+            <th rowspan="2" style="text-transform: none; text-align: center; border-left: 3px solid #000000; border-top : 1px solid #808080; background-color: #D3D3D3;">Тек.<br>ост.</th>
             <th colspan="{math equation="2*x" x=$orders|count}" style="text-align: center; border-left: 3px solid #000000; border-bottom: 1px solid #000000; border-top: 3px solid #000000;">Заказы</th>
         </tr>
         <tr style="background-color: #EDEDED">

@@ -124,7 +124,7 @@ function fn_acc__get_kits($params = array(), $items_per_page = 0){
             "info_category"             => true,
             "info_item"                 => false,
             "info_unit"                 => false,
-            "item_type"                 => array('P', 'PN', 'PA'),
+            "item_type"                 => array('P', 'PF', 'PA'),
 
         );
         list($documents) = fn_uns__get_documents($p);

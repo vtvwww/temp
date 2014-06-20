@@ -389,6 +389,10 @@ span.zero{
     color: #d3d3d3;
 }
 
+.zero{
+    color: #d3d3d3 !important;
+}
+
 span.bold{
     font-weight: bold;
 }

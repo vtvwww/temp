@@ -77,9 +77,9 @@ function fn_rpt__accounting($data){
             $pdf->SetFillColor(80, 80, 80);
             $pdf->SetTextColor(260, 260, 260);
             $pdf->uns_SetFont("B", 13);
-            $pdf->MultiCell($col_sizes[$k++],  $h, "№ клм",         $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            $pdf->MultiCell($col_sizes[$k++],  $h, "№ клм",    $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             $pdf->MultiCell($col_sizes[$k++],  $h, $pdf->uns__strtoupper($group['group']),  $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->MultiCell($col_sizes[$k++],  $h, "Вес,кг",   $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            $pdf->MultiCell($col_sizes[$k++],  $h, "Вес,кг",    $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             $pdf->MultiCell($col_sizes[$k++],  $h, "Нач.ост.",  $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             $pdf->MultiCell($col_sizes[$k++],  $h, "Приход",    $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             $pdf->MultiCell($col_sizes[$k++],  $h, "Расход",    $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
@@ -89,8 +89,14 @@ function fn_rpt__accounting($data){
 
             $m = 0;
             foreach ($group['items'] as $i){
-                if (in_array($i['id'], $data['exclude_items'])) continue;
-                $item_name = fn_report_get_name($i, $data['rules']);
+                if ($i["show_in_report_as_name"] == "Y"){
+                    $item_name = $i["name"];
+                }else{
+                    if ($i["accessory_view"] == "P") $item_name = $i["accessory_pumps"];
+                    if ($i["accessory_view"] == "S") $item_name = $i["accessory_pump_series"];
+                    if ($i["accessory_view"] == "M") $item_name = $i["accessory_pump_manual"];
+                }
+
                 if (strlen($i["material_comment_1"])){
                     $item_name = trim($i["material_comment_1"]);
                 }
@@ -105,7 +111,7 @@ function fn_rpt__accounting($data){
                 else $pdf->SetFillColor(240);           // чет
 
                 // ВЫСОТА СТРОКИ
-                list($h, $maxh) = fn_report_calc_height_row(strlen(iconv("utf-8", "windows-1251", $item_name)));
+                list($h, $maxh) = fn_report_calc_height_row(strlen(iconv("utf-8", "windows-1251", $item_name)), 16);
 
                 $k = 0;
                 $pdf->uns_SetFont("B", $font_sizes['normal']);
@@ -130,6 +136,7 @@ function fn_rpt__accounting($data){
                 }
             }
             // -------------------------------------------------------------
+            if ($pdf->GetY() >= 260)  $pdf->AddPage();
             $k = 0;
             $h          = 6;
             $border     = 1;
@@ -163,14 +170,15 @@ function fn_rpt__accounting($data){
                 $pdf->MultiCell(170,  4, "({$group['group_comment']})",  0, "R", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             }
 
-            $pdf->ln(10);
+            $pdf->ln(6);
 
             $total_weights[$group['group']] = $weights;
         }
     }
 
     // Пустые строки
-    for ($i=0;$i<15;$i++){
+    for ($i=0;$i<5;$i++){
+        if ($pdf->GetY() >= 260)  $pdf->AddPage();
         $pdf->Cell($col_sizes[0], 0, '', 1, 0, 'C', 0, '', 1);
         $pdf->Cell($col_sizes[1], 0, '', 1, 0, 'L', 0, '', 1);
         $pdf->Cell($col_sizes[2], 0, '', 1, 0, 'C', 0, '', 1);
@@ -197,15 +205,19 @@ function fn_rpt__accounting($data){
     $pdf->Cell($perc_width, 0, "%", 1, 1, 'C', 0, '', 1);
 
     foreach ($total_weights as $k=>$v){
+        if ($pdf->GetY() >= 275)  $pdf->AddPage();
         $pdf->uns_SetFont("R", 12);
         $pdf->Cell(100, 6, $k, 1, 0, 'L', 0, '', 1);
         $pdf->Cell(35, 6, fn_fvalue($v, 1, false), 1, 0, 'R', 0, '', 1);
 
         $pdf->uns_SetFont("B", 8);
-        $perc = fn_fvalue(100*$v/$max_weight, 1, false);
+        $perc = ($max_weight!=0)?fn_fvalue(100*$v/$max_weight, 1, false):0;
         if ($perc == 100){
             $pdf->SetFillColor(160);
             $pdf->Cell($perc_width*$perc/100,           6, $perc."%",   1, 1, 'L', 1, '', 0);
+        }elseif ($perc == 0){
+            $pdf->SetFillColor(255);
+            $pdf->Cell($perc_width,                     6, $perc."%",   1, 1, 'R', 1, '', 0);
         }else{
             $pdf->SetFillColor(160);
             $pdf->Cell($perc_width*$perc/100,           6, "",          1, 0, 'L', 1, '', 0);

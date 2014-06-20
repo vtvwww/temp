@@ -60,7 +60,7 @@ $view->assign('months', $months);
 // Анализ продаж
 //**************************************************************************
 if ($mode == "calculation"){
-    if (!is__more_0($_REQUEST["month"], $_REQUEST["year"], $_REQUEST["week_supply"])){
+    if (!is__more_0($_REQUEST["month"], $_REQUEST["year"]/*, $_REQUEST["week_supply"]*/)){
         $view->assign("error", "Y");
         $p = array(
             "month"             => date('n', TIME),

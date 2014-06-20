@@ -18,7 +18,7 @@
     <table cellpadding="0" cellspacing="0" border="0" class="table">
         <thead>
             <tr>
-                <th style="text-align: center;" width="230px">
+                <th style="text-align: center;" width="250px">
                     <img id="on_cat" class="hand cm-combinations hidden" width="13" height="12" border="0" title="Расширить / сократить список элементов" alt="Расширить / сократить список элементов" src="skins/basic/admin/images/plus_minus.gif">
                     <img id="off_cat" class="hand cm-combinations" width="13" height="12" border="0" title="Расширить / сократить список элементов" alt="Расширить / сократить список элементов" src="skins/basic/admin/images/minus_plus.gif">
                     &nbsp;Наименование

@@ -2,6 +2,7 @@
 {*<pre>{$p_type|print_r}</pre>*}
 {*<pre>{$pl__item_type|print_r}</pre>*}
 {strip}
+<div class="subheader_block">
 <table cellpadding="0" cellspacing="0" class="table">
 <tbody>
 <tr class="first-sibling">
@@ -442,4 +443,5 @@
 </tbody>
 
 </table>
+</div>
 {/strip}

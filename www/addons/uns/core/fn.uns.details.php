@@ -124,6 +124,10 @@ function fn_uns__get_details_categories($params = array()){
         $condition .= db_quote(' AND ?:detail_categories.dcat_id IN (?n)', $params['item_ids']);
     }
 
+    if ($params['view_in_reports']) {
+        $condition .= db_quote(" AND ?:detail_categories.view_in_reports = 'Y' ");
+    }
+
     $limit = $join = $group_by = '';
 
     if (!empty($params['limit'])) {
@@ -386,6 +390,8 @@ function fn_uns__get_details($params = array(), $items_per_page = 0){
         $fields[] = "$j_materials.material_id";
         $fields[] = "$j_materials.material_name";
         $fields[] = "$j_materials.material_no";
+        $fields[] = "$j_detail__and__items.quantity as material_quantity";
+        $fields[] = "$j_detail__and__items.u_id as material_u_id";
         $join .= db_quote(" LEFT JOIN $j_detail__and__items ON ($j_detail__and__items.detail_id  = $m_table.detail_id) ");
         $join .= db_quote(" LEFT JOIN $j_materials          ON ($j_materials.material_id  = $j_detail__and__items.material_id) ");
 
