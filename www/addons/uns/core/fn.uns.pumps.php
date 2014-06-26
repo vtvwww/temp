@@ -155,6 +155,9 @@ function fn_uns__get_pump_series($params = array(), $items_per_page = 0){
         "$m_table.pt_id",
         "$j_table.pt_name",
         "$j_table.pt_name_short",
+        "$m_table.party_size_min",
+        "$m_table.party_size_max",
+        "$m_table.party_size_step",
     );
 
     $sorting_schemas = array(

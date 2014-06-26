@@ -66,6 +66,13 @@
                     </select>
                 </div>
             </td>
+            <td class="nowrap search-field" style="border-left: 1px solid #808080;">
+                <label for="all_months">Отобразить План производства<br>на 4 месяца</label>
+                <div class="break">
+                    <input type="hidden" value="N" name="all_months"/>
+                    <input id="all_months" type="checkbox" value="Y" name="all_months" {if $search.all_months == "Y"}checked="checked"{/if} />
+                </div>
+            </td>
         </tr>
     </table>
 {/capture}

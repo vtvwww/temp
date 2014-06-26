@@ -18,6 +18,10 @@ $months = array(1=>"янв", "фев", "мар", "апр", "май", "июн", "
 $view->assign('months', $months);
 $data = array();
 
+
+//==============================================================================
+// РАСЧЕТ ОБЩЕГО ПЛАНА ПРОИЗВОДСТВА
+//==============================================================================
 if ($mode == "manage") {
     if (is__more_0($_REQUEST["month"], $_REQUEST["year"], $_REQUEST["months_supply"], fn_parse_date($_REQUEST["current_day"]))){
         $view->assign('search', $_REQUEST);
@@ -31,10 +35,16 @@ if ($mode == "manage") {
         //======================================================================
         $php_curr_month = strtotime($_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1");
         $php_next_month = strtotime($_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1 +1 month");
-        $view->assign("tpl_curr_month", $months[date("n", $php_curr_month)] . "." . date("y", $php_curr_month));
-        $view->assign("tpl_next_month", $months[date("n", $php_next_month)] . "." . date("y", $php_next_month));
+        $php_next2_month = strtotime($_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1 +2 month");
+        $php_next3_month = strtotime($_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1 +3 month");
+        $view->assign("tpl_curr_month",     $months[date("n", $php_curr_month)]  . "." . date("y", $php_curr_month));
+        $view->assign("tpl_next_month",     $months[date("n", $php_next_month)]  . "." . date("y", $php_next_month));
+        $view->assign("tpl_next2_month",    $months[date("n", $php_next2_month)] . "." . date("y", $php_next2_month));
+        $view->assign("tpl_next3_month",    $months[date("n", $php_next3_month)] . "." . date("y", $php_next3_month));
         $data["tpl_curr_month"] = $months[date("n", $php_curr_month)] . "." . date("y", $php_curr_month);
         $data["tpl_next_month"] = $months[date("n", $php_next_month)] . "." . date("y", $php_next_month);
+        $data["tpl_next2_month"] = $months[date("n", $php_next2_month)] . "." . date("y", $php_next2_month);
+        $data["tpl_next3_month"] = $months[date("n", $php_next3_month)] . "." . date("y", $php_next3_month);
 
 
         //======================================================================
@@ -58,11 +68,17 @@ if ($mode == "manage") {
         $plan = array_shift(array_shift(fn_uns__get_plans($p)));
         $requirement = array();
         foreach ($plan["group_by_item"]["S"] as $id=>$v){
-            $requirement["curr_month"][$id] = $v["ukr_curr"]+$v["exp_curr"];
-            $requirement["next_month"][$id] = $v["ukr_next"]+$v["exp_next"];
+            $requirement["curr_month"][$id]  = $v["ukr_curr"]+$v["exp_curr"];
+            $requirement["next_month"][$id]  = $v["ukr_next"]+$v["exp_next"];
+
+            $requirement["next2_month"][$id] = $v["ukr_next"]+$v["exp_next"];
+            $requirement["next3_month"][$id] = $v["ukr_next"]+$v["exp_next"];
         }
         $requirement["curr_month"]["total"] = array_sum($requirement["curr_month"]);
         $requirement["next_month"]["total"] = array_sum($requirement["next_month"]);
+        $requirement["next2_month"]["total"] = array_sum($requirement["next2_month"]);
+        $requirement["next3_month"]["total"] = array_sum($requirement["next3_month"]);
+
         $view->assign("requirement", $requirement);
         $data["requirement"] = $requirement;
 
@@ -118,35 +134,242 @@ if ($mode == "manage") {
 
 
         //======================================================================
-        // 4. РАСЧЕТ НАЧАЛЬНОГО ПЛАНА ПРОИЗВОДСТВА
+        // 4. РАСЧЕТ НАЧАЛЬНОГО ПЛАНА ПРОИЗВОДСТВА НАСОСОВ
         //======================================================================
         $initial_production_plan = array();
+        $initial_production_plan_parties = array();
         list($pump_series) = fn_uns__get_pump_series(array("only_active" => true, "view_in_plans"=>"Y",));
         foreach ($pump_series as $id=>$ps){
-            // тек. месяц
-            $curr_month = $sgp[$id]-$requirement["curr_month"][$id];
-            if ($curr_month >=0){
-                $initial_production_plan["curr_month"][$id] = 0;
-            }else{
-                $initial_production_plan["curr_month"][$id] = abs($curr_month);
+            // тек. мес.
+            $deficit_curr = ($requirement["curr_month"][$id]) - $sgp[$id];
+            if ($deficit_curr < 0) $deficit_curr = 0;
+
+            // след. мес.
+            $deficit_next = ($requirement["curr_month"][$id]+$requirement["next_month"][$id]) - $sgp[$id] - $deficit_curr;
+            if ($deficit_next < 0) $deficit_next = 0;
+
+            // след. след. мес.
+            $deficit_next2 = ($requirement["curr_month"][$id]+$requirement["next_month"][$id]+$requirement["next2_month"][$id]) - $sgp[$id] - $deficit_curr - $deficit_next;
+            if ($deficit_next2 < 0) $deficit_next2 = 0;
+
+            // след. след. след. мес.
+            $deficit_next3 = ($requirement["curr_month"][$id]+$requirement["next_month"][$id]+$requirement["next2_month"][$id]+$requirement["next3_month"][$id]) - $sgp[$id] - $deficit_curr - $deficit_next - $deficit_next2;
+            if ($deficit_next3 < 0) $deficit_next3 = 0;
+
+            $initial_production_plan["curr_month"][$id]     = $deficit_curr;
+            $initial_production_plan["next_month"][$id]     = $deficit_next;
+            $initial_production_plan["next2_month"][$id]    = $deficit_next2;
+            $initial_production_plan["next3_month"][$id]    = $deficit_next3;
+
+            // =================================================================
+            // Расчет кратности партий =========================================
+            $party_min  = $ps["party_size_min"];
+            $party_max  = $ps["party_size_max"];
+            $party_step = $ps["party_size_step"];
+            $total = $deficit_curr + $deficit_next + $deficit_next2 + $deficit_next3;
+
+            $curr_month = 0;
+            $next_month = 0;
+            $next2_month = 0;
+            $next3_month = 0;
+
+            //------------------------------------------------------------------
+            // 1).  0 -  0 -  0 -  0
+            if ($deficit_curr == 0 and $deficit_next == 0 and $deficit_next2 == 0 and $deficit_next3 == 0){
             }
 
-            // след. месяц
-            if ($curr_month >=0){
-                if (($curr_month - $requirement["next_month"][$id]) >= 0){
-                    $initial_production_plan["next_month"][$id] = 0;
+
+            //------------------------------------------------------------------
+            // 2).  0 -  0 -  0 - !0
+            if ($deficit_curr == 0 and $deficit_next == 0 and $deficit_next2 == 0 and $deficit_next3 > 0){
+                if ($party_min >= $total){
+                    $next3_month = $party_min;
+
+                }elseif ($party_max >= $total){
+                    for ($party_curr = $party_min; $party_curr <= $party_max; $party_curr += $party_step){
+                        if ($party_curr >= $total){
+                            $next3_month = $party_curr;
+                            break;
+                        }
+                    }
+
                 }else{
-                    $initial_production_plan["next_month"][$id] = abs($curr_month - $requirement["next_month"][$id]);
+                    $next3_month = $party_max;
                 }
-            }else{
-                $initial_production_plan["next_month"][$id] = abs(0 - $requirement["next_month"][$id]);
             }
 
+
+            //------------------------------------------------------------------
+            // 3).  0 -  0 - !0 - *
+            if ($deficit_curr == 0 and $deficit_next == 0 and $deficit_next2 > 0){
+                if ($party_min >= $total){
+                    $next2_month = $party_min;
+
+                }elseif ($party_max >= $total){
+                    for ($party_curr = $party_min; $party_curr <= $party_max; $party_curr += $party_step){
+                        if ($party_curr >= $total){
+                            $next2_month = $party_curr;
+                            break;
+                        }
+                    }
+
+                }elseif ($party_max + $party_min >= $total){
+                    $next2_month = $party_max;
+                    $next3_month = $party_min;
+
+                }elseif ($party_max + $party_max >= $total){
+                    for ($party_curr = $party_min; $party_curr <= $party_max; $party_curr += $party_step){
+                        if ($party_max + $party_curr >= $total){
+                            $next2_month = $party_max;
+                            $next3_month = $party_curr;
+                            break;
+                        }
+                    }
+
+                }else{
+                    $next2_month = $party_max;
+                    $next3_month = $party_max;
+                }
+            }
+
+
+            //------------------------------------------------------------------
+            // 4).  0 -  !0 -  * -  *
+            if ($deficit_curr == 0 and $deficit_next > 0){
+                if ($party_min >= $total){
+                    $next_month = $party_min;
+
+                }elseif ($party_max >= $total){
+                    for ($party_curr = $party_min; $party_curr <= $party_max; $party_curr += $party_step){
+                        if ($party_curr >= $total){
+                            $next_month = $party_curr;
+                            break;
+                        }
+                    }
+
+                }elseif ($party_max + $party_min >= $total){
+                    $next_month  = $party_max;
+                    $next2_month = $party_min;
+
+                }elseif ($party_max + $party_max >= $total){
+                    for ($party_curr = $party_min; $party_curr <= $party_max; $party_curr += $party_step){
+                        if ($party_max + $party_curr >= $total){
+                            $next_month = $party_max;
+                            $next2_month = $party_curr;
+                            break;
+                        }
+                    }
+
+                }elseif ($party_max + $party_max + $party_min >= $total){
+                    $next_month  = $party_max;
+                    $next2_month = $party_max;
+                    $next3_month = $party_min;
+
+                }elseif ($party_max + $party_max + $party_max >= $total){
+                    for ($party_curr = $party_min; $party_curr <= $party_max; $party_curr += $party_step){
+                        if ($party_max + $party_max + $party_curr >= $total){
+                            $next_month  = $party_max;
+                            $next2_month = $party_max;
+                            $next3_month = $party_curr;
+                            break;
+                        }
+                    }
+
+                }else{
+                    $next_month  = $party_max;
+                    $next2_month = $party_max;
+                    $next3_month = $party_max;
+                }
+            }
+
+            //------------------------------------------------------------------
+            // 5).  !0 -  * -  * -  *
+            if ($deficit_curr > 0){
+                if ($party_min >= $total){
+                    $curr_month = $party_min;
+
+                }elseif ($party_max >= $total){
+                    for ($party_curr = $party_min; $party_curr <= $party_max; $party_curr += $party_step){
+                        if ($party_curr >= $total){
+                            $curr_month = $party_curr;
+                            break;
+                        }
+                    }
+
+                }elseif ($party_max + $party_min >= $total){
+                    $curr_month  = $party_max;
+                    $next_month  = $party_min;
+
+                }elseif ($party_max + $party_max >= $total){
+                    for ($party_curr = $party_min; $party_curr <= $party_max; $party_curr += $party_step){
+                        if ($party_max + $party_curr >= $total){
+                            $curr_month = $party_max;
+                            $next_month = $party_curr;
+                            break;
+                        }
+                    }
+
+                }elseif ($party_max + $party_max + $party_min >= $total){
+                    $curr_month  = $party_max;
+                    $next_month  = $party_max;
+                    $next2_month = $party_min;
+
+                }elseif ($party_max + $party_max + $party_max >= $total){
+                    for ($party_curr = $party_min; $party_curr <= $party_max; $party_curr += $party_step){
+                        if ($party_max + $party_max + $party_curr >= $total){
+                            $curr_month  = $party_max;
+                            $next_month  = $party_max;
+                            $next2_month = $party_curr;
+                            break;
+                        }
+                    }
+
+                }elseif ($party_max + $party_max + $party_max + $party_min >= $total){
+                    $curr_month  = $party_max;
+                    $next_month  = $party_max;
+                    $next2_month = $party_max;
+                    $next3_month = $party_min;
+
+                }elseif ($party_max + $party_max + $party_max + $party_max >= $total){
+                    for ($party_curr = $party_min; $party_curr <= $party_max; $party_curr += $party_step){
+                        if ($party_max + $party_max + $party_max + $party_curr >= $total){
+                            $curr_month  = $party_max;
+                            $next_month  = $party_max;
+                            $next2_month = $party_max;
+                            $next3_month = $party_curr;
+                            break;
+                        }
+                    }
+
+                }else{
+                    $curr_month  = $party_max;
+                    $next_month  = $party_max;
+                    $next2_month = $party_max;
+                    $next3_month = $party_max;
+                }
+
+            }
+
+            $initial_production_plan_parties["curr_month"][$id]     = $curr_month;
+            $initial_production_plan_parties["next_month"][$id]     = $next_month;
+            $initial_production_plan_parties["next2_month"][$id]    = $next2_month;
+            $initial_production_plan_parties["next3_month"][$id]    = $next3_month;
         }
         $initial_production_plan["curr_month"]["total"] = array_sum($initial_production_plan["curr_month"]);
         $initial_production_plan["next_month"]["total"] = array_sum($initial_production_plan["next_month"]);
+        $initial_production_plan["next2_month"]["total"] = array_sum($initial_production_plan["next2_month"]);
+        $initial_production_plan["next3_month"]["total"] = array_sum($initial_production_plan["next3_month"]);
+        $initial_production_plan_parties["curr_month"]["total"] = array_sum($initial_production_plan_parties["curr_month"]);
+        $initial_production_plan_parties["next_month"]["total"] = array_sum($initial_production_plan_parties["next_month"]);
+        $initial_production_plan_parties["next2_month"]["total"] = array_sum($initial_production_plan_parties["next2_month"]);
+        $initial_production_plan_parties["next3_month"]["total"] = array_sum($initial_production_plan_parties["next3_month"]);
         $view->assign("initial_production_plan", $initial_production_plan);
         $data["initial_production_plan"]    = $initial_production_plan;
+        $view->assign("initial_production_plan_parties", $initial_production_plan_parties);
+        $data["initial_production_plan_parties"]    = $initial_production_plan_parties;
+
+
+
 
 
         //======================================================================
@@ -154,7 +377,7 @@ if ($mode == "manage") {
         //======================================================================
         // Это те партии, которые открыты и не имеют активных документов "ВЫПУСК НАСОСОВ"
         // на расчетный день
-        // todo очень плохая реализация - запрашиваются сразу все партии
+        // todo очень!!! плохая реализация - запрашиваются сразу все партии
 
         $p = array(
             "with_doc_type_VN"          => true,
@@ -280,45 +503,28 @@ if ($mode == "manage") {
     }
 }
 
-
+//==============================================================================
+// ПЛАН ПРОЗВОДСТВА ПО НАСОСАМ
+//==============================================================================
 if ($mode == "analysis_of_details"){
     if (!is__array($_SESSION["uns_plan_of_mech_dep"])) return array(CONTROLLER_STATUS_REDIRECT, $controller . ".manage");
     $data = $_SESSION["uns_plan_of_mech_dep"];
     $view->assign("data", $data);
 
-    $ps_ids = null;
-//    switch ($action){
-//        case "allowance":
-//            foreach ($data["prohibition"] as $k=>$v){
-//                if ($v == "N") $ps_ids[] = $k;
-//            }
-//            break;
-//
-//        case "prohibition":
-//            foreach ($data["prohibition"] as $k=>$v){
-//                if ($v == "Y") $ps_ids[] = $k;
-//            }
-//            break;
-//
-//        case "all":
-//            $ps_ids = array_keys($data["prohibition"]);
-//            break;
-//    }
-
     // =========================================================================
-    // 1. Отобрать насосы, которые стоят в плане.
+    // 1. Отобрать насосы
     // =========================================================================
-    // ОСТАЛОСЬ (тек. + след.) - (ЗАДЕЛ + ВЫПОЛНЕНО) > 0, если "ДА", то этот насос включить в анализ
     $analysis_ps_ids = null;
     list($pump_series) = fn_uns__get_pump_series(array("only_active" => true, "view_in_plans"=>"Y",));
     foreach ($pump_series as $ps_id=>$ps){
-        $diff = /*3*0.5**/($data["remaining_production_plan"]["curr_month"][$ps_id] + $data["remaining_production_plan"]["next_month"][$ps_id])
-              /*- ($data["zadel"][$ps_id] + $data["done"][$ps_id])*/;
-        if ($diff > 0){
+        $diff = ($data["remaining_production_plan"]["curr_month"][$ps_id] + $data["remaining_production_plan"]["next_month"][$ps_id]);
+        if ($action == "allowance" and $diff > 0){
+            $analysis_ps_ids[$ps_id]["remaining"] = $diff;
+        }elseif($action == "prohibition" and $diff<=0){
             $analysis_ps_ids[$ps_id]["remaining"] = $diff;
         }
     }
-//    $analysis_ps_ids = array_slice($analysis_ps_ids, 0, 2, true);
+
     $view->assign("pump_series", $pump_series);
     $view->assign("pump_series_by_type", $data["pump_series"]);
 
@@ -388,6 +594,261 @@ if ($mode == "analysis_of_details"){
     }
     $view->assign("analisys_of_pumps", $analysis_ps_ids);
 }
+
+
+//==============================================================================
+// РАСЧЕТ ПЛАНА ПРОИЗВОДСТВА ДЛЯ ЛИТЕЙНОГО ЦЕХА
+//==============================================================================
+if ($mode == "planning"/* and $action == "LC"*/){ // План для литейного цеха
+    if (!is__array($_SESSION["uns_plan_of_mech_dep"])) return array(CONTROLLER_STATUS_REDIRECT, $controller . ".manage");
+    $data = $_SESSION["uns_plan_of_mech_dep"];
+    $view->assign("data", $data);
+
+    //--------------------------------------------------------------------------
+    // 1. ПЛАН ПОТРЕБНОСТИ В ДЕТАЛЯХ на тек., след. и след.след. месяца
+    //--------------------------------------------------------------------------
+    $details_requirement = null;
+//    $pumps_requirement = $data["initial_production_plan"]; // т.е. это = ПЛАН ПРОДАЖ - СГП
+    $pumps_requirement = $data["initial_production_plan_parties"]; // т.е. это = ПЛАН ПРОДАЖ - СГП
+    foreach ($pumps_requirement as $month=>$pump_series){
+        foreach ($pump_series as $ps_id=>$pump_quantity){
+            if (is__more_0($ps_id)){
+                // Комплектация насоса
+                $pump = array_shift(array_shift(fn_uns__get_pumps(array("ps_id"=>$ps_id))));
+                $set = fn_uns__get_packing_list_by_pump($pump["p_id"], "D", true);
+                list($details) = fn_uns__get_details(array("detail_id"=>array_keys($set), "with_material_info" => true, "with_material_info" => true,));
+                // Объединить данные
+                foreach ($details as $k=>$v){
+                    $details[$k] = array_merge($details[$k], $set[$k]);
+                }
+                foreach ($details as $detail){
+                    $details_requirement[$month][$detail["detail_id"]] += $detail["quantity"]*$pump_quantity;
+                }
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------
+    // 2. БАЛАНС МЕХ. ЦЕХА и СКМП на первое число тек. месяца
+    //--------------------------------------------------------------------------
+    $initial_balance_of_details = null;
+    $p = array();
+    $p["time_from"] = $p["time_to"] = strtotime($data["year"] . "-" . $data["month"] . "-" . "1" . " 00:00:00");
+    list ($p['time_from'], $p['time_to']) = fn_create_periods($p);
+    $p["check_dcat_id"]      = false;
+    list($balances) = fn_uns__get_balance_mc_sk_su($p, true, true);
+    if (is__array($balances)){
+        foreach ($balances as $o_id=>$groups){
+            foreach ($groups as $g){
+                foreach ($g["items"] as $item_id=>$i){
+                    if ($o_id == 17){
+                        $summ = $i["konech"];
+                    }else{
+                        $summ = $i["processing_konech"] + $i["complete_konech"];
+                    }
+                    $initial_balance_of_details[$item_id] += $summ;
+                }
+            }
+        }
+    }
+
+
+    //--------------------------------------------------------------------------
+    // 3. ПОМЕСЯЧНЫЙ ДЕФИЦИТ ДЕТАЛЕЙ (положительные числа - означают дефицит, отрицательные - избыток)
+    //--------------------------------------------------------------------------
+    $deficit_of_details = null;
+    foreach ($initial_balance_of_details as $detail_id=>$balance){
+        // тек. мес.
+        $deficit_curr = -($balance-$details_requirement["curr_month"][$detail_id]);
+        if ($deficit_curr < 0) $deficit_curr = 0;
+
+        // след. мес.
+        $deficit_next = ($details_requirement["curr_month"][$detail_id]+$details_requirement["next_month"][$detail_id])-$balance - $deficit_curr;
+        if ($deficit_next < 0) $deficit_next = 0;
+
+        // след. след. мес.
+        $deficit_next2 = ($details_requirement["curr_month"][$detail_id]+$details_requirement["next_month"][$detail_id]+$details_requirement["next2_month"][$detail_id]) - $balance - $deficit_curr - $deficit_next;
+        if ($deficit_next2 < 0) $deficit_next2 = 0;
+
+        // след. след. след. мес.
+        $deficit_next3 = ($details_requirement["curr_month"][$detail_id]+$details_requirement["next_month"][$detail_id]+$details_requirement["next2_month"][$detail_id]+$details_requirement["next3_month"][$detail_id]) - $balance - $deficit_curr - $deficit_next - $deficit_next2;
+        if ($deficit_next3 < 0) $deficit_next3 = 0;
+
+        $deficit_of_details["curr_month"][$detail_id] = $deficit_curr;
+        $deficit_of_details["next_month"][$detail_id] = $deficit_next;
+        $deficit_of_details["next2_month"][$detail_id] = $deficit_next2;
+        $deficit_of_details["next3_month"][$detail_id] = $deficit_next3;
+    }
+
+    //--------------------------------------------------------------------------
+    // 4. Баланc по Складу литья
+    //--------------------------------------------------------------------------
+    $balance_of_casts = null;
+    $p = array(
+        "plain"             => true,
+        "all"               => true,
+        "o_id"              => array(8),  // Склад литья
+        "item_type"         => "M",
+        "add_item_info"     => true,
+        "view_all_position" => "Y",
+        "mclass_id"         => 1,
+        "with_weight"       => true,
+        "accessory_pumps"   => true,
+    );
+
+    $p['time_from'] = strtotime($data["year"] . "-" . $data["month"] . "-" . "1" . " 00:00:00");
+    $p['time_to']   = strtotime(date("Y-m-d", fn_parse_date($data["current_day"])) . " 23:59:59");
+
+    $balance_of_casts = array_shift(fn_uns__get_balance($p));
+    $view->assign("balance_of_casts", $balance_of_casts);
+
+    $balance_of_casts_simple = null;
+    if (is__array($balance_of_casts)){
+        foreach ($balance_of_casts as $group){
+            if (is__array($group["items"])){
+                foreach ($group["items"] as $m_id=>$m){
+                    $balance_of_casts_simple[$m_id] = $m["konech"];
+                }
+            }
+        }
+    }
+
+
+
+    //--------------------------------------------------------------------------
+    // 5. ПОМЕСЯЧНАЯ ПЛАНОВАЯ ПОТРЕБНОСТЬ В ЗАГОТОВКАХ
+    //--------------------------------------------------------------------------
+    $prohibition_of_casts = null;       // Запрет на отливки
+    $requirement_of_casts = null;       // Потребность в литье
+    $unrequirement_of_casts = null;     // Непотребность в литья
+    if (is__array($deficit_of_details)){
+        foreach ($deficit_of_details as $month=>$items){
+            list($details) = fn_uns__get_details(array("detail_id"=>array_keys($items), "with_material_info" => true, "with_material_info" => true,));
+            if (is__array($details)){
+                foreach ($details as $detail_id=>$d){
+                    if ($d["mclass_id"] == 1 and $d["material_u_id"] == 9) { // Отливка, в штуках
+                        if ($items[$detail_id]>0) {
+                            $requirement_of_casts[$month][$d["material_id"]] += $d["material_quantity"]*$items[$detail_id];
+                        }else{
+                            $unrequirement_of_casts[$month][$d["material_id"]] += $d["material_quantity"]*$items[$detail_id];
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------
+    // 7. РАСЧЕТ "ОСТАЛОСЬ"
+    // ОСТАЛОСЬ(тек) = ПЛАН(тек) - Нач.Ост. - Приход;
+    // если ОСТАЛОСЬ(тек) >= 0: ОСТАЛОСЬ(след) = ПЛАН(след)
+    // если ОСТАЛОСЬ(тек) < 0 : ОСТАЛОСЬ(след) = ОСТАЛОСЬ(тек) + ПЛАН(след)
+    //--------------------------------------------------------------------------
+    $remaining_of_casts = null;
+    if (is__array($balance_of_casts)){
+        foreach ($balance_of_casts as $group){
+            if (is__array($group["items"])){
+                foreach ($group["items"] as $m_id=>$m){
+//                    if (is__more_0($requirement_of_casts["curr_month"][$m_id]) or is__more_0($requirement_of_casts["next_month"][$m_id])){
+                        $balance = $m["nach"] + $m["current__in"];
+                        // тек.
+                        $deficit_curr = -($balance - $requirement_of_casts["curr_month"][$m_id]);
+                        if ($deficit_curr < 0) $deficit_curr = 0;
+
+                        // след. мес.
+                        $deficit_next = ($requirement_of_casts["curr_month"][$m_id]+$requirement_of_casts["next_month"][$m_id]) - $balance - $deficit_curr;
+                        if ($deficit_next < 0) $deficit_next = 0;
+
+                        // след. след. мес.
+                        $deficit_next2 = ($requirement_of_casts["curr_month"][$m_id] + $requirement_of_casts["next_month"][$m_id] + $requirement_of_casts["next2_month"][$m_id]) - $balance - $deficit_curr - $deficit_next;
+                        if ($deficit_next2 < 0) $deficit_next2 = 0;
+
+                        // след. след. след. мес.
+                        $deficit_next3 = ($requirement_of_casts["curr_month"][$m_id] + $requirement_of_casts["next_month"][$m_id] + $requirement_of_casts["next2_month"][$m_id] + $requirement_of_casts["next3_month"][$m_id]) - $balance - $deficit_curr - $deficit_next - $deficit_next2;
+                        if ($deficit_next3 < 0) $deficit_next3 = 0;
+
+                        $remaining_of_casts["curr_month"][$m_id]    = $deficit_curr;
+                        $remaining_of_casts["next_month"][$m_id]    = $deficit_next;
+                        $remaining_of_casts["next2_month"][$m_id]   = $deficit_next2;
+                        $remaining_of_casts["next3_month"][$m_id]   = $deficit_next3;
+
+                        // ЗАПРЕТ
+                        if (    $remaining_of_casts["curr_month"][$m_id]  == 0
+                            and $remaining_of_casts["next_month"][$m_id]  == 0
+                            and $remaining_of_casts["next2_month"][$m_id] == 0
+                            and $remaining_of_casts["next3_month"][$m_id] == 0
+//                            and $requirement_of_casts["curr_month"][$m_id]  == 0
+//                            and $requirement_of_casts["next_month"][$m_id]  == 0
+//                            and $requirement_of_casts["next2_month"][$m_id] == 0
+                            and $m["konech"] >= 0
+                            and $group["group_id"] != 36 // Полумуфты
+                            and $group["group_id"] != 79 // На продажу
+                            and $group["group_id"] != 78 // На собственные нужды
+                            and $group["group_id"] != 76 // Детали ЦНС
+                            and $group["group_id"] != 28 // Гайки
+                            and $group["group_id"] != 67 // Болванки и втулки
+                        ){
+                            $prohibition_of_casts[$m_id] = "Y";
+                        }
+
+                        // РАСЧЕТ ВЕСА
+                        $remaining_of_casts["curr_month"]["total_weight"]   += $deficit_curr*$m["weight"];
+                        $remaining_of_casts["next_month"]["total_weight"]   += $deficit_next*$m["weight"];
+                        $remaining_of_casts["next2_month"]["total_weight"]  += $deficit_next2*$m["weight"];
+                        $remaining_of_casts["next3_month"]["total_weight"]  += $deficit_next3*$m["weight"];
+
+                        $requirement_of_casts["curr_month"]["total_weight"] += $requirement_of_casts["curr_month"][$m_id]*$m["weight"];
+                        $requirement_of_casts["next_month"]["total_weight"] += $requirement_of_casts["next_month"][$m_id]*$m["weight"];
+                        $requirement_of_casts["next2_month"]["total_weight"]+= $requirement_of_casts["next2_month"][$m_id]*$m["weight"];
+                        $requirement_of_casts["next3_month"]["total_weight"]+= $requirement_of_casts["next3_month"][$m_id]*$m["weight"];
+//                    }
+                }
+            }
+        }
+    }
+
+    $view->assign("remaining_of_casts",     $remaining_of_casts);
+    $view->assign("requirement_of_casts",   $requirement_of_casts);
+    $view->assign("unrequirement_of_casts", $unrequirement_of_casts);
+    $view->assign("prohibition_of_casts",   $prohibition_of_casts);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //==============================================================================
@@ -465,6 +926,7 @@ function fn_uns_plan_of_mech_dep__search ($controller){
         "year",
         "months_supply",
         "current_day",
+        "all_months",
     );
     fn_uns_search_set_get_params($controller, $params);
     return true;

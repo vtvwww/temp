@@ -10,10 +10,22 @@
     {capture name="mainbox"}
         {include file="addons/uns_plans/views/uns_plan_of_mech_dep/components/search_form_manage.tpl" dispatch="`$controller`.$mode" search_content=$smarty.capture.search_content but_text="ВЫПОЛНИТЬ РАСЧЕТ"}
         {if is__array($pump_series)}
-            {* АНАЛИЗ РАЗРЕШЕННЫХ НАСОСОВ*}
+            {* АНАЛИЗ РАЗРЕШЕННЫХ НАСОСОВ *}
             &nbsp;&nbsp;&nbsp;&nbsp;
             <span class="action-add">
                <a target="_blank" href="{"uns_plan_of_mech_dep.analysis_of_details.allowance"|fn_url}">Анализ <b>РАЗРЕШЕННЫХ</b> насосов</a>
+            </span>
+
+            {* АНАЛИЗ ВСЕХ НАСОСОВ *}
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="action-add">
+               <a target="_blank" href="{"uns_plan_of_mech_dep.analysis_of_details.prohibition"|fn_url}">Анализ <b>ОСТАВШИХСЯ</b> насосов</a>
+            </span>
+
+            {* ПЛАН ПРОИЗВОДСТВА ЛИТЕЙНОГО ЦЕХА *}
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="action-add">
+               <a target="_blank" href="{"uns_plan_of_mech_dep.planning.LC"|fn_url}">План производства Литейного цеха</a>
             </span>
 
 {*
@@ -44,6 +56,9 @@
                         <th style="text-transform: uppercase;"          rowspan="2" colspan="2" class="center b3_l b1_b">План<br>производства<br>насосов</th>
                         <th style="text-transform: uppercase;background-color:#B8C1FF; "                      colspan="4" class="center b3_l b1_b">Выполнение плана на {$search.current_day|fn_parse_date|date_format:"%d/%m/%y"}</th>
                         <th style="text-transform: none;"               rowspan="3"             class="center b3_l">Склад<br>готовой<br>продукции<br>на<br>{$search.current_day|fn_parse_date|date_format:"%d/%m/%y"}</th>
+                        {if $search.all_months == "Y"}
+                        <th style="text-transform: none;"               rowspan="3"             class="center b3_l">План<br>на 4 мес.</th>
+                        {/if}
                         {*<th style="text-transform: none;"               rowspan="3"             class="center b3_l">*}
                             {*<input type="checkbox" name="check_all" value="Y" title="{$lang.check_uncheck_all}" class="checkbox cm-check-items" checked="checked" />*}
                         {*</th>*}
@@ -114,6 +129,14 @@
                         {*Склад Готовой Продукции*}
                         {assign var="q" value=$sgp_current_day.$ps_id|default:0}
                         <td class="b3_l  center {if !$q}zero{/if}">{$q}</td>
+
+                        {if $search.all_months == "Y"}
+                            <td class="b1_l center bold">
+                                {$initial_production_plan.curr_month.$ps_id|default:0}/{$initial_production_plan.next2_month.$ps_id|default:0}/{$initial_production_plan.next2_month.$ps_id|default:0}/{$initial_production_plan.next3_month.$ps_id|default:0}
+                                <br/>
+                                {$initial_production_plan_parties.curr_month.$ps_id|default:0}/{$initial_production_plan_parties.next_month.$ps_id|default:0}/{$initial_production_plan_parties.next2_month.$ps_id|default:0}/{$initial_production_plan_parties.next3_month.$ps_id|default:0}
+                            </td>
+                        {/if}
 
                         {*checkbox для анализа деталей*}
                         {*<td class="b3_l  center">*}
@@ -221,7 +244,7 @@
             </table>
             &nbsp;&nbsp;&nbsp;<span style="color: red;"><img src="skins/basic/admin/addons/uns_plans/images/prohibition.png" alt="X"/> - ограничение на производство насоса, так как по нему уже есть {$search.months_supply}-х месячный запас для продаж.
             <br>&nbsp;&nbsp;&nbsp;Ограничение накладывается если: (СГП на тек. день + ЗАДЕЛ) &ge; ПЛАНА ПРОДАЖ на {$search.months_supply} мес. вперед.
-            <br>&nbsp;&nbsp;&nbsp;Ограничение автоматически снимается, как только со Склада готовой продукции будет продано значительное кол-во.</span>
+            <br>&nbsp;&nbsp;&nbsp;Ограничение автоматически снимается, как только со Склада готовой продукции будет продано значительное количество насосов.</span>
         {else}
             <h3>Укажите месяц и год для отображения плана производства</h3>
         {/if}
