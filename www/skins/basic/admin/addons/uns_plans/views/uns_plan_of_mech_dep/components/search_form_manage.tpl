@@ -54,15 +54,15 @@
                 </div>
             </td>
             <td class="nowrap search-field" style="border-left: 1px solid #808080;">
-                <label>Запас продукции на Складе гот. продукции<br>для расчета ограничений производства</label>
+                <label>Запас продукции на складах<br>для расчета ограничений</label>
                 <div class="break">
                     <select name="months_supply">
-                        <option value="1" disabled {if $search.months_supply == 1}selected="selected"{/if}>на 1 месяц</option>
-                        <option value="2" disabled {if $search.months_supply == 2}selected="selected"{/if}>на 2 месяца</option>
+                        {*<option value="1" disabled {if $search.months_supply == 1}selected="selected"{/if}>на 1 месяц</option>*}
+                        {*<option value="2" disabled {if $search.months_supply == 2}selected="selected"{/if}>на 2 месяца</option>*}
                         <option value="3"  {if $search.months_supply == 3}selected="selected"{elseif !$search.months_supply|is__more_0}selected="selected"{/if}>на 3 месяца</option>
-                        <option value="4" disabled {if $search.months_supply == 4}selected="selected"{/if}>на 4 месяца</option>
-                        <option value="5" disabled {if $search.months_supply == 5}selected="selected"{/if}>на 5 месяцев</option>
-                        <option value="6" disabled {if $search.months_supply == 6}selected="selected"{/if}>на 6 месяцев</option>
+                        {*<option value="4" disabled {if $search.months_supply == 4}selected="selected"{/if}>на 4 месяца</option>*}
+                        {*<option value="5" disabled {if $search.months_supply == 5}selected="selected"{/if}>на 5 месяцев</option>*}
+                        {*<option value="6" disabled {if $search.months_supply == 6}selected="selected"{/if}>на 6 месяцев</option>*}
                     </select>
                 </div>
             </td>

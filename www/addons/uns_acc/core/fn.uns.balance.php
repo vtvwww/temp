@@ -153,17 +153,6 @@ function fn_uns__get_balance($params = array(), $time=false){
         if ($params['item_id_array'] = to__array($params['item_id'])){
             $cond__items .= db_quote(" AND uns__acc_document_items.item_id in (?n) ", $params['item_id_array']);
         }
-//        if ($params['item_type'] == 'M'){
-//            if (is__more_0($params['item_id'])){
-//                $cond__items .= db_quote(" AND uns__acc_document_items.item_id = ?i ", $params['item_id']);
-//            }
-//        }elseif ($params['item_type'] == 'D'){
-//            if ($params['item_id_array'] = to__array($params['item_id'])){
-//                $cond__items .= db_quote(" AND uns__acc_document_items.item_id in (?n) ", $params['item_id_array']);
-//            }
-//        }elseif (fn_check_type($params['item_type'], UNS_ITEM_TYPES)){
-//            $cond__items .= db_quote(" AND uns__acc_document_items.item_type = ?s ", $params['item_type']);
-//        }
     }
 
     if (fn_check_type($params['package_type'], UNS_PACKAGE_TYPES) and is__more_0($params['package_id'])){
@@ -391,9 +380,10 @@ function fn_uns__get_balance($params = array(), $time=false){
                 foreach ($mcats as $mcats_k=>$mcats_v){
                     foreach ($materials as $materials_k=>$materials_v){
                         if ($mcats_k == $materials_v["mcat_id"]){
-                            $mcat_items[$mcats_k]["group"]  = $mcats_v["mcat_name"];
-                            $mcat_items[$mcats_k]["group_id"]  = $mcats_v["mcat_id"];
-                            $mcat_items[$mcats_k]["group_comment"]  = $mcats_v["mcat_comment"];
+                            $mcat_items[$mcats_k]["group"]              = $mcats_v["mcat_name"];
+                            $mcat_items[$mcats_k]["group_id"]           = $mcats_v["mcat_id"];
+                            $mcat_items[$mcats_k]["group_comment"]      = $mcats_v["mcat_comment"];
+                            $mcat_items[$mcats_k]["group_view_in_plans"]= $mcats_v["view_in_plans"];
                             $mcat_items[$mcats_k]["items"][$materials_k]["id"]                      = $materials_v["material_id"];
                             $mcat_items[$mcats_k]["items"][$materials_k]["material_id"]             = $materials_v["material_id"];
                             $mcat_items[$mcats_k]["items"][$materials_k]["name"]                    = $materials_v["material_name"];

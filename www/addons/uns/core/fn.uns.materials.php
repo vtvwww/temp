@@ -209,6 +209,7 @@ function fn_uns__get_materials_categories($params = array())
         '?:material_categories.mcat_position',
         '?:material_categories.mcat_status',
         '?:material_categories.show_in_report_as_name',
+        '?:material_categories.view_in_plans',
     );
 
     $sorting_schemas = array(

@@ -14,8 +14,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 }
 
 // Общие шаблоны
+$months_roman = array(1=>"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII");
 $months = array(1=>"янв", "фев", "мар", "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек");
 $view->assign('months', $months);
+$months_full = array(1=>"январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь");
+$view->assign('months_full', $months_full);
+
 $data = array();
 
 
@@ -31,20 +35,45 @@ if ($mode == "manage") {
         $data["current_day"]   = $_REQUEST["current_day"];
 
         //======================================================================
-        // 0. Предопределение текущего и следующего месяца
+        // 0. ПРЕДОПРЕДЕЛЕНИЕ ТЕКУЩЕГО И СЛЕДУЮЩЕГО МЕСЯЦА
         //======================================================================
         $php_curr_month = strtotime($_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1");
         $php_next_month = strtotime($_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1 +1 month");
         $php_next2_month = strtotime($_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1 +2 month");
         $php_next3_month = strtotime($_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1 +3 month");
-        $view->assign("tpl_curr_month",     $months[date("n", $php_curr_month)]  . "." . date("y", $php_curr_month));
-        $view->assign("tpl_next_month",     $months[date("n", $php_next_month)]  . "." . date("y", $php_next_month));
-        $view->assign("tpl_next2_month",    $months[date("n", $php_next2_month)] . "." . date("y", $php_next2_month));
-        $view->assign("tpl_next3_month",    $months[date("n", $php_next3_month)] . "." . date("y", $php_next3_month));
-        $data["tpl_curr_month"] = $months[date("n", $php_curr_month)] . "." . date("y", $php_curr_month);
-        $data["tpl_next_month"] = $months[date("n", $php_next_month)] . "." . date("y", $php_next_month);
-        $data["tpl_next2_month"] = $months[date("n", $php_next2_month)] . "." . date("y", $php_next2_month);
-        $data["tpl_next3_month"] = $months[date("n", $php_next3_month)] . "." . date("y", $php_next3_month);
+
+        // Представление в арабских цифрах
+        $curr_month_arab    = $months[date("n", $php_curr_month)]  . "." . date("y", $php_curr_month);
+        $next_month_arab    = $months[date("n", $php_next_month)]  . "." . date("y", $php_next_month);
+        $next2_month_arab   = $months[date("n", $php_next2_month)] . "." . date("y", $php_next2_month);
+        $next3_month_arab   = $months[date("n", $php_next3_month)] . "." . date("y", $php_next3_month);
+        $data["tpl_curr_month"] =   $curr_month_arab;
+        $data["tpl_next_month"] =   $next_month_arab;
+        $data["tpl_next2_month"] =  $next2_month_arab;
+        $data["tpl_next3_month"] =  $next3_month_arab;
+        $view->assign("tpl_curr_month",  $curr_month_arab);
+        $view->assign("tpl_next_month",  $next_month_arab);
+        $view->assign("tpl_next2_month", $next2_month_arab);
+        $view->assign("tpl_next3_month", $next3_month_arab);
+
+        // Представление в римских цифрах
+        $curr_month_roman["month"]  = $months[date("n", $php_curr_month)];
+        $curr_month_roman["year"]   = date("Y", $php_curr_month);
+        $next_month_roman["month"]  = $months[date("n", $php_next_month)];
+        $next_month_roman["year"]   = date("Y", $php_next_month);
+        $next2_month_roman["month"] = $months[date("n", $php_next2_month)];
+        $next2_month_roman["year"]  = date("Y", $php_next2_month);
+        $next3_month_roman["month"] = $months[date("n", $php_next3_month)];
+        $next3_month_roman["year"]  = date("Y", $php_next3_month);
+
+        $data["tpl_curr_month_roman"]   = $curr_month_roman;
+        $data["tpl_next_month_roman"]   = $next_month_roman;
+        $data["tpl_next2_month_roman"]  = $next2_month_roman;
+        $data["tpl_next3_month_roman"]  = $next3_month_roman;
+        $view->assign("tpl_curr_month_roman",  $curr_month_roman);
+        $view->assign("tpl_next_month_roman",  $next_month_roman);
+        $view->assign("tpl_next2_month_roman", $next2_month_roman);
+        $view->assign("tpl_next3_month_roman", $next3_month_roman);
 
 
         //======================================================================
@@ -163,6 +192,7 @@ if ($mode == "manage") {
 
             // =================================================================
             // Расчет кратности партий =========================================
+            // =================================================================
             $party_min  = $ps["party_size_min"];
             $party_max  = $ps["party_size_max"];
             $party_step = $ps["party_size_step"];
@@ -435,7 +465,9 @@ if ($mode == "manage") {
         foreach ($pump_series as $ps_id=>$ps){
             // трехмесячные(1.5) или четырехмесячные(2) продажи
             $s = ($_REQUEST["months_supply"]*0.5)*($requirement["curr_month"][$ps_id] + $requirement["next_month"][$ps_id]);
-            $prohibition[$ps_id] = (($sgp_current_day[$ps_id]+$zadel[$ps_id])>=fn_fvalue($s,0))?"Y":"N";
+            if (($sgp_current_day[$ps_id]+$zadel[$ps_id])>=fn_fvalue($s,0)){
+                $prohibition[$ps_id] = "Y";
+            }
         }
         $view->assign("prohibition", $prohibition);
         $data["prohibition"]    = $prohibition;
@@ -445,7 +477,24 @@ if ($mode == "manage") {
         //======================================================================
         $remaining_production_plan = array();
         foreach ($pump_series as $id=>$ps){
-            // тек. месяц ------------------------------------------------------
+            $balance = $zadel[$id]+$done[$id];
+            // тек. мес.
+            $deficit_curr = ($initial_production_plan["curr_month"][$id]) - $balance;
+            if ($deficit_curr < 0) $deficit_curr = 0;
+
+            // след. мес.
+            $deficit_next = ($initial_production_plan["curr_month"][$id]+$initial_production_plan["next_month"][$id]) - $balance - $deficit_curr;
+            if ($deficit_next < 0) $deficit_next = 0;
+
+            // след. след. мес.
+            $deficit_next2 = ($initial_production_plan["curr_month"][$id]+$initial_production_plan["next_month"][$id]+$initial_production_plan["next2_month"][$id]) - $balance - $deficit_curr - $deficit_next;
+            if ($deficit_next2 < 0) $deficit_next2 = 0;
+
+            $remaining_production_plan["curr_month"][$id] = $deficit_curr;
+            $remaining_production_plan["next_month"][$id] = $deficit_next;
+            $remaining_production_plan["next2_month"][$id] = $deficit_next2;
+
+/*            // тек. месяц ------------------------------------------------------
             $curr_month = ($zadel[$id]+$done[$id])-$initial_production_plan["curr_month"][$id];
             if ($curr_month >=0){
                 $remaining_production_plan["curr_month"][$id] = 0;
@@ -462,10 +511,11 @@ if ($mode == "manage") {
                 }
             }else{
                 $remaining_production_plan["next_month"][$id] = abs(0 - $initial_production_plan["next_month"][$id]);
-            }
+            }*/
         }
         $remaining_production_plan ["curr_month"]["total"] = array_sum($remaining_production_plan ["curr_month"]);
         $remaining_production_plan ["next_month"]["total"] = array_sum($remaining_production_plan ["next_month"]);
+        $remaining_production_plan ["next2_month"]["total"] = array_sum($remaining_production_plan ["next_month"]);
         $view->assign("remaining_production_plan", $remaining_production_plan );
         $data["remaining_production_plan"]    = $remaining_production_plan;
 
@@ -745,11 +795,12 @@ if ($mode == "planning"/* and $action == "LC"*/){ // План для литей�
     // если ОСТАЛОСЬ(тек) < 0 : ОСТАЛОСЬ(след) = ОСТАЛОСЬ(тек) + ПЛАН(след)
     //--------------------------------------------------------------------------
     $remaining_of_casts = null;
+    $movement_of_casts = null;
     if (is__array($balance_of_casts)){
         foreach ($balance_of_casts as $group){
             if (is__array($group["items"])){
                 foreach ($group["items"] as $m_id=>$m){
-//                    if (is__more_0($requirement_of_casts["curr_month"][$m_id]) or is__more_0($requirement_of_casts["next_month"][$m_id])){
+                    if ($group["group_view_in_plans"] == "Y"){
                         $balance = $m["nach"] + $m["current__in"];
                         // тек.
                         $deficit_curr = -($balance - $requirement_of_casts["curr_month"][$m_id]);
@@ -777,9 +828,6 @@ if ($mode == "planning"/* and $action == "LC"*/){ // План для литей�
                             and $remaining_of_casts["next_month"][$m_id]  == 0
                             and $remaining_of_casts["next2_month"][$m_id] == 0
                             and $remaining_of_casts["next3_month"][$m_id] == 0
-//                            and $requirement_of_casts["curr_month"][$m_id]  == 0
-//                            and $requirement_of_casts["next_month"][$m_id]  == 0
-//                            and $requirement_of_casts["next2_month"][$m_id] == 0
                             and $m["konech"] >= 0
                             and $group["group_id"] != 36 // Полумуфты
                             and $group["group_id"] != 79 // На продажу
@@ -787,26 +835,36 @@ if ($mode == "planning"/* and $action == "LC"*/){ // План для литей�
                             and $group["group_id"] != 76 // Детали ЦНС
                             and $group["group_id"] != 28 // Гайки
                             and $group["group_id"] != 67 // Болванки и втулки
+                            and $group["group_id"] != 80 // Старое литья
                         ){
                             $prohibition_of_casts[$m_id] = "Y";
                         }
 
-                        // РАСЧЕТ ВЕСА
-                        $remaining_of_casts["curr_month"]["total_weight"]   += $deficit_curr*$m["weight"];
-                        $remaining_of_casts["next_month"]["total_weight"]   += $deficit_next*$m["weight"];
-                        $remaining_of_casts["next2_month"]["total_weight"]  += $deficit_next2*$m["weight"];
-                        $remaining_of_casts["next3_month"]["total_weight"]  += $deficit_next3*$m["weight"];
+                        // РАСЧЕТ ВЕСА по тем категориям, которые разрешены для отображения в планах
+                        // Потребность
+                        $requirement_of_casts["curr_month"]["total_weight"] += $m["weight"]*$requirement_of_casts["curr_month"][$m_id];
+                        $requirement_of_casts["next_month"]["total_weight"] += $m["weight"]*$requirement_of_casts["next_month"][$m_id];
+                        $requirement_of_casts["next2_month"]["total_weight"]+= $m["weight"]*$requirement_of_casts["next2_month"][$m_id];
+                        $requirement_of_casts["next3_month"]["total_weight"]+= $m["weight"]*$requirement_of_casts["next3_month"][$m_id];
 
-                        $requirement_of_casts["curr_month"]["total_weight"] += $requirement_of_casts["curr_month"][$m_id]*$m["weight"];
-                        $requirement_of_casts["next_month"]["total_weight"] += $requirement_of_casts["next_month"][$m_id]*$m["weight"];
-                        $requirement_of_casts["next2_month"]["total_weight"]+= $requirement_of_casts["next2_month"][$m_id]*$m["weight"];
-                        $requirement_of_casts["next3_month"]["total_weight"]+= $requirement_of_casts["next3_month"][$m_id]*$m["weight"];
-//                    }
+                        // Движение по складу
+                        $movement_of_casts["nach"]                          += $m["weight"]*$m["nach"];
+                        $movement_of_casts["in"]                            += $m["weight"]*$m["current__in"];
+                        $movement_of_casts["out"]                           += $m["weight"]*$m["current__out"];
+                        $movement_of_casts["konech"]                        += $m["weight"]*$m["konech"];
+
+                        // Осталось
+                        $remaining_of_casts["curr_month"]["total_weight"]   += $m["weight"]*$deficit_curr;
+                        $remaining_of_casts["next_month"]["total_weight"]   += $m["weight"]*$deficit_next;
+                        $remaining_of_casts["next2_month"]["total_weight"]  += $m["weight"]*$deficit_next2;
+                        $remaining_of_casts["next3_month"]["total_weight"]  += $m["weight"]*$deficit_next3;
+                    }
                 }
             }
         }
     }
 
+    $view->assign("movement_of_casts",      $movement_of_casts);
     $view->assign("remaining_of_casts",     $remaining_of_casts);
     $view->assign("requirement_of_casts",   $requirement_of_casts);
     $view->assign("unrequirement_of_casts", $unrequirement_of_casts);
@@ -817,42 +875,9 @@ if ($mode == "planning"/* and $action == "LC"*/){ // План для литей�
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //==============================================================================
 // АНАЛИЗ ИНДИВИДУАЛЬНО ПО НАСОСУ
+//==============================================================================
 if (defined('AJAX_REQUEST') and  $mode == "analysis_of_pump"){
     $pumps = array_shift(fn_uns__get_pumps(array("ps_id"=>$_REQUEST["ps_id"])));
     if (is__array($pumps)){
