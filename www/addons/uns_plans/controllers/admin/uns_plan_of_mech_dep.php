@@ -830,7 +830,7 @@ function fn_uns_plan_of_mech_dep__search ($controller){
         "year",
         "months_supply",
         "current_day",
-        "all_months",
+        "plan_parties",
     );
     fn_uns_search_set_get_params($controller, $params);
     return true;

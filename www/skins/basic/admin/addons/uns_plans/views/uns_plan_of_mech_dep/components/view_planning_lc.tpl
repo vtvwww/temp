@@ -42,7 +42,7 @@
                 {assign var="q" value=$m.nach|fn_fvalue:1}
                 <td align="center" style="background-color: #f1f1f1;" class="b3_l {if $q < 0}info_warning_block{elseif $q==0}zero{/if}">{$q}</td>
                 {assign var="q" value=$m.current__in|fn_fvalue:1}
-                <td align="center" style="background-color: #f1f1f1;" class="b1_l {if $q < 0}info_warning_block{elseif $q==0}zero{/if}">{$q}</td>
+                <td align="center" style="background-color: #f1f1f1;" class="b2_l {if $q < 0}info_warning_block{elseif $q==0}zero{/if}">{$q}</td>
                 {assign var="q" value=$m.current__out|fn_fvalue:1}
                 <td align="center" style="background-color: #f1f1f1;" class="b1_l {if $q < 0}info_warning_block{elseif $q==0}zero{/if}">{$q}</td>
                 {assign var="q" value=$m.konech|fn_fvalue:1}
