@@ -534,103 +534,11 @@ if ($mode == "manage") {
     }
 }
 
-//==============================================================================
-// ПЛАН ПРОЗВОДСТВА ПО НАСОСАМ
-//==============================================================================
-if ($mode == "analysis_of_details"){
-    if (!is__array($_SESSION["uns_plan_of_mech_dep"])) return array(CONTROLLER_STATUS_REDIRECT, $controller . ".manage");
-    $data = $_SESSION["uns_plan_of_mech_dep"];
-    $view->assign("data", $data);
-
-    // =========================================================================
-    // 1. Отобрать насосы
-    // =========================================================================
-    $analysis_ps_ids = null;
-    list($pump_series) = fn_uns__get_pump_series(array("only_active" => true, "view_in_plans"=>"Y",));
-    foreach ($pump_series as $ps_id=>$ps){
-        $diff = ($data["remaining_production_plan"]["curr_month"][$ps_id] + $data["remaining_production_plan"]["next_month"][$ps_id]);
-        if ($action == "allowance" and $diff > 0){
-            $analysis_ps_ids[$ps_id]["remaining"] = $diff;
-        }elseif($action == "prohibition" and $diff<=0){
-            $analysis_ps_ids[$ps_id]["remaining"] = $diff;
-        }
-    }
-
-    $view->assign("pump_series", $pump_series);
-    $view->assign("pump_series_by_type", $data["pump_series"]);
-
-
-    // =========================================================================
-    // 2. ПОЛУЧИТЬ СПИСОК ДЕТАЛЕЙ ИДУЩИЕ НА ЭТИ ПЛАНОВЫЕ НАСОСЫ
-    // =========================================================================
-    foreach ($analysis_ps_ids as $ps_id=>$ps){
-        $pump = array_shift(array_shift(fn_uns__get_pumps(array("ps_id"=>$ps_id))));
-        $set = fn_uns__get_packing_list_by_pump($pump["p_id"], "D", true);
-        list($details) = fn_uns__get_details(array("detail_id"=>array_keys($set), "with_material_info" => true, "with_material_info" => true,));
-        // Объединить данные
-        foreach ($details as $k=>$v){
-            $details[$k] = array_merge($details[$k], $set[$k]);
-        }
-
-        // БАЛАНС ПО ДЕТАЛЯМ ===================================================
-        $p = array();
-        $p["time_from"] = $data["current_day"];
-        $p["time_to"]   = $data["current_day"];
-        list ($p['time_from'], $p['time_to']) = fn_create_periods($p);
-        $p["detail_id"] = $p["item_id"] = array_keys($details);
-        $p["check_dcat_id"]      = false;
-        list($balances) = fn_uns__get_balance_mc_sk_su($p, true, true, false);
-        if (is__array($balances)){
-            foreach ($balances as $o_id=>$groups){
-                foreach ($groups as $g){
-                    foreach ($g["items"] as $item_id=>$i){
-                        $details[$item_id]["balance"][$o_id]["processing_konech"]   = $i["processing_konech"];
-                        $details[$item_id]["balance"][$o_id]["complete_konech"]     = $i["complete_konech"];
-                        $details[$item_id]["balance"][$o_id]["konech"]              = $i["konech"];
-                    }
-                }
-            }
-        }
-
-        // БАЛАНС ПО ОТЛИВКАМ ==================================================
-        $material_id = array();
-        foreach ($details as $data){
-            if ($data["mclass_id"] == 1){
-                $material_id[] = $data["material_id"];
-            }
-        }
-
-        $p = array(
-            "plain"         => false,
-            "all"           => true,
-            "o_id"          => array(8),  // Склад литья
-            "item_type"     => "M",
-            "add_item_info" => false,
-            "view_all_position" => "Y",
-            "mclass_id"     => 1,
-            "item_id"       => $material_id,
-        );
-        $p["time_from"] = $data["current_day"];
-        $p["time_to"]   = $data["current_day"];
-        list ($p['time_from'], $p['time_to']) = fn_create_periods($p);
-        list($balances) = fn_uns__get_balance($p);
-        foreach ($details as $d_id=>$data){
-            if ($data["mclass_id"] == 1){
-                $details[$d_id]["balance_material"] = fn_fvalue($balances[$data["material_id"]]["ko"]);
-            }
-        }
-        $analysis_ps_ids[$ps_id]["pump"] = $pump;
-        $analysis_ps_ids[$ps_id]["details"] = $details;
-
-    }
-    $view->assign("analisys_of_pumps", $analysis_ps_ids);
-}
-
 
 //==============================================================================
 // РАСЧЕТ ПЛАНА ПРОИЗВОДСТВА ДЛЯ ЛИТЕЙНОГО ЦЕХА
 //==============================================================================
-if ($mode == "planning"/* and $action == "LC"*/){ // План для литейного цеха
+if ($mode == "planning" and $action == "LC"){ // План для литейного цеха
     if (!is__array($_SESSION["uns_plan_of_mech_dep"])) return array(CONTROLLER_STATUS_REDIRECT, $controller . ".manage");
     $data = $_SESSION["uns_plan_of_mech_dep"];
     $view->assign("data", $data);
@@ -639,8 +547,7 @@ if ($mode == "planning"/* and $action == "LC"*/){ // План для литей�
     // 1. ПЛАН ПОТРЕБНОСТИ В ДЕТАЛЯХ на тек., след. и след.след. месяца
     //--------------------------------------------------------------------------
     $details_requirement = null;
-//    $pumps_requirement = $data["initial_production_plan"]; // т.е. это = ПЛАН ПРОДАЖ - СГП
-    $pumps_requirement = $data["initial_production_plan_parties"]; // т.е. это = ПЛАН ПРОДАЖ - СГП
+    $pumps_requirement = $data["initial_production_plan_parties"]; // Плановая сдача партий насосов на СГП
     foreach ($pumps_requirement as $month=>$pump_series){
         foreach ($pump_series as $ps_id=>$pump_quantity){
             if (is__more_0($ps_id)){
@@ -853,76 +760,116 @@ if ($mode == "planning"/* and $action == "LC"*/){ // План для литей�
 }
 
 
-
-
-
 //==============================================================================
-// АНАЛИЗ ИНДИВИДУАЛЬНО ПО НАСОСУ
+// ПОДЕТАЛЬНЫЙ АНАЛИЗ НАСОСОВ
 //==============================================================================
-if (defined('AJAX_REQUEST') and  $mode == "analysis_of_pump"){
-    $pumps = array_shift(fn_uns__get_pumps(array("ps_id"=>$_REQUEST["ps_id"])));
-    if (is__array($pumps)){
-        foreach ($pumps as $p_id=>$p){
-            $set = fn_uns__get_packing_list_by_pump($p_id, "D", true);
-            list($details) = fn_uns__get_details(array("detail_id"=>array_keys($set), "with_material_info" => true));
+if ($mode == "analysis_of_pumps"){
+//    unset($_SESSION["balance_of_details"]);
+//    unset($_SESSION["balance_of_casts"]);
+
+    // 0. ПОЛУЧЕНИЕ ДАННЫХ ИЗ СЕССИИ
+    if (!is__array($_SESSION["uns_plan_of_mech_dep"])) return array(CONTROLLER_STATUS_REDIRECT, $controller . ".manage");
+    $data = $_SESSION["uns_plan_of_mech_dep"];
+    $view->assign("data", $data);
+
+    // 1. ПОЛУЧИТЬ СПИСОК СЕРИЙ НАСОСОВ ДЛЯ АНАЛИЗА
+    list($pump_series) = fn_uns__get_pump_series(array("only_active" => true, "view_in_plans"=>"Y",));
+    $view->assign("ppump_series", $pump_series);
+    $ps_ids = null;
+    switch ($action){
+        case "pump":                // 1. Выполнить анализ одной серии насосов, отображая все входящие в него насосы
+            if (is__more_0($_REQUEST["ps_id"])) $ps_ids[] = $_REQUEST["ps_id"];
+            break;
+
+        case "allowance":     // 2. Выполнить анализ РАЗРЕШЕННЫХ насосов
+            foreach ($pump_series as $ps_id=>$ps){
+                if ($data["prohibition"][$ps_id] != "Y"){
+                    $ps_ids[] = $ps_id;
+                }
+            }
+            break;
+
+        case "prohibition":   // 3. Выполнить анализ ЗАПРЕЩЕННЫХ насосов
+            $ps_ids = array_keys($data["prohibition"]);
+            break;
+
+        case "all":           // 4. Выполнить анализ ВСЕХ насосов
+            $ps_ids = array_keys($pump_series);
+            break;
+    }
+
+    if (is_null($ps_ids)) return array(CONTROLLER_STATUS_REDIRECT, $controller . ".manage");
+
+    // 2. БАЛАНС ПО ДЕТАЛЯМ ====================================================
+    if (is__array($_SESSION["balance_of_details"])) $balance_of_details = $_SESSION["balance_of_details"];
+    else{
+        $p = array();
+        $p["time_from"] = $data["current_day"];
+        $p["time_to"]   = $data["current_day"];
+        list ($p['time_from'], $p['time_to']) = fn_create_periods($p);
+        $p["check_dcat_id"]      = false;
+        list($balances) = fn_uns__get_balance_mc_sk_su($p, true, true, false);
+        if (is__array($balances)){
+            foreach ($balances as $o_id=>$groups){
+                foreach ($groups as $g){
+                    foreach ($g["items"] as $item_id=>$i){
+                        $balance_of_details[$item_id][$o_id]["processing_konech"]   = $i["processing_konech"];
+                        $balance_of_details[$item_id][$o_id]["complete_konech"]     = $i["complete_konech"];
+                        $balance_of_details[$item_id][$o_id]["konech"]              = $i["konech"];
+                    }
+                }
+            }
+        }
+        $_SESSION["balance_of_details"] = $balance_of_details;
+    }
+    $view->assign("balance_of_details", $balance_of_details);
+
+
+    // 3. БАЛАНС ПО ОТЛИВКАМ ===================================================
+    if (is__array($_SESSION["balance_of_casts"])) $balance_of_casts = $_SESSION["balance_of_casts"];
+    else{
+        $p = array(
+            "plain"         => false,
+            "all"           => true,
+            "o_id"          => array(8),  // Склад литья
+            "item_type"     => "M",
+            "add_item_info" => false,
+            "view_all_position" => "Y",
+            "mclass_id"     => 1,
+        );
+        $p["time_from"] = $data["current_day"];
+        $p["time_to"]   = $data["current_day"];
+        list ($p['time_from'], $p['time_to']) = fn_create_periods($p);
+        list($balance) = fn_uns__get_balance($p);
+        foreach ($balance as $k=>$v){
+            $balance_of_casts[$k] = fn_fvalue($v["ko"]);
+        }
+        $_SESSION["balance_of_casts"] = $balance_of_casts;
+    }
+    $view->assign("balance_of_casts", $balance_of_casts);
+
+
+    // 4. ПОЛУЧИТЬ КОМПЛЕКТАЦИИ ПО СЕРИЯМ ======================================
+    $ps_sets = null;
+    foreach ($ps_ids as $ps_id){
+        $pumps = array_shift(fn_uns__get_pumps(array("ps_id"=>$ps_id)));
+        if ($action != "pump"){
+            $pumps = array_slice($pumps, 0, 1, true);
+        }
+
+        foreach ($pumps as $pump_id=>$pump){
+            $set = fn_uns__get_packing_list_by_pump($pump_id, "D", true);
+            list($details) = fn_uns__get_details(array("detail_id"=>array_keys($set), "with_material_info" => true,));
+//             Объединить данные
             foreach ($details as $k=>$v){
                 $details[$k] = array_merge($details[$k], $set[$k]);
             }
 
-            // БАЛАНС ПО ДЕТАЛЯМ
-            $p = array();
-            $p["time_from"] = $_REQUEST["current_day"];
-            $p["time_to"]   = $_REQUEST["current_day"];
-            list ($p['time_from'], $p['time_to']) = fn_create_periods($p);
-            $p["detail_id"] = $p["item_id"] = array_keys($details);
-            $p["check_dcat_id"]      = false;
-            list($balances) = fn_uns__get_balance_mc_sk_su($p, true, true, false);
-            if (is__array($balances)){
-                foreach ($balances as $o_id=>$groups){
-                    foreach ($groups as $g){
-                        foreach ($g["items"] as $item_id=>$i){
-                            $details[$item_id]["balance"][$o_id]["processing_konech"]   = $i["processing_konech"];
-                            $details[$item_id]["balance"][$o_id]["complete_konech"]     = $i["complete_konech"];
-                            $details[$item_id]["balance"][$o_id]["konech"]              = $i["konech"];
-                        }
-                    }
-                }
-            }
-
-            // БАЛАНС ПО ОТЛИВКАМ
-            $material_id = array();
-            foreach ($details as $data){
-                if ($data["mclass_id"] == 1){
-                    $material_id[] = $data["material_id"];
-                }
-            }
-
-            $p = array(
-                "plain"         => false,
-                "all"           => true,
-                "o_id"          => array(8),  // Склад литья
-                "item_type"     => "M",
-                "add_item_info" => false,
-                "view_all_position" => "Y",
-                "mclass_id"     => 1,
-                "item_id"       => $material_id,
-            );
-            $p["time_from"] = $_REQUEST["current_day"];
-            $p["time_to"]   = $_REQUEST["current_day"];
-            list ($p['time_from'], $p['time_to']) = fn_create_periods($p);
-            list($balances) = fn_uns__get_balance($p);
-            foreach ($details as $d_id=>$data){
-                if ($data["mclass_id"] == 1){
-                    $details[$d_id]["balance_material"] = fn_fvalue($balances[$data["material_id"]]["ko"]);
-                }
-            }
-
-            // -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-            $pumps[$p_id]["details"] = $details;
+            $ps_sets[$ps_id]["pumps"][$pump_id] = $pump;
+            $ps_sets[$ps_id]["pumps"][$pump_id]["details"] = $details;
         }
     }
-    $view->assign("pumps", $pumps);
-    $view->assign("data", $_REQUEST);
+    $view->assign("ps_sets", $ps_sets);
 }
 
 

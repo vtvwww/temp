@@ -4796,11 +4796,11 @@ li.small-description {
 	padding: 15px 0;
 }
 html .ui-widget-overlay {
-	background: url("images/picker_bg_outside.png") repeat-x 0 -50% scroll #ffffff;
+	background: url("images/picker_bg_outside.png") repeat-x 0 -50% scroll #d0d0d0;
 	padding: 0;
 	margin: 0;
 	overflow: hidden;
-	opacity: 0.6;
+	opacity: 0.9;
 	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=70)";
 }
 .ui-dialog .ui-dialog-title {

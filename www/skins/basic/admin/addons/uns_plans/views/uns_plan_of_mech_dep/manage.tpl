@@ -10,23 +10,29 @@
     {capture name="mainbox"}
         {include file="addons/uns_plans/views/uns_plan_of_mech_dep/components/search_form_manage.tpl" dispatch="`$controller`.$mode" search_content=$smarty.capture.search_content but_text="ВЫПОЛНИТЬ РАСЧЕТ"}
         {if is__array($pump_series)}
-            {* АНАЛИЗ РАЗРЕШЕННЫХ НАСОСОВ *}
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <span class="action-add">
-               <a target="_blank" href="{"uns_plan_of_mech_dep.analysis_of_details.allowance"|fn_url}">Анализ <b>РАЗРЕШЕННЫХ</b> насосов</a>
-            </span>
-
-            {* АНАЛИЗ ВСЕХ НАСОСОВ *}
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <span class="action-add">
-               <a target="_blank" href="{"uns_plan_of_mech_dep.analysis_of_details.prohibition"|fn_url}">Анализ <b>ОСТАВШИХСЯ</b> насосов</a>
-            </span>
-
             {* ПЛАН ПРОИЗВОДСТВА ЛИТЕЙНОГО ЦЕХА *}
             &nbsp;&nbsp;&nbsp;&nbsp;
             <span class="action-add">
-               <a target="_blank" href="{"uns_plan_of_mech_dep.planning.LC"|fn_url}">План производства Литейного цеха</a>
+               <a target="_blank" href="{"uns_plan_of_mech_dep.planning.LC"|fn_url}"><b>План производства Лит. цеха</b></a>
             </span>
+
+            {* АНАЛИЗ РАЗРЕШЕННЫХ НАСОСОВ *}
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="action-add">
+               <a target="_blank" href="{"uns_plan_of_mech_dep.analysis_of_pumps.allowance"|fn_url}">Анализ <b>РАЗРЕШЕННЫХ</b> насосов</a>
+            </span>
+
+            {* АНАЛИЗ ЗАПРЕЩЕННЫХ НАСОСОВ *}
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="action-add">
+               <a target="_blank" href="{"uns_plan_of_mech_dep.analysis_of_pumps.prohibition"|fn_url}">Анализ <b>ЗАПРЕЩЕННЫХ</b> насосов</a>
+            </span>
+
+            {* АНАЛИЗ ВСЕХ НАСОСОВ *}
+            {*&nbsp;&nbsp;&nbsp;&nbsp;*}
+            {*<span class="action-add">*}
+               {*<a target="_blank" href="{"uns_plan_of_mech_dep.analysis_of_pumps.all"|fn_url}">Анализ <b>ВСЕХ</b> насосов</a>*}
+            {*</span>*}
 
             <table cellpadding="0" cellspacing="0" border="0" class="table" style="margin: 10px; 0">
                 <thead>
@@ -81,8 +87,8 @@
                     <tr>
                         {*Наименование*}
                         <td>
-                            <a  rev="content_item_name_{$analysis_links.$ps_id.id}" id="opener_item_name_{$analysis_links.$ps_id.id}" href="{$analysis_links.$ps_id.href|fn_url}" class="block cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black bold" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$ps.ps_name}</a>
-                            <div id="content_item_name_{$analysis_links.$ps_id.id}" class="hidden" title="Анализ насоса <u>{$analysis_links.$ps_id.name}</u>"></div>
+                            <a  rev="content_item_name_{$ps_id}" id="opener_item_name_{$ps_id}" href="{"uns_plan_of_mech_dep.analysis_of_pumps.pump?ps_id=`$ps_id`"|fn_url}" class="block cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black bold" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$ps.ps_name}</a>
+                            <div id="content_item_name_{$ps_id}" class="hidden" title="Анализ насоса <u>{$ps.ps_name}</u>"></div>
                         </td>
 
                         <td>
