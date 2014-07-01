@@ -123,9 +123,10 @@
             <tr style="background-color: #EDEDED;">
                 <th class="center" rowspan="3">№</th>
                 <th class="center b1_l" rowspan="3">Наименование</th>
+                <th width="10px" class="center" rowspan="3">&nbsp;</th>
                 <th class="center b1_l" rowspan="3" style="text-transform: none;">Кол.<br>на<br>1 ед.</th>
                 <th class="center b_l b_b" colspan="6" style="text-transform: none;">ОСТАТКИ ДЕТАЛЕЙ</th>
-                <th class="center b_l" rowspan="3" style="text-transform: none;">Требуемое<br>кол-во<br>деталей<br>на план<br>
+                <th class="center b_l" rowspan="3" style="text-transform: none;">Кол-во<br>насосов<br>
                     {assign var="details" value=$p.details|array_keys|implode:'-'}
                     {include file="addons/uns/views/components/get_form_field.tpl"
                         f_type="select_range"
@@ -138,9 +139,11 @@
                         f_plus_minus=true
                         f_onchange="calc_ps_set(\$(this).val(), `$ps_set_id`, `$pump_id`, '`$details`');"
                     }
+                    <hr class="roman_dates"/>
+                    Кол-во<br>деталей
                 </th>
                 <th class="center b_l" rowspan="3" style="text-transform: none;">Недо-<br>стача<br>дет.</th>
-                <th class="center b_l b1_b" colspan="3">ОСТАТКИ ОТЛИВОК</th>
+                <th class="center b_l b1_b" colspan="4">ОСТАТКИ ОТЛИВОК</th>
             </tr>
             <tr style="background-color: #EDEDED;">
                 <th style="text-align: center;" class="b_l b1_b" colspan="2">МЦ №1</th>
@@ -148,6 +151,7 @@
                 <th style="text-align: center;" class="b_l" rowspan="2">Скл.<br>КМП</th>
                 <th style="text-align: center;" class="b_l" rowspan="2"><span style="font-size: 30px;">&Sigma;</span></th>
                 <th style="text-align: center;" class="b_l" rowspan="2">Наименование</th>
+                <th style="text-align: center;" class=""    rowspan="2" >&nbsp;</th>
                 <th style="text-align: center;" class="b1_l" rowspan="2">Остат.<br>Склад<br>ЛИТЬЯ</th>
                 <th style="text-align: center; text-transform: none;" class="b1_l" rowspan="2">Недо-<br>стача<br>загот.</th>
             </tr>
@@ -179,6 +183,7 @@
                         <input type="hidden" name="{$e_n}[total_of_cast]"          value="{$total_of_cast}"/>
                     </td>
                     <td class="b1_l"><b>{$d.detail_name}</b>{if strlen($d.detail_no) and $d.detail_no!="-"}<br><span style="font-size: 11px;">[{$d.detail_no}]</span>{/if}</td>
+                    <td align="center">{include file="common_templates/tooltip.tpl" tooltip="<b>Применяемость детали:</b><br>`$accessory_of_details[$d.detail_id]`"}</td>
                     <td class="b1_l"    align="center">{$d.quantity|fn_fvalue}</td>
 
                     {assign var="q" value=$balance_of_details[$d.detail_id][10].processing_konech}
@@ -211,6 +216,7 @@
                     {assign var="q" value=$total_of_cast}
                     {if $d.mclass_id == 1}
                         <td class="b_l"     align="left">{if strlen($d.material_no)}[{$d.material_no}] {/if}{$d.material_name}</td>
+                        <td align="center">{include file="common_templates/tooltip.tpl" tooltip="<b>Применяемость детали:</b><br>`$accessory_of_casts[$d.material_id]`"}</td>
                         <td class="b1_l"    align="center"><span class="{if !$q}zero{else}bold{/if}">{$q}</span></td>
                         {if $diff_q<0}
                             {assign var="q" value=$diff_q*$d.material_quantity+$q}
@@ -220,6 +226,7 @@
                         {/if}
                     {else}
                         <td class="b_l"     align="left">&nbsp;</td>
+                        <td class=""        align="left">&nbsp;</td>
                         <td class="b1_l"    align="center">&nbsp;</td>
                         <td class="b1_l"    align="center">&nbsp;</td>
                     {/if}

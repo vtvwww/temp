@@ -801,9 +801,12 @@ if ($mode == "analysis_of_pumps"){
     if (is_null($ps_ids)) return array(CONTROLLER_STATUS_REDIRECT, $controller . ".manage");
 
     // 2. БАЛАНС ПО ДЕТАЛЯМ ====================================================
-    if (is__array($_SESSION["balance_of_details"])) $balance_of_details = $_SESSION["balance_of_details"];
-    else{
+    if (is__array($_SESSION["balance_of_details"])){
+        $balance_of_details = $_SESSION["balance_of_details"];
+        $accessory_of_details = $_SESSION["accessory_of_details"];
+    }else{
         $p = array();
+        $p["accessory_pumps"] = "Y";
         $p["time_from"] = $data["current_day"];
         $p["time_to"]   = $data["current_day"];
         list ($p['time_from'], $p['time_to']) = fn_create_periods($p);
@@ -816,37 +819,59 @@ if ($mode == "analysis_of_pumps"){
                         $balance_of_details[$item_id][$o_id]["processing_konech"]   = $i["processing_konech"];
                         $balance_of_details[$item_id][$o_id]["complete_konech"]     = $i["complete_konech"];
                         $balance_of_details[$item_id][$o_id]["konech"]              = $i["konech"];
+
+                        switch ($i["accessory_view"]){
+                            case "P": $accessory_of_details[$item_id] = $i["accessory_pumps"];      break;
+                            case "S": $accessory_of_details[$item_id] = $i["accessory_pump_series"];break;
+                            case "M": $accessory_of_details[$item_id] = $i["accessory_pump_manual"];break;
+                        }
                     }
                 }
             }
         }
         $_SESSION["balance_of_details"] = $balance_of_details;
+        $_SESSION["accessory_of_details"] = $accessory_of_details;
     }
     $view->assign("balance_of_details", $balance_of_details);
+    $view->assign("accessory_of_details", $accessory_of_details);
 
 
     // 3. БАЛАНС ПО ОТЛИВКАМ ===================================================
-    if (is__array($_SESSION["balance_of_casts"])) $balance_of_casts = $_SESSION["balance_of_casts"];
-    else{
+    if (is__array($_SESSION["balance_of_casts"])){
+        $balance_of_casts = $_SESSION["balance_of_casts"];
+        $accessory_of_casts = $_SESSION["accessory_of_casts"];
+    }else{
         $p = array(
             "plain"         => false,
             "all"           => true,
             "o_id"          => array(8),  // Склад литья
             "item_type"     => "M",
-            "add_item_info" => false,
+            "add_item_info" => true,
             "view_all_position" => "Y",
             "mclass_id"     => 1,
+            "accessory_pumps"=> true,
         );
         $p["time_from"] = $data["current_day"];
         $p["time_to"]   = $data["current_day"];
         list ($p['time_from'], $p['time_to']) = fn_create_periods($p);
-        list($balance) = fn_uns__get_balance($p);
-        foreach ($balance as $k=>$v){
-            $balance_of_casts[$k] = fn_fvalue($v["ko"]);
+        list($balances) = fn_uns__get_balance($p);
+        foreach ($balances as $o_id=>$g){
+            foreach ($g["items"] as $item_id=>$i){
+                $balance_of_casts[$item_id] = fn_fvalue($i["konech"]);
+
+                switch ($i["accessory_view"]){
+                    case "P": $accessory_of_casts[$item_id] = $i["accessory_pumps"];      break;
+                    case "S": $accessory_of_casts[$item_id] = $i["accessory_pump_series"];break;
+                    case "M": $accessory_of_casts[$item_id] = $i["accessory_pump_manual"];break;
+                }
+            }
         }
         $_SESSION["balance_of_casts"] = $balance_of_casts;
+        $_SESSION["accessory_of_casts"] = $accessory_of_casts;
+
     }
     $view->assign("balance_of_casts", $balance_of_casts);
+    $view->assign("accessory_of_casts", $accessory_of_casts);
 
 
     // 4. ПОЛУЧИТЬ КОМПЛЕКТАЦИИ ПО СЕРИЯМ ======================================

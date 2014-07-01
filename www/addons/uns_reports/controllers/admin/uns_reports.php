@@ -249,20 +249,43 @@ if ($mode == 'get_report'){
             list($sales_VLC) = fn_uns__get_documents(array_merge($_REQUEST, $p));
 //            fn_print_r($sales_VLC);
 
+            // 3.0.0 Список всех насосов
+            // 3.0.1 Список всех серий насосов
+            $pumps = array_shift(fn_uns__get_pumps());
+            $pump_series = array_shift(fn_uns__get_pump_series());
+
+
             // 3. Выпуск насосной продукции
             $p = array("type" => 13, "o_id" => 19, "with_items" =>  true, "info_unit"=>false, "info_item" => false, "sorting_schemas" => "view_asc"); // RO = 7; Sklad Litya = 8
             list($vn_SGP) = fn_uns__get_documents(array_merge($_REQUEST, $p));
+            $vn_SGP_groups = null;
+            foreach ($vn_SGP as $doc){
+                foreach ($doc["items"] as $item){
+                    if (in_array($item["item_type"], array("P", "PF", "PA")) and is__more_0($item["quantity"])){
+                        $vn_SGP_groups[$pumps[$item["item_id"]]["ps_id"]] += $item["quantity"];
+                    }
+                }
+            }
+
 //            fn_print_r($vn_SGP);
 
-            // 4. Продажа насосоной продукции
+            // 4. Продажа насосной продукции
             $p = array("type" => 7, "o_id" => 19, "with_items" =>  true, "info_unit"=>false, "info_item" => false, "sorting_schemas" => "view_asc"); // RO = 7; Sklad Litya = 8
             list($sales_SGP) = fn_uns__get_documents(array_merge($_REQUEST, $p));
+            $sales_SGP_groups = null;
+            foreach ($sales_SGP as $doc){
+                foreach ($doc["items"] as $item){
+                    if (in_array($item["item_type"], array("P", "PF", "PA")) and is__more_0($item["quantity"])){
+                        $sales_SGP_groups[$pumps[$item["item_id"]]["ps_id"]] += $item["quantity"];
+                    }
+                }
+            }
 //            fn_print_r($sales_SGP);
 
             list($customers) = fn_uns__get_customers(array('status'=>'A'));
 //            fn_print_r($regions);
 
-            fn_rpt__general_report(array("report_VLC"=>$report_VLC, "sales_VLC"=>$sales_VLC, "vn_SGP"=>$vn_SGP, "sales_SGP"=>$sales_SGP, "customers"=>$customers));
+            fn_rpt__general_report(array("report_VLC"=>$report_VLC, "sales_VLC"=>$sales_VLC, "vn_SGP"=>$vn_SGP, "vn_SGP_groups"=>$vn_SGP_groups, "sales_SGP"=>$sales_SGP, "sales_SGP_groups"=>$sales_SGP_groups, "customers"=>$customers, "pump_series"=>$pump_series));
 
         break;
 

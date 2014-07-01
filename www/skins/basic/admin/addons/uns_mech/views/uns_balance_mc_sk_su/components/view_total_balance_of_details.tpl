@@ -53,15 +53,19 @@
                     {*<td align="center" style="border-left: 2px solid  black;"><span class="{if $q_obj_18<0}info_warning_block{elseif $q_obj_18==0}zero{/if}"><b>{$q_obj_18|fn_fvalue:2}</b></span></td>*}
                     {if $search.accessory_pumps == "Y"}
                     <td align="left" style="border-left: 1px solid #808080;">
+
+
                         {if $m.accessory_view == "M"}
-                            {$m.accessory_pump_manual} <span class="info_warning">({$m.accessory_view})</span>
+                            {assign var="accessory_view" value="`$m.accessory_pump_manual` <span class='info_warning'>(`$m.accessory_view`)</span>"}
                         {elseif $m.accessory_view == "P"}
-                            {$m.accessory_pumps} <span class="info_warning">({$m.accessory_view})</span>
+                            {assign var="accessory_view" value="`$m.accessory_pumps` <span class='info_warning'>(`$m.accessory_view`)</span>"}
                         {else}
-                            {$m.accessory_pump_series}
+                            {assign var="accessory_view" value="`$m.accessory_pump_series`"}
                         {/if}
+                        {$accessory_view}
                         {if strlen($m.comment)}
-                            <br><span class="info_warning">{$m.comment}</span>
+                            {if strlen($accessory_view)}<br/>{/if}
+                            <span class="info_warning">{$m.comment}</span>
                         {/if}
                     </td>
                     {/if}

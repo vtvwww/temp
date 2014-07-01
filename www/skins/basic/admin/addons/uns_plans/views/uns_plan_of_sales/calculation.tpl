@@ -56,7 +56,7 @@
 
             {*Разрыв страницы при печати*}
             {assign var="pump_count" value=$pump_count+1 }
-            {if $pump_count >= 1}
+            {if $pump_count >= 2}
                 {assign var="pump_count" value=0 }
                 <span style="page-break-before:always;"></span>
             {/if}

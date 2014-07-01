@@ -62,28 +62,27 @@
     {*</li>*}
 
 </ol>
-    <br/>
 <table cellpadding="0" cellspacing="0" border="0" class="simple" style="margin: 10px; 0">
     <thead>
         <tr>
             {if $zone == "UKR"}
             <th>
-                Украина<br>
+                {*Украина<br>*}
                 на {$months[$search.month]} {$search.year} г.
             </th>
             <th>
-                Украина<br>
+                {*Украина<br>*}
                 на след. мес.
             </th>
             {/if}
 
             {if $zone == "EXP"}
             <th>
-                Экспорт<br>
+                {*Экспорт<br>*}
                 на {$months[$search.month]} {$search.year} г.
             </th>
             <th>
-                Экспорт<br>
+                {*Экспорт<br>*}
                 на след. мес.
             </th>
             {/if}
