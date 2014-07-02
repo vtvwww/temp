@@ -54,7 +54,7 @@
                 </div>
             </td>
             <td class="nowrap search-field" style="border-left: 1px solid #808080;">
-                <label>Запас продукции на складах<br>для расчета ограничений</label>
+                <label>Запас продукции на складах<br>для расчета ограничений:</label>
                 <div class="break">
                     <select name="months_supply">
                         {*<option value="1" disabled {if $search.months_supply == 1}selected="selected"{/if}>на 1 месяц</option>*}
@@ -67,10 +67,12 @@
                 </div>
             </td>
             <td class="nowrap search-field" style="border-left: 1px solid #808080;">
-                <label for="plan_parties">Плановая сдача партий насосов<br>на СГП</label>
+                <label for="type_of_production_plan">Тип плана производства:</label>
                 <div class="break">
-                    <input type="hidden" value="N" name="plan_parties"/>
-                    <input id="plan_parties" type="checkbox" value="Y" name="plan_parties" {if $search.plan_parties == "Y"}checked="checked"{/if} />
+                    <select name="type_of_production_plan" id="type_of_production_plan">
+                        <option value="parties" {if $search.type_of_production_plan == "parties"}selected="selected"{/if}>План производства по партиям</option>
+                        <option value="actual"  {if $search.type_of_production_plan == "actual"}selected="selected"{/if}>План производства фактический</option>
+                    </select>
                 </div>
             </td>
         </tr>

@@ -12,8 +12,8 @@
             <th style="text-transform: none;"               rowspan="3"             class="center">&nbsp;</th>
             <th style="text-transform: none;"               rowspan="3"             class="center b_l">СГП<br>на<br>01/{$data.month|string_format:"%02d"}<hr class="roman_dates">{$data.year}</th>
             <th style="text-transform: none;"               rowspan="2" colspan="2" class="center b_l b1_b">План<br>продаж</th>
-            <th style="text-transform: none;"          rowspan="2" colspan="3" class="center b3_l b1_b">План<br>производства<br>насосов</th>
-            <th style="text-transform: none;"          rowspan="2" colspan="3" class="center b3_l b1_b">Плановая сдача<br>партий насосов<br>на СГП</th>
+            <th style="text-transform: none;"          rowspan="2" colspan="3" class="center b3_l b1_b">План<br>производства<br>ФАКТИЧЕСКИЙ</th>
+            <th style="text-transform: none;"          rowspan="2" colspan="3" class="center b3_l b1_b">План<br>производства<br>ПО ПАРТИЯМ</th>
             <th style="text-transform: uppercase;background-color:#B8C1FF; "                      colspan="5" class="center b3_l b1_b">Выполнение плана на {$data.current_day|fn_parse_date|date_format:"%d/%m/%y"}</th>
             <th style="text-transform: none;"               rowspan="3"             class="center b3_l">СГП<br>на<br>{$data.current_day|fn_parse_date|date_format:"%d/%m"}<hr class="roman_dates">{$data.year}</th>
             <th style="text-transform: none;"               rowspan="3"             class="center b3_l">{include file="common_templates/tooltip.tpl" tooltip="<b>Кратность партии насоса.</b><br>ОТ - ДО, ШАГ" tooltip_mark="<b>КП</b>"}</th>
@@ -86,11 +86,11 @@
             <td style="background-color: #C0FF9A;" class="b2_l center {if !$q}zero{else}bold{/if}">{$q}</td>
 
             {*Осталось*}
-            {assign var="q" value=$data.remaining_production_plan.curr_month.$ps_id|default:0}
+            {assign var="q" value=$data.remaining_production_plan_parties.curr_month.$ps_id|default:0}
             <td style="background-color: #B8C1FF;" class="b3_l center {if !$q}zero{else}bold{/if}">{$q}</td>
-            {assign var="q" value=$data.remaining_production_plan.next_month.$ps_id|default:0}
+            {assign var="q" value=$data.remaining_production_plan_parties.next_month.$ps_id|default:0}
             <td style="background-color: #B8C1FF;" class="b1_l center {if !$q}zero{else}bold{/if}">{$q}</td>
-            {assign var="q" value=$data.remaining_production_plan.next2_month.$ps_id|default:0}
+            {assign var="q" value=$data.remaining_production_plan_parties.next2_month.$ps_id|default:0}
             <td style="background-color: #B8C1FF;" class="b1_l center {if !$q}zero{else}bold{/if}">{$q}</td>
 
             {*Склад Готовой Продукции*}
@@ -216,7 +216,7 @@
                     {assign var="q" value=$total_of_cast}
                     {if $d.mclass_id == 1}
                         <td class="b_l"     align="left">{if strlen($d.material_no)}[{$d.material_no}] {/if}{$d.material_name}</td>
-                        <td align="center">{include file="common_templates/tooltip.tpl" tooltip="<b>Применяемость детали:</b><br>`$accessory_of_casts[$d.material_id]`"}</td>
+                        <td align="center">{include file="common_templates/tooltip.tpl" tooltip="<b>Применяемость заготовки:</b><br>`$accessory_of_casts[$d.material_id]`"}</td>
                         <td class="b1_l"    align="center"><span class="{if !$q}zero{else}bold{/if}">{$q}</span></td>
                         {if $diff_q<0}
                             {assign var="q" value=$diff_q*$d.material_quantity+$q}

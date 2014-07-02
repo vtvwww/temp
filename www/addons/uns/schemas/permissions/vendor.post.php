@@ -91,6 +91,9 @@ if (is_numeric($_SESSION['auth']['usergroup_ids'][0])){
             $schema['controllers']['uns_plan_of_mech_dep']  ['modes']['manage']     ['permissions'] = true;
             $schema['controllers']['uns_plan_of_sales']     ['modes']['manage']     ['permissions'] = true;
             $schema['controllers']['uns_plan_of_sales']     ['modes']['tracking']   ['permissions'] = true;
+
+            $schema['controllers']['uns_orders']            ['modes']['manage']     ['permissions'] = true;
+            $schema['controllers']['uns_customers']         ['modes']['manage']     ['permissions'] = true;
             break;
 
     }

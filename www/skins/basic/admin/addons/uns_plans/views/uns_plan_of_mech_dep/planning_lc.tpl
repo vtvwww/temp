@@ -60,32 +60,32 @@
             <tr class="">
                 <td class="b3_t b3_b" rowspan="2" colspan="3" align="right"><span style="font-size: 15px; font-weight: bold;">ИТОГО, т:</span></td>
                 {*Потребность*}
-                <td class="center b3_t b3_l"><span style="font-size: 15px;">{$requirement_of_casts.curr_month.total_weight/1000|fn_fvalue:0}</span></td>
-                <td class="center b3_t b1_l"><span style="font-size: 15px;">{$requirement_of_casts.next_month.total_weight/1000|fn_fvalue:0}</span></td>
-                <td class="center b3_t b1_l"><span style="font-size: 15px;">{$requirement_of_casts.next2_month.total_weight/1000|fn_fvalue:0}</span></td>
+                <td class="center b3_t b3_l"><span style="font-size: 15px;">{$requirement_of_casts.curr_month.total_weight/1000|fn_fvalue:1}</span></td>
+                <td class="center b3_t b1_l"><span style="font-size: 15px;">{$requirement_of_casts.next_month.total_weight/1000|fn_fvalue:1}</span></td>
+                <td class="center b3_t b1_l"><span style="font-size: 15px;">{$requirement_of_casts.next2_month.total_weight/1000|fn_fvalue:1}</span></td>
 
                 {*Движение*}
-                {assign var="q" value=$movement_of_casts.nach/1000|fn_fvalue:0}
+                {assign var="q" value=$movement_of_casts.nach/1000|fn_fvalue:1}
                 <td style="background-color: #f1f1f1;" rowspan="2" class="center b3_t b3_b b3_l {if !$q}zero{/if}"><span style="font-size: 15px;">{$q}</span></td>
-                {assign var="q" value=$movement_of_casts.in/1000|fn_fvalue:0}
+                {assign var="q" value=$movement_of_casts.in/1000|fn_fvalue:1}
                 <td style="background-color: #f1f1f1;" rowspan="2" class="center b3_t b3_b b1_l {if !$q}zero{/if}"><span style="font-size: 15px;">{$q}</span></td>
-                {assign var="q" value=$movement_of_casts.out/1000|fn_fvalue:0}
+                {assign var="q" value=$movement_of_casts.out/1000|fn_fvalue:1}
                 <td style="background-color: #f1f1f1;" rowspan="2" class="center b3_t b3_b b1_l {if !$q}zero{/if}"><span style="font-size: 15px;">{$q}</span></td>
-                {assign var="q" value=$movement_of_casts.konech/1000|fn_fvalue:0}
+                {assign var="q" value=$movement_of_casts.konech/1000|fn_fvalue:1}
                 <td style="background-color: #D3D3D3;" rowspan="2" class="center b3_t b3_b b2_l {if !$q}zero{/if} bold"><span style="font-size: 15px;">{$q}</span></td>
 
                 {*Осталось*}
-                <td class="center b3_t b3_l" style="background-color: #B8C1FF;"><span style="font-size: 15px; font-weight: bold;">{$remaining_of_casts.curr_month.total_weight/1000|fn_fvalue:0}</span></td>
-                <td class="center b3_t b1_l" style="background-color: #B8C1FF;"><span style="font-size: 15px; font-weight: bold;">{$remaining_of_casts.next_month.total_weight/1000|fn_fvalue:0}</span></td>
-                <td class="center b3_t b1_l" style="background-color: #B8C1FF;"><span style="font-size: 15px; font-weight: bold;">{$remaining_of_casts.next2_month.total_weight/1000|fn_fvalue:0}</span></td>
+                <td class="center b3_t b3_l" style="background-color: #B8C1FF;"><span style="font-size: 15px; font-weight: bold;">{$remaining_of_casts.curr_month.total_weight/1000|fn_fvalue:1}</span></td>
+                <td class="center b3_t b1_l" style="background-color: #B8C1FF;"><span style="font-size: 15px; font-weight: bold;">{$remaining_of_casts.next_month.total_weight/1000|fn_fvalue:1}</span></td>
+                <td class="center b3_t b1_l" style="background-color: #B8C1FF;"><span style="font-size: 15px; font-weight: bold;">{$remaining_of_casts.next2_month.total_weight/1000|fn_fvalue:1}</span></td>
                 <td class="b3_t b3_l b3_b" rowspan="2">&nbsp;</td>
             </tr>
             <tr class="">
                 {assign var="q" value=$requirement_of_casts.curr_month.total_weight+$requirement_of_casts.next_month.total_weight+$requirement_of_casts.next2_month.total_weight}
-                <td class="center b1_t b3_l b3_b" colspan="3"><span style="font-size: 15px;">{$q/1000|fn_fvalue:0}</span></td>
+                <td class="center b1_t b3_l b3_b" colspan="3"><span style="font-size: 15px;">{$q/1000|fn_fvalue:1}</span></td>
 
                 {assign var="q" value=$remaining_of_casts.curr_month.total_weight+$remaining_of_casts.next_month.total_weight+$remaining_of_casts.next2_month.total_weight}
-                <td class=" center b1_t b3_l b3_b" style="background-color: #B8C1FF;" colspan="3"><span style="font-size: 15px; font-weight: bold;">{$q/1000|fn_fvalue:0}</span></td>
+                <td class=" center b1_t b3_l b3_b" style="background-color: #B8C1FF;" colspan="3"><span style="font-size: 15px; font-weight: bold;">{$q/1000|fn_fvalue:1}</span></td>
             </tr>
         </tbody>
 

@@ -28,6 +28,7 @@ $data = array();
 //==============================================================================
 if ($mode == "manage") {
     if (is__more_0($_REQUEST["month"], $_REQUEST["year"], $_REQUEST["months_supply"], fn_parse_date($_REQUEST["current_day"]))){
+        $_REQUEST["type_of_production_plan"] = ($_REQUEST["type_of_production_plan"] == "actual")?"actual":"parties";
         $view->assign('search', $_REQUEST);
         $data["month"]         = $_REQUEST["month"];
         $data["year"]          = $_REQUEST["year"];
@@ -399,9 +400,6 @@ if ($mode == "manage") {
         $data["initial_production_plan_parties"]    = $initial_production_plan_parties;
 
 
-
-
-
         //======================================================================
         // 5/6. РАСЧЕТ ЗАДЕЛА ОЖИДАЮЩЕГО СБОРКУ
         //======================================================================
@@ -476,8 +474,12 @@ if ($mode == "manage") {
         // 7. РАСЧЕТ "ОСТАЛОСЬ"
         //======================================================================
         $remaining_production_plan = array();
+        $remaining_production_plan_parties = array();
         foreach ($pump_series as $id=>$ps){
             $balance = $zadel[$id]+$done[$id];
+            //------------------------------------------------------------------
+            // ФАКТИЧЕСКИЙ ПЛАН ПРОИЗВОДСТВА
+            //------------------------------------------------------------------
             // тек. мес.
             $deficit_curr = ($initial_production_plan["curr_month"][$id]) - $balance;
             if ($deficit_curr < 0) $deficit_curr = 0;
@@ -490,44 +492,55 @@ if ($mode == "manage") {
             $deficit_next2 = ($initial_production_plan["curr_month"][$id]+$initial_production_plan["next_month"][$id]+$initial_production_plan["next2_month"][$id]) - $balance - $deficit_curr - $deficit_next;
             if ($deficit_next2 < 0) $deficit_next2 = 0;
 
+            // след. след. след. мес.
+            $deficit_next3 = ($initial_production_plan["curr_month"][$id]+$initial_production_plan["next_month"][$id]+$initial_production_plan["next2_month"][$id]+$initial_production_plan["next3_month"][$id]) - $balance - $deficit_curr - $deficit_next - $deficit_next2;
+            if ($deficit_next3 < 0) $deficit_next3 = 0;
+
             $remaining_production_plan["curr_month"][$id] = $deficit_curr;
             $remaining_production_plan["next_month"][$id] = $deficit_next;
             $remaining_production_plan["next2_month"][$id] = $deficit_next2;
+            $remaining_production_plan["next3_month"][$id] = $deficit_next3;
+
+
+            //------------------------------------------------------------------
+            // ПАРТИЙНЫЙ ПЛАН ПРОИЗВОДСТВА
+            //------------------------------------------------------------------
+            // тек. мес.
+            $deficit_curr = ($initial_production_plan_parties["curr_month"][$id]) - $balance;
+            if ($deficit_curr < 0) $deficit_curr = 0;
+
+            // след. мес.
+            $deficit_next = ($initial_production_plan_parties["curr_month"][$id]+$initial_production_plan_parties["next_month"][$id]) - $balance - $deficit_curr;
+            if ($deficit_next < 0) $deficit_next = 0;
+
+            // след. след. мес.
+            $deficit_next2 = ($initial_production_plan_parties["curr_month"][$id]+$initial_production_plan_parties["next_month"][$id]+$initial_production_plan_parties["next2_month"][$id]) - $balance - $deficit_curr - $deficit_next;
+            if ($deficit_next2 < 0) $deficit_next2 = 0;
+
+            // след. след. след. мес.
+            $deficit_next3 = ($initial_production_plan_parties["curr_month"][$id]+$initial_production_plan_parties["next_month"][$id]+$initial_production_plan_parties["next2_month"][$id]+$initial_production_plan_parties["next3_month"][$id]) - $balance - $deficit_curr - $deficit_next - $deficit_next2;
+            if ($deficit_next3 < 0) $deficit_next3 = 0;
+
+            $remaining_production_plan_parties["curr_month"][$id] = $deficit_curr;
+            $remaining_production_plan_parties["next_month"][$id] = $deficit_next;
+            $remaining_production_plan_parties["next2_month"][$id] = $deficit_next2;
+            $remaining_production_plan_parties["next3_month"][$id] = $deficit_next3;
+
+
         }
-        $remaining_production_plan ["curr_month"]["total"] = array_sum($remaining_production_plan ["curr_month"]);
-        $remaining_production_plan ["next_month"]["total"] = array_sum($remaining_production_plan ["next_month"]);
-        $remaining_production_plan ["next2_month"]["total"] = array_sum($remaining_production_plan ["next_month"]);
+        $remaining_production_plan["curr_month"]["total"] = array_sum($remaining_production_plan ["curr_month"]);
+        $remaining_production_plan["next_month"]["total"] = array_sum($remaining_production_plan ["next_month"]);
+        $remaining_production_plan["next2_month"]["total"] = array_sum($remaining_production_plan ["next2_month"]);
+        $remaining_production_plan["next3_month"]["total"] = array_sum($remaining_production_plan ["next3_month"]);
         $view->assign("remaining_production_plan", $remaining_production_plan );
         $data["remaining_production_plan"]    = $remaining_production_plan;
 
-        //======================================================================
-        // 8. Упрощенное формирование сслыки
-        //======================================================================
-        $analysis_links = array();
-        foreach ($pump_series as $id=>$ps){
-            $analysis_links[$id]["id"]      = $id;
-            $analysis_links[$id]["name"]    = $ps["ps_name"];
-
-            $href = array(
-                "ps_id"             => $id,
-                "ps_name"           => $ps["ps_name"],
-                "month"             => $_REQUEST["month"],
-                "year"              => $_REQUEST["year"],
-                "current_day"       => fn_parse_date($_REQUEST["current_day"]),
-                "tpl_curr_month"    => $months[date("n", $php_curr_month)] . "." . date("y", $php_curr_month),
-                "tpl_next_month"    => $months[date("n", $php_next_month)] . "." . date("y", $php_next_month),
-                "rpp_curr_month"    => $remaining_production_plan["curr_month"][$id],
-                "rpp_next_month"    => $remaining_production_plan["next_month"][$id],
-                "sgp"               => $sgp[$id],
-                "sgp_current_day"   => $sgp_current_day[$id],
-                "zadel"             => ($zadel[$id])?$zadel[$id]:0,
-                "done"              => ($done[$id])?$done[$id]:0,
-            );
-            $analysis_links[$id]["href"]    = "uns_plan_of_mech_dep.analysis_of_pump?" . http_build_query($href);
-        }
-        $view->assign("analysis_links", $analysis_links);
-        $data["analysis_links"]    = $analysis_links;
-
+        $remaining_production_plan_parties["curr_month"]["total"] = array_sum($remaining_production_plan_parties ["curr_month"]);
+        $remaining_production_plan_parties["next_month"]["total"] = array_sum($remaining_production_plan_parties ["next_month"]);
+        $remaining_production_plan_parties["next2_month"]["total"] = array_sum($remaining_production_plan_parties ["next2_month"]);
+        $remaining_production_plan_parties["next3_month"]["total"] = array_sum($remaining_production_plan_parties ["next3_month"]);
+        $view->assign("remaining_production_plan_parties", $remaining_production_plan_parties);
+        $data["remaining_production_plan_parties"]    = $remaining_production_plan_parties;
 
         // СОХРАНЕНИЕ ДАННЫХ В СЕССИЮ
         $_SESSION["uns_plan_of_mech_dep"] = $data;
@@ -547,7 +560,7 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
     // 1. ПЛАН ПОТРЕБНОСТИ В ДЕТАЛЯХ на тек., след. и след.след. месяца
     //--------------------------------------------------------------------------
     $details_requirement = null;
-    $pumps_requirement = $data["initial_production_plan_parties"]; // Плановая сдача партий насосов на СГП
+    $pumps_requirement = $data["remaining_production_plan_parties"]; // Осталось план производства по партиям
     foreach ($pumps_requirement as $month=>$pump_series){
         foreach ($pump_series as $ps_id=>$pump_quantity){
             if (is__more_0($ps_id)){
@@ -904,7 +917,7 @@ function fn_uns_plan_of_mech_dep__search ($controller){
         "year",
         "months_supply",
         "current_day",
-        "plan_parties",
+        "type_of_production_plan",
     );
     fn_uns_search_set_get_params($controller, $params);
     return true;
