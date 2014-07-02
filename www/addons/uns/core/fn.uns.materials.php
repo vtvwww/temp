@@ -204,9 +204,12 @@ function fn_uns__get_materials_categories($params = array())
         '?:material_categories.mcat_id',
         '?:material_categories.mcat_parent_id',
         '?:material_categories.mcat_name',
+        '?:material_categories.mcat_comment',
         '?:material_categories.mcat_id_path',
         '?:material_categories.mcat_position',
-        '?:material_categories.mcat_status'
+        '?:material_categories.mcat_status',
+        '?:material_categories.show_in_report_as_name',
+        '?:material_categories.view_in_plans',
     );
 
     $sorting_schemas = array(
@@ -255,7 +258,9 @@ function fn_uns__get_materials_categories($params = array())
         $condition .= db_quote(' AND ?:material_categories.mcat_id IN (?n)', $params['item_ids']);
     }
 
-
+    if ($params['view_in_reports']) {
+        $condition .= db_quote(" AND ?:material_categories.view_in_reports = 'Y' ");
+    }
 
 
     $limit = $join = $group_by = $sorting = '';
@@ -474,6 +479,9 @@ function fn_uns__get_materials($params = array(), $items_per_page = 0)
         '?:materials.material_position',
         '?:materials.material_comment',
         '?:materials.material_comment_1',
+        '?:materials.accessory_view',
+        '?:materials.accessory_manual',
+
     );
 
     $sorting_schemas = array(

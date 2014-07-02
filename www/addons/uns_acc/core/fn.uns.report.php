@@ -25,6 +25,7 @@ function fn_acc__get_report_VLC($params = array(), $items_per_page = 0){
 
     $fields = array(
         "$m_tbl.$m_key",
+        "$m_tbl.comment",
         "$m_tbl.type",
         "$m_tbl.date_cast",
     );

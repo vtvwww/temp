@@ -256,7 +256,7 @@ function fn_rpt__general_report($data){
     $maxh       = $h;
     $valign     = 'M';
     $fitcell    = true;
-    $w = array(6, 25, 70, 14);
+    $w = array(10, 80, 15);
     //************************
 
     // TITLE
@@ -278,7 +278,7 @@ function fn_rpt__general_report($data){
         $h = $maxh = 8;
         $k = 0;
         $pdf->MultiCell($w[$k++],  $h, "№", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-        $pdf->MultiCell($w[$k++],  $h, "Дата", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+//        $pdf->MultiCell($w[$k++],  $h, "Дата", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
         $pdf->MultiCell($w[$k++],  $h, "Наименование", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
         $pdf->MultiCell($w[$k++],  $h, "Кол-во,\nшт", $border, "C", $fill, 1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
 
@@ -290,29 +290,44 @@ function fn_rpt__general_report($data){
 
         $i = 0;
         $total_q = 0;
-        foreach ($data["vn_SGP"] as $doc){
-            foreach ($doc["items"] as $item){
-                if (in_array($item["item_type"], array("P", "PF", "PA")) and is__more_0($item["quantity"])){
+//        foreach ($data["vn_SGP"] as $doc){
+//            foreach ($doc["items"] as $item){
+//                if (in_array($item["item_type"], array("P", "PF", "PA")) and is__more_0($item["quantity"])){
+//                    if ($pdf->GetY() >= 270){
+//                        $pdf->AddPage();
+//                        $pdf->ln(5);
+//                    }
+//                    $i++;
+//                    $k = 0;
+//                    $total_q += $item["quantity"];
+//                    $name = $item["item_info"]["p_name"] . (($item["item_type"]=="PF")?" на раме":"");
+//                    $pdf->MultiCell($w[$k++],  $h, $i, $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+//                    $pdf->MultiCell($w[$k++],  $h, fn_date_format($doc['date'], "%a %d/%m/%y"), $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+//                    $pdf->MultiCell($w[$k++],  $h, $name, $border, "L", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+//                    $pdf->MultiCell($w[$k++],  $h, fn_fvalue($item["quantity"]), $border, "R", $fill, 1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+//                }
+//            }
+//        }
+
+        foreach ($data["pump_series"] as $ps_id=>$ps){
+            if (is__more_0($q = $data["vn_SGP_groups"][$ps_id])){
                     if ($pdf->GetY() >= 270){
                         $pdf->AddPage();
                         $pdf->ln(5);
                     }
                     $i++;
                     $k = 0;
-                    $total_q += $item["quantity"];
-                    $name = $item["item_info"]["p_name"] . (($item["item_type"]=="PF")?" на раме":"");
+                    $total_q += $q;
                     $pdf->MultiCell($w[$k++],  $h, $i, $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-                    $pdf->MultiCell($w[$k++],  $h, fn_date_format($doc['date'], "%a %d/%m/%y"), $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-                    $pdf->MultiCell($w[$k++],  $h, $name, $border, "L", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-                    $pdf->MultiCell($w[$k++],  $h, fn_fvalue($item["quantity"]), $border, "R", $fill, 1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-                }
+                    $pdf->MultiCell($w[$k++],  $h, $ps["ps_name"], $border, "L", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+                    $pdf->MultiCell($w[$k++],  $h, fn_fvalue($q), $border, "R", $fill, 1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             }
         }
 
         // TFOOT --------------------------------
         $pdf->uns_SetFont("BI", 13);
         $k = 0;
-        $pdf->MultiCell($w[$k++] + $w[$k++] + $w[$k++],  $h, "ИТОГО:", 1, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->MultiCell($w[$k++] + $w[$k++] /*+ $w[$k++]*/,  $h, "ИТОГО:", 1, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
         $pdf->MultiCell($w[$k++],  $h, $total_q, $border, "R", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
 
     }
@@ -340,7 +355,8 @@ function fn_rpt__general_report($data){
     $maxh       = $h;
     $valign     = 'M';
     $fitcell    = true;
-    $w = array(6, 25, 65, 70, 14);
+//    $w = array(6, 25, 65, 70, 14);
+    $w = array(10, 80, 15);
     //************************
 
     // TITLE
@@ -362,8 +378,8 @@ function fn_rpt__general_report($data){
         $h = $maxh = 8;
         $k = 0;
         $pdf->MultiCell($w[$k++],  $h, "№", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-        $pdf->MultiCell($w[$k++],  $h, "Дата", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-        $pdf->MultiCell($w[$k++],  $h, "Клиент/Регион", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+//        $pdf->MultiCell($w[$k++],  $h, "Дата", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+//        $pdf->MultiCell($w[$k++],  $h, "Клиент/Регион", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
         $pdf->MultiCell($w[$k++],  $h, "Наименование", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
         $pdf->MultiCell($w[$k++],  $h, "Кол-во,\nшт", $border, "C", $fill, 1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
 
@@ -375,30 +391,43 @@ function fn_rpt__general_report($data){
 
         $i = 0;
         $total_q = 0;
-        foreach ($data["sales_SGP"] as $doc){
-            foreach ($doc["items"] as $item){
-                if (in_array($item["item_type"], array("P", "PF", "PA")) and is__more_0($item["quantity"])){
+//        foreach ($data["sales_SGP"] as $doc){
+//            foreach ($doc["items"] as $item){
+//                if (in_array($item["item_type"], array("P", "PF", "PA")) and is__more_0($item["quantity"])){
+//                    if ($pdf->GetY() >= 270){
+//                        $pdf->AddPage();
+//                        $pdf->ln(5);
+//                    }
+//                    $i++;
+//                    $k = 0;
+//                    $total_q += $item["quantity"];
+//                    $name = $item["item_info"]["p_name"] . (($item["item_type"]=="PF")?" на раме":"")  . (($item["item_type"]=="PA")?" агрегат":"");
+//                    $pdf->MultiCell($w[$k++],  $h, $i, $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+//                    $pdf->MultiCell($w[$k++],  $h, fn_date_format($doc['date'], "%a %d/%m/%y"), $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+//                    $pdf->MultiCell($w[$k++],  $h, $data["customers"][$doc["customer_id"]]["name"], $border, "L", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+//                    $pdf->MultiCell($w[$k++],  $h, $name, $border, "L", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+//                    $pdf->MultiCell($w[$k++],  $h, fn_fvalue($item["quantity"]), $border, "R", $fill, 1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+//                }
+//            }
+//        }
+        foreach ($data["pump_series"] as $ps_id=>$ps){
+            if (is__more_0($q = $data["sales_SGP_groups"][$ps_id])){
                     if ($pdf->GetY() >= 270){
                         $pdf->AddPage();
                         $pdf->ln(5);
                     }
                     $i++;
                     $k = 0;
-                    $total_q += $item["quantity"];
-                    $name = $item["item_info"]["p_name"] . (($item["item_type"]=="PF")?" на раме":"")  . (($item["item_type"]=="PA")?" агрегат":"");
+                    $total_q += $q;
                     $pdf->MultiCell($w[$k++],  $h, $i, $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-                    $pdf->MultiCell($w[$k++],  $h, fn_date_format($doc['date'], "%a %d/%m/%y"), $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-                    $pdf->MultiCell($w[$k++],  $h, $data["customers"][$doc["customer_id"]]["name"], $border, "L", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-                    $pdf->MultiCell($w[$k++],  $h, $name, $border, "L", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-                    $pdf->MultiCell($w[$k++],  $h, fn_fvalue($item["quantity"]), $border, "R", $fill, 1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-                }
+                    $pdf->MultiCell($w[$k++],  $h, $ps["ps_name"], $border, "L", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+                    $pdf->MultiCell($w[$k++],  $h, fn_fvalue($q), $border, "R", $fill, 1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             }
         }
-
         // TFOOT --------------------------------
         $pdf->uns_SetFont("BI", 13);
         $k = 0;
-        $pdf->MultiCell($w[$k++] + $w[$k++] + $w[$k++] + $w[$k++],  $h, "ИТОГО:", 1, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->MultiCell($w[$k++] + $w[$k++]/* + $w[$k++] + $w[$k++]*/,  $h, "ИТОГО:", 1, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
         $pdf->MultiCell($w[$k++],  $h, $total_q, $border, "R", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
 
     }

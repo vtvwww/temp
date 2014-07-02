@@ -54,6 +54,7 @@ function fn_uns__get_customers($params = array(), $items_per_page = 0){
         "$m_table.status",
         "$m_table.position",
         "$m_table.comment",
+        "$m_table.to_export",
     );
 
     $sorting_schemas = array(

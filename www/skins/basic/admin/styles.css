@@ -1466,7 +1466,7 @@ div#main_column {
 	background-color: #fff;
 }
 .dropdown-second-level {
-	width: 200px;
+	width: 250px;
 	background-color: #fff;
     box-shadow: 0 3px 3px rgba(0,0,0,0.25);
     -moz-box-shadow: 0 3px 3px rgba(0,0,0,0.25);
@@ -1571,7 +1571,7 @@ div#main_column {
 }
 #menu li ul li.sub-level li {
 	background: none;
-	width: 200px;
+	width: 250px;
 }
 #menu li ul li.sub-level li a, #menu li.active ul li.sub-level li a {
 	background: none;
@@ -2223,7 +2223,7 @@ table .hidden-inputs .input-text-medium, table .hidden-inputs .input-text, table
 	padding: 0 11px;
 }
 .table tr:hover td, .table tbody.hover:hover td, .object-group:hover td, .object-group-elements:hover td {
-	background-color: #f9c578 !important;
+	background-color: #f9c578/* !important*/;
 	/*border-bottom-color: #9fdaed;*/
 }
 .object-group:hover, .object-group-elements:hover, .table.scrollable p:hover {
@@ -2251,7 +2251,7 @@ table .hidden-inputs .input-text-medium, table .hidden-inputs .input-text, table
 }
 .table tr:hover td {
 	padding: 10px;
-	border-color: #ba845d;
+	border-color: #a47052;
 	/*border-right: 1px solid;*/
 	/*border-left:  1px solid;*/
 }
@@ -4796,11 +4796,11 @@ li.small-description {
 	padding: 15px 0;
 }
 html .ui-widget-overlay {
-	background: url("images/picker_bg_outside.png") repeat-x 0 -50% scroll #ffffff;
+	background: url("images/picker_bg_outside.png") repeat-x 0 -50% scroll #d0d0d0;
 	padding: 0;
 	margin: 0;
 	overflow: hidden;
-	opacity: 0.6;
+	opacity: 0.9;
 	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=70)";
 }
 .ui-dialog .ui-dialog-title {

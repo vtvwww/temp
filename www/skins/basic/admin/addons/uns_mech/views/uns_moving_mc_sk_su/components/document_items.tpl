@@ -179,9 +179,12 @@
                                 f_autocomplete="off"
                                 f_number=true
                                 f_simple=true
+                                f_attr="q"
+                                f_attr_val=$q|fn_fvalue
+                                f_title=$q|fn_fvalue
                             }
                         </td>
-                        <td class="cm-non-cb" +align="right">
+                        <td class="cm-non-cb" align="right">
                             <img class="hand" border="0" title="Получить текущий остаток позиции" src="skins/basic/admin/addons/uns_acc/images/refresh.png" onclick="var s=$(this).parent().prev().prev().find('select'); if (s.val()>0) s.change();">
                         </td>
                         <td class="cm-non-cb" align="right">
@@ -199,7 +202,7 @@
                             {/if}
                         </td>
 
-                        <td class="right cm-non-cb">
+                        <td class="right cm-non-cb" style="border-left: 1px solid #808080;">
                             {include file="buttons/multiple_buttons.tpl" item_id="`$id`_`$num`" tag_level="3" only_delete="Y"}
                         </td>
                     </tr>
@@ -272,7 +275,7 @@
                 }
                 {/if}
             </td>
-            <td class="right cm-non-cb">
+            <td class="right cm-non-cb" style="border-left: 1px solid #808080;">
                 {include file="buttons/multiple_buttons.tpl" item_id="add_`$num`" tag_level="2"}
             </td>
         </tr>

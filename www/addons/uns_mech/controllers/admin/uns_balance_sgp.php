@@ -26,7 +26,7 @@ if($mode == 'manage'){
     list($balances, $search) = fn_uns__get_balance_sgp($_REQUEST, true, true, true, true);
     $view->assign('balances_D',    $balances["D"]);
 
-    $balances = fn_uns_balance_sgp__format_for_tmpl($balances);
+    $balances = fn_uns_balance_sgp__format_for_tmpl($balances, $_REQUEST);
     $view->assign('balances',    $balances);
 //    fn_print_r($balances);
 
@@ -139,13 +139,14 @@ function fn_uns_balance_sgp__search($controller) {
         'detail_name',
         'detail_no',
         'accessory_pumps',
+        'view_all_pumps',
     );
     fn_uns_search_set_get_params($controller, $params);
     return true;
 }
 
 // переформатирование данных для простого отобраджения view
-function fn_uns_balance_sgp__format_for_tmpl($b) {
+function fn_uns_balance_sgp__format_for_tmpl($b, $params) {
     $res = null;
 //    fn_print_r($res);
 
@@ -223,14 +224,16 @@ function fn_uns_balance_sgp__format_for_tmpl($b) {
     }
 
 
-    // Убрать с нулевыми значениями
-    $balance = array();
-    foreach ($res as $k_pt=>$v_pt){
-        foreach ($v_pt["pump_series"] as $k_ps=>$v_ps){
-            foreach ($v_ps["pumps"] as $k_p=>$v_p){
-                $sum_orders = fn_uns_balance_sgp__sum_orders($v_p["orders"]);
-                if (!array_sum($v_p["balances"]) and !$sum_orders){
-                    unset($res[$k_pt]["pump_series"][$k_ps]["pumps"][$k_p]);
+    if ($params["view_all_pumps"] != "Y"){
+        // Убрать с нулевыми значениями
+        $balance = array();
+        foreach ($res as $k_pt=>$v_pt){
+            foreach ($v_pt["pump_series"] as $k_ps=>$v_ps){
+                foreach ($v_ps["pumps"] as $k_p=>$v_p){
+                    $sum_orders = fn_uns_balance_sgp__sum_orders($v_p["orders"]);
+                    if (!array_sum($v_p["balances"]) and !$sum_orders){
+                        unset($res[$k_pt]["pump_series"][$k_ps]["pumps"][$k_p]);
+                    }
                 }
             }
         }

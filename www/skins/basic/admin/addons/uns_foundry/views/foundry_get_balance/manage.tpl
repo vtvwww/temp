@@ -18,7 +18,7 @@
     <table cellpadding="0" cellspacing="0" border="0" class="table">
         <thead>
             <tr>
-                <th style="text-align: center;" width="230px">
+                <th style="text-align: center;" width="250px">
                     <img id="on_cat" class="hand cm-combinations hidden" width="13" height="12" border="0" title="Расширить / сократить список элементов" alt="Расширить / сократить список элементов" src="skins/basic/admin/images/plus_minus.gif">
                     <img id="off_cat" class="hand cm-combinations" width="13" height="12" border="0" title="Расширить / сократить список элементов" alt="Расширить / сократить список элементов" src="skins/basic/admin/images/minus_plus.gif">
                     &nbsp;Наименование
@@ -34,12 +34,12 @@
                     {include file="common_templates/tooltip.tpl" tooltip='Начальный остаток'  tooltip_mark="<b>НО</b>"}
                 </th>
                 <th class="b1_r b1_l" style="text-align: center;" width="30px">{include file="common_templates/tooltip.tpl" tooltip='Приход'  tooltip_mark="<b>П</b>"}</th>
-                <th class="b1_r b1_l" style="text-align: center;" width="30px">{include file="common_templates/tooltip.tpl" tooltip='Расход'  tooltip_mark="<b>Р</b>"}</th>
-                <th class="b1_r b1_l" style="text-align: center;" width="30px">
+                <th class="b1_l" style="text-align: center;" width="30px">{include file="common_templates/tooltip.tpl" tooltip='Расход'  tooltip_mark="<b>Р</b>"}</th>
+                <th class="b_l" style="background-color: #d3d3d3; text-align: center;" width="30px">
                     {include file="common_templates/tooltip.tpl" tooltip='Конечный остаток'  tooltip_mark="<b>КО</b>"}
                 </th>
                 {if $search.accessory_pumps == "Y"}
-                    <th>Принадлежность к насосам</th>
+                    <th class="b_l">Принадлежность к насосам</th>
                 {/if}
             </tr>
         </thead>

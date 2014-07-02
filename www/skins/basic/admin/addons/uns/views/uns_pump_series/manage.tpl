@@ -65,6 +65,7 @@
                         {capture name="tools_items"}
                             <li><a class="" href="{"`$controller`.update?`$value`=`$id`&copy=Y"|fn_url}">{$lang.copy}</a></li>
                             <li><a class="cm-confirm" href="{"`$controller`.delete?`$value`=`$id`"|fn_url}">{$lang.delete}</a></li>
+                            <li><a target="_blank" class="" href="{"uns_reports.get_report.test?`$value`=`$id`"|fn_url}">Распечатать комплектацию</a></li>
                         {/capture}
                         {include    file="common_templates/table_tools_list.tpl"
                                     id="`$controller``$id`"

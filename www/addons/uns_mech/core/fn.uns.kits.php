@@ -124,16 +124,17 @@ function fn_acc__get_kits($params = array(), $items_per_page = 0){
             "info_category"             => true,
             "info_item"                 => false,
             "info_unit"                 => false,
-            "item_type"                 => array('P', 'PN', 'PA'),
+            "item_type"                 => array('P', 'PF', 'PA'),
 
         );
         list($documents) = fn_uns__get_documents($p);
-//        fn_print_r($documents);
         if (is__array($documents)){
             foreach ($documents as $d){
                 foreach ($d["items"] as $i){
+                    $data[$d["package_id"]]["date_close"] = $d["date"];
                     $data[$d["package_id"]]["VN"][] = array(
                         "date"      => $d["date"],
+                        "item_id"   => $i["item_id"],
                         "item_type" => $i["item_type"],
                         "quantity"  => $i["quantity"],
                         "name"      => $i["item_info"]["p_name"],
@@ -172,9 +173,12 @@ function fn_acc__upd_kit_info($id, $data){
     $d = array();
     $d["description"]   = $data["description"];
     $d["comment"]       = (strlen($data["comment"]))?$data["description"]:"";
-    $d["date_open"]    = fn_parse_date($data["date_open"]);
+    $d["date_open"]     = fn_parse_date($data["date_open"]);
     $d["status"]        = (fn_check_type($data["status"], UNS_KIT_STATUS))?$data["status"]:UNS_KIT_STATUS__O;
-    ;
+    $d["date_close"]    = 0;
+    if ($d["status"] == UNS_KIT_STATUS__Z){
+        $d["date_close"]= TIME;
+    }
 
     if ($operation == "update"){
         // ОБНОВИТЬ

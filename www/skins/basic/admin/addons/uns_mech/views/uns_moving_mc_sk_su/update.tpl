@@ -1,5 +1,5 @@
 {capture name="mainbox"}
-    {include file="addons/uns_mech/views/uns_moving_mc_sk_su/components/info.tpl"}
+    {*{include file="addons/uns_mech/views/uns_moving_mc_sk_su/components/info.tpl"}*}
     {assign var="i" value=$document}
     {if is__array($i)}
         {assign var="id" value=$i.document_id}

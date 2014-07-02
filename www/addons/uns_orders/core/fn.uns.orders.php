@@ -7,6 +7,8 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
         'only_active'=>false,
         'limit' => 0,
         'sorting_schemas' => 'view',
+        'date_finished_begin'   =>0,
+        'date_finished_end'     =>0,
 
     );
 
@@ -48,6 +50,10 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
     // customer_id
     if ($params["customer_id_array"] = to__array($params["customer_id"])){
         $condition .= db_quote(" AND $m_tbl.customer_id in (?n)", $params["customer_id_array"]);
+    }
+
+    if (is__more_0($params["date_finished_begin"], $params["date_finished_end"])){
+        $condition .= db_quote(" AND $m_tbl.date_finished between ?i AND ?i ", $params["date_finished_begin"], $params["date_finished_end"]);
     }
 
     if ($params['only_active']) {

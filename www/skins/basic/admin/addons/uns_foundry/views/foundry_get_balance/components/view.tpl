@@ -27,17 +27,19 @@
                 <td align="center" class="b1_r b1_l"><span style="font-size: 11px; color: #808080;">{$m.weight}</span></td>
                 <td align="center" class="b1_r b1_l"><span class="{if $m.nach<0}info_warning_block{elseif $m.nach==0}zero{/if}">{$m.nach|fn_fvalue:2}</span></td>
                 <td align="center" class="b1_r b1_l"><span class="{if $m.current__in<0}info_warning_block{elseif $m.current__in==0}zero{/if}">{$m.current__in|fn_fvalue:2}</span></td>
-                <td align="center" class="b1_r b1_l"><span class="{if $m.current__out<0}info_warning_block{elseif $m.current__out==0}zero{/if}">{$m.current__out|fn_fvalue:2}</span></td>
-                <td align="center" class="b1_r b1_l" style="background-color: #d3d3d3;" ><span class="{if $m.konech<0}info_warning_block{elseif $m.konech==0}zero{/if} bold">{$m.konech|fn_fvalue:2}</span></td>
+                <td align="center" class="b1_l"><span class="{if $m.current__out<0}info_warning_block{elseif $m.current__out==0}zero{/if}">{$m.current__out|fn_fvalue:2}</span></td>
+                <td align="center" class="b_l" style="background-color: #d3d3d3;" ><span class="{if $m.konech<0}info_warning_block{elseif $m.konech==0}zero{/if} bold">{$m.konech|fn_fvalue:2}</span></td>
                 {if $search.accessory_pumps == "Y"}
-                <td align="left" class="b1_r">
+                <td align="left" class="b_l">
                     {if $m.material_comment_1|strlen}
                         <span class="info_warning">{$m.material_comment_1}</span>
                     {else}
-                        {if $m.accessory_pump_series}
-                            {$m.accessory_pump_series}
+                        {if $m.accessory_view == "M"}
+                            {$m.accessory_pump_manual} <span class="info_warning">({$m.accessory_view})</span>
+                        {elseif $m.accessory_view == "P"}
+                            {$m.accessory_pumps} <span class="info_warning">({$m.accessory_view})</span>
                         {else}
-                            {if $m.accessory_pumps}[{$m.accessory_pumps}]{/if}
+                            {$m.accessory_pump_series}
                         {/if}
                     {/if}
                 </td>
@@ -58,19 +60,13 @@
     <tbody>
         {if $mode_report != "P"} {* список всех материалов *}
         <tr  m_id={$m.id}>
-            <td style="background-color: #d3d3d3;">
+            <td colspan="8" style="background-color: #d3d3d3;">
                 <img width="14" category_items="{$id}" height="9" border="0" title="Расширить список" class="hand {$id} plus {if !$expand_all} hidden {/if}" alt="Расширить список" src="skins/basic/admin/images/plus.gif">
                 <img width="14" category_items="{$id}" height="9" border="0" title="Свернуть список" class="hand {$id} minus {if $expand_all} hidden {/if}" alt="Свернуть список" src="skins/basic/admin/images/minus.gif">
-                &nbsp;<span style="color: #000000; font-weight: bold; font-size: 14px;">{$item.group}</span></td>
-            <td style="background-color: #d3d3d3;" align="center">&nbsp;</td>
-            <td style="background-color: #d3d3d3;" align="right">&nbsp;</td>
-            <td style="background-color: #d3d3d3;" align="center">{*<b><span class="{if $t_nach<0}info_warning_block{/if}">{$t_nach|fn_fvalue:2}</span></b>*}</td>
-            <td style="background-color: #d3d3d3;" align="center">{*<b><span class="{if $t_current__in<0}info_warning_block{/if}">{$t_current__in|fn_fvalue:2}</span></b>*}</td>
-            <td style="background-color: #d3d3d3;" align="center">{*<b><span class="{if $t_current__out<0}info_warning_block{/if}">{$t_current__out|fn_fvalue:2}</span></b>*}</td>
-            <td style="background-color: #d3d3d3;" align="center">{*<b><span class="{if $t_konech<0}info_warning_block{/if}">{$t_konech|fn_fvalue:2}</span></b>*}</td>
-            {if $search.accessory_pumps == "Y"}
-                <td style="background-color: #d3d3d3;" align="center"></td>
-            {/if}
+                &nbsp;<span style="color: #000000; font-weight: bold; font-size: 14px;">{$item.group}</span>{if $item.group_comment} <span class="info_warning">({$item.group_comment})</span>{/if}</td>
+            {*{if $search.accessory_pumps == "Y"}*}
+                {*<td style="background-color: #d3d3d3;" align="center"></td>*}
+            {*{/if}*}
         </tr>
         {/if}
         {$smarty.capture.category_items}

@@ -101,6 +101,12 @@ function fn_rpt__mc($data){
 
         // Переход на новую страницу
         if ($pdf->GetY() >= 260)  $pdf->AddPage();
+        if (strlen($group['group_comment'])){
+            $pdf->SetFillColor(255, 255, 255);
+            $pdf->SetTextColor(0, 0, 0);
+            $pdf->uns_SetFont("BI", 9);
+            $pdf->MultiCell(170,  4, "({$group['group_comment']})",  0, "R", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        }
         $k = 0;
         $pdf->SetFillColor(80, 80, 80);
         $pdf->SetTextColor(260, 260, 260);
@@ -244,7 +250,12 @@ function fn_rpt__mc($data){
         $pdf->MultiCell($col_sizes[$k++],  $h, "",              $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
         $pdf->MultiCell($col_sizes[$k++],  $h, "Скл. КМП",      $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
         $pdf->MultiCell($col_sizes[$k++],  $h, "Принадлежность",$border, $align, $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-
+        if (strlen($group['group_comment'])){
+            $pdf->SetFillColor(255, 255, 255);
+            $pdf->SetTextColor(0, 0, 0);
+            $pdf->uns_SetFont("BI", 9);
+            $pdf->MultiCell(170,  4, "({$group['group_comment']})",  0, "R", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        }
         $pdf->ln(10);
     }
 

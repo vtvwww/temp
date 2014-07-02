@@ -15,7 +15,7 @@
     {if $f_simple_text}
         <span {if $f_class}class="{$f_class}"{/if}>{if (strlen($f_default) && !strlen($f_value))}{$f_default}{else}{$f_value}{/if}</span>
     {elseif $f_simple}
-        <input type="{if $f_number}number{else}text{/if}" {if $f_id} id="{$f_id}" {/if} {if $f_name}name="{$f_name}"{/if} size="35" value="{if (strlen($f_default) && !strlen($f_value))}{$f_default}{else}{$f_value}{/if}" {if $f_class}class="{$f_class}"{else}class="input-text-short{*medium*} main-input {$f_add_class} "{/if} {if $f_style} style="{$f_style}" {/if}  {if $f_disabled}disabled="disabled"{/if}  {if $f_readonly}readonly="readonly"{/if} {if $f_autocomplete}autocomplete="{$f_autocomplete}"{/if} />
+        <input {if strlen($f_attr) and strlen($f_attr_val)} {$f_attr}={$f_attr_val} {/if} {if strlen($f_title)} title={$f_title} {/if} type="{if $f_number}number{else}text{/if}" {if $f_id} id="{$f_id}" {/if} {if $f_name}name="{$f_name}"{/if} size="35" value="{if (strlen($f_default) && !strlen($f_value))}{$f_default}{else}{$f_value}{/if}" {if $f_class}class="{$f_class}"{else}class="input-text-short{*medium*} main-input {$f_add_class} "{/if} {if $f_style} style="{$f_style}" {/if}  {if $f_disabled}disabled="disabled"{/if}  {if $f_readonly}readonly="readonly"{/if} {if $f_autocomplete}autocomplete="{$f_autocomplete}"{/if} />
     {else}
         <div class="form-field">
              <label class="{if $f_required}cm-required{/if}{if $f_integer} cm-integer{/if}" for="{$f_name}_{$f_id}">{$f_description}:</label>
@@ -219,8 +219,8 @@
     {elseif $f_simple_2}
         {if $f_blank}<option value="0">---</option>{/if}
         {if is__array($f_options)}
-        {foreach from=$f_options item="j"}
-            <option class="{if $j.material_status == "D" or $j.detail_status == "D"} item_disabled {/if}{if $j.checked == "N"} item_verification_required {/if}" title="{if $j.material_status == "D" or $j.detail_status == "D"} Деталь выключена. {/if}{if $j.checked == "N"}Деталь требует проверки. {/if}" value="{$j.$f_option_id}" {if $j.$f_option_id == $f_option_target_id} selected="selected" {/if}>{if $f_value_prefix}{$f_value_prefix}{/if}{$j.$f_option_value}{if $f_option_value_add && $j.$f_option_value_add} ({$j.$f_option_value_add}) {/if}{if $f_value_suffix}{$f_value_suffix}{/if}{if $f_add_value and strlen($j.$f_add_value)}&nbsp;&nbsp;&nbsp;({$j.$f_add_value}){/if}</option>
+        {foreach from=$f_options item="j" name="s"}
+            <option class="{if $j.material_status == "D" or $j.detail_status == "D"} item_disabled {/if}{if $j.checked == "N"} item_verification_required {/if}" title="{if $j.material_status == "D" or $j.detail_status == "D"} Деталь выключена. {/if}{if $j.checked == "N"}Деталь требует проверки. {/if}" value="{$j.$f_option_id}" {if $j.$f_option_id == $f_option_target_id} selected="selected" {/if} {*{if $smarty.foreach.s.index == 0} selected="selected" {/if}*} >{if $f_value_prefix}{$f_value_prefix}{/if}{$j.$f_option_value}{if $f_option_value_add && $j.$f_option_value_add} ({$j.$f_option_value_add}) {/if}{if $f_value_suffix}{$f_value_suffix}{/if}{if $f_add_value and strlen($j.$f_add_value)}&nbsp;&nbsp;&nbsp;({$j.$f_add_value}){/if}</option>
         {/foreach}
         {/if}
     {else}
@@ -568,11 +568,12 @@
     {if $f_simple}
         <select name="{$f_name}" {if $f_id} id="{$f_id}" {/if} {if $f_disabled}disabled="disabled"{/if} >
             <option {if $f_value == 0} selected="selected" {/if} value="0">---</option>
-            {if $f_detail}  <option {if $f_value == "D"} selected="selected" {/if} {if $f_disabled_detail}  disabled="disabled" {/if} value="D">Дет.</option>{/if}
-            {if $f_material}<option {if $f_value == "M"} selected="selected" {/if} {if $f_disabled_material}disabled="disabled" {/if} value="M">Мат.</option>{/if}
-            {if $f_p}       <option {if $f_value == "P"} selected="selected" {/if} {if $f_disabled_p}       disabled="disabled" {/if} value="P">Насос</option>{/if}
-            {if $f_pf}      <option {if $f_value == "PF"} selected="selected" {/if} {if $f_disabled_pf}     disabled="disabled" {/if} value="PF">Н на раме</option>{/if}
-            {if $f_pa}      <option {if $f_value == "PA"} selected="selected" {/if} {if $f_disabled_pa}     disabled="disabled" {/if} value="PA">Н агрегат</option>{/if}
+            {if $f_pump_series} <option {if $f_value == "S"}  selected="selected" {/if} {if $f_disabled_pump_series}disabled="disabled" {/if} value="S" title="Серия насоса">Насос</option>{/if}
+            {if $f_detail}      <option {if $f_value == "D"}  selected="selected" {/if} {if $f_disabled_detail}     disabled="disabled" {/if} value="D">Дет.</option>{/if}
+            {if $f_material}    <option {if $f_value == "M"}  selected="selected" {/if} {if $f_disabled_material}   disabled="disabled" {/if} value="M">Мат.</option>{/if}
+            {if $f_p}           <option {if $f_value == "P"}  selected="selected" {/if} {if $f_disabled_p}          disabled="disabled" {/if} value="P">Насос</option>{/if}
+            {if $f_pf}          <option {if $f_value == "PF"} selected="selected" {/if} {if $f_disabled_pf}         disabled="disabled" {/if} value="PF">Н на раме</option>{/if}
+            {if $f_pa}          <option {if $f_value == "PA"} selected="selected" {/if} {if $f_disabled_pa}         disabled="disabled" {/if} value="PA">Н агрегат</option>{/if}
         </select>
     {else}
     {/if}
@@ -615,7 +616,7 @@
 {******************************************************************************}
 {elseif $f_type == "select_range"}
     {if $f_simple}
-        {if $f_plus_minus}<input type="button" value="–" class="select_plus_minus" onclick="var s = $(this).next(); var v = parseInt(s.val()); if (!s.attr('disabled')) s.find('option[value=' + (v-1) + ']').attr('selected', 'selected'); s.change();"/>{/if}
+        {if $f_plus_minus}<input type="button" value="–" class="select_plus_minus" onclick="var s = $(this).next(); var v = parseInt(s.val()); s.find('option').removeAttr('selected'); if (!s.attr('disabled')) s.find('option[value=' + (v-1) + ']').attr('selected', 'selected'); s.change();"/>{/if}
         <select {if strlen($f_add_attr)}add_attr="{$f_add_attr}"{/if} autocomplete="off" {if $f_name}name="{$f_name}"{/if} {if $f_id} id="{$f_id}"{/if} {if $f_disabled}disabled="disabled"{/if} {if $f_style}style="{$f_style}"{/if} {if $f_onchange}onchange="{$f_onchange}"{/if} >
             {if $f_blank}
                 <option {if $f_value == 0}  selected="selected" {/if} value="0">---</option>
@@ -624,7 +625,7 @@
                 <option {if $f_value == $i}selected="selected"{/if} value="{$i}">{$i}</option>
             {/foreach}
         </select>
-        {if $f_plus_minus}<input type="button" value="+" class="select_plus_minus" onclick="var s = $(this).prev(); var v = parseInt(s.val()); if (!s.attr('disabled')) s.find('option[value=' + (v+1) + ']').attr('selected', 'selected'); s.change();"/>{/if}
+        {if $f_plus_minus}<input type="button" value="+" class="select_plus_minus" onclick="var s = $(this).prev(); var v = parseInt(s.val()); s.find('option').removeAttr('selected'); if (!s.attr('disabled')) s.find('option[value=' + (v+1) + ']').attr('selected', 'selected'); s.change();"/>{/if}
     {elseif $f_simple_2}
         {foreach from=$f_from|range:$f_to item="i"}
             <option {if $f_value == $i} selected="selected" {/if} value="{$i}">{$i}</option>
@@ -632,7 +633,7 @@
     {else}
         <div class="form-field">
             <label class="{if $f_required}cm-required{/if} {if $f_integer}cm-integer{/if} {if $f_integer_more_0}cm-integer-more-0{/if}" for="{$f_id}">{$f_description}:</label>
-            {if $f_plus_minus}<input type="button" value="–" class="select_plus_minus" onclick="var s = $(this).next(); var v = parseInt(s.val()); if (!s.attr('disabled')) s.find('option[value=' + (v-1) + ']').attr('selected', 'selected'); s.change();"/>{/if}
+            {if $f_plus_minus}<input type="button" value="–" class="select_plus_minus" onclick="var s = $(this).next(); var v = parseInt(s.val()); s.find('option').removeAttr('selected'); if (!s.attr('disabled')) s.find('option[value=' + (v-1) + ']').attr('selected', 'selected'); s.change();"/>{/if}
             <select name="{$f_name}" {if $f_id} id="{$f_id}" {/if} {if $f_disabled}disabled="disabled"{/if} >
                 {if $f_blank}
                     <option {if $f_value == 0}  selected="selected" {/if} value="0">---</option>
@@ -641,7 +642,7 @@
                     <option {if $f_value == $i} selected="selected" {/if} value="{$i}">{$i}</option>
                 {/foreach}
             </select>
-            {if $f_plus_minus}<input type="button" value="+" class="select_plus_minus" onclick="var s = $(this).prev(); var v = parseInt(s.val()); if (!s.attr('disabled')) s.find('option[value=' + (v+1) + ']').attr('selected', 'selected'); s.change();"/>{/if}
+            {if $f_plus_minus}<input type="button" value="+" class="select_plus_minus" onclick="var s = $(this).prev(); var v = parseInt(s.val()); s.find('option').removeAttr('selected'); if (!s.attr('disabled')) s.find('option[value=' + (v+1) + ']').attr('selected', 'selected'); s.change();"/>{/if}
         </div>
     {/if}
 

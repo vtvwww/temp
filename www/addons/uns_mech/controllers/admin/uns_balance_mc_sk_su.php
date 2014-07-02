@@ -22,8 +22,11 @@ if($mode == 'manage'){
     list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
     $_REQUEST["accessory_pumps"] = "Y";
 
+    $_REQUEST["all_details"]    = ($_REQUEST["all_details"] == "Y")?"Y":"N";
+    $_REQUEST["check_dcat_id"]  = true;
+
     $balances = array();
-    list($balances, $search) = fn_uns__get_balance_mc_sk_su($_REQUEST, true, true, true);
+    list($balances, $search) = fn_uns__get_balance_mc_sk_su($_REQUEST, true, true, false, false);
     $view->assign('balances',    $balances);
 
     $view->assign('search',     $search);
@@ -97,6 +100,7 @@ function fn_uns_balance_mc_sk_su__search($controller) {
         'detail_name',
         'detail_no',
         'accessory_pumps',
+        'all_details',
     );
     fn_uns_search_set_get_params($controller, $params);
     return true;

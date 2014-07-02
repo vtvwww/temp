@@ -21,31 +21,37 @@
         {if count($orders)}
         <tr style="background-color: #EDEDED">
             {*Насос*}
-            <th rowspan="2" style="text-align: center; border-left: 3px solid #000000; border-top : 1px solid #808080; background-color: #D3D3D3;">Тек.<br>ост.</th>
+            <th rowspan="2" style="text-transform: none; text-align: center; border-left: 3px solid #000000; border-top : 1px solid #808080; background-color: #D3D3D3;">Тек.<br>ост.</th>
             <th colspan="{math equation="2*x" x=$orders|count}" style="text-align: center; border-left: 3px solid #000000; border-bottom: 1px solid #000000; border-top: 3px solid #000000;">Заказы</th>
 
             {*На раме*}
-            <th rowspan="2" style="text-align: center; border-left: 3px solid #000000; border-top : 1px solid #808080; background-color: #D3D3D3;">Тек.<br>ост.</th>
+            <th rowspan="2" style="text-transform: none; text-align: center; border-left: 3px solid #000000; border-top : 1px solid #808080; background-color: #D3D3D3;">Тек.<br>ост.</th>
             <th colspan="{math equation="2*x" x=$orders|count}" style="text-align: center; border-left: 3px solid #000000; border-bottom: 1px solid #000000; border-top: 3px solid #000000;">Заказы</th>
 
             {*Агрегат*}
-            <th rowspan="2" style="text-align: center; border-left: 3px solid #000000; border-top : 1px solid #808080; background-color: #D3D3D3;">Тек.<br>ост.</th>
+            <th rowspan="2" style="text-transform: none; text-align: center; border-left: 3px solid #000000; border-top : 1px solid #808080; background-color: #D3D3D3;">Тек.<br>ост.</th>
             <th colspan="{math equation="2*x" x=$orders|count}" style="text-align: center; border-left: 3px solid #000000; border-bottom: 1px solid #000000; border-top: 3px solid #000000;">Заказы</th>
         </tr>
         <tr style="background-color: #EDEDED">
             {*Насос*}
             {foreach from=$orders item="o" name="o"}
-                <th colspan="2" style="text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$customers[$o.customer_id].name params="black" tooltip_mark="<b>`$customers[$o.customer_id].name_short`</b>"}</th>
+                {assign var="date_finish" value=$o.date_finished|date_format:'%a %d/%m/%y'}
+                {assign var="date_finish" value="`$date_finish` (осталось `$o.remaining_time` дней)"}
+                <th colspan="2" style="text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip="`$customers[$o.customer_id].name`<br>Отгрузка: `$date_finish`" params="black" tooltip_mark="<b>`$customers[$o.customer_id].name_short`</b>"}</th>
             {/foreach}
 
             {*На раме*}
             {foreach from=$orders item="o" name="o"}
-                <th colspan="2" style="text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$customers[$o.customer_id].name params="black" tooltip_mark="<b>`$customers[$o.customer_id].name_short`</b>"}</th>
+                {assign var="date_finish" value=$o.date_finished|date_format:'%a %d/%m/%y'}
+                {assign var="date_finish" value="`$date_finish` (осталось `$o.remaining_time` дней)"}
+                <th colspan="2" style="text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip="`$customers[$o.customer_id].name`<br>Отгрузка: `$date_finish`" params="black" tooltip_mark="<b>`$customers[$o.customer_id].name_short`</b>"}</th>
             {/foreach}
 
             {*Агрегат*}
             {foreach from=$orders item="o" name="o"}
-                <th colspan="2" style="text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$customers[$o.customer_id].name params="black" tooltip_mark="<b>`$customers[$o.customer_id].name_short`</b>"}</th>
+                {assign var="date_finish" value=$o.date_finished|date_format:'%a %d/%m/%y'}
+                {assign var="date_finish" value="`$date_finish` (осталось `$o.remaining_time` дней)"}
+                <th colspan="2" style="text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip="`$customers[$o.customer_id].name`<br>Отгрузка: `$date_finish`" params="black" tooltip_mark="<b>`$customers[$o.customer_id].name_short`</b>"}</th>
             {/foreach}
         </tr>
         {/if}
@@ -73,7 +79,7 @@
                         {assign var="n" value=$ps.ps_name}
                         {assign var="href" value="uns_balance_sgp.motion?item_id=`$p.p_id`&period=`$search.period`&time_from=`$search.time_from`&time_to=`$search.time_to`"}
                         <a  rev="content_item_{$p.p_id}" id="opener_item_{$m_id}" href="{$href|fn_url}" class="cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black bold" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$n}</a>
-                        <div id="content_item_{$p.p_id}" class="hidden" title="{$n|upper} по Складу ГОТОВОЙ ПРОДУКЦИИ"></div>
+                        <div id="content_item_{$p.p_id}" class="hidden" title="Движения <i><u>{$n}</u></i> по Складу готовой продукции"></div>
                     </td>
                     {/if}
 
@@ -81,7 +87,7 @@
                         {assign var="n" value=$p.p_name|replace:"`$ps.ps_name`":""}
                         {assign var="href" value="uns_balance_sgp.motion?item_id=`$p.p_id`&period=`$search.period`&time_from=`$search.time_from`&time_to=`$search.time_to`"}
                         <a  rev="content_item_{$p.p_id}" id="opener_item_{$m_id}" href="{$href|fn_url}" class="block cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black bold" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$n|trim}</a>
-                        <div id="content_item_{$p.p_id}" class="hidden" title="{$n|upper} по Складу ГОТОВОЙ ПРОДУКЦИИ"></div>
+                        <div id="content_item_{$p.p_id}" class="hidden" title="Движения <i><u>{$p.p_name}</u></i> по Складу готовой продукции"></div>
                     </td>
 
                     {*************************************************************************************}
@@ -321,17 +327,23 @@
         <tr>
             {*Насос*}
             {foreach from=$orders item="o" name="o"}
-                <td colspan="2" style="border-top: 1px solid #000000; border-bottom: 3px solid #000000; text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$customers[$o.customer_id].name params="black" tooltip_mark="<b>`$customers[$o.customer_id].name_short`</b>"}</td>
+                {assign var="date_finish" value=$o.date_finished|date_format:'%a %d/%m/%y'}
+                {assign var="date_finish" value="`$date_finish` (осталось `$o.remaining_time` дней)"}
+                <td colspan="2" style="border-top: 1px solid #000000; border-bottom: 3px solid #000000; text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip="`$customers[$o.customer_id].name`<br>Отгрузка: `$date_finish`" params="black" tooltip_mark="<b>`$customers[$o.customer_id].name_short`</b>"}</td>
             {/foreach}
 
             {*На раме*}
             {foreach from=$orders item="o" name="o"}
-                <td colspan="2" style="border-top: 1px solid #000000; border-bottom: 3px solid #000000; text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$customers[$o.customer_id].name params="black" tooltip_mark="<b>`$customers[$o.customer_id].name_short`</b>"}</td>
+                {assign var="date_finish" value=$o.date_finished|date_format:'%a %d/%m/%y'}
+                {assign var="date_finish" value="`$date_finish` (осталось `$o.remaining_time` дней)"}
+                <td colspan="2" style="border-top: 1px solid #000000; border-bottom: 3px solid #000000; text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip="`$customers[$o.customer_id].name`<br>Отгрузка: `$date_finish`" params="black" tooltip_mark="<b>`$customers[$o.customer_id].name_short`</b>"}</td>
             {/foreach}
 
             {*Агрегат*}
             {foreach from=$orders item="o" name="o"}
-                <td colspan="2" style="border-top: 1px solid #000000; border-bottom: 3px solid #000000; text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip=$customers[$o.customer_id].name params="black" tooltip_mark="<b>`$customers[$o.customer_id].name_short`</b>"}</td>
+                {assign var="date_finish" value=$o.date_finished|date_format:'%a %d/%m/%y'}
+                {assign var="date_finish" value="`$date_finish` (осталось `$o.remaining_time` дней)"}
+                <td colspan="2" style="border-top: 1px solid #000000; border-bottom: 3px solid #000000; text-align: center; {if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">{include file="common_templates/tooltip.tpl" tooltip="`$customers[$o.customer_id].name`<br>Отгрузка: `$date_finish`" params="black" tooltip_mark="<b>`$customers[$o.customer_id].name_short`</b>"}</td>
             {/foreach}
         </tr>
 

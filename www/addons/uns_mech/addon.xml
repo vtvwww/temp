@@ -4,7 +4,7 @@
 	<name>UNS_MECH</name>
 	<description>Мех. цех</description>
 	<version>1.0</version>
-	<priority>110</priority>
+	<priority>115</priority>
 	<position>2</position>
 	<status>active</status>
     <language_variables>

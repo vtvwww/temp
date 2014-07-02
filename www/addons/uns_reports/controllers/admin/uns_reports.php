@@ -88,8 +88,11 @@ if ($mode == 'get_report'){
 
             if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "M"; // Текущий месяц
             list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
-            $p = array_merge($_REQUEST, $p);
 
+            // Запросить категории заготовок склада литья разрешенные к отображению
+            $_REQUEST["mcat_id"] = array_keys(array_shift(fn_uns__get_materials_categories(array("view_in_reports" => true, "only_active"=>true, "mcat_id"=>27, "sorting_schemas"=>"mcat_position_accounting",))));
+
+            $p = array_merge($_REQUEST, $p);
             list($balance, $search) = fn_uns__get_balance($p);
             $exclude_items = array(412, 414, 426, // кольца сальника из болванок
                 428, // крышка патрубка 10
@@ -158,9 +161,6 @@ if ($mode == 'get_report'){
                     230=> "NA",
                 ),
             );
-
-
-
             fn_rpt__accounting(array('period'=>$_REQUEST['period'], 'time_from'=>$_REQUEST['time_from'], 'time_to'=>$_REQUEST['time_to'], 'balance'=>$balance, 'exclude_items'=>$exclude_items, 'rules'=>$rules));
         break;
 
@@ -169,8 +169,8 @@ if ($mode == 'get_report'){
             if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "M"; // Текущий месяц
             list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
             $balances = array();
-            $_REQUEST["dcat_id"] = array(7,6,4,2,35,15,9,8,38,36,5,13,14,20,26,37,24);
-//            $_REQUEST["dcat_id"] = array(2);
+            $_REQUEST["dcat_id"] = array_keys(array_shift(fn_uns__get_details_categories(array("view_in_reports" => true, "only_active"=>true))));
+//            $_REQUEST["dcat_id"] = array(7,6,4,2,35,15,9,8,38,36,5,13,14,20,26,37,24,28,40);
             $_REQUEST["accessory_pumps"] = "Y";
             list($balances, $search) = fn_uns__get_balance_mc_sk_su($_REQUEST, true, true, true);
             // Запрос категорий
@@ -189,7 +189,7 @@ if ($mode == 'get_report'){
 
         case "test":
             // 1/ Выборка серий насосов
-            $p = array("ps_id" => array(
+//            $p = array("ps_id" => array(
 //                78,
 //                79,
 //                80,
@@ -204,31 +204,34 @@ if ($mode == 'get_report'){
 //                78, 79, 80, 29, 37, 77, 76, 65, 66, 36, 39, 48, 40, 58, 62, 52,
 //                63, 68, 75, 74, 69, 38, 42, 51, 47, 61, 57, 64, 30, 31, 60, 67,
 //                70, 88, 89, 90, 92, 91, 99, 94, 72, 71, 93, 106, 84, 105, 100,
-                95, 97, 73, 85, 87, 83, 86, 82, 107, 101, 102, 108, 103, 104, 109, 110,
-            ));
-            if (is__array($pump_series = array_shift(fn_uns__get_pump_series($p)))){
-                foreach ($pump_series as $k_ps=>$v_ps){
-                    if (is__array($pumps = array_shift(fn_uns__get_pumps(array("ps_id" => $k_ps, "only_active"=>true))))){
-                        foreach ($pumps as $k_p=>$v_p){
-                            $list_details = fn_uns__get_packing_list_by_pump($k_p, "D", true);
-                            $p_details = array_shift(fn_uns__get_details(array(
-                                                "detail_id" => array_keys($list_details),
-                                                "with_materials" => true,
-                                                "with_accessory_pumps" => true,
-                                            )));
-                            if (is__array($p_details)){
-                                foreach ($p_details as $k_p_details=>$v_p_details){
-                                    $p_details[$k_p_details]["quantity"] = $list_details[$k_p_details]["quantity"];
+//                95, 97, 73, 85, 87, 83, 86, 82, 107, 101, 102, 108, 103, 104, 109, 110,
+//            ));
+            if (is__more_0($_REQUEST["ps_id"])){
+                $p = array("ps_id" => $_REQUEST["ps_id"]);
+                if (is__array($pump_series = array_shift(fn_uns__get_pump_series($p)))){
+                    foreach ($pump_series as $k_ps=>$v_ps){
+                        if (is__array($pumps = array_shift(fn_uns__get_pumps(array("ps_id" => $k_ps, "only_active"=>true))))){
+                            foreach ($pumps as $k_p=>$v_p){
+                                $list_details = fn_uns__get_packing_list_by_pump($k_p, "D", true);
+                                $p_details = array_shift(fn_uns__get_details(array(
+                                                    "detail_id" => array_keys($list_details),
+                                                    "with_materials" => true,
+                                                    "with_accessory_pumps" => true,
+                                                )));
+                                if (is__array($p_details)){
+                                    foreach ($p_details as $k_p_details=>$v_p_details){
+                                        $p_details[$k_p_details]["quantity"] = $list_details[$k_p_details]["quantity"];
+                                    }
                                 }
-                            }
 
-                            $pumps[$k_p]["details"] = $p_details;
+                                $pumps[$k_p]["details"] = $p_details;
+                            }
+                            $pump_series[$k_ps]["pumps"] = $pumps;
                         }
-                        $pump_series[$k_ps]["pumps"] = $pumps;
                     }
                 }
+                fn_rpt__test(array("ps"=>$pump_series));
             }
-            fn_rpt__test(array("ps"=>$pump_series));
         break;
 
         // отчет работы предприятия
@@ -246,20 +249,43 @@ if ($mode == 'get_report'){
             list($sales_VLC) = fn_uns__get_documents(array_merge($_REQUEST, $p));
 //            fn_print_r($sales_VLC);
 
+            // 3.0.0 Список всех насосов
+            // 3.0.1 Список всех серий насосов
+            $pumps = array_shift(fn_uns__get_pumps());
+            $pump_series = array_shift(fn_uns__get_pump_series());
+
+
             // 3. Выпуск насосной продукции
             $p = array("type" => 13, "o_id" => 19, "with_items" =>  true, "info_unit"=>false, "info_item" => false, "sorting_schemas" => "view_asc"); // RO = 7; Sklad Litya = 8
             list($vn_SGP) = fn_uns__get_documents(array_merge($_REQUEST, $p));
+            $vn_SGP_groups = null;
+            foreach ($vn_SGP as $doc){
+                foreach ($doc["items"] as $item){
+                    if (in_array($item["item_type"], array("P", "PF", "PA")) and is__more_0($item["quantity"])){
+                        $vn_SGP_groups[$pumps[$item["item_id"]]["ps_id"]] += $item["quantity"];
+                    }
+                }
+            }
+
 //            fn_print_r($vn_SGP);
 
-            // 4. Продажа насосоной продукции
+            // 4. Продажа насосной продукции
             $p = array("type" => 7, "o_id" => 19, "with_items" =>  true, "info_unit"=>false, "info_item" => false, "sorting_schemas" => "view_asc"); // RO = 7; Sklad Litya = 8
             list($sales_SGP) = fn_uns__get_documents(array_merge($_REQUEST, $p));
+            $sales_SGP_groups = null;
+            foreach ($sales_SGP as $doc){
+                foreach ($doc["items"] as $item){
+                    if (in_array($item["item_type"], array("P", "PF", "PA")) and is__more_0($item["quantity"])){
+                        $sales_SGP_groups[$pumps[$item["item_id"]]["ps_id"]] += $item["quantity"];
+                    }
+                }
+            }
 //            fn_print_r($sales_SGP);
 
             list($customers) = fn_uns__get_customers(array('status'=>'A'));
 //            fn_print_r($regions);
 
-            fn_rpt__general_report(array("report_VLC"=>$report_VLC, "sales_VLC"=>$sales_VLC, "vn_SGP"=>$vn_SGP, "sales_SGP"=>$sales_SGP, "customers"=>$customers));
+            fn_rpt__general_report(array("report_VLC"=>$report_VLC, "sales_VLC"=>$sales_VLC, "vn_SGP"=>$vn_SGP, "vn_SGP_groups"=>$vn_SGP_groups, "sales_SGP"=>$sales_SGP, "sales_SGP_groups"=>$sales_SGP_groups, "customers"=>$customers, "pump_series"=>$pump_series));
 
         break;
 
