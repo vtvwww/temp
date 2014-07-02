@@ -325,6 +325,9 @@ function fn_uns__get_pumps($params = array(), $items_per_page = 0){
         "$m_table.p_position",
         "$m_table.p_comment",
         "$m_table.ps_id",
+        "$m_table.weight_p",
+        "$m_table.weight_pf",
+        "$m_table.weight_pa",
         "$j_table_series.ps_name",
         "$j_table_types.pt_id",
         "$j_table_types.pt_name",
@@ -434,11 +437,14 @@ function fn_uns__upd_pump($id = 0, $data){
     if (!is__more_0($data['ps_id'])) return false;
 
     $d = array(
-        'p_name' => $data['p_name'],
-        'p_status' => $data['p_status'],
-        'p_position' => (is_numeric($data['p_position']) && $data['p_position'] >= 0) ? $data['p_position'] : 0,
-        'p_comment' => $data['p_comment'],
-        'ps_id' => $data['ps_id'],
+        'p_name'        => $data['p_name'],
+        'p_status'      => $data['p_status'],
+        'p_position'    => (is_numeric($data['p_position']) && $data['p_position'] >= 0) ? $data['p_position'] : 0,
+        'p_comment'     => $data['p_comment'],
+        'ps_id'         => $data['ps_id'],
+        'weight_p'      => (is__more_0(floatval($data['weight_p'])))?floatval($data['weight_p']):0,
+        'weight_pf'     => (is__more_0(floatval($data['weight_pf'])))?floatval($data['weight_pf']):0,
+        'weight_pa'     => (is__more_0(floatval($data['weight_pa'])))?floatval($data['weight_pa']):0,
     );
 
     if (db_get_field(UNS_DB_PREFIX . "SELECT p_id FROM ?:pumps WHERE p_id = ?i", $id)) {

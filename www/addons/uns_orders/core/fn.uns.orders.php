@@ -164,6 +164,7 @@ function fn_uns__upd_order_items($order_id, $data){
                 'item_id'   => $i['item_id'],
                 'quantity'  => abs($i['quantity']),
                 'comment'   => $i['comment'],
+                'weight'   => (is__more_0(floatval($i['weight'])))?floatval($i['weight']):0,
             );
 
             if (is__more_0($i['oi_id']) and is__more_0(db_get_field(UNS_DB_PREFIX . "SELECT oi_id FROM $m_table WHERE oi_id = ?i", $i['oi_id']))){
@@ -202,7 +203,7 @@ function fn_acc__upd_order_info($id, $data){
     $d["date_finished"] = fn_parse_date($data["date_finished"]);
     $d["status"]        = (fn_check_type($data["status"], "|Open|Close|"))?$data["status"]:"Open";
     $d["customer_id"]   = $data["customer_id"];
-    $d["date_updated"]  = TIME;
+    $d["date_updated"]  = fn_parse_date($data["date_updated"]);;
 
     if ($operation == "update"){
         // ОБНОВИТЬ
@@ -241,6 +242,7 @@ function fn_acc__get_order_items($params = array(), $items_per_page = 0){
         "$m_tbl.item_id",
         "$m_tbl.quantity",
         "$m_tbl.comment",
+        "$m_tbl.weight",
         "$m_tbl.order_id",
     );
 

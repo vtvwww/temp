@@ -12,7 +12,7 @@
     {assign var="disabled"  value=true}
 {/if}
 
-{assign var="e_n" value="data[order]"}
+{assign var="e_n" value="order_data[order]"}
 
 {include file="addons/uns/views/components/get_form_field.tpl"
     f_type="hidden"
@@ -31,18 +31,19 @@
     f_option_id="customer_id"
     f_option_value="name"
     f_option_target_id=$o.customer_id
-    f_description="Регион"
+    f_description="Регион/Клиент"
 }
 
-{* ДАТА ОТГРУЗКИ*}
+{* ДАТА ОБНОВЛЕНИЯ ЗАКАЗА*}
 <div class="form-field">
-    <label class="cm-required" for="order_dates">Дата отгрузки:</label>
+    <label class="cm-required" for="order_dates">Дата обновления заказа:</label>
     {include file="addons/uns/views/components/get_form_field.tpl"
-        f_id="_order_date_finished_`$order_id`"
+        f_id="_order_date_updated_`$order_id`"
         f_type="date"
         f_required=true
-        f_name="`$e_n`[date_finished]"
-        f_value=$o.date_finished
+        f_name="`$e_n`[date_updated]"
+        f_value=$o.date_updated
+        button_today=true
         f_simple=true
     }
 </div>
@@ -66,4 +67,17 @@
         <option value="Open" {if $o.status == "Open"}selected="selected"{/if} {if $mode == "add"}selected="selected"{/if}>Открыт</option>
         <option value="Close" {if $o.status == "Close"}selected="selected"{/if}>Выполнен</option>
     </select>
+</div>
+
+{* ДАТА ОТГРУЗКИ*}
+<div class="form-field">
+    <label class="cm-required" for="order_dates">Дата отгрузки:</label>
+    {include file="addons/uns/views/components/get_form_field.tpl"
+        f_id="_order_date_finished_`$order_id`"
+        f_type="date"
+        f_required=true
+        f_name="`$e_n`[date_finished]"
+        f_value=$o.date_finished
+        f_simple=true
+    }
 </div>
