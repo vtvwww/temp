@@ -63,7 +63,56 @@
                         f_default="0"
                         f_description="Позиция"
                     }
+                    <hr/>
+                    {*Отображать в планах*}
+                    {include file="addons/uns/views/components/get_form_field.tpl"
+                        f_type="checkbox"
+                        f_id=$id
+                        f_value=$i.view_in_plans
+                        f_name="view_in_plans"
+                        f_description="Отображать в планах"
+                        f_tooltip="Разрешить отображение этой серии насосов в расчетах планирования"
+                    }
+                    <hr/>
+                    {*Размеры партий*}
+                    {include file="addons/uns/views/components/get_form_field.tpl"
+                        f_type="select_range"
+                        f_id="party_size_min"
+                        f_name="data[party_size_min]"
+                        f_required=true f_integer_more_0=true
+                        f_description="Размер партии MIN"
+                        f_from=1
+                        f_to=150
+                        f_value=$i.party_size_min|default:1
+                        f_plus_minus=true
+                        f_tooltip="Минимальное значение партии насосов для расчета плана производства насосов для механического цеха и расчета плана производства отливок для литейного цеха"
+                    }
+                    {include file="addons/uns/views/components/get_form_field.tpl"
+                        f_type="select_range"
+                        f_id="party_size_max"
+                        f_name="data[party_size_max]"
+                        f_required=true f_integer_more_0=true
+                        f_description="Размер партии MAX"
+                        f_from=2
+                        f_to=150
+                        f_value=$i.party_size_max|default:2
+                        f_plus_minus=true
+                        f_tooltip="Максимальное значение партии насосов для расчета плана производства насосов для механического цеха и расчета плана производства отливок для литейного цеха"
+                    }
+                    {include file="addons/uns/views/components/get_form_field.tpl"
+                        f_type="select_range"
+                        f_id="party_size_step"
+                        f_name="data[party_size_step]"
+                        f_required=true f_integer_more_0=true
+                        f_description="Размер партии STEP"
+                        f_from=1
+                        f_to=20
+                        f_value=$i.party_size_step|default:1
+                        f_plus_minus=true
+                        f_tooltip="Шаг увеличения значения партии насосов от минимального до максимального.<br>Например, если МИН=10, МАКС=22, ШАГ=3, тогда размер партии может быть равен: 10, 13, 16, 19 и 22"
+                    }
 
+                    <hr/>
                     {include file="addons/uns/views/components/get_form_field.tpl"
                         f_id=$id
                         f_type="textarea"

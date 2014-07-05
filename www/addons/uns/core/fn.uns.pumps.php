@@ -153,11 +153,12 @@ function fn_uns__get_pump_series($params = array(), $items_per_page = 0){
         "$m_table.ps_position",
         "$m_table.ps_comment",
         "$m_table.pt_id",
-        "$j_table.pt_name",
-        "$j_table.pt_name_short",
+        "$m_table.view_in_plans",
         "$m_table.party_size_min",
         "$m_table.party_size_max",
         "$m_table.party_size_step",
+        "$j_table.pt_name",
+        "$j_table.pt_name_short",
     );
 
     $sorting_schemas = array(
@@ -279,11 +280,15 @@ function fn_uns__upd_pump_series($id = 0, $data){
     if (!is__more_0($data['pt_id'])) return false;
 
     $d = array(
-        'ps_name' => $data['ps_name'],
-        'ps_status' => $data['ps_status'],
-        'ps_position' => (is_numeric($data['ps_position']) && $data['ps_position'] >= 0) ? $data['ps_position'] : 0,
-        'ps_comment' => $data['ps_comment'],
-        'pt_id' => $data['pt_id'],
+        'ps_name'       => $data['ps_name'],
+        'ps_status'     => $data['ps_status'],
+        'ps_position'   => (is_numeric($data['ps_position']) && $data['ps_position'] >= 0) ? $data['ps_position'] : 0,
+        'ps_comment'    => $data['ps_comment'],
+        'pt_id'         => $data['pt_id'],
+        'view_in_plans' => ($data['view_in_plans'] == "N")?"N":"Y",
+        'party_size_min' => (is__more_0($data['party_size_min']))?$data['party_size_min']:1,
+        'party_size_max' => (is__more_0($data['party_size_max']))?$data['party_size_max']:2,
+        'party_size_step'=> (is__more_0($data['party_size_step']))?$data['party_size_step']:1,
     );
 
     if (db_get_field(UNS_DB_PREFIX . "SELECT ps_id FROM ?:pump_series WHERE ps_id = ?i", $id)) {

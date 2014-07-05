@@ -63,8 +63,8 @@ if($mode == 'update'){
     // Информация о выбранной серии
     $ps_id = $_REQUEST['ps_id'];
 
-    list($pump_series_one) = fn_uns__get_pump_series(array("ps_id" => $ps_id));
-    $view->assign('pump_series_one', array_shift($pump_series_one));
+    $pump_series_one = array_shift(array_shift(fn_uns__get_pump_series(array("ps_id" => $ps_id))));
+    $view->assign('pump_series_one', $pump_series_one);
 
     // Список типов насосов
     list($pump_types) = fn_uns__get_pump_types();

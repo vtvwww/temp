@@ -47,10 +47,11 @@
             <label for="{$f_id}">{if $f_label}{$f_label}{/if}</label>
         {/if}
     {else}
-        {*<div class="form-field">*}
-             {*<label class="{if $f_required}cm-required{/if}{if $f_integer} cm-integer{/if}" for="{$f_name}_{$f_id}">{$f_description}:</label>*}
-             {*<input type="text" id="{$f_name}_{$f_id}" name="data[{$f_name}]" size="35" value="{if (strlen($f_default) && !strlen($f_value))}{$f_default}{else}{$f_value}{/if}" class="input-text-large main-input" />*}
-         {*</div>*}
+        <div class="form-field">
+            <label for="{$f_name}_{$f_id}">{$f_description}{if $f_tooltip|strlen} {include file="common_templates/tooltip.tpl" tooltip=$f_tooltip}{/if}:</label>
+            <input type="hidden"                          name="data[{$f_name}]" value="N"/>
+            <input type="checkbox" id="{$f_name}_{$f_id}" name="data[{$f_name}]" value="Y" {if $f_value=="Y"} checked="checked" {/if} {if $f_class} class="{$f_class}" {/if} {if $f_style} style="{$f_style}" {/if} {if $f_disabled} disabled="disabled" {/if} {if $f_onchange}onchange="{$f_onchange}"{/if} />
+         </div>
     {/if}
 
 
@@ -632,7 +633,7 @@
         {/foreach}
     {else}
         <div class="form-field">
-            <label class="{if $f_required}cm-required{/if} {if $f_integer}cm-integer{/if} {if $f_integer_more_0}cm-integer-more-0{/if}" for="{$f_id}">{$f_description}:</label>
+            <label class="{if $f_required}cm-required{/if} {if $f_integer}cm-integer{/if} {if $f_integer_more_0}cm-integer-more-0{/if}" for="{$f_id}">{$f_description}{if $f_tooltip|strlen} {include file="common_templates/tooltip.tpl" tooltip=$f_tooltip}{/if}:</label>
             {if $f_plus_minus}<input type="button" value="–" class="select_plus_minus" onclick="var s = $(this).next(); var v = parseInt(s.val()); s.find('option').removeAttr('selected'); if (!s.attr('disabled')) s.find('option[value=' + (v-1) + ']').attr('selected', 'selected'); s.change();"/>{/if}
             <select name="{$f_name}" {if $f_id} id="{$f_id}" {/if} {if $f_disabled}disabled="disabled"{/if} >
                 {if $f_blank}
