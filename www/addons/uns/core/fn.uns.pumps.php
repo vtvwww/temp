@@ -333,6 +333,8 @@ function fn_uns__get_pumps($params = array(), $items_per_page = 0){
         "$m_table.weight_p",
         "$m_table.weight_pf",
         "$m_table.weight_pa",
+        "$m_table.include_to_accessory",
+        "$m_table.as_set_of_details",
         "$j_table_series.ps_name",
         "$j_table_types.pt_id",
         "$j_table_types.pt_name",
@@ -454,6 +456,8 @@ function fn_uns__upd_pump($id = 0, $data){
         'weight_p'      => (is__more_0(floatval($data['weight_p'])))?floatval($data['weight_p']):0,
         'weight_pf'     => (is__more_0(floatval($data['weight_pf'])))?floatval($data['weight_pf']):0,
         'weight_pa'     => (is__more_0(floatval($data['weight_pa'])))?floatval($data['weight_pa']):0,
+        'include_to_accessory'  => ($data['include_to_accessory'] == "Y")?"Y":"N",
+        'as_set_of_details'     => ($data['as_set_of_details'] == "Y")?"Y":"N",
     );
 
     if (db_get_field(UNS_DB_PREFIX . "SELECT p_id FROM ?:pumps WHERE p_id = ?i", $id)) {

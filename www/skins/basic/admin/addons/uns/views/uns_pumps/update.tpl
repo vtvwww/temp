@@ -47,37 +47,6 @@
                     f_blank=true
                 }
 
-                {*ВЕС НАСОСА*}
-                {include file="addons/uns/views/components/get_form_field.tpl"
-                    f_id=$id
-                    f_type="input"
-                    f_required=true f_integer=false
-                    f_name="weight_p"
-                    f_value=$i.weight_p
-                    f_description="Вес насоса, кг"
-                }
-
-                {*ВЕС НАСОСА НА РАМЕ*}
-                {include file="addons/uns/views/components/get_form_field.tpl"
-                    f_id=$id
-                    f_type="input"
-                    f_required=true f_integer=false
-                    f_name="weight_pf"
-                    f_value=$i.weight_pf
-                    f_description="Вес насоса, кг"
-                }
-
-                {*ВЕС НАСОСНОГО АГРЕГАТА*}
-                {include file="addons/uns/views/components/get_form_field.tpl"
-                    f_id=$id
-                    f_type="input"
-                    f_required=true f_integer=false
-                    f_name="weight_pa"
-                    f_value=$i.weight_pa
-                    f_description="Вес насоса, кг"
-                }
-
-
                 {include file="addons/uns/views/components/get_form_field.tpl"
                     f_id=$id
                     f_type="status"
@@ -96,7 +65,57 @@
                     f_default="0"
                     f_description="Позиция"
                 }
+                <hr/>
+                {*ВЕС НАСОСА*}
+                {include file="addons/uns/views/components/get_form_field.tpl"
+                    f_id=$id
+                    f_type="input"
+                    f_required=true f_integer=false
+                    f_name="weight_p"
+                    f_value=$i.weight_p|fn_fvalue
+                    f_description="Вес насоса, кг"
+                }
 
+                {*ВЕС НАСОСА НА РАМЕ*}
+                {include file="addons/uns/views/components/get_form_field.tpl"
+                    f_id=$id
+                    f_type="input"
+                    f_required=true f_integer=false
+                    f_name="weight_pf"
+                    f_value=$i.weight_pf|fn_fvalue
+                    f_description="Вес насоса на раме, кг"
+                }
+
+                {*ВЕС НАСОСНОГО АГРЕГАТА*}
+                {include file="addons/uns/views/components/get_form_field.tpl"
+                    f_id=$id
+                    f_type="input"
+                    f_required=true f_integer=false
+                    f_name="weight_pa"
+                    f_value=$i.weight_pa|fn_fvalue
+                    f_description="Вес насосного агрегата, кг"
+                }
+                <hr/>
+                {*Включить название этого насоса в список насосов, к которым принадлежит деталь или отливка*}
+                {include file="addons/uns/views/components/get_form_field.tpl"
+                    f_type="checkbox"
+                    f_id=$id
+                    f_value=$i.include_to_accessory
+                    f_name="include_to_accessory"
+                    f_description="Включить в список принадлежность к насосам"
+                    f_tooltip="Если в настройках детали(заготовки) выбран режим отображения принадлежности: <По насосоам>, тогда при установленой птичке, название этого насоса будет отображено в списке принадлежности к насосам.<br><br>Птичка установлена.<br><img src='skins/basic/admin/images/tooltips/pumps_include_to_accessory.png'><br><br>Птичка сброшена.<br><img src='skins/basic/admin/images/tooltips/pumps_include_to_accessory_1.png'>"
+                }
+                <hr/>
+                {*Считать эту насосную единицу как набор деталей*}
+                {include file="addons/uns/views/components/get_form_field.tpl"
+                    f_type="checkbox"
+                    f_id=$id
+                    f_value=$i.as_set_of_details
+                    f_name="as_set_of_details"
+                    f_description="Считать эту насосную единицу как набор деталей"
+                    f_tooltip="Считать эту насосную единицу как набор деталей. Это необходимо для расчета планирования производства насосов.<br>Например, <Д320-50 ротор в сб.> - это комплект деталей, а не насос, поэтому он должен быть исключен из расчетов плана производства, но он будет отображен на балансе Склада готовой продукции.<br><b>ПЛАН ПРОИЗВОДСТВА НАСОСОВ<br>Птичка установлена.</b><br>На 01/07/2014 на СГП есть 2 насоса серии 1Д315/71.<br><img src='skins/basic/admin/images/tooltips/pumps_as_set_of_details.png'><br><br>Хотя на Балансе СГП мы видим еще и три ротора в сборе.<br><img src='skins/basic/admin/images/tooltips/pumps_as_set_of_details_1.png'>. <br><br><b>Птичка сброшена.</b><br>Тогда эти ротора в сборе будут считаться как насосы, и мы увидим не 2 насоса этой серии, а уже 5. А это неправильно. Что будет сбивать с толку мех. цеха, литейный цех и коммерческий отдел.<br><img src='skins/basic/admin/images/tooltips/pumps_as_set_of_details_2.png'>"
+                }
+                <hr/>
                 {include file="addons/uns/views/components/get_form_field.tpl"
                     f_id=$id
                     f_type="textarea"
