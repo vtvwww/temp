@@ -8,15 +8,25 @@
 {assign var="item_type_pa"      value=true}
 
 
-<table cellpadding="0" cellspacing="0" class="table">
+<table cellpadding="0" cellspacing="0" class="table order_items">
+    <tfoot>
+        <tr>
+            <td style="background-color: rgb(238,238,238);" colspan="4" class="bold" align="right">ИТОГО:</td>
+            <td style="background-color: rgb(238,238,238);" colspan="1" class="bold center b1_l b1_b"><span class="total">{$o.total_quantity}</span></td>
+            <td style="background-color: rgb(238,238,238);" colspan="2" class="bold center b1_l b1_b"><span class="total"><nobr>{$o.total_weight|number_format:1:".":" "}</nobr></span></td>
+            <td style="background-color: rgb(238,238,238);" colspan="2" class="b1_l">&nbsp;</td>
+        </tr>
+    </tfoot>
     <tbody>
         <tr class="first-sibling">
-            <th width="10px" class="cm-non-cb">№</th>
-            <th class="cm-non-cb" width="10px">Тип</th>
-            <th class="cm-non-cb" width="90px">Категория/Серия</th>
-            <th class="cm-non-cb" width="140px">Наименование</th>
-            <th class="cm-non-cb" width="10px">Кол</th>
-            <th class="cm-non-cb" width="220px">Комментарий</th>
+            <th width="10px" class="cm-non-cb b1_l center">№</th>
+            <th class="cm-non-cb b1_l center" width="10px">Тип</th>
+            <th class="cm-non-cb b1_l center" width="90px">Категория/Серия</th>
+            <th class="cm-non-cb b1_l center" width="140px">Наименование</th>
+            <th class="cm-non-cb b1_l center" width="110px">Кол-во, шт</th>
+            <th class="cm-non-cb b1_l center" colspan="2" style="text-transform: none;" width="100px">Вес, кг</th>
+            <th class="cm-non-cb b1_l center" width="220px">Комментарий</th>
+            <th class="cm-non-cb b1_l center">&nbsp;</th>
         </tr>
     </tbody>
 
@@ -24,7 +34,7 @@
         {foreach from=$o.items item="i" name="d_i"}
             {assign var="num" value=$smarty.foreach.d_i.iteration}
             {assign var="id" value=$i.oi_id}
-            {assign var="e_n" value="data[document_items][`$num`]"}
+            {assign var="e_n" value="order_data[document_items][`$num`]"}
             {if is__more_0($id)}
                 <tbody class="hover cm-row-item" id="{$id}_{$num}" >
                     <tr>
@@ -33,7 +43,7 @@
                         </td>
 
                         {*ITEM_TYPE*}
-                        <td class="cm-non-cb">
+                        <td class="cm-non-cb b1_l">
                             {include file="addons/uns/views/components/get_form_field.tpl"
                                 f_type="hidden"
                                 f_name="`$e_n`[oi_id]"
@@ -54,7 +64,7 @@
                         </td>
 
                         {*CATEGORY*}
-                        <td class="cm-non-cb">
+                        <td class="cm-non-cb b1_l">
                             {if $i.item_type == "D"}
                                 {include file="addons/uns/views/components/get_form_field.tpl"
                                     f_id=$id
@@ -86,7 +96,7 @@
                         </td>
 
                         {*ITEM_NAME*}
-                        <td class="cm-non-cb">
+                        <td class="cm-non-cb b1_l">
                             {if $i.item_type == "D"}
                                 <select name="{$e_n}[item_id]">
                                     <option value="{$i.detail_id}">{$i.detail_name}{if $i.detail_no|strlen} [{$i.detail_no}]{/if}</option>
@@ -99,31 +109,44 @@
                         </td>
 
                         {assign var="q" value=$i.quantity}
-                        <td class="cm-non-cb" align="left">
+                        <td class="cm-non-cb b1_l" align="left">
                             {include file="addons/uns/views/components/get_form_field.tpl"
-                                f_type="input"
-                                f_required=true f_integer=false
+                                f_type="select_range"
                                 f_name="`$e_n`[quantity]"
+                                f_from=0
+                                f_to=200
                                 f_value=$q|fn_fvalue
-                                f_autocomplete="off"
-                                f_number=true
-                                f_style="width: 30px;"
                                 f_simple=true
-                            }
-                        </td>
-                        <td class="cm-non-cb" align="right">
-                            {include file="addons/uns/views/components/get_form_field.tpl"
-                                f_type="textarea"
-                                f_row=1
-                                f_col=40
-                                f_full_name="`$e_n`[comment]"
-                                f_value=$i.comment
-                                f_style="width: 100%;"
-                                f_simple=true
+                                f_plus_minus=true
                             }
                         </td>
 
-                        <td class="right cm-non-cb">
+                        <td class="cm-non-cb b1_l" align="center">
+                            <span class="weight">{$i.weight|fn_fvalue}</span>
+                            {include file="addons/uns/views/components/get_form_field.tpl"
+                                f_type="hidden"
+                                f_name="`$e_n`[weight]"
+                                f_value=$i.weight|fn_fvalue
+                            }
+                        </td>
+
+                        <td class="cm-non-cb b1_l bold" align="center">
+                            <span class="total_weight">{$q*$i.weight|fn_fvalue}</span>
+                        </td>
+
+                        <td class="cm-non-cb b1_l" align="left">
+                            {include file="addons/uns/views/components/get_form_field.tpl"
+                                f_type="textarea"
+                                f_row=1
+                                f_col=30
+                                f_full_name="`$e_n`[comment]"
+                                f_value=$i.comment
+                                f_simple=true
+                                f_style="width:97%"
+                            }
+                        </td>
+
+                        <td class="right cm-non-cb b1_l">
                             {include file="buttons/multiple_buttons.tpl" item_id="`$id`_`$num`" tag_level="3" only_delete="Y"}
                         </td>
                     </tr>
@@ -133,11 +156,11 @@
     {/if}
 
     {math assign="num" equation="x + 1" x=$num|default:0}
-    {assign var="e_n" value="data[document_items][`$num`]"}
+    {assign var="e_n" value="order_data[document_items][`$num`]"}
     <tbody class="hover cm-row-item" id="box_add_{$num}">
         <tr>
             <td class="cm-non-cb" align="center">&nbsp;</td>
-            <td class="cm-non-cb">
+            <td class="cm-non-cb b1_l">
                 {include file="addons/uns/views/components/get_form_field.tpl"
                     f_type="hidden"
                     f_name="`$e_n`[oi_id]"
@@ -155,7 +178,7 @@
                     f_simple=true
                 }
             </td>
-            <td class="cm-non-cb">
+            <td class="cm-non-cb b1_l">
                 {include file="addons/uns/views/components/get_form_field.tpl"
                     f_type="select"
                     f_required=true f_integer=false
@@ -163,37 +186,50 @@
                     f_simple=true
                 }
             </td>
-            <td class="cm-non-cb">
+            <td class="cm-non-cb b1_l">
                 {include file="addons/uns/views/components/get_form_field.tpl"
                     f_type="select"
                     f_name="`$e_n`[item_id]"
                     f_simple=true
                 }
             </td>
-            <td class="cm-non-cb" align="left">
+            <td class="cm-non-cb b1_l" align="left">
                 {include file="addons/uns/views/components/get_form_field.tpl"
-                    f_type="input"
-                    f_required=true f_integer=false
+                    f_type="select_range"
                     f_name="`$e_n`[quantity]"
-                    f_value=""
-                    f_style="width: 30px;"
-                    f_autocomplete="off"
-                    f_number=true
+                    f_from=0
+                    f_to=200
+                    f_value=0
                     f_simple=true
+                    f_plus_minus=true
                 }
             </td>
-            <td class="cm-non-cb" align="right">
+
+            <td class="cm-non-cb b1_l" align="center">
+                <span class="weight">&nbsp;</span>
+                {include file="addons/uns/views/components/get_form_field.tpl"
+                    f_type="hidden"
+                    f_name="`$e_n`[weight]"
+                    f_value=0
+                }
+            </td>
+
+            <td class="cm-non-cb b1_l bold" align="center">
+                <span class="total_weight">&nbsp;</span>
+            </td>
+
+            <td class="cm-non-cb b1_l" align="left">
                 {include file="addons/uns/views/components/get_form_field.tpl"
                     f_type="textarea"
                     f_row=1
-                    f_col=40
+                    f_col=30
                     f_full_name="`$e_n`[comment]"
                     f_value=""
-                    f_style="width: 100%;"
                     f_simple=true
+                    f_style="width:97%"
                 }
             </td>
-            <td class="right cm-non-cb">
+            <td class="right cm-non-cb b1_l">
                 {include file="buttons/multiple_buttons.tpl" item_id="add_`$num`" tag_level="2"}
             </td>
         </tr>

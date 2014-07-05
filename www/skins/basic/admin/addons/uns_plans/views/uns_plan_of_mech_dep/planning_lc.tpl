@@ -8,9 +8,6 @@
                     &nbsp;Наименование
                 </th>
 
-                {*Запрет*}
-                <th rowspan="2" class="" style="text-align: center;" width="10px">&nbsp;</th>
-
                 <th rowspan="2" class="b1_l center" style="text-transform: none;" width="25px">{include file="common_templates/tooltip.tpl" tooltip='Вес 1 шт в кг'  tooltip_mark="<b>Вес<br>кг</b>"}</th>
 
                 <th colspan="3" class="b3_l center" style="text-transform: none;" width="60px">
@@ -22,7 +19,10 @@
                 <th colspan="3" class="b3_l center" style="text-transform: none; background-color: #B8C1FF;" width="60px">
                     ОСТАЛОСЬ
                 </th>
-                <th rowspan="2" class="b3_l" style="text-transform: none;">Принадлежность к насосам</th>
+                {*Запрет*}
+                <th rowspan="2" class="b3_l" style="text-align: center;" width="10px">&nbsp;</th>
+
+                <th rowspan="2" class="" style="text-transform: none;">Принадлежность к насосам</th>
             </tr>
             <tr style="background-color: #D4D0C8;">
                 {*ПЛАН*}
@@ -58,7 +58,7 @@
         {*******************************************************************}
         <tbody>
             <tr class="">
-                <td class="b3_t b3_b" rowspan="2" colspan="3" align="right"><span style="font-size: 15px; font-weight: bold;">ИТОГО, т:</span></td>
+                <td class="b3_t b3_b" rowspan="2" colspan="2" align="right"><span style="font-size: 15px; font-weight: bold;">ИТОГО, т:</span></td>
                 {*Потребность*}
                 <td class="center b3_t b3_l"><span style="font-size: 15px;">{$requirement_of_casts.curr_month.total_weight/1000|fn_fvalue:1}</span></td>
                 <td class="center b3_t b1_l"><span style="font-size: 15px;">{$requirement_of_casts.next_month.total_weight/1000|fn_fvalue:1}</span></td>
@@ -78,7 +78,7 @@
                 <td class="center b3_t b3_l" style="background-color: #B8C1FF;"><span style="font-size: 15px; font-weight: bold;">{$remaining_of_casts.curr_month.total_weight/1000|fn_fvalue:1}</span></td>
                 <td class="center b3_t b1_l" style="background-color: #B8C1FF;"><span style="font-size: 15px; font-weight: bold;">{$remaining_of_casts.next_month.total_weight/1000|fn_fvalue:1}</span></td>
                 <td class="center b3_t b1_l" style="background-color: #B8C1FF;"><span style="font-size: 15px; font-weight: bold;">{$remaining_of_casts.next2_month.total_weight/1000|fn_fvalue:1}</span></td>
-                <td class="b3_t b3_l b3_b" rowspan="2">&nbsp;</td>
+                <td class="b3_t b3_l b3_b" rowspan="2" colspan="2">&nbsp;</td>
             </tr>
             <tr class="">
                 {assign var="q" value=$requirement_of_casts.curr_month.total_weight+$requirement_of_casts.next_month.total_weight+$requirement_of_casts.next2_month.total_weight}
@@ -100,9 +100,6 @@
                 &nbsp;Наименование
             </th>
 
-            {*Запрет*}
-            <th rowspan="2" class="" style="text-align: center;" width="10px">&nbsp;</th>
-
             <th rowspan="2" class="b1_l center" style="text-transform: none;" width="25px">{include file="common_templates/tooltip.tpl" tooltip='Вес 1 шт в кг'  tooltip_mark="<b>Вес<br>кг</b>"}</th>
 
             {*ПОТРЕБНОСТЬ*}
@@ -123,7 +120,9 @@
             <th style=" background-color: #B8C1FF;" class="center b1_l ">{$data.tpl_next2_month_roman.month}<hr class="roman_dates">{$data.tpl_next2_month_roman.year}</th>
             {*<th style=" background-color: #B8C1FF;" class="center b1_l ">{$data.tpl_next3_month_roman.month}<hr class="roman_dates">{$data.tpl_next3_month_roman.year}</th>*}
 
-            <th rowspan="2" class="b3_l" style="text-transform: none;">Принадлежность к насосам</th>
+            {*Запрет*}
+            <th rowspan="2" class="b3_l" style="text-align: center;" width="10px">&nbsp;</th>
+            <th rowspan="2" class="" style="text-transform: none;">Принадлежность к насосам</th>
         </tr>
         <tr style="background-color: #D4D0C8;">
             <th colspan="3" class="b3_l b1_t center" style="text-transform: none;" width="60px">

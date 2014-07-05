@@ -47,6 +47,36 @@
                     f_blank=true
                 }
 
+                {*ВЕС НАСОСА*}
+                {include file="addons/uns/views/components/get_form_field.tpl"
+                    f_id=$id
+                    f_type="input"
+                    f_required=true f_integer=false
+                    f_name="weight_p"
+                    f_value=$i.weight_p
+                    f_description="Вес насоса, кг"
+                }
+
+                {*ВЕС НАСОСА НА РАМЕ*}
+                {include file="addons/uns/views/components/get_form_field.tpl"
+                    f_id=$id
+                    f_type="input"
+                    f_required=true f_integer=false
+                    f_name="weight_pf"
+                    f_value=$i.weight_pf
+                    f_description="Вес насоса, кг"
+                }
+
+                {*ВЕС НАСОСНОГО АГРЕГАТА*}
+                {include file="addons/uns/views/components/get_form_field.tpl"
+                    f_id=$id
+                    f_type="input"
+                    f_required=true f_integer=false
+                    f_name="weight_pa"
+                    f_value=$i.weight_pa
+                    f_description="Вес насоса, кг"
+                }
+
 
                 {include file="addons/uns/views/components/get_form_field.tpl"
                     f_id=$id

@@ -106,7 +106,6 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
             }
         }
 
-
         // подготовка данных для smarty
         if ($params["data_for_tmp"]){
             if (is__array($items)){
@@ -117,7 +116,15 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
                 }
             }
         }
+    }
 
+    if ($params["total_weight_and_quantity"]){
+        $sql = db_quote(UNS_DB_PREFIX . "SELECT sum(weight*quantity) as total_weight, sum(quantity) as total_quantity, order_id FROM ?:_acc_order_items WHERE order_id IN (?n) GROUP BY order_id", array_keys($data));
+        $totals = db_get_hash_array($sql, "order_id");
+        foreach ($data as $k_d=>$v_d){
+            $data[$k_d]["total_weight"]     = fn_fvalue($totals[$k_d]["total_weight"]);
+            $data[$k_d]["total_quantity"]   = fn_fvalue($totals[$k_d]["total_quantity"]);
+        }
     }
 
     if ($params["with_count"]){
@@ -164,6 +171,7 @@ function fn_uns__upd_order_items($order_id, $data){
                 'item_id'   => $i['item_id'],
                 'quantity'  => abs($i['quantity']),
                 'comment'   => $i['comment'],
+                'weight'   => (is__more_0(floatval($i['weight'])))?floatval($i['weight']):0,
             );
 
             if (is__more_0($i['oi_id']) and is__more_0(db_get_field(UNS_DB_PREFIX . "SELECT oi_id FROM $m_table WHERE oi_id = ?i", $i['oi_id']))){
@@ -202,7 +210,7 @@ function fn_acc__upd_order_info($id, $data){
     $d["date_finished"] = fn_parse_date($data["date_finished"]);
     $d["status"]        = (fn_check_type($data["status"], "|Open|Close|"))?$data["status"]:"Open";
     $d["customer_id"]   = $data["customer_id"];
-    $d["date_updated"]  = TIME;
+    $d["date_updated"]  = fn_parse_date($data["date_updated"]);;
 
     if ($operation == "update"){
         // ОБНОВИТЬ
@@ -241,6 +249,7 @@ function fn_acc__get_order_items($params = array(), $items_per_page = 0){
         "$m_tbl.item_id",
         "$m_tbl.quantity",
         "$m_tbl.comment",
+        "$m_tbl.weight",
         "$m_tbl.order_id",
     );
 

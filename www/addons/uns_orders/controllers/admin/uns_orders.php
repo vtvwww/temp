@@ -22,7 +22,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $suffix = '';
 
     if($mode == 'update'){
-        $id = fn_acc__upd_order($_REQUEST['order_id'], $_REQUEST['data']);
+        $id = fn_acc__upd_order($_REQUEST['order_id'], $_REQUEST['order_data']);
         if($id !== false){
             fn_set_notification("N", $_REQUEST['data']['o_name'], UNS_DATA_UPDATED);
         }
@@ -30,6 +30,119 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         $suffix = "update&order_id={$id}&selected_section={$_REQUEST['selected_section']}";
     }
 
+    if (defined('AJAX_REQUEST') and $mode == 'document_items'){
+        switch ($_REQUEST['event']){
+            case "change__item_type": // Произошла смена ТИПА ДЕТАЛИ
+                if(in_array($_REQUEST['item_type'], array('D', 'M', 'P', 'PF', 'PA'))){
+                    $options = "<option value='0'>---</option>";
+                    //ДЕТАЛЬ
+                    if($_REQUEST['item_type'] == "D"){
+                        list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true));
+                        $view->assign('f_type', 'dcategories_plain');
+                        $view->assign('f_options', $dcategories_plain);
+                        $view->assign('f_option_id', 'dcat_id');
+                        $view->assign('f_option_value', 'dcat_name');
+                        $view->assign('f_with_q_ty', false);
+                        $view->assign('f_simple_2', true);
+
+                    //НАСОС, НАСОС НА РАМЕ, НАСОСНЫЙ АГРЕГАТ
+                    } elseif(in_array($_REQUEST['item_type'], array("P", "PF", "PA"))){
+                        $p = array(
+                            'only_active' => true,
+                            'group_by_types'=>true,
+                        );
+                        list($pump_series) = fn_uns__get_pump_series($p);
+                        $view->assign("f_type", "select_by_group");
+                        $view->assign("f_options", "pump_series");
+                        $view->assign("f_option_id", "ps_id");
+                        $view->assign("f_option_value", "ps_name");
+                        $view->assign("f_optgroups", $pump_series);
+                        $view->assign("f_optgroup_label", "pt_name_short");
+                        $view->assign('f_simple_2', true);
+                        $ajax->assign('processing', "hide");
+                    }
+                    $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
+                    $ajax->assign('options', $options);
+                    exit;
+                }
+                break;
+
+            case "change__item_cat_id":
+                // Произошла смена категории//серии Детали/Материала//Насоса
+                if(in_array($_REQUEST['item_type'], array("D", "M", "P", "PF", "PA")) && is__more_0($_REQUEST['item_cat_id'])){
+                    $options = "<option value='0'>---</option>";
+
+                    //ДЕТАЛЬ
+                    if($_REQUEST['item_type'] == "D"){
+                        $p = array('dcat_id'            => $_REQUEST['item_cat_id'],
+                                   'with_accounting'    => true,
+                                   'with_materials'     => true,
+                                   'with_material_info' => true,
+                                   'only_active'        => true,
+                                   'format_name'        => true);
+                        list ($details) = fn_uns__get_details($p);
+                        $view->assign('f_type', 'select');
+                        $view->assign('f_options', $details);
+                        $view->assign('f_option_id', 'detail_id');
+                        $view->assign('f_option_value', 'format_name');
+                        $view->assign('f_add_value', 'material_no');
+                        $view->assign('f_simple_2', true);
+
+                    //НАСОС, НАСОС НА РАМЕ, НАСОСНЫЙ АГРЕГАТ
+                    } elseif(in_array($_REQUEST['item_type'], array("P", "PF", "PA"))){
+                        $p = array(
+                            'ps_id'         => $_REQUEST['item_cat_id'],
+                        );
+                        list ($pumps) = fn_uns__get_pumps($p);
+                        $view->assign('f_type', 'select');
+                        $view->assign('f_options', $pumps);
+                        $view->assign('f_option_id', 'p_id');
+                        $view->assign('f_option_value', 'p_name');
+                        $view->assign('f_simple_2', true);
+                    }
+                    $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
+                    $ajax->assign('options', $options);
+                    exit;
+                }
+                break;
+
+            case "change__item_id":
+                // Произошла смена Детали/Материала
+                if(in_array($_REQUEST['item_type'], array("D", "M", "P", "PF", "PA")) && is__more_0($_REQUEST['item_id'])){
+                    $options = "<option value='0'>---</option>";
+                    $weight = 0;
+
+                    //ДЕТАЛЬ
+                    if($_REQUEST['item_type'] == "D"){
+                        $p = array('detail_id'            => $_REQUEST['item_id'],
+                                   'with_accounting'    => true,
+                                   'with_materials'     => true,
+                                   'with_material_info' => true,
+                                   'only_active'        => true,
+                                   'format_name'        => true);
+                        $detail = array_shift(array_shift(fn_uns__get_details($p)));
+                        $weight = $detail["accounting_data"]["weight"]["M"];
+
+                    //НАСОС, НАСОС НА РАМЕ, НАСОСНЫЙ АГРЕГАТ
+                    } elseif(in_array($_REQUEST['item_type'], array("P", "PF", "PA"))){
+                        $p = array(
+                            'p_id'         => $_REQUEST['item_id'],
+                        );
+                        $pump = array_shift(array_shift(fn_uns__get_pumps($p)));
+                        switch ($_REQUEST["item_type"]){
+                            case "P":   $weight = $pump["weight_p"];    break;
+                            case "PF":  $weight = $pump["weight_pf"];   break;
+                            case "PA":  $weight = $pump["weight_pa"];   break;
+                        }
+                    }
+                    $ajax->assign('weight', fn_fvalue($weight));
+                    exit;
+                }
+            break;
+            default: break;
+        }
+        exit;
+    }
     return array(CONTROLLER_STATUS_OK, $controller . "." . $suffix);
 }
 
@@ -53,6 +166,7 @@ if($mode == 'manage'){
     $p = array(
         "full_info" => true,
         "with_count" => true,
+        "total_weight_and_quantity" => true,
     );
     $p = array_merge($_REQUEST, $p);
     list($orders, $search) = fn_acc__get_orders($p, UNS_ITEMS_PER_PAGE);
@@ -90,8 +204,9 @@ if($mode == 'update'){
         return array(CONTROLLER_STATUS_REDIRECT, $controller . ".manage");
     }
     $p = array(
-        "with_items" => true,
-        "full_info" => true,
+        "with_items"                => true,
+        "full_info"                 => true,
+        "total_weight_and_quantity" => true,
     );
     $p = array_merge($_REQUEST, $p);
     $order = array_shift(array_shift(fn_acc__get_orders($p)));

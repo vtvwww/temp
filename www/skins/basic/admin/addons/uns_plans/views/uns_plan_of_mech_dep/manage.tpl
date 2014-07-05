@@ -47,7 +47,7 @@
                             <th style="text-transform: none;"          rowspan="2" colspan="3" class="center b3_l b1_b">План<br>производства<br>ПО ПАРТИЯМ</th>
                         {/if}
 
-                        <th style="text-transform: uppercase;background-color:#B8C1FF; "                      colspan="5" class="center b3_l b1_b">Выполнение плана на {$search.current_day|fn_parse_date|date_format:"%d/%m/%y"}</th>
+                        <th style="text-transform: uppercase;background-color:#B8C1FF; "                      colspan="5" class="center b3_l">Выполнение плана на {$search.current_day|fn_parse_date|date_format:"%d/%m/%y"}</th>
                         <th style="text-transform: none;"               rowspan="3"             class="center b3_l">СГП<br>на<br>{$search.current_day|fn_parse_date|date_format:"%d/%m"}<hr class="roman_dates">{$search.year}</th>
 
                         {*Кратность партии*}
@@ -56,9 +56,9 @@
                         {/if}
                     </tr>
                     <tr style="background-color: #D4D0C8;">
-                        <th style="text-transform: none; width: 50px; background-color: #FFEF8C;"  rowspan="3"             class="center b3_l">Задел<br>ожид.<br>сборку</th>
-                        <th style="text-transform: none; width: 50px; background-color: #C0FF9A;"  rowspan="3"             class="center b2_l">Выпол-<br>нено</th>
-                        <th style="text-transform: uppercase; background-color:#B8C1FF;"                      colspan="3" class="center b3_l b1_b">Осталось</th>
+                        <th style="text-transform: none; width: 50px; background-color: #FFEF8C;"  rowspan="3"             class="center b3_l b_t">Задел<br>ожид.<br>сборку</th>
+                        <th style="text-transform: none; width: 50px; background-color: #C0FF9A;"  rowspan="3"             class="center b2_l b_t">Выпол-<br>нено</th>
+                        <th style="text-transform: uppercase; background-color:#B8C1FF;"                      colspan="3" class="center b_l b1_b">Осталось</th>
                     </tr>
                     <tr style="background-color: #D4D0C8;">
                         <th style="width: 40px;" class="center b_l">{$tpl_curr_month_roman.month}<hr class="roman_dates">{$tpl_curr_month_roman.year}</th>
@@ -68,7 +68,7 @@
                         <th style="width: 40px;" class="center b1_l">{$tpl_next_month_roman.month}<hr class="roman_dates">{$tpl_next_month_roman.year}</th>
                         <th style="width: 40px;" class="center b1_l">{$tpl_next2_month_roman.month}<hr class="roman_dates">{$tpl_next2_month_roman.year}</th>
 
-                        <th style="width: 40px;background-color: #B8C1FF;" class="center b3_l">{$tpl_curr_month_roman.month}<hr class="roman_dates">{$tpl_curr_month_roman.year}</th>
+                        <th style="width: 40px;background-color: #B8C1FF;" class="center b_l">{$tpl_curr_month_roman.month}<hr class="roman_dates">{$tpl_curr_month_roman.year}</th>
                         <th style="width: 40px;background-color: #B8C1FF;" class="center b1_l">{$tpl_next_month_roman.month}<hr class="roman_dates">{$tpl_next_month_roman.year}</th>
                         <th style="width: 40px;background-color: #B8C1FF;" class="center b1_l">{$tpl_next2_month_roman.month}<hr class="roman_dates">{$tpl_next2_month_roman.year}</th>
                     </tr>
@@ -76,18 +76,18 @@
                 {foreach from=$pump_series item="pt" name="pt"}
                 <tbody>
                 <tr>
-                    <td colspan="20" style="background-color: #E6E2DA; font-size: 12px; font-style: italic; font-weight: normal;">{$pt.pt_name}</td>
+                    <td colspan="20" style="background-color: #E6E2DA; font-size: 12px;" class="bold">{$pt.pt_name}</td>
                 </tr>
                     {foreach from=$pt.pump_series item="ps" key="ps_id" name="ps"}
                     <tr>
                         {*Наименование*}
                         <td>
-                            <a  rev="content_item_name_{$ps_id}" id="opener_item_name_{$ps_id}" href="{"uns_plan_of_mech_dep.analysis_of_pumps.pump?ps_id=`$ps_id`"|fn_url}" class="block cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black bold" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$ps.ps_name}</a>
+                            <a  rev="content_item_name_{$ps_id}" id="opener_item_name_{$ps_id}" href="{"uns_plan_of_mech_dep.analysis_of_pumps.pump?ps_id=`$ps_id`"|fn_url}" class="block cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$ps.ps_name}</a>
                             <div id="content_item_name_{$ps_id}" class="hidden" title="Анализ насоса <u>{$ps.ps_name}</u>"></div>
                         </td>
 
-                        <td>
-                            {if $prohibition.$ps_id == "Y"}<img src="skins/basic/admin/addons/uns_plans/images/prohibition.png" alt="X"/>{/if}
+                        <td align="right">
+                            {if $prohibition.$ps_id == "Y"}<img src="skins/basic/admin/addons/uns_plans/images/prohibition.png" alt="X"/>{else}&nbsp;{/if}
                         </td>
 
                         {*Склад Готовой Продукции*}
@@ -130,7 +130,7 @@
                         {*ОСТАЛОСЬ*}
                         {if $search.type_of_production_plan == "actual"}
                             {assign var="q" value=$remaining_production_plan.curr_month.$ps_id|default:0}
-                            <td style="background-color: #B8C1FF;" class="b3_l center {if !$q}zero{else}bold{/if}">{$q}</td>
+                            <td style="background-color: #B8C1FF;" class="b_l center {if !$q}zero{else}bold{/if}">{$q}</td>
                             {assign var="q" value=$remaining_production_plan.next_month.$ps_id|default:0}
                             <td style="background-color: #B8C1FF;" class="b1_l center {if !$q}zero{else}bold{/if}">{$q}</td>
                             {assign var="q" value=$remaining_production_plan.next2_month.$ps_id|default:0}
@@ -138,7 +138,7 @@
 
                         {elseif $search.type_of_production_plan == "parties"}
                             {assign var="q" value=$remaining_production_plan_parties.curr_month.$ps_id|default:0}
-                            <td style="background-color: #B8C1FF;" class="b3_l center {if !$q}zero{else}bold{/if}">{$q}</td>
+                            <td style="background-color: #B8C1FF;" class="b_l center {if !$q}zero{else}bold{/if}">{$q}</td>
                             {assign var="q" value=$remaining_production_plan_parties.next_month.$ps_id|default:0}
                             <td style="background-color: #B8C1FF;" class="b1_l center {if !$q}zero{else}bold{/if}">{$q}</td>
                             {assign var="q" value=$remaining_production_plan_parties.next2_month.$ps_id|default:0}
@@ -165,74 +165,139 @@
                 {*ИТОГО*}
                 {*******************************************************************}
                 <tbody>
+                    {*КОЛИЧЕСТВО*}
                     <tr>
-                        <td class="b3_t b3_b bold" colspan="2" style="text-align: right; font-size: 14px;">ИТОГО:</td>
+                        <td class="b3_t b3_b bold" colspan="1" rowspan="2" style="text-align: right; font-size: 14px;">ИТОГО:</td>
+                        <td class="b3_t b1_l bold center" style="font-size: 14px;">шт</td>
 
                         {*СКЛАД ГОТОВОЙ ПРОДУКЦИИ*}
                         {assign var="q" value=$sgp.total|default:0}
-                        <td style="font-size: 14px;" class="b3_t b3_b b_l center bold {if !$q}zero{/if}">{$q}</td>
+                        <td style="font-size: 14px;" class="b3_t b_l center bold {if !$q}zero{/if}">{$q}</td>
 
                         {*ПОТРЕБНОСТЬ*}
                         {assign var="q" value=$requirement.curr_month.total|default:0}
-                        <td style="font-size: 14px;" class="b3_t b3_b b_l center bold {if !$q}zero{/if}">{$q}</td>
+                        <td style="font-size: 14px;" class="b3_t b_l center bold {if !$q}zero{/if}">{$q}</td>
                         {assign var="q" value=$requirement.next_month.total|default:0}
-                        <td style="font-size: 14px;" class="b3_t b3_b b1_l center bold {if !$q}zero{/if}">{$q}</td>
+                        <td style="font-size: 14px;" class="b3_t b1_l center bold {if !$q}zero{/if}">{$q}</td>
 
                         {*ПЛАН ПРОИЗВОДСТВА*}
                         {if $search.type_of_production_plan == "actual"}
                             {assign var="q" value=$initial_production_plan.curr_month.total|default:0}
-                            <td style="font-size: 14px;" class="b3_t b3_b b3_l  center bold {if !$q}zero{/if}">{$q}</td>
+                            <td style="font-size: 14px;" class="b3_t b3_l  center bold {if !$q}zero{/if}">{$q}</td>
                             {assign var="q" value=$initial_production_plan.next_month.total|default:0}
-                            <td style="font-size: 14px;" class="b3_t b3_b b1_l center bold {if !$q}zero{/if}">{$q}</td>
+                            <td style="font-size: 14px;" class="b3_t b1_l center bold {if !$q}zero{/if}">{$q}</td>
                             {assign var="q" value=$initial_production_plan.next2_month.total|default:0}
-                            <td style="font-size: 14px;" class="b3_t b3_b b1_l center bold {if !$q}zero{/if}">{$q}</td>
+                            <td style="font-size: 14px;" class="b3_t b1_l center bold {if !$q}zero{/if}">{$q}</td>
 
                         {elseif $search.type_of_production_plan == "parties"}
                             {assign var="q" value=$initial_production_plan_parties.curr_month.total|default:0}
-                            <td style="font-size: 14px;" class="b3_t b3_b b3_l  center bold {if !$q}zero{/if}">{$q}</td>
+                            <td style="font-size: 14px;" class="b3_t b3_l  center bold {if !$q}zero{/if}">{$q}</td>
                             {assign var="q" value=$initial_production_plan_parties.next_month.total|default:0}
-                            <td style="font-size: 14px;" class="b3_t b3_b b1_l center bold {if !$q}zero{/if}">{$q}</td>
+                            <td style="font-size: 14px;" class="b3_t b1_l center bold {if !$q}zero{/if}">{$q}</td>
                             {assign var="q" value=$initial_production_plan_parties.next2_month.total|default:0}
-                            <td style="font-size: 14px;" class="b3_t b3_b b1_l center bold {if !$q}zero{/if}">{$q}</td>
+                            <td style="font-size: 14px;" class="b3_t b1_l center bold {if !$q}zero{/if}">{$q}</td>
 
                         {/if}
 
                         {*ЗАДЕЛ*}
                         {assign var="q" value=$zadel.total|default:0}
-                        <td style="font-size: 14px; background-color: #FFEF8C;" class="b3_t b3_b b3_l center bold {if !$q}zero{/if}">{$q}</td>
+                        <td style="font-size: 14px; background-color: #FFEF8C;" class="b3_t b3_l center bold {if !$q}zero{/if}">{$q}</td>
 
                         {*ВЫПОЛНЕНО*}
                         {assign var="q" value=$done.total|default:0}
-                        <td style="font-size: 14px; background-color: #C0FF9A;" class="b3_t b3_b b2_l center bold {if !$q}zero{/if}">{$q}</td>
+                        <td style="font-size: 14px; background-color: #C0FF9A;" class="b3_t b2_l center bold {if !$q}zero{/if}">{$q}</td>
 
                         {*ОСТАЛОСЬ*}
                         {if $search.type_of_production_plan == "actual"}
                             {assign var="q" value=$remaining_production_plan.curr_month.total|default:0}
-                            <td style="font-size: 14px; background-color: #B8C1FF;" class="b3_t b3_b b3_l center bold {if !$q}zero{/if}">{$q}</td>
+                            <td style="font-size: 14px; background-color: #B8C1FF;" class="b3_t b_l center bold {if !$q}zero{/if}">{$q}</td>
                             {assign var="q" value=$remaining_production_plan.next_month.total|default:0}
-                            <td style="font-size: 14px; background-color: #B8C1FF;" class="b3_t b3_b b1_l center bold {if !$q}zero{/if}">{$q}</td>
+                            <td style="font-size: 14px; background-color: #B8C1FF;" class="b3_t b1_l center bold {if !$q}zero{/if}">{$q}</td>
                             {assign var="q" value=$remaining_production_plan.next2_month.total|default:0}
-                            <td style="font-size: 14px; background-color: #B8C1FF;" class="b3_t b3_b b1_l center bold {if !$q}zero{/if}">{$q}</td>
+                            <td style="font-size: 14px; background-color: #B8C1FF;" class="b3_t b1_l center bold {if !$q}zero{/if}">{$q}</td>
 
                         {elseif $search.type_of_production_plan == "parties"}
                             {assign var="q" value=$remaining_production_plan_parties.curr_month.total|default:0}
-                            <td style="font-size: 14px; background-color: #B8C1FF;" class="b3_t b3_b b3_l center bold {if !$q}zero{/if}">{$q}</td>
+                            <td style="font-size: 14px; background-color: #B8C1FF;" class="b3_t b_l center bold {if !$q}zero{/if}">{$q}</td>
                             {assign var="q" value=$remaining_production_plan_parties.next_month.total|default:0}
-                            <td style="font-size: 14px; background-color: #B8C1FF;" class="b3_t b3_b b1_l center bold {if !$q}zero{/if}">{$q}</td>
+                            <td style="font-size: 14px; background-color: #B8C1FF;" class="b3_t b1_l center bold {if !$q}zero{/if}">{$q}</td>
                             {assign var="q" value=$remaining_production_plan_parties.next2_month.total|default:0}
-                            <td style="font-size: 14px; background-color: #B8C1FF;" class="b3_t b3_b b1_l center bold {if !$q}zero{/if}">{$q}</td>
+                            <td style="font-size: 14px; background-color: #B8C1FF;" class="b3_t b1_l center bold {if !$q}zero{/if}">{$q}</td>
 
                         {/if}
 
                         {*СКЛАД ГОТОВОЙ ПРОДУКЦИИ*}
                         {assign var="q" value=$sgp_current_day.total|default:0}
-                        <td style="font-size: 14px;" class="b3_t b3_b b3_l center bold {if !$q}zero{/if}">{$q}</td>
+                        <td style="font-size: 14px;" class="b3_t b3_l center bold {if !$q}zero{/if}">{$q}</td>
 
                         {*КРАТНОСТЬ ПАРТИИ*}
                         {if $search.type_of_production_plan == "parties"}
-                            <td class="b3_t b3_b b3_l center">&nbsp;</td>
+                            <td class="b3_t b3_l center b3_b" rowspan="2">&nbsp;</td>
+                        {/if}
+                    </tr>
+
+                    {*ВЕС*}
+                    <tr>
+                        <td class="b_t b1_l b3_b bold center" style="font-size: 14px;">т</td>
+
+                        {*СКЛАД ГОТОВОЙ ПРОДУКЦИИ*}
+                        {assign var="q" value=$weights.sgp|array_sum}
+                        <td style="font-size: 12px;" class="b_t b3_b b_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+
+                        {*ПОТРЕБНОСТЬ*}
+                        {assign var="q" value=$weights.requirement.curr_month|array_sum}
+                        <td style="font-size: 12px;" class="b_t b3_b b_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                        {assign var="q" value=$weights.requirement.next_month|array_sum}
+                        <td style="font-size: 12px;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+
+                        {*ПЛАН ПРОИЗВОДСТВА*}
+                        {if $search.type_of_production_plan == "actual"}
+                            {assign var="q" value=$weights.initial_production_plan.curr_month|array_sum}
+                            <td style="font-size: 12px;" class="b_t b3_b b3_l  center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                            {assign var="q" value=$weights.initial_production_plan.next_month|array_sum}
+                            <td style="font-size: 12px;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                            {assign var="q" value=$weights.initial_production_plan.next2_month|array_sum}
+                            <td style="font-size: 12px;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+
+                        {elseif $search.type_of_production_plan == "parties"}
+                            {assign var="q" value=$weights.initial_production_plan_parties.curr_month|array_sum}
+                            <td style="font-size: 12px;" class="b_t b3_b b3_l  center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                            {assign var="q" value=$weights.initial_production_plan_parties.next_month|array_sum}
+                            <td style="font-size: 12px;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                            {assign var="q" value=$weights.initial_production_plan_parties.next2_month|array_sum}
+                            <td style="font-size: 12px;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+
                         {/if}
 
+                        {*ЗАДЕЛ*}
+                        {assign var="q" value=$weights.zadel|array_sum}
+                        <td style="font-size: 12px; background-color: #FFEF8C;" class="b_t b3_b b3_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+
+                        {*ВЫПОЛНЕНО*}
+                        {assign var="q" value=$weights.done|array_sum}
+                        <td style="font-size: 12px; background-color: #C0FF9A;" class="b_t b3_b b2_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+
+                        {*ОСТАЛОСЬ*}
+                        {if $search.type_of_production_plan == "actual"}
+                            {assign var="q" value=$weights.remaining_production_plan.curr_month|array_sum}
+                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                            {assign var="q" value=$weights.remaining_production_plan.next_month|array_sum}
+                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                            {assign var="q" value=$weights.remaining_production_plan.next2_month|array_sum}
+                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+
+                        {elseif $search.type_of_production_plan == "parties"}
+                            {assign var="q" value=$weights.remaining_production_plan_parties.curr_month|array_sum}
+                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                            {assign var="q" value=$weights.remaining_production_plan_parties.next_month|array_sum}
+                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                            {assign var="q" value=$weights.remaining_production_plan_parties.next2_month|array_sum}
+                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                        {/if}
+
+                        {*СКЛАД ГОТОВОЙ ПРОДУКЦИИ*}
+                        {assign var="q" value=$weights.sgp_current_day|array_sum}
+                        <td style="font-size: 12px;" class="b_t b3_b b3_l center {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
                     </tr>
                 </tbody>
                 <tbody>
@@ -247,9 +312,9 @@
                         <th style="" class="b1_l center">{$tpl_next_month_roman.month}<hr class="roman_dates">{$tpl_next_month_roman.year}</th>
                         <th style="" class="b1_l center">{$tpl_next2_month_roman.month}<hr class="roman_dates">{$tpl_next2_month_roman.year}</th>
 
-                        <th style="text-transform: none; background-color: #FFEF8C;" rowspan="2" class="b3_l center">Задел<br>ожид.<br>сборку</th>
-                        <th style="text-transform: none; background-color: #C0FF9A;" rowspan="2" class="b2_l center">Выпол-<br>нено</th>
-                        <th style="background-color: #B8C1FF;" class="b3_l center">{$tpl_curr_month_roman.month}<hr class="roman_dates">{$tpl_curr_month_roman.year}</th>
+                        <th style="text-transform: none; background-color: #FFEF8C;" rowspan="2" class="b3_l b_b center">Задел<br>ожид.<br>сборку</th>
+                        <th style="text-transform: none; background-color: #C0FF9A;" rowspan="2" class="b2_l b_b center">Выпол-<br>нено</th>
+                        <th style="background-color: #B8C1FF;" class="b_l center">{$tpl_curr_month_roman.month}<hr class="roman_dates">{$tpl_curr_month_roman.year}</th>
                         <th style="background-color: #B8C1FF;" class="b1_l center">{$tpl_next_month_roman.month}<hr class="roman_dates">{$tpl_next_month_roman.year}</th>
                         <th style="background-color: #B8C1FF;" class="b1_l center">{$tpl_next2_month_roman.month}<hr class="roman_dates">{$tpl_next2_month_roman.year}</th>
                         <th rowspan="3" style="text-transform: none;" class="b3_l center">СГП<br>на<br>{$search.current_day|fn_parse_date|date_format:"%d/%m"}<hr class="roman_dates">{$search.year}</th>
@@ -267,10 +332,10 @@
                             <th rowspan="2" colspan="3" style="text-transform: none;" class="center b3_l b1_t">План<br>производства<br>ПО ПАРТИЯМ</th>
                         {/if}
 
-                        <th colspan="3" style="background-color:#B8C1FF; text-transform: uppercase;" class="center b3_l b1_t">Осталось</th>
+                        <th colspan="3" style="background-color:#B8C1FF; text-transform: uppercase;" class="center b_l b1_t">Осталось</th>
                     </tr>
                     <tr style="background-color: #D4D0C8;">
-                        <th style="background-color:#B8C1FF; text-transform: uppercase;" colspan="5" class="center b3_l b1_t">Выполнение плана на {$search.current_day|fn_parse_date|date_format:"%d/%m/%y"}</th>
+                        <th style="background-color:#B8C1FF; text-transform: uppercase;" colspan="5" class="center b3_l">Выполнение плана на {$search.current_day|fn_parse_date|date_format:"%d/%m/%y"}</th>
                     </tr>
                 </tbody>
             </table>

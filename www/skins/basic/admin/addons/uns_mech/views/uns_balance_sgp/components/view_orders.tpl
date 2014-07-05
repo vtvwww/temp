@@ -6,19 +6,23 @@
         <table cellpadding="0" cellspacing="0" border="0" class="table">
             <thead>
                 <tr>
-                    <th>№</th>
-                    <th style="text-align: center; border-left: 1px solid #808080;">Дата отгрузки</th>
-                    <th style="text-align: center; border-left: 1px solid #808080;">Клиент</th>
-                    <th style="text-align: center; border-left: 1px solid #808080;">Комментарий</th>
+                    <th>&nbsp;</th>
+                    <th class="b1_l center">Дата отгрузки</th>
+                    <th class="b1_l center">Регион/Клиент</th>
+                    <th class="b1_l center">Кол-во</th>
+                    <th class="b1_l center" style="text-transform: none;">Вес, кг</th>
+                    <th class="b1_l center">Комментарий</th>
                 </tr>
             </thead>
             <tbody>
             {foreach from=$orders item="o" name="o"}
                 <tr>
-                    <td style="text-align: center;">{$smarty.foreach.o.iteration}</td>
-                    <td style="border-left: 1px solid #808080;">{$o.date_finished|date_format:"%a %d/%m/%y"} (осталось {$o.remaining_time} дней)</td>
-                    <td style="border-left: 1px solid #808080;"><b>{$customers[$o.customer_id].name_short}</b> - {$customers[$o.customer_id].name}</td>
-                    <td style="border-left: 1px solid #808080;">{$o.comment}&nbsp;</td>
+                    <td class="center">№{$o.order_id}</td>
+                    <td class="b1_l">{$o.date_finished|date_format:"%a %d/%m/%y"} (осталось {$o.remaining_time} дней)</td>
+                    <td class="b1_l"><b>{$customers[$o.customer_id].name_short}</b> - {$customers[$o.customer_id].name}</td>
+                    <td class="b1_l center">{$o.total_quantity}&nbsp;</td>
+                    <td class="b1_l">{$o.total_weight|number_format:1:".":" "}&nbsp;</td>
+                    <td class="b1_l">{$o.comment}&nbsp;</td>
                 </tr>
             {/foreach}
             </tbody>
