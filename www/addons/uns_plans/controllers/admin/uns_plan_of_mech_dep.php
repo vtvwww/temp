@@ -84,6 +84,20 @@ if ($mode == "manage") {
         $view->assign('pump_series', $pump_series);
         $data["pump_series"] = $pump_series;
 
+        //======================================================================
+        // 1.1. ОПРЕДЕЛЕНИЕ ВЕСА СЕРИЙ НАСОСОВ
+        //======================================================================
+        $ps_weight = null;
+        $weights = null;
+        $pumps = array_shift(fn_uns__get_pumps(array('only_active' => true,)));
+        if (is__array($pumps)){
+            foreach ($pumps as $p_id=>$p){
+                if (!is__more_0($ps_weight[$p["ps_id"]])){
+                    $ps_weight[$p["ps_id"]] = fn_fvalue($p["weight_p"]);
+                }
+            }
+        }
+        $view->assign('ps_weight', $ps_weight);
 
         //======================================================================
         // 2. ПОЛУЧЕНИЕ ПЛАНОВОЙ ПОТРЕБНОСТИ НА ВЫБРАННЫЙ МЕСЯЦ
@@ -103,6 +117,12 @@ if ($mode == "manage") {
 
             $requirement["next2_month"][$id] = $v["ukr_next"]+$v["exp_next"];
             $requirement["next3_month"][$id] = ceil(0.5*($v["ukr_next"]+$v["exp_next"])); // 50% от третьего месяца
+
+            // ВЕС
+            $weights["requirement"]["curr_month"][$id]  = $ps_weight[$id]*$requirement["curr_month"][$id];
+            $weights["requirement"]["next_month"][$id]  = $ps_weight[$id]*$requirement["next_month"][$id];
+            $weights["requirement"]["next2_month"][$id] = $ps_weight[$id]*$requirement["next2_month"][$id];
+            $weights["requirement"]["next3_month"][$id] = $ps_weight[$id]*$requirement["next3_month"][$id];
         }
         $requirement["curr_month"]["total"] = array_sum($requirement["curr_month"]);
         $requirement["next_month"]["total"] = array_sum($requirement["next_month"]);
@@ -120,6 +140,7 @@ if ($mode == "manage") {
             "time_from"                 => strtotime($_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1" . " 00:00:00"),
             "time_to"                   => strtotime($_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1" . " 00:00:01"),
             "total_balance_of_details"  => "Y",
+            "without_sets_of_details"   => true, // не учитывать насосные комплекты: корпус в сборе или ротор в сборе
         );
         list($balances) = fn_uns__get_balance_sgp($p, true, true, true);
         $pumps      = array_shift(fn_uns__get_pumps(array("ps_id"=>$ps_id, "only_active"=>true,)));
@@ -129,6 +150,7 @@ if ($mode == "manage") {
                 foreach ($type as $group){
                     foreach ($group["items"] as $id=>$v){
                         $sgp[$pumps[$id]["ps_id"]] += $v["konech"];
+                        $weights["sgp"][$pumps[$id]["ps_id"]]  += $ps_weight[$pumps[$id]["ps_id"]]*$v["konech"];
                     }
                 }
             }
@@ -145,6 +167,7 @@ if ($mode == "manage") {
             "time_from"                 => strtotime($_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1" . " 00:00:00"),
             "time_to"                   => strtotime(date("Y-m-d", fn_parse_date($_REQUEST["current_day"])) . " 23:59:59")            ,
             "total_balance_of_details"  => "Y",
+            "without_sets_of_details"   => true, // не учитывать насосные комплекты: корпус в сборе или ротор в сборе
         );
         list($balances) = fn_uns__get_balance_sgp($p, true, true, true);
         $pumps      = array_shift(fn_uns__get_pumps(array("ps_id"=>$ps_id, "only_active"=>true,)));
@@ -154,6 +177,7 @@ if ($mode == "manage") {
                 foreach ($type as $group){
                     foreach ($group["items"] as $id=>$v){
                         $sgp_current_day[$pumps[$id]["ps_id"]] += $v["konech"];
+                        $weights["sgp_current_day"][$pumps[$id]["ps_id"]]  += $ps_weight[$pumps[$id]["ps_id"]]*$v["konech"];
                     }
                 }
             }
@@ -185,6 +209,11 @@ if ($mode == "manage") {
             // след. след. след. мес.
             $deficit_next3 = ($requirement["curr_month"][$id]+$requirement["next_month"][$id]+$requirement["next2_month"][$id]+$requirement["next3_month"][$id]) - $sgp[$id] - $deficit_curr - $deficit_next - $deficit_next2;
             if ($deficit_next3 < 0) $deficit_next3 = 0;
+
+            $weights["initial_production_plan"]["curr_month"][$id]  = $ps_weight[$id]*$deficit_curr;
+            $weights["initial_production_plan"]["next_month"][$id]  = $ps_weight[$id]*$deficit_next;
+            $weights["initial_production_plan"]["next2_month"][$id] = $ps_weight[$id]*$deficit_next2;
+            $weights["initial_production_plan"]["next3_month"][$id] = $ps_weight[$id]*$deficit_next3;
 
             $initial_production_plan["curr_month"][$id]     = $deficit_curr;
             $initial_production_plan["next_month"][$id]     = $deficit_next;
@@ -385,6 +414,11 @@ if ($mode == "manage") {
             $initial_production_plan_parties["next_month"][$id]     = $next_month;
             $initial_production_plan_parties["next2_month"][$id]    = $next2_month;
             $initial_production_plan_parties["next3_month"][$id]    = $next3_month;
+
+            $weights["initial_production_plan_parties"]["curr_month"][$id]  = $ps_weight[$id]*$curr_month;
+            $weights["initial_production_plan_parties"]["next_month"][$id]  = $ps_weight[$id]*$next_month;
+            $weights["initial_production_plan_parties"]["next2_month"][$id] = $ps_weight[$id]*$next2_month;
+            $weights["initial_production_plan_parties"]["next3_month"][$id] = $ps_weight[$id]*$next3_month;
         }
         $initial_production_plan["curr_month"]["total"] = array_sum($initial_production_plan["curr_month"]);
         $initial_production_plan["next_month"]["total"] = array_sum($initial_production_plan["next_month"]);
@@ -406,7 +440,8 @@ if ($mode == "manage") {
         // Это те партии, которые открыты и не имеют активных документов "ВЫПУСК НАСОСОВ"
         // на расчетный день
         // todo очень!!! плохая реализация - запрашиваются сразу все партии
-
+        $pumps      = array_shift(fn_uns__get_pumps(array("only_active"=>true, "without_sets_of_details" => true,)));
+        $pumps_ids  = array_keys($pumps);
         $p = array(
             "with_doc_type_VN"          => true,
         );
@@ -423,10 +458,14 @@ if ($mode == "manage") {
         }
         $zadel = array();
         foreach ($kits_zadel as $kit_id=>$v){
-            $zadel[$pumps[$v["p_id"]]["ps_id"]] += $v["p_quantity"];
-            if (is__array(($v["VN"]))){
-                foreach ($v["VN"] as $pump_item){
-                    $zadel[$pumps[$v["p_id"]]["ps_id"]] -= $pump_item["quantity"];
+            if (in_array($v["p_id"], $pumps_ids)){
+                $zadel[$pumps[$v["p_id"]]["ps_id"]] += $v["p_quantity"];
+                $weights["zadel"][$pumps[$v["p_id"]]["ps_id"]]  += $ps_weight[$pumps[$v["p_id"]]["ps_id"]]*$v["p_quantity"];
+                if (is__array(($v["VN"]))){
+                    foreach ($v["VN"] as $pump_item){
+                        $zadel[$pumps[$v["p_id"]]["ps_id"]] -= $pump_item["quantity"];
+                        $weights["zadel"][$pumps[$v["p_id"]]["ps_id"]]  -= $ps_weight[$pumps[$v["p_id"]]["ps_id"]]*$pump_item["quantity"];
+                    }
                 }
             }
         }
@@ -446,8 +485,11 @@ if ($mode == "manage") {
         }
         $done = array();
         foreach ($kits_done as $kit_id=>$v){
-            foreach ($v["VN"] as $pump_item){
-                $done[$pumps[$v["p_id"]]["ps_id"]] += $pump_item["quantity"];
+            if (in_array($v["p_id"], $pumps_ids)){
+                foreach ($v["VN"] as $pump_item){
+                    $done[$pumps[$v["p_id"]]["ps_id"]] += $pump_item["quantity"];
+                    $weights["done"][$pumps[$v["p_id"]]["ps_id"]]  += $ps_weight[$pumps[$v["p_id"]]["ps_id"]]*$pump_item["quantity"];
+                }
             }
         }
         $done["total"] = array_sum($done);
@@ -500,6 +542,10 @@ if ($mode == "manage") {
             $remaining_production_plan["next_month"][$id] = $deficit_next;
             $remaining_production_plan["next2_month"][$id] = $deficit_next2;
             $remaining_production_plan["next3_month"][$id] = $deficit_next3;
+            $weights["remaining_production_plan"]["curr_month"][$id]  = $ps_weight[$id]*$deficit_curr;
+            $weights["remaining_production_plan"]["next_month"][$id]  = $ps_weight[$id]*$deficit_next;
+            $weights["remaining_production_plan"]["next2_month"][$id] = $ps_weight[$id]*$deficit_next2;
+            $weights["remaining_production_plan"]["next3_month"][$id] = $ps_weight[$id]*$deficit_next3;
 
 
             //------------------------------------------------------------------
@@ -525,8 +571,10 @@ if ($mode == "manage") {
             $remaining_production_plan_parties["next_month"][$id] = $deficit_next;
             $remaining_production_plan_parties["next2_month"][$id] = $deficit_next2;
             $remaining_production_plan_parties["next3_month"][$id] = $deficit_next3;
-
-
+            $weights["remaining_production_plan_parties"]["curr_month"][$id]  = $ps_weight[$id]*$deficit_curr;
+            $weights["remaining_production_plan_parties"]["next_month"][$id]  = $ps_weight[$id]*$deficit_next;
+            $weights["remaining_production_plan_parties"]["next2_month"][$id] = $ps_weight[$id]*$deficit_next2;
+            $weights["remaining_production_plan_parties"]["next3_month"][$id] = $ps_weight[$id]*$deficit_next3;
         }
         $remaining_production_plan["curr_month"]["total"] = array_sum($remaining_production_plan ["curr_month"]);
         $remaining_production_plan["next_month"]["total"] = array_sum($remaining_production_plan ["next_month"]);
@@ -541,6 +589,8 @@ if ($mode == "manage") {
         $remaining_production_plan_parties["next3_month"]["total"] = array_sum($remaining_production_plan_parties ["next3_month"]);
         $view->assign("remaining_production_plan_parties", $remaining_production_plan_parties);
         $data["remaining_production_plan_parties"]    = $remaining_production_plan_parties;
+
+        $view->assign("weights", $weights);
 
         // СОХРАНЕНИЕ ДАННЫХ В СЕССИЮ
         $_SESSION["uns_plan_of_mech_dep"] = $data;

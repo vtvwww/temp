@@ -44,7 +44,7 @@
                                 <td colspan="{math equation="5+3*x" x=$orders|count}" style="background-color: #d3d3d3; ">
                                     <img width="14" category_items="{$id}" height="9" border="0" title="Расширить список" class="hand {$id} plus {if !$expand_all} hidden {/if}" alt="Расширить список" src="skins/basic/admin/images/plus.gif">
                                     <img width="14" category_items="{$id}" height="9" border="0" title="Свернуть список" class="hand {$id} minus {if $expand_all} hidden {/if}" alt="Свернуть список" src="skins/basic/admin/images/minus.gif">
-                                    &nbsp;<span style="color: #000000; font-weight: bold; font-size: 14px;">{$item.group}{if $item.group_comment} <span class="info_warning">({$item.group_comment})</span>{/if}</span>
+                                    &nbsp;<span style="color: #000000; font-weight: bold; font-size: 12px;">{$item.group}{if $item.group_comment} <span class="info_warning">({$item.group_comment})</span>{/if}</span>
                                 </td>
                             </tr>
                             {/if}

@@ -67,7 +67,7 @@
                     <td style="background-color: #d3d3d3; " colspan="{math equation="5+3*2*x" x=$orders|count}">
                         <img width="14" category_items="{$id}" height="9" border="0" title="Расширить список" class="hand {$id} plus {if !$expand_all} hidden {/if}" alt="Расширить список" src="skins/basic/admin/images/plus.gif">
                         <img width="14" category_items="{$id}" height="9" border="0" title="Свернуть список" class="hand {$id} minus {if $expand_all} hidden {/if}" alt="Свернуть список" src="skins/basic/admin/images/minus.gif">
-                        &nbsp;<span style="color: #000000; font-weight: bold; font-size: 14px;">{$pt.pt_name}</span>
+                        &nbsp;<span style="color: #000000; font-weight: bold; font-size: 12px;">{$pt.pt_name}</span>
                     </td>
                 </tr>
             {foreach from=$pt.pump_series key="ps_id" item="ps" name="ps"}
@@ -78,15 +78,15 @@
                     <td class="{if !$smarty.foreach.ps.first}b2_t{/if}" style="min-width: 100px;" {if $ps.pumps|count > 1} rowspan="{$ps.pumps|count}" {/if}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         {assign var="n" value=$ps.ps_name}
                         {assign var="href" value="uns_balance_sgp.motion?item_id=`$p.p_id`&period=`$search.period`&time_from=`$search.time_from`&time_to=`$search.time_to`"}
-                        <a  rev="content_item_{$p.p_id}" id="opener_item_{$m_id}" href="{$href|fn_url}" class="cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black bold" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$n}</a>
-                        <div id="content_item_{$p.p_id}" class="hidden" title="Движения <i><u>{$n}</u></i> по Складу готовой продукции"></div>
+                        <a  rev="content_item_{$p.p_id}" id="opener_item_{$m_id}" href="{$href|fn_url}" class="cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$n}</a>
+                        <div id="content_item_{$p.p_id}" class="hidden" title="Движения <i><u>{$p.p_name}</u></i> по Складу готовой продукции"></div>
                     </td>
                     {/if}
 
                     <td class="b1_l {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}" style="min-width: 50px;">{*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*}
                         {assign var="n" value=$p.p_name|replace:"`$ps.ps_name`":""}
                         {assign var="href" value="uns_balance_sgp.motion?item_id=`$p.p_id`&period=`$search.period`&time_from=`$search.time_from`&time_to=`$search.time_to`"}
-                        <a  rev="content_item_{$p.p_id}" id="opener_item_{$m_id}" href="{$href|fn_url}" class="block cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black bold" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$n|trim}</a>
+                        <a  rev="content_item_{$p.p_id}" id="opener_item_{$m_id}" href="{$href|fn_url}" class="block cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$n|trim}</a>
                         <div id="content_item_{$p.p_id}" class="hidden" title="Движения <i><u>{$p.p_name}</u></i> по Складу готовой продукции"></div>
                     </td>
 

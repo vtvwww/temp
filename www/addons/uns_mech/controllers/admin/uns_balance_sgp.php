@@ -43,7 +43,8 @@ if($mode == 'manage'){
         "only_active"       => true,
         "data_for_tmp"      => true,
         "remaining_time"    => true,
-        "sorting_schemas"   => "view_in_sgp"
+        "sorting_schemas"   => "view_in_sgp",
+        "total_weight_and_quantity"   => true,
     );
     list($orders, $search) = fn_acc__get_orders(array_merge($_REQUEST, $p));
 //    fn_print_r($orders);

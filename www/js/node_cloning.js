@@ -110,8 +110,8 @@ $.fn.extend({
 						self.val('');
 
 						// reset select box
-						if (self.attr('tagName').toLowerCase() == 'select') {
-							self.attr('selectedIndex', '');
+						if (self.prop('tagName').toLowerCase() == 'select') {
+							self.prop('selectedIndex', '');
 						}
 					}
 				}

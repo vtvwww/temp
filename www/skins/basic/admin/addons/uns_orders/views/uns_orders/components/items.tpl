@@ -8,14 +8,22 @@
 {assign var="item_type_pa"      value=true}
 
 
-<table cellpadding="0" cellspacing="0" class="table">
+<table cellpadding="0" cellspacing="0" class="table order_items">
+    <tfoot>
+        <tr>
+            <td style="background-color: rgb(238,238,238);" colspan="4" class="bold" align="right">ИТОГО:</td>
+            <td style="background-color: rgb(238,238,238);" colspan="1" class="bold center b1_l b1_b"><span class="total">{$o.total_quantity}</span></td>
+            <td style="background-color: rgb(238,238,238);" colspan="2" class="bold center b1_l b1_b"><span class="total"><nobr>{$o.total_weight|number_format:1:".":" "}</nobr></span></td>
+            <td style="background-color: rgb(238,238,238);" colspan="2" class="b1_l">&nbsp;</td>
+        </tr>
+    </tfoot>
     <tbody>
         <tr class="first-sibling">
             <th width="10px" class="cm-non-cb b1_l center">№</th>
             <th class="cm-non-cb b1_l center" width="10px">Тип</th>
             <th class="cm-non-cb b1_l center" width="90px">Категория/Серия</th>
             <th class="cm-non-cb b1_l center" width="140px">Наименование</th>
-            <th class="cm-non-cb b1_l center" width="110px">Кол-во</th>
+            <th class="cm-non-cb b1_l center" width="110px">Кол-во, шт</th>
             <th class="cm-non-cb b1_l center" colspan="2" style="text-transform: none;" width="100px">Вес, кг</th>
             <th class="cm-non-cb b1_l center" width="220px">Комментарий</th>
             <th class="cm-non-cb b1_l center">&nbsp;</th>
@@ -113,17 +121,17 @@
                             }
                         </td>
 
-                        <td class="cm-non-cb b1_l weight_{$num}" align="center">
-                            {$i.weight|fn_fvalue}
+                        <td class="cm-non-cb b1_l" align="center">
+                            <span class="weight">{$i.weight|fn_fvalue}</span>
                             {include file="addons/uns/views/components/get_form_field.tpl"
                                 f_type="hidden"
-                                f_name="`$e_n`[weigh]"
+                                f_name="`$e_n`[weight]"
                                 f_value=$i.weight|fn_fvalue
                             }
                         </td>
 
-                        <td class="cm-non-cb b1_l bold total_weight_{$num}" align="center">
-                            {$q*$i.weight|fn_fvalue}
+                        <td class="cm-non-cb b1_l bold" align="center">
+                            <span class="total_weight">{$q*$i.weight|fn_fvalue}</span>
                         </td>
 
                         <td class="cm-non-cb b1_l" align="left">
@@ -197,13 +205,19 @@
                 }
             </td>
 
-            <td class="cm-non-cb b1_l weight_{$num}" align="left">
-                &nbsp;
+            <td class="cm-non-cb b1_l" align="center">
+                <span class="weight">&nbsp;</span>
+                {include file="addons/uns/views/components/get_form_field.tpl"
+                    f_type="hidden"
+                    f_name="`$e_n`[weight]"
+                    f_value=0
+                }
             </td>
 
-            <td class="cm-non-cb b1_l bold total_weight_{$num}" align="center">
-                &nbsp;
+            <td class="cm-non-cb b1_l bold" align="center">
+                <span class="total_weight">&nbsp;</span>
             </td>
+
             <td class="cm-non-cb b1_l" align="left">
                 {include file="addons/uns/views/components/get_form_field.tpl"
                     f_type="textarea"

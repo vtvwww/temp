@@ -216,7 +216,7 @@ $.extend({
 				} else {
 					if (holder.hasClass('cm-opacity')) {
 						$(':input', holder).each(function() {
-							$(this).attr('name', $(this).attr('inp_name'));
+							$(this).prop('name', $(this).prop('inp_name'));
 						});
 						holder.removeClass('cm-delete-row cm-opacity');
 						if ($.browser.msie || $.browser.opera) {
@@ -224,7 +224,7 @@ $.extend({
 						}
 					} else {
 						$(':input', holder).each(function() {
-							$(this).attr('inp_name', $(this).attr('name')).removeAttr('name');
+							$(this).prop('inp_name', $(this).prop('name')).removeProp('name');
 						});
 						holder.addClass('cm-delete-row cm-opacity');
 						if (($.browser.msie && $.browser.version < 9) || $.browser.opera) {

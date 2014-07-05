@@ -368,6 +368,10 @@ function fn_uns__get_pumps($params = array(), $items_per_page = 0){
         $condition .= db_quote(" AND $j_table_types.pt_id in (?n)", $params['pt_id_array']);
     }
 
+    if ($params['without_sets_of_details']) {
+        $condition .= db_quote(" AND $m_table.as_set_of_details = 'N' ");
+    }
+
     if ($params['only_active']) {
         $condition .= db_quote(" AND $m_table.p_status in ('A') ");
     } else {

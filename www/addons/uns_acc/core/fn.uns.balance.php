@@ -518,6 +518,9 @@ function fn_uns__get_balance($params = array(), $time=false){
     if (in_array($params["item_type"], array("P", "PF", "PA")) and $params["add_item_info"]){
 
         $p = array();
+        if ($params["without_sets_of_details"]){
+            $p["without_sets_of_details"] = true;
+        }
 
 //        if (is__more_0($params['dcat_id'])){
 //            $p["dcat_id"] = $params['dcat_id'];
@@ -533,7 +536,7 @@ function fn_uns__get_balance($params = array(), $time=false){
 //        }
         $dcat_items = array();
         list($pump_types) = fn_uns__get_pump_types($p);
-        list($pumps) = fn_uns__get_pumps();
+        list($pumps) = fn_uns__get_pumps($p);
         if (is__array($pumps)){
             foreach ($pump_types as $pt_k=>$pt_v){
                 foreach ($pumps as $p_k=>$p_v){
