@@ -31,16 +31,17 @@
                 <td align="center" class="b_l" style="background-color: #d3d3d3;" ><span class="{if $m.konech<0}info_warning_block{elseif $m.konech==0}zero{/if} bold">{$m.konech|fn_fvalue:2}</span></td>
                 {if $search.accessory_pumps == "Y"}
                 <td align="left" class="b_l">
-                    {if $m.material_comment_1|strlen}
-                        <span class="info_warning">{$m.material_comment_1}</span>
+                    {if $m.accessory_view == "M"}
+                        {assign var="accessory_view" value="`$m.accessory_pump_manual` <span class='info_warning'>(`$m.accessory_view`)</span>"}
+                    {elseif $m.accessory_view == "P"}
+                        {assign var="accessory_view" value="`$m.accessory_pumps` <span class='info_warning'>(`$m.accessory_view`)</span>"}
                     {else}
-                        {if $m.accessory_view == "M"}
-                            {$m.accessory_pump_manual} <span class="info_warning">({$m.accessory_view})</span>
-                        {elseif $m.accessory_view == "P"}
-                            {$m.accessory_pumps} <span class="info_warning">({$m.accessory_view})</span>
-                        {else}
-                            {$m.accessory_pump_series}
-                        {/if}
+                        {assign var="accessory_view" value="`$m.accessory_pump_series`"}
+                    {/if}
+                    {$accessory_view}
+                    {if strlen($m.material_comment_1)}
+                        {if strlen($accessory_view)}<br/>{/if}
+                        <span class="info_warning">{$m.material_comment_1}</span>
                     {/if}
                 </td>
                 {/if}

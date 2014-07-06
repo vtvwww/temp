@@ -70,7 +70,7 @@
                         {/strip}
                     </td>
                     <td>
-                        {if $i.material_comment}<span class="uns_comment">{$i.material_comment}</span>{/if}
+                        {if $i.material_comment_1}<span class="uns_comment">{$i.material_comment_1}</span>{/if}
                     </td>
 
                     <td class="nowrap right">
