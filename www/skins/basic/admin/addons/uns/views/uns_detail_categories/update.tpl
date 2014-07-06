@@ -63,7 +63,25 @@
                         f_default="0"
                         f_description="Позиция"
                     }
-
+                    <hr/>
+                    {include file="addons/uns/views/components/get_form_field.tpl"
+                        f_type="checkbox"
+                        f_id=$id
+                        f_value=$i.view_in_reports
+                        f_name="view_in_reports"
+                        f_description="Отображать в отчетах"
+                        f_tooltip="Разрешить отображение этой категории в отчетах/таблицах баланса деталей по предприятию"
+                    }
+                    <hr/>
+                    {include file="addons/uns/views/components/get_form_field.tpl"
+                        f_id=$id
+                        f_type="textarea"
+                        f_required=false f_integer=false
+                        f_name="dcat_comment"
+                        f_value=$i.dcat_comment
+                        f_description="Комментарий"
+                        f_tooltip="Комментарий категории деталей будет отображен в отчетах/таблицах баланса деталей по предприятию. <br><img src='skins/basic/admin/images/tooltips/detail_categories_comment.png'><br><br>Баланс деталей по мех. цехам и Складу комплектующих<br><img src='skins/basic/admin/images/tooltips/detail_categories_comment_1.png'>"
+                    }
                 </div>
             {/capture}
 

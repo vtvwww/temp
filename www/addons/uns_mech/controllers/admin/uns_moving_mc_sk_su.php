@@ -101,7 +101,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                 if(in_array($_REQUEST['item_type'], array('D', 'M'))){
                     $options = "<option value='0'>---</option>";
                     if($_REQUEST['item_type'] == "D"){
-                        list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true));
+                        list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true, "view_in_reports" => true));
                         $view->assign('f_type', 'dcategories_plain');
                         $view->assign('f_options', $dcategories_plain);
                         $view->assign('f_option_id', 'dcat_id');
@@ -326,7 +326,7 @@ if($mode == 'update' or $mode == 'view'){
     // CATEGORIES **************************************************************
     list($mcategories_plain) = fn_uns__get_materials_categories(array('plain' => true, 'with_q_ty' => false));
     $view->assign('mcategories_plain', $mcategories_plain);
-    list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true));
+    list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true, "view_in_reports" => true));
     $view->assign('dcategories_plain', $dcategories_plain);
 
     // PUMP_SERIES

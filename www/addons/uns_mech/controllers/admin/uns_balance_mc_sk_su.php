@@ -24,6 +24,7 @@ if($mode == 'manage'){
 
     $_REQUEST["all_details"]    = ($_REQUEST["all_details"] == "Y")?"Y":"N";
     $_REQUEST["check_dcat_id"]  = true;
+    $_REQUEST["view_in_reports"]  = true;
 
     $balances = array();
     list($balances, $search) = fn_uns__get_balance_mc_sk_su($_REQUEST, true, true, false, false);
@@ -35,7 +36,7 @@ if($mode == 'manage'){
     // Корректное отображение принадлежности
 
     // Запрос категорий
-    list($dcategories_plain) = fn_uns__get_details_categories(array("plain" => true, "with_q_ty"=>false, "only_active" => true));
+    list($dcategories_plain) = fn_uns__get_details_categories(array("plain" => true, "with_q_ty"=>false, "only_active" => true, "view_in_reports" => true));
     $view->assign('dcategories_plain', $dcategories_plain);
     $view->assign('dcategories_plain_with_q_ty', false);
 

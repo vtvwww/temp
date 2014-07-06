@@ -205,7 +205,7 @@ if($mode == 'update'){
     // CATEGORIES **************************************************************
     list($mcategories_plain) = fn_uns__get_materials_categories(array('plain' => true, 'with_q_ty' => false, 'mcat_include_target' => ''));
     $view->assign('mcategories_plain', $mcategories_plain);
-    list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true));
+    list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true, "view_in_reports" => true));
     $view->assign('dcategories_plain', $dcategories_plain);
 
     //PUMPS ********************************************************************
@@ -230,7 +230,7 @@ if($mode == 'delete'){
 // KIT_DETAILS
 //**************************************************************************
 if ($mode == "detail_update"){
-    list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true));
+    list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true, "view_in_reports" => true));
     $view->assign('dcategories_plain', $dcategories_plain);
 
     if(is__more_0($_REQUEST['pd_id']) and is__more_0($_REQUEST['kit_id']) and is__more_0(db_get_field(UNS_DB_PREFIX . "SELECT pd_id FROM ?:_acc_kit_details WHERE pd_id = ?i AND kit_id = ?i", $_REQUEST['pd_id'], $_REQUEST['kit_id']))){

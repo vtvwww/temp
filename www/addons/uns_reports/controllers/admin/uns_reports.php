@@ -174,7 +174,7 @@ if ($mode == 'get_report'){
             $_REQUEST["accessory_pumps"] = "Y";
             list($balances, $search) = fn_uns__get_balance_mc_sk_su($_REQUEST, true, true, true);
             // Запрос категорий
-            list($dcategories_plain) = fn_uns__get_details_categories(array("plain" => true, "with_q_ty"=>false));
+            list($dcategories_plain) = fn_uns__get_details_categories(array("plain" => true, "with_q_ty"=>false, "view_in_reports" => true));
 
             fn_rpt__mc(array(   'period'        =>$_REQUEST['period'],
                                 'time_from'     =>$_REQUEST['time_from'],

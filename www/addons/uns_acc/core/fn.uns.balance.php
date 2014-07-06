@@ -444,6 +444,10 @@ function fn_uns__get_balance($params = array(), $time=false){
             $p["detail_no"] = $params['detail_no'];
         }
 
+        if ($params['view_in_reports']){
+            $p["view_in_reports"] = $params['view_in_reports'];
+        }
+
         $p["only_active"] = true;
         list($dcats) = fn_uns__get_details_categories($p);
         if (is__array($dcats)){

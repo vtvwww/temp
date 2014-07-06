@@ -92,6 +92,7 @@ function fn_uns__get_details_categories($params = array()){
         '?:detail_categories.dcat_position',
         '?:detail_categories.dcat_status',
         '?:detail_categories.dcat_comment',
+        '?:detail_categories.view_in_reports',
     );
 
     $sorting_schemas = array(

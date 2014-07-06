@@ -62,7 +62,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         list ($details) = fn_uns__get_details($p);
         $view->assign('details', $details);
 
-        list($dcategories_plain) = fn_uns__get_details_categories(array("plain" => true, "with_q_ty"=>false));
+        list($dcategories_plain) = fn_uns__get_details_categories(array("plain" => true, "with_q_ty"=>false, "view_in_reports" => true));
         $view->assign('dcategories_plain', $dcategories_plain);
 
         $list_details = trim($view->display('addons/uns_mech/views/uns_sheets/components/get_list_details.tpl', false));
@@ -152,7 +152,7 @@ if($mode == 'manage'){
     list($mcategories_plain) = fn_uns__get_materials_categories(array('plain' => true, "with_q_ty"=>false));
     $view->assign('mcategories_plain', $mcategories_plain);
 
-    list($dcategories_plain) = fn_uns__get_details_categories(array("plain" => true, "with_q_ty"=>false));
+    list($dcategories_plain) = fn_uns__get_details_categories(array("plain" => true, "with_q_ty"=>false, "view_in_reports" => true));
     $view->assign('dcategories_plain', $dcategories_plain);
 }
 
@@ -194,7 +194,7 @@ if($mode == 'update'){
     // CATEGORIES **************************************************************
     list($mcategories_plain) = fn_uns__get_materials_categories(array('plain' => true, 'with_q_ty' => false, 'mcat_include_target' => ''));
     $view->assign('mcategories_plain', $mcategories_plain);
-    list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true));
+    list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true, "view_in_reports" => true));
     $view->assign('dcategories_plain', $dcategories_plain);
 
 
@@ -285,7 +285,7 @@ if($mode == 'add'){
     // CATEGORIES **************************************************************
     list($mcategories_plain) = fn_uns__get_materials_categories(array('plain' => true, 'with_q_ty' => false, 'mcat_include_target' => ''));
     $view->assign('mcategories_plain', $mcategories_plain);
-    list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true));
+    list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true, "view_in_reports" => true));
     $view->assign('dcategories_plain', $dcategories_plain);
 
     // OBJECTS *****************************************************************

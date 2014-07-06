@@ -15,7 +15,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && defined('AJAX_REQUEST')){
                     if(in_array($_REQUEST['item_type'], array('D', 'M'))){
                         $options = "<option value='0'>---</option>";
                         if($_REQUEST['item_type'] == "D"){
-                            list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true));
+                            list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true, "view_in_reports" => true));
                             $view->assign('f_type', 'dcategories_plain');
                             $view->assign('f_options', $dcategories_plain);
                             $view->assign('f_option_id', 'dcat_id');
@@ -178,7 +178,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && defined('AJAX_REQUEST')){
                     if(in_array($_REQUEST['item_type'], array('D', 'M'))){
                         $options = "<option value='0'>---</option>";
                         if($_REQUEST['item_type'] == "D"){
-                            list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true));
+                            list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true, "view_in_reports" => true));
                             $view->assign('f_type', 'dcategories_plain');
                             $view->assign('f_options', $dcategories_plain);
                             $view->assign('f_option_id', 'dcat_id');
