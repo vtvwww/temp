@@ -32,6 +32,16 @@
 
                     {include file="addons/uns/views/components/get_form_field.tpl"
                         f_id=$id
+                        f_type="input"
+                        f_required=true f_integer=false
+                        f_name="pt_name_short"
+                        f_value=$i.pt_name_short
+                        f_description="Краткое наименование"
+                        f_tooltip="Используется для удобства выбора серий насосов<br><img src='skins/basic/admin/images/tooltips/pump_types_pt_name_short.png'>"
+                    }
+
+                    {include file="addons/uns/views/components/get_form_field.tpl"
+                        f_id=$id
                         f_type="status"
                         f_required=true f_integer=false
                         f_name="pt_status"
@@ -46,7 +56,24 @@
                         f_value=$i.pt_position
                         f_default="0"
                         f_description="Позиция"}
-
+                    <hr/>
+                    {include file="addons/uns/views/components/get_form_field.tpl"
+                        f_type="checkbox"
+                        f_id=$id
+                        f_value=$i.view_in_plans
+                        f_name="view_in_plans"
+                        f_description="Отображать в планах"
+                        f_tooltip="Разрешить отображение насосов этого типа в расчетах планирования.<br><b>План производства насосов (птичка установлена)</b><br><img src='skins/basic/admin/images/tooltips/pump_types_view_in_plans.png'><br><br><b>План производства насосов (птичка сброшена)</b><br><img src='skins/basic/admin/images/tooltips/pump_types_view_in_plans_1.png'>"
+                    }
+                    <hr/>
+                    {include file="addons/uns/views/components/get_form_field.tpl"
+                        f_id=$id
+                        f_type="textarea"
+                        f_required=false f_integer=false
+                        f_name="pt_comment"
+                        f_value=$i.pt_comment
+                        f_description="Комментарий"
+                    }
                 </div>
             {/capture}
 

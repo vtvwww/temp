@@ -30,6 +30,7 @@ function fn_uns__get_pump_types($params = array(), $items_per_page = 0){
         "$m_table.pt_status",
         "$m_table.pt_position",
         "$m_table.pt_comment",
+        "$m_table.view_in_plans",
     );
 
     $sorting_schemas = array(
@@ -94,6 +95,8 @@ function fn_uns__upd_pump_type($id=0, $data){
         'pt_status'     => $data['pt_status'],
         'pt_position'   => (is_numeric($data['pt_position']) && $data['pt_position']>=0)?$data['pt_position']:0,
         'pt_comment'    => $data['pt_comment'],
+        'pt_name_short' => $data['pt_name_short'],
+        'view_in_plans' => ($data['view_in_plans']=="Y")?"Y":"N",
     );
 
     if (db_get_field(UNS_DB_PREFIX . "SELECT pt_id FROM ?:pump_types WHERE pt_id = ?i", $id)){
