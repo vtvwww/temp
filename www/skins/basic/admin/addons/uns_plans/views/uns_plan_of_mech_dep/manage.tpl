@@ -39,7 +39,7 @@
                     <tr style="background-color: #D4D0C8;">
                         <th style="text-transform: none;"               rowspan="3"             class="center">Наименование</th>
                         <th style="text-transform: none;"               rowspan="3"             class="center">&nbsp;</th>
-                        <th style="text-transform: none;"               rowspan="3"             class="center b_l">СГП<br>на<br>01/{$search.month|string_format:"%02d"}<hr class="roman_dates">{$search.year}</th>
+                        <th style="text-transform: none;"               rowspan="3"             class="center b_l">СГП<br>на<br>00:00<br>01/{$search.month|string_format:"%02d"}<hr class="roman_dates">{$search.year}</th>
                         <th style="text-transform: none;"               rowspan="2" colspan="2" class="center b_l b1_b">План<br>продаж</th>
                         {if $search.type_of_production_plan == "actual"}
                             <th style="text-transform: none;"          rowspan="2" colspan="3" class="center b3_l b1_b">План<br>производства<br>ФАКТИЧЕСКИЙ</th>
@@ -47,8 +47,8 @@
                             <th style="text-transform: none;"          rowspan="2" colspan="3" class="center b3_l b1_b">План<br>производства<br>ПО ПАРТИЯМ</th>
                         {/if}
 
-                        <th style="text-transform: uppercase;background-color:#B8C1FF; "                      colspan="5" class="center b3_l">Выполнение плана на {$search.current_day|fn_parse_date|date_format:"%d/%m/%y"}</th>
-                        <th style="text-transform: none;"               rowspan="3"             class="center b3_l">СГП<br>на<br>{$search.current_day|fn_parse_date|date_format:"%d/%m"}<hr class="roman_dates">{$search.year}</th>
+                        <th style="text-transform: uppercase;background-color:#B8C1FF; "                      colspan="5" class="center b3_l">Выполнение плана на 23:59 {$search.current_day|fn_parse_date|date_format:"%d/%m/%y"}</th>
+                        <th style="text-transform: none;"               rowspan="3"             class="center b3_l">СГП<br>на<br>23:59<br>{$search.current_day|fn_parse_date|date_format:"%d/%m"}<hr class="roman_dates">{$search.year}</th>
 
                         {*Кратность партии*}
                         {if $search.type_of_production_plan == "parties"}
@@ -83,7 +83,7 @@
                         {*Наименование*}
                         <td>
                             <a  rev="content_item_name_{$ps_id}" id="opener_item_name_{$ps_id}" href="{"uns_plan_of_mech_dep.analysis_of_pumps.pump?ps_id=`$ps_id`"|fn_url}" class="block cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$ps.ps_name}</a>
-                            <div id="content_item_name_{$ps_id}" class="hidden" title="Анализ насоса <u>{$ps.ps_name}</u>"></div>
+                            <div id="content_item_name_{$ps_id}" class="hidden" title="Анализ насоса <u>{$ps.ps_name}</u> на 23:59 {$search.current_day}"></div>
                         </td>
 
                         <td align="right">
@@ -120,28 +120,28 @@
                         {/if}
 
                         {*ЗАДЕЛ*}
-                        {assign var="q" value=$zadel.$ps_id|default:0}
+                        {assign var="q" value=$zadel_current_day.$ps_id|default:0}
                         <td style="background-color: #FFEF8C;" class="b3_l center {if !$q}zero{else}bold{/if}">{$q}</td>
 
                         {*ВЫПОЛНЕНО*}
-                        {assign var="q" value=$done.$ps_id|default:0}
+                        {assign var="q" value=$done_current_day.$ps_id|default:0}
                         <td style="background-color: #C0FF9A;" class="b2_l center {if !$q}zero{else}bold{/if}">{$q}</td>
 
                         {*ОСТАЛОСЬ*}
                         {if $search.type_of_production_plan == "actual"}
-                            {assign var="q" value=$remaining_production_plan.curr_month.$ps_id|default:0}
+                            {assign var="q" value=$remaining_production_plan_current_day.curr_month.$ps_id|default:0}
                             <td style="background-color: #B8C1FF;" class="b_l center {if !$q}zero{else}bold{/if}">{$q}</td>
-                            {assign var="q" value=$remaining_production_plan.next_month.$ps_id|default:0}
+                            {assign var="q" value=$remaining_production_plan_current_day.next_month.$ps_id|default:0}
                             <td style="background-color: #B8C1FF;" class="b1_l center {if !$q}zero{else}bold{/if}">{$q}</td>
-                            {assign var="q" value=$remaining_production_plan.next2_month.$ps_id|default:0}
+                            {assign var="q" value=$remaining_production_plan_current_day.next2_month.$ps_id|default:0}
                             <td style="background-color: #B8C1FF;" class="b1_l center {if !$q}zero{else}bold{/if}">{$q}</td>
 
                         {elseif $search.type_of_production_plan == "parties"}
-                            {assign var="q" value=$remaining_production_plan_parties.curr_month.$ps_id|default:0}
+                            {assign var="q" value=$remaining_production_plan_parties_current_day.curr_month.$ps_id|default:0}
                             <td style="background-color: #B8C1FF;" class="b_l center {if !$q}zero{else}bold{/if}">{$q}</td>
-                            {assign var="q" value=$remaining_production_plan_parties.next_month.$ps_id|default:0}
+                            {assign var="q" value=$remaining_production_plan_parties_current_day.next_month.$ps_id|default:0}
                             <td style="background-color: #B8C1FF;" class="b1_l center {if !$q}zero{else}bold{/if}">{$q}</td>
-                            {assign var="q" value=$remaining_production_plan_parties.next2_month.$ps_id|default:0}
+                            {assign var="q" value=$remaining_production_plan_parties_current_day.next2_month.$ps_id|default:0}
                             <td style="background-color: #B8C1FF;" class="b1_l center {if !$q}zero{else}bold{/if}">{$q}</td>
                         {/if}
 
@@ -152,7 +152,6 @@
                         {*КРАТНОСТЬ ПАРТИИ НАСОСОВ*}
                         {if $search.type_of_production_plan == "parties"}
                             <td class="b3_l center">
-                                {*{$initial_production_plan_parties.curr_month.$ps_id|default:0}/{$initial_production_plan_parties.next_month.$ps_id|default:0}/{$initial_production_plan_parties.next2_month.$ps_id|default:0}*}
                                 {$ps.party_size_min}-{$ps.party_size_max},{$ps.party_size_step}
                             </td>
                         {/if}
@@ -200,28 +199,28 @@
                         {/if}
 
                         {*ЗАДЕЛ*}
-                        {assign var="q" value=$zadel.total|default:0}
+                        {assign var="q" value=$zadel_current_day.total|default:0}
                         <td style="font-size: 14px; background-color: #FFEF8C;" class="b3_t b3_l center bold {if !$q}zero{/if}">{$q}</td>
 
                         {*ВЫПОЛНЕНО*}
-                        {assign var="q" value=$done.total|default:0}
+                        {assign var="q" value=$done_current_day.total|default:0}
                         <td style="font-size: 14px; background-color: #C0FF9A;" class="b3_t b2_l center bold {if !$q}zero{/if}">{$q}</td>
 
                         {*ОСТАЛОСЬ*}
                         {if $search.type_of_production_plan == "actual"}
-                            {assign var="q" value=$remaining_production_plan.curr_month.total|default:0}
+                            {assign var="q" value=$remaining_production_plan_current_day.curr_month.total|default:0}
                             <td style="font-size: 14px; background-color: #B8C1FF;" class="b3_t b_l center bold {if !$q}zero{/if}">{$q}</td>
-                            {assign var="q" value=$remaining_production_plan.next_month.total|default:0}
+                            {assign var="q" value=$remaining_production_plan_current_day.next_month.total|default:0}
                             <td style="font-size: 14px; background-color: #B8C1FF;" class="b3_t b1_l center bold {if !$q}zero{/if}">{$q}</td>
-                            {assign var="q" value=$remaining_production_plan.next2_month.total|default:0}
+                            {assign var="q" value=$remaining_production_plan_current_day.next2_month.total|default:0}
                             <td style="font-size: 14px; background-color: #B8C1FF;" class="b3_t b1_l center bold {if !$q}zero{/if}">{$q}</td>
 
                         {elseif $search.type_of_production_plan == "parties"}
-                            {assign var="q" value=$remaining_production_plan_parties.curr_month.total|default:0}
+                            {assign var="q" value=$remaining_production_plan_parties_current_day.curr_month.total|default:0}
                             <td style="font-size: 14px; background-color: #B8C1FF;" class="b3_t b_l center bold {if !$q}zero{/if}">{$q}</td>
-                            {assign var="q" value=$remaining_production_plan_parties.next_month.total|default:0}
+                            {assign var="q" value=$remaining_production_plan_parties_current_day.next_month.total|default:0}
                             <td style="font-size: 14px; background-color: #B8C1FF;" class="b3_t b1_l center bold {if !$q}zero{/if}">{$q}</td>
-                            {assign var="q" value=$remaining_production_plan_parties.next2_month.total|default:0}
+                            {assign var="q" value=$remaining_production_plan_parties_current_day.next2_month.total|default:0}
                             <td style="font-size: 14px; background-color: #B8C1FF;" class="b3_t b1_l center bold {if !$q}zero{/if}">{$q}</td>
 
                         {/if}
@@ -279,19 +278,19 @@
 
                         {*ОСТАЛОСЬ*}
                         {if $search.type_of_production_plan == "actual"}
-                            {assign var="q" value=$weights.remaining_production_plan.curr_month|array_sum}
+                            {assign var="q" value=$weights.remaining_production_plan_current_day.curr_month|array_sum}
                             <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
-                            {assign var="q" value=$weights.remaining_production_plan.next_month|array_sum}
+                            {assign var="q" value=$weights.remaining_production_plan_current_day.next_month|array_sum}
                             <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
-                            {assign var="q" value=$weights.remaining_production_plan.next2_month|array_sum}
+                            {assign var="q" value=$weights.remaining_production_plan_current_day.next2_month|array_sum}
                             <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
 
                         {elseif $search.type_of_production_plan == "parties"}
-                            {assign var="q" value=$weights.remaining_production_plan_parties.curr_month|array_sum}
+                            {assign var="q" value=$weights.remaining_production_plan_parties_current_day.curr_month|array_sum}
                             <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
-                            {assign var="q" value=$weights.remaining_production_plan_parties.next_month|array_sum}
+                            {assign var="q" value=$weights.remaining_production_plan_parties_current_day.next_month|array_sum}
                             <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
-                            {assign var="q" value=$weights.remaining_production_plan_parties.next2_month|array_sum}
+                            {assign var="q" value=$weights.remaining_production_plan_parties_current_day.next2_month|array_sum}
                             <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
                         {/if}
 
@@ -304,7 +303,7 @@
                     <tr style="background-color: #D4D0C8;">
                         <th rowspan="3" style="text-transform: none;" class="center">Наименование</th>
                         <th rowspan="3" style="text-transform: none;" class="center">&nbsp;</th>
-                        <th rowspan="3" style="text-transform: none;" class="center b_l">СГП<br>на<br>01/{$search.month|string_format:"%02d"}<hr class="roman_dates">{$search.year}</th>
+                        <th rowspan="3" style="text-transform: none;" class="center b_l">СГП<br>на<br>00:00<br>01/{$search.month|string_format:"%02d"}<hr class="roman_dates">{$search.year}</th>
                         <th style="" class="b_l center">{$tpl_curr_month_roman.month}<hr class="roman_dates">{$tpl_curr_month_roman.year}</th>
                         <th style="" class="b1_l center">{$tpl_next_month_roman.month}<hr class="roman_dates">{$tpl_next_month_roman.year}</th>
 
@@ -317,7 +316,7 @@
                         <th style="background-color: #B8C1FF;" class="b_l center">{$tpl_curr_month_roman.month}<hr class="roman_dates">{$tpl_curr_month_roman.year}</th>
                         <th style="background-color: #B8C1FF;" class="b1_l center">{$tpl_next_month_roman.month}<hr class="roman_dates">{$tpl_next_month_roman.year}</th>
                         <th style="background-color: #B8C1FF;" class="b1_l center">{$tpl_next2_month_roman.month}<hr class="roman_dates">{$tpl_next2_month_roman.year}</th>
-                        <th rowspan="3" style="text-transform: none;" class="b3_l center">СГП<br>на<br>{$search.current_day|fn_parse_date|date_format:"%d/%m"}<hr class="roman_dates">{$search.year}</th>
+                        <th rowspan="3" style="text-transform: none;" class="b3_l center">СГП<br>на<br>23:59<br>{$search.current_day|fn_parse_date|date_format:"%d/%m"}<hr class="roman_dates">{$search.year}</th>
                         {*Кратность партии*}
                         {if $search.type_of_production_plan == "parties"}
                         <th style="text-transform: none;"               rowspan="3"             class="center b3_l">{include file="common_templates/tooltip.tpl" tooltip="<b>Кратность партии насоса.</b><br>ОТ - ДО, ШАГ" tooltip_mark="<b>КП</b>"}</th>
@@ -335,7 +334,7 @@
                         <th colspan="3" style="background-color:#B8C1FF; text-transform: uppercase;" class="center b_l b1_t">Осталось</th>
                     </tr>
                     <tr style="background-color: #D4D0C8;">
-                        <th style="background-color:#B8C1FF; text-transform: uppercase;" colspan="5" class="center b3_l">Выполнение плана на {$search.current_day|fn_parse_date|date_format:"%d/%m/%y"}</th>
+                        <th style="background-color:#B8C1FF; text-transform: uppercase;" colspan="5" class="center b3_l">Выполнение плана на 23:59 {$search.current_day|fn_parse_date|date_format:"%d/%m/%y"}</th>
                     </tr>
                 </tbody>
             </table>
@@ -346,5 +345,7 @@
             <h3>Укажите месяц и год для отображения плана производства</h3>
         {/if}
     {/capture}
-    {include file="common_templates/mainbox.tpl" title="План производства насосов на `$months_full[$search.month]` `$search.year` г. (`$search.current_day`)" content=$smarty.capture.mainbox tools=$smarty.capture.tools}
+
+    {assign var="curr_time" value=$smarty.now|date_format:"%H:%M"}
+    {include file="common_templates/mainbox.tpl" title="План производства насосов на `$months_full[$search.month]` `$search.year` г. (на 23:59 `$search.current_day`)" content=$smarty.capture.mainbox tools=$smarty.capture.tools}
 {/strip}

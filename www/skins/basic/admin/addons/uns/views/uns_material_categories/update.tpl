@@ -63,7 +63,46 @@
                         f_default="0"
                         f_description="Позиция"
                     }
-
+                    <hr>
+                    {include file="addons/uns/views/components/get_form_field.tpl"
+                        f_id=$id
+                        f_type="input"
+                        f_required=true f_integer=false
+                        f_name="mcat_position_accounting"
+                        f_value=$i.mcat_position_accounting
+                        f_default="0"
+                        f_description="Позиция категории в отчетах"
+                        f_tooltip="Последовательность категорий в Учете движений отливок по складу литья - так исторически сложилось."
+                    }
+                    <hr>
+                    {*Отображать в планах*}
+                    {include file="addons/uns/views/components/get_form_field.tpl"
+                        f_type="checkbox"
+                        f_id=$id
+                        f_value=$i.view_in_plans
+                        f_name="view_in_plans"
+                        f_description="Отображать в планах"
+                        f_tooltip="Разрешить отображение этой категории в расчетах планирования<br><b>План производства насосов (птичка установлена)</b><br><img src='skins/basic/admin/images/tooltips/pump_series_view_in_plans.png'><br><br><b>План производства насосов (птичка сброшена)</b><img src='skins/basic/admin/images/tooltips/pump_series_view_in_plans_1.png'>"
+                    }
+                    <hr>
+                    {*Отображать в отчетах*}
+                    {include file="addons/uns/views/components/get_form_field.tpl"
+                        f_type="checkbox"
+                        f_id=$id
+                        f_value=$i.view_in_reports
+                        f_name="view_in_reports"
+                        f_description="Отображать в отчетах"
+                        f_tooltip="Разрешить отображение этой категории в отчетах/таблицах баланса деталей по предприятию"
+                    }
+                    <hr>
+                    {include file="addons/uns/views/components/get_form_field.tpl"
+                        f_id=$id
+                        f_type="textarea"
+                        f_required=true f_integer=false
+                        f_name="mcat_comment"
+                        f_value=$i.mcat_comment
+                        f_description="Комментарий"
+                    }
                 </div>
             {/capture}
 

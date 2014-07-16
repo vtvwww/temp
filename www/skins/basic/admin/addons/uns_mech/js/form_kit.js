@@ -31,3 +31,7 @@ $('select[name^="kit_details"][name$="[dcat_id]"]').live('change', function (e) 
 });
 
 });
+
+function multi_select(s){
+    s.parent().parent().parent().parent().parent().find('tbody select[name$="[quantity]"]').val(s.val());
+}

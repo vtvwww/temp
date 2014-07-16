@@ -18,10 +18,10 @@
             {foreach from=$orders item="o" name="o"}
                 <tr>
                     <td class="center">№{$o.order_id}</td>
-                    <td class="b1_l">{$o.date_finished|date_format:"%a %d/%m/%y"} (осталось {$o.remaining_time} дней)</td>
+                    <td class="b1_l center">{$o.date_finished|date_format:"%a %d/%m/%y"}<br><nobr>(осталось {$o.remaining_time} дн.)</nobr></td>
                     <td class="b1_l"><b>{$customers[$o.customer_id].name_short}</b> - {$customers[$o.customer_id].name}</td>
-                    <td class="b1_l center">{$o.total_quantity}&nbsp;</td>
-                    <td class="b1_l">{$o.total_weight|number_format:1:".":" "}&nbsp;</td>
+                    <td class="b1_l center">{$o.total_quantity}</td>
+                    <td class="b1_l"><nobr>{$o.total_weight|number_format:1:".":" "}</nobr></td>
                     <td class="b1_l">{$o.comment}&nbsp;</td>
                 </tr>
             {/foreach}

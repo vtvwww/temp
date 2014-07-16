@@ -63,6 +63,42 @@ function fn_acc__get_kits($params = array(), $items_per_page = 0){
         $condition .= db_quote(" AND $m_tbl.status != 'Z' ");
     }
 
+    // ОТСЛЕЖИВАНИЕ ПАРТИЙ - ЗАДЕЛ
+    if ($params["tracking_type"] == "zadel" and is__more_0($params["tracking_time_end"])){
+        $condition .= db_quote(" AND
+            ($m_tbl.date_open <= ?i)
+            AND
+            (
+                ($m_tbl.status = 'Z' and ?i < $m_tbl.date_close)
+                OR
+                ($m_tbl.status != 'Z')
+            )
+        ", $params["tracking_time_end"], $params["tracking_time_end"]);
+    }
+
+    // ОТСЛЕЖИВАНИЕ ПАРТИЙ - ВЫПОЛНЕНО
+    if ($params["tracking_type"] == "done" and is__more_0($params["tracking_time_begin"], $params["tracking_time_end"])){
+        $condition .= db_quote(" AND
+            ($m_tbl.date_open <= ?i)
+            AND
+            (
+                (
+                    $m_tbl.date_close > 0
+                    AND
+                    $m_tbl.date_close >= ?i
+                    AND
+                    $m_tbl.date_close <= ?i
+                )
+                OR
+                (   # для частично закрытых партий
+                    $m_tbl.date_close = 0
+                    AND
+                    $m_tbl.status != 'Z'
+                )
+            )
+        ", $params["tracking_time_end"], $params["tracking_time_begin"], $params["tracking_time_end"]);
+    }
+
     // *************************************************************************
     // 2. ПРИСОЕДИНИТЬ ТАБЛИЦЫ
     // *************************************************************************
@@ -125,8 +161,13 @@ function fn_acc__get_kits($params = array(), $items_per_page = 0){
             "info_item"                 => false,
             "info_unit"                 => false,
             "item_type"                 => array('P', 'PF', 'PA'),
-
         );
+
+        if (($params["tracking_type"] == "zadel" or $params["tracking_type"] == "done") and is__more_0($params["tracking_time_begin"], $params["tracking_time_end"])){
+            $p["time_from"] = $params["tracking_time_begin"];
+            $p["time_to"]   = $params["tracking_time_end"];
+        }
+
         list($documents) = fn_uns__get_documents($p);
         if (is__array($documents)){
             foreach ($documents as $d){

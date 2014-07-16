@@ -10,12 +10,12 @@
         <tr style="background-color: #D4D0C8;">
             <th style="text-transform: none;"               rowspan="3"             class="center">Наименование</th>
             <th style="text-transform: none;"               rowspan="3"             class="center">&nbsp;</th>
-            <th style="text-transform: none;"               rowspan="3"             class="center b_l">СГП<br>на<br>01/{$data.month|string_format:"%02d"}<hr class="roman_dates">{$data.year}</th>
+            <th style="text-transform: none;"               rowspan="3"             class="center b_l">СГП<br>на<br>00:00<br>01/{$data.month|string_format:"%02d"}<hr class="roman_dates">{$data.year}</th>
             <th style="text-transform: none;"               rowspan="2" colspan="2" class="center b_l b1_b">План<br>продаж</th>
             <th style="text-transform: none;"          rowspan="2" colspan="3" class="center b3_l b1_b">План<br>производства<br>ФАКТИЧЕСКИЙ</th>
             <th style="text-transform: none;"          rowspan="2" colspan="3" class="center b3_l b1_b">План<br>производства<br>ПО ПАРТИЯМ</th>
-            <th style="text-transform: uppercase;background-color:#B8C1FF; "                      colspan="5" class="center b3_l b1_b">Выполнение плана на {$data.current_day|fn_parse_date|date_format:"%d/%m/%y"}</th>
-            <th style="text-transform: none;"               rowspan="3"             class="center b3_l">СГП<br>на<br>{$data.current_day|fn_parse_date|date_format:"%d/%m"}<hr class="roman_dates">{$data.year}</th>
+            <th style="text-transform: uppercase;background-color:#B8C1FF; "                      colspan="5" class="center b3_l b1_b">Выполнение плана на 23:59 {$data.current_day|fn_parse_date|date_format:"%d/%m/%y"}</th>
+            <th style="text-transform: none;"               rowspan="3"             class="center b3_l">СГП<br>на<br>23:59<br>{$data.current_day|fn_parse_date|date_format:"%d/%m"}<hr class="roman_dates">{$data.year}</th>
             <th style="text-transform: none;"               rowspan="3"             class="center b3_l">{include file="common_templates/tooltip.tpl" tooltip="<b>Кратность партии насоса.</b><br>ОТ - ДО, ШАГ" tooltip_mark="<b>КП</b>"}</th>
         </tr>
         <tr style="background-color: #D4D0C8;">
@@ -78,19 +78,19 @@
             <td class="b1_l center {if !$q}zero{/if}">{$q}</td>
 
             {*Задел*}
-            {assign var="q" value=$data.zadel.$ps_id|default:0}
+            {assign var="q" value=$data.zadel_current_day.$ps_id|default:0}
             <td style="background-color: #FFEF8C;" class="b3_l center {if !$q}zero{else}bold{/if}">{$q}</td>
 
             {*Выполнено*}
-            {assign var="q" value=$data.done.$ps_id|default:0}
+            {assign var="q" value=$data.done_current_day.$ps_id|default:0}
             <td style="background-color: #C0FF9A;" class="b2_l center {if !$q}zero{else}bold{/if}">{$q}</td>
 
             {*Осталось*}
-            {assign var="q" value=$data.remaining_production_plan_parties.curr_month.$ps_id|default:0}
+            {assign var="q" value=$data.remaining_production_plan_parties_current_day.curr_month.$ps_id|default:0}
             <td style="background-color: #B8C1FF;" class="b3_l center {if !$q}zero{else}bold{/if}">{$q}</td>
-            {assign var="q" value=$data.remaining_production_plan_parties.next_month.$ps_id|default:0}
+            {assign var="q" value=$data.remaining_production_plan_parties_current_day.next_month.$ps_id|default:0}
             <td style="background-color: #B8C1FF;" class="b1_l center {if !$q}zero{else}bold{/if}">{$q}</td>
-            {assign var="q" value=$data.remaining_production_plan_parties.next2_month.$ps_id|default:0}
+            {assign var="q" value=$data.remaining_production_plan_parties_current_day.next2_month.$ps_id|default:0}
             <td style="background-color: #B8C1FF;" class="b1_l center {if !$q}zero{else}bold{/if}">{$q}</td>
 
             {*Склад Готовой Продукции*}
@@ -112,7 +112,7 @@
 {*============================================================================*}
 {*ОТОБРАЗИТЬ КОМПЛЕКТАЦИИ НАСОСОВ*}
 {*============================================================================*}
-{assign var="plan_parties" value=$data.initial_production_plan_parties.curr_month.$ps_set_id|default:0}
+{assign var="plan_parties" value=$data.remaining_production_plan_parties_current_day.curr_month.$ps_set_id|default:0}
 {foreach from=$pump_series.pumps key="pump_id" item="p"}
     {if $action == "pump"}
     <br/>
@@ -125,7 +125,7 @@
                 <th class="center b1_l" rowspan="3">Наименование</th>
                 <th width="10px" class="center" rowspan="3">&nbsp;</th>
                 <th class="center b1_l" rowspan="3" style="text-transform: none;">Кол.<br>на<br>1 ед.</th>
-                <th class="center b_l b_b" colspan="6" style="text-transform: none;">ОСТАТКИ ДЕТАЛЕЙ</th>
+                <th class="center b_l b_b" colspan="6" style="text-transform: none;">ОСТАТКИ ДЕТАЛЕЙ на 23:59 {$data.current_day|fn_parse_date|date_format:"%d/%m/%y"}</th>
                 <th class="center b_l" rowspan="3" style="text-transform: none;">Кол-во<br>насосов<br>
                     {assign var="details" value=$p.details|array_keys|implode:'-'}
                     {include file="addons/uns/views/components/get_form_field.tpl"

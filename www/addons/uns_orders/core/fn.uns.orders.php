@@ -208,7 +208,7 @@ function fn_acc__upd_order_info($id, $data){
     $d = array();
     $d["comment"]       = (strlen($data["comment"]))?$data["comment"]:"";
     $d["date_finished"] = fn_parse_date($data["date_finished"]);
-    $d["status"]        = (fn_check_type($data["status"], "|Open|Close|"))?$data["status"]:"Open";
+    $d["status"]        = (fn_check_type($data["status"], "|Open|Close|Hide|"))?$data["status"]:"Hide";
     $d["customer_id"]   = $data["customer_id"];
     $d["date_updated"]  = fn_parse_date($data["date_updated"]);;
 

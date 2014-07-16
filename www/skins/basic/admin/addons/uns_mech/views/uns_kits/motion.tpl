@@ -1,12 +1,4 @@
 {assign var="m_mode" value=$action}
-{literal}
-    <script type="text/javascript">
-        function multi_select(s){
-            var v = s.val();
-            var ss = s.parent().parent().parent().parent().find("tbody select[name*='quantity']").val(v);
-        }
-    </script>
-{/literal}
 <form action="{""|fn_url}" method="post" name="update_{$controller}_form_{$id}" class="cm-form-highlight">
     <div class="data-block top">
         <input type="hidden" name="kit_id" value="{$kit.kit_id}" />

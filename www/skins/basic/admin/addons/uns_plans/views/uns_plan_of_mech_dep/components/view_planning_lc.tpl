@@ -10,13 +10,16 @@
         </tr>
         {foreach from=$item.items item=m key=k}
             <tr class="category_items {$id} {if $expand_all} hidden {/if}" m_id={$m.id}>
+                {* Минимально необходимый остаток*}
+                {assign var="min_necessary_rest" value=$min_necessary_rest_of_materials[$m.id].min_necessary_rest|default:0}
+
                 {*НАИМЕНОВАНИЕ*}
                 <td><nobr>&nbsp;&nbsp;
                     {assign var="n" value=$m.name}
                     {if $m.no != ""}
                         {assign var="n" value="`$n` [`$m.no`]"}
                     {/if}
-                    {$n}</nobr>
+                    {$n}{if $min_necessary_rest_of_materials[$m.id].min_necessary_rest}<span title="Минимальный остаток на складе литья: {$min_necessary_rest} шт." class="info_warning"> ({$min_necessary_rest})</span>{/if}</nobr>
                     {*{assign var="href" value="foundry_get_balance.motion?item_id=`$m.id`&period=`$search.period`&time_from=`$search.time_from`&time_to=`$search.time_to`&nach=`$m.nach`&current__in=`$m.current__in`&current__out=`$m.current__out`&konech=`$m.konech`"}*}
                     {*<a  rev="content_item_{$m.id}" id="opener_item_{$m_id}" href="{$href|fn_url}" class="cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$n}</a>*}
                     {*<div id="content_item_{$m.id}" class="hidden" title="Движение {$n|upper} по Складу литья"></div>*}
@@ -27,7 +30,7 @@
 
                 {*ПЛАН ПОТРЕБНОСТЬ*}
                 {assign var="q" value=$requirement_of_casts.curr_month[$m.id]|fn_fvalue:1}
-                <td align="center" class="b3_l {if $q < 0}info_warning_block{elseif $q==0}zero{/if}">{$q}</td>
+                <td align="center" class="b3_l {if $q < 0}info_warning_block{elseif $q==0}zero{/if}">{$q}{if $q>0 and $requirement_of_casts_for_min_rest[$m.id] == "Y"}<span class="info_warning">*</span>{/if}</td>
                 {assign var="q" value=$requirement_of_casts.next_month[$m.id]|fn_fvalue:1}
                 <td align="center" class="b1_l {if $q < 0}info_warning_block{elseif $q==0}zero{/if}">{$q}</td>
                 {assign var="q" value=$requirement_of_casts.next2_month[$m.id]|fn_fvalue:1}
@@ -44,16 +47,16 @@
                 <td align="center" style="background-color: #D3D3D3;" class="b2_l {if $q < 0}info_warning_block{elseif $q==0}zero{else}bold{/if}">{$q}</td>
 
                 {*ОСТАЛОСЬ ОТЛИТЬ ПО ПЛАНУ ПОТРЕБНОСТИ В ЗАГОТОВКАХ*}
-                {assign var="q" value=$remaining_of_casts.curr_month[$m.id]|fn_fvalue:1}
-                <td align="center" style="background-color: #B8C1FF;" class="b3_l {if $q > 0}bold{else}zero{/if}">{$q|ceil}</td>
-                {assign var="q" value=$remaining_of_casts.next_month[$m.id]|fn_fvalue:1}
-                <td align="center" style="background-color: #B8C1FF;" class="b1_l {if $q > 0}bold{else}zero{/if}">{$q|ceil}</td>
-                {assign var="q" value=$remaining_of_casts.next2_month[$m.id]|fn_fvalue:1}
-                <td align="center" style="background-color: #B8C1FF;" class="b1_l {if $q > 0}bold{else}zero{/if}">{$q|ceil}</td>
+                {assign var="q" value=$remaining_of_casts.curr_month[$m.id]|fn_fvalue:0}
+                <td align="center" style="background-color: #B8C1FF;" class="b3_l {if $q > 0}bold{else}zero{/if}">{$q}{if $q>0 and $requirement_of_casts_for_min_rest[$m.id] == "Y"}<span class="info_warning">*</span>{/if}</td>
+                {assign var="q" value=$remaining_of_casts.next_month[$m.id]|fn_fvalue:0}
+                <td align="center" style="background-color: #B8C1FF;" class="b1_l {if $q > 0}bold{else}zero{/if}">{$q}</td>
+                {assign var="q" value=$remaining_of_casts.next2_month[$m.id]|fn_fvalue:0}
+                <td align="center" style="background-color: #B8C1FF;" class="b1_l {if $q > 0}bold{else}zero{/if}">{$q}</td>
 
                 {*ЗАПРЕТ*}
                 <td align="left" class="b3_l">
-                    {if $prohibition_of_casts[$m.id] == "Y"}<img src="skins/basic/admin/addons/uns_plans/images/prohibition.png" alt="X"/>{/if}
+                    {if $prohibition_of_casts[$m.id] == "Y"}<img src="skins/basic/admin/addons/uns_plans/images/prohibition.png" alt="X"/>{else}&nbsp;{/if}
                 </td>
 
                 {*ПРИНАДЛЕЖНОСТЬ К НАСОСАМ*}
@@ -66,7 +69,7 @@
                         {elseif $m.accessory_view == "P"}
                             {$m.accessory_pumps} <span class="info_warning">({$m.accessory_view})</span>
                         {else}
-                            {$m.accessory_pump_series}
+                            {$m.accessory_pump_series}&nbsp;
                         {/if}
                     {/if}
                 </td>

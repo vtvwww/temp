@@ -64,8 +64,9 @@
     <label class="cm-required" for="order_status">Состояние заказа:</label>
     <select name="{$e_n}[status]" id="order_status">
         <option value="">---</option>
-        <option value="Open" {if $o.status == "Open"}selected="selected"{/if} {if $mode == "add"}selected="selected"{/if}>Открыт</option>
-        <option value="Close" {if $o.status == "Close"}selected="selected"{/if}>Выполнен</option>
+        <option value="Hide" {if $o.status == "Hide"}selected="selected"{/if} {if $mode == "add"}selected="selected"{/if}>Скрыт - предварительный заказ</option>
+        <option value="Open" {if $o.status == "Open"}selected="selected"{/if}>Открыт - заказ готов к выполнению</option>
+        <option value="Close" {if $o.status == "Close"}selected="selected"{/if}>Выполнен - заказ отгружен</option>
     </select>
 </div>
 

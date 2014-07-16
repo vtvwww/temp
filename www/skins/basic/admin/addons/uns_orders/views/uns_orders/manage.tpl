@@ -8,7 +8,13 @@
         {*{include file="addons/uns/views/components/search/s_accessory_pumps.tpl"}*}
     {*{/capture}*}
     {*{include file="addons/uns/views/components/search/search.tpl" dispatch="`$controller`.manage" search_content=$smarty.capture.search_content}*}
-
+    <div>
+        <ul>
+            <li><img class="hand" border="0" title="Скрыт - предварительный заказ" src="skins/basic/admin/addons/uns_acc/images/circle_yellow.png"> <b>Скрыт - предварительный заказ.</b> Заказ пока еще не будет отображаться на остатках Склада готовой продукции.</li>
+            <li><img class="hand" border="0" title="Скрыт - предварительный заказ" src="skins/basic/admin/addons/uns_acc/images/circle_green.png"> <b>Открыт - заказ готов к выполнению.</b> Заказ будет отображаться на остатках Склада готовой продукции.</li>
+            <li><img class="hand" border="0" title="Скрыт - предварительный заказ" src="skins/basic/admin/addons/uns_acc/images/done.png"> <b>Выполнен - заказ отгружен.</b> Так заказ выполнен, поэтому он не будет отображаться на остатках Склада готовой продукции.</li>
+        </ul>
+    </div>
    <form action="{""|fn_url}" method="post" name="{$controller}_form" class="{if ""|fn_check_form_permissions} cm-hide-inputs{/if}">
        {include file="common_templates/pagination.tpl"}
        <table cellpadding="0" cellspacing="0" border="0" width="100%" class="table">
@@ -35,17 +41,21 @@
                        {include file="addons/uns/views/components/tools.tpl" type="edit" href="`$controller`.update?`$value`=`$id`"}
                    </td>
                    <td> {* Статус *}
-                       {if      $i.status == "Open"}
-                           <img class="hand" border="0" title="Комплектуется" src="skins/basic/admin/addons/uns_acc/images/circle_yellow.png">
+                       {if      $i.status == "Hide"}
+                           <img class="hand" border="0" title="Скрыт - предварительный заказ" src="skins/basic/admin/addons/uns_acc/images/circle_yellow.png">
+                       {elseif  $i.status == "Open"}
+                           <img class="hand" border="0" title="Открыт - заказ готов к выполнению" src="skins/basic/admin/addons/uns_acc/images/circle_green.png">
                        {elseif  $i.status == "Close"}
-                           <img class="hand" border="0" title="Закрыт" src="skins/basic/admin/addons/uns_acc/images/done.png">
+                           <img class="hand" border="0" title="Выполнен - заказ отгружен" src="skins/basic/admin/addons/uns_acc/images/done.png">
                        {/if}
                    </td>
                    <td class="b1_l"> {*ДАТА ОТГРУЗКИ*}
                        {$i.date_finished|date_format:"%a %d/%m/%y"}
                    </td>
                    <td class="b1_l"> {*КЛИЕНТ*}
-                       {if      $i.status == "Open"}
+                       {if      $i.status == "Hide"}
+                           <i>{$customers[$i.customer_id].name}</i>
+                       {elseif  $i.status == "Open"}
                            <b>{$customers[$i.customer_id].name}</b>
                        {elseif  $i.status == "Close"}
                            {$customers[$i.customer_id].name}

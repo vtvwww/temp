@@ -97,9 +97,30 @@
                         f_type="textarea"
                         f_required=false f_integer=false
                         f_name="accessory_manual"
+                        f_row=1
                         f_value=$i.accessory_manual
                         f_description="Принадлежность насосов вручную"
                         f_tooltip="Текст, который будет отображен как принадлежность к насосам, если в качестве <Режима отображения принадлежности> был выбран <указать вручную>.<br><img src='skins/basic/admin/images/tooltips/details_accessory_view_m_1.png'><br><br><img src='skins/basic/admin/images/tooltips/details_accessory_view_m.png'>"
+                    }
+
+                    {*ОТСЛЕЖИВАТЬ МИНИМАЛЬНЫЙ ОСТАТОК*}
+                    <hr/>
+                    {include file="addons/uns/views/components/get_form_field.tpl"
+                        f_type="checkbox"
+                        f_id=$id
+                        f_value=$i.min_rest_state
+                        f_name="min_rest_state"
+                        f_description="Следить за минимальным остатком детали?"
+                        f_tooltip="Если птичка установлена, то по этой детали происходит слежение за остатком."
+                    }
+                    {include file="addons/uns/views/components/get_form_field.tpl"
+                        f_id=$id
+                        f_type="input"
+                        f_required=false f_integer=true
+                        f_name="min_rest_value"
+                        f_value=$i.min_rest_value
+                        f_default="0"
+                        f_description="Значение минимального остатка детали на МЦ1 + МЦ2 + Скл. КМП"
                     }
 
                     <hr/>
@@ -108,6 +129,7 @@
                         f_type="textarea"
                         f_required=false f_integer=false
                         f_name="detail_comment"
+                        f_row=1
                         f_value=$i.detail_comment
                         f_description="Комментарий"
                     }

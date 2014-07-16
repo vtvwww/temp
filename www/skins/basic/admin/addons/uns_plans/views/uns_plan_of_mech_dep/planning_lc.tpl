@@ -11,13 +11,13 @@
                 <th rowspan="2" class="b1_l center" style="text-transform: none;" width="25px">{include file="common_templates/tooltip.tpl" tooltip='Вес 1 шт в кг'  tooltip_mark="<b>Вес<br>кг</b>"}</th>
 
                 <th colspan="3" class="b3_l center" style="text-transform: none;" width="60px">
-                    Потребность<br>мех. цехов<br>в отливках
+                    Потребность<br>в отливках<br>на 00:00<br>01/{$data.month|string_format:"%02d"}/{$data.year}
                 </th>
                 <th colspan="4" class="b3_l center" style="text-transform: none;" width="60px">
-                    Движение отливок<br> по Складу литья<br>на {$months_full[$data.month]} {$data.year} г.
+                    Движение отливок<br> по Складу литья<br>за {$months_full[$data.month]} {$data.year} г.
                 </th>
                 <th colspan="3" class="b3_l center" style="text-transform: none; background-color: #B8C1FF;" width="60px">
-                    ОСТАЛОСЬ
+                    ОСТАЛОСЬ<br>на 23:59<br>{$data.current_day}
                 </th>
                 {*Запрет*}
                 <th rowspan="2" class="b3_l" style="text-align: center;" width="10px">&nbsp;</th>
@@ -126,15 +126,15 @@
         </tr>
         <tr style="background-color: #D4D0C8;">
             <th colspan="3" class="b3_l b1_t center" style="text-transform: none;" width="60px">
-                Потребность<br>мех. цехов<br>в отливках
+                Потребность<br>в отливках<br>на 00:00<br>01/{$data.month|string_format:"%02d"}/{$data.year}
             </th>
 
             <th colspan="4" class="b3_l b1_t center" style="text-transform: none;" width="60px">
-                Движение отливок<br> по Складу литья<br>на {$months_full[$data.month]} {$data.year} г.
+                Движение отливок<br> по Складу литья<br>за {$months_full[$data.month]} {$data.year} г.
             </th>
 
             <th colspan="3" class="b3_l b1_t center" style="text-transform: none; background-color: #B8C1FF;" width="60px">
-                ОСТАЛОСЬ
+                ОСТАЛОСЬ<br>на 23:59<br>{$data.current_day}
             </th>
         </tr>
 
@@ -144,5 +144,7 @@
     &nbsp;&nbsp;&nbsp;<span style="color: red;"><img src="skins/basic/admin/addons/uns_plans/images/prohibition.png" alt="X"/> - к производству запрещены <b>{$prohibition_of_casts|count}</b> вида(-ов) заготовок, так как по ним уже есть {$data.months_supply}-х месячный запас заготовок на складе литья и соответсвующие им детали в мех. цехах и на складе комплектующих.
     <br/>
     &nbsp;&nbsp;&nbsp;<span style="color: red; font-weight: bold;">П*</span> - (приход) это все поступления на склад литья с первого числа месяца по последнее число. Это значение может отличаться от выпуска литейного цеха текущего месяца на: последний выпуск литейного цеха предыдущего месяца <b>+</b> приход отливок после отжига <b>+</b> переучеты по складу литья <b>+</b> отливки на продажу или на собственные нужды.
+    <br/>
+    &nbsp;&nbsp;&nbsp;<span style="color: red; font-weight: bold;">10*</span> - число со звездочкой - это потребность в заготовках для партий насосов + потребность в заготовках для коммерческого отдела при продаже деталей. <b>Заготовки со зведочкой выполняются в первую очередь!</b>
 {/capture}
-{include file="common_templates/mainbox.tpl" title="План производства ЛИТЕЙНОГО ЦЕХА на `$months_full[$data.month]` `$data.year` г. (`$data.current_day`)" content=$smarty.capture.mainbox tools=$smarty.capture.tools}
+{include file="common_templates/mainbox.tpl" title="План производства ЛИТ. ЦЕХА на `$months_full[$data.month]` `$data.year` г. (на 23:59 `$data.current_day`)" content=$smarty.capture.mainbox tools=$smarty.capture.tools}

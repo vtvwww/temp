@@ -118,6 +118,18 @@
                         f_description="Позиция"
                     }
                     <hr/>
+                    {*Минимально необходимый остаток отливки на складе литья - используется для расчета плана производства литейного цеха*}
+                    {include file="addons/uns/views/components/get_form_field.tpl"
+                        f_id=$id
+                        f_type="input"
+                        f_required=true f_integer=false
+                        f_name="min_necessary_rest"
+                        f_value=$i.min_necessary_rest
+                        f_default="0"
+                        f_description="Минимально необходимый остаток"
+                        f_tooltip="Минимально необходимый остаток отливки на складе литья - используется для расчета плана производства литейного цеха"
+                    }
+                    <hr/>
                     {*Режим отображения принадлежности*}
                     <div class="form-field">
                         <label for="accessory_view_{$id}" class="cm-required">Режим отображения принадлежности{include file="common_templates/tooltip.tpl" tooltip="<b>По сериям насосов</b><br>Во многих случаях стоит выбирать именно этот режим. Так как он является информативным и компактным.<br><img src='skins/basic/admin/images/tooltips/details_accessory_view_s.png'><br><br><b>По насосам</b> Может быть слишком избыточно.<br><img src='skins/basic/admin/images/tooltips/details_accessory_view_p.png'><br><br><b>Указать вручную</b><br>Бывают случаи, когда невозможно рассчитать принадлежность детали, тогда следует установить ее вручную в следующем поле для ввода.<br><img src='skins/basic/admin/images/tooltips/details_accessory_view_m.png'>"}:</label>
