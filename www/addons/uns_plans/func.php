@@ -8,7 +8,7 @@ if(!defined('AREA')){
 function fn_uns__get_sales_pump_series_by_period ($ps_id, $begin, $end){
     $res = array();
     if (fn_is_not_empty($ps_id) and is__more_0($begin, $end)){
-        list($pumps) = fn_uns__get_pumps(array("only_active"=>true, ));
+        list($pumps) = fn_uns__get_pumps(array("only_active"=>true, "without_sets_of_details"=>true, ));
         $params = array(
             "time_from"     => $begin,
             "time_to"       => $end,
