@@ -79,53 +79,63 @@
                     <td colspan="20" style="background-color: #E6E2DA; font-size: 12px;" class="bold">{$pt.pt_name}</td>
                 </tr>
                     {foreach from=$pt.pump_series item="ps" key="ps_id" name="ps"}
+                    {*АНАЛИЗ ПЛАНА ПРОИЗВОДСТВА*}
+                    {if $search.analisys_of_production_plan == "Y"}
+                        {assign var="sale_progressbar" value=" style='background-image: url(images/uns/bar-50px.png); background-position: `$sales_tpl.$ps_id.bar`px center;' "}
+                        {assign var="sale_value" value=$sales.$ps_id|default:0}
+                        {assign var="sale_tpl" value="<span style='font-size:9px; font-weight:bold;'>`$sale_value` /</span> "}
+                        {assign var="analisys_rowspan" value=" rowspan='2' "}
+                        {assign var="analisys_progress" value="<div style='background-color: #666;border-bottom: 1px solid #666;border-top: 1px solid #666;float: left;height: 5px;width: `$analisys.$ps_id.total`px;'></div><div style='background-color: #fff;border-bottom: 1px solid #666;border-top: 1px solid #666;border-right: 1px solid #666;float: left;height: 5px;width: `$analisys.$ps_id.zadel`px;'></div>"}
+                        {assign var="analisys_add_rows" value="<tr><td style='border-top: 1px solid #d0d0d0;height: 19px;padding: 0;background-image: url(images/uns/ruler.png);' class='b3_l' colspan='3'>`$analisys_progress`</td></tr>"}
+                    {/if}
+
                     <tr>
                         {*Наименование*}
-                        <td>
+                        <td {$analisys_rowspan}>
                             <a  rev="content_item_name_{$ps_id}" id="opener_item_name_{$ps_id}" href="{"uns_plan_of_mech_dep.analysis_of_pumps.pump?ps_id=`$ps_id`"|fn_url}" class="block cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$ps.ps_name}</a>
                             <div id="content_item_name_{$ps_id}" class="hidden" title="Анализ насоса <u>{$ps.ps_name}</u> на 23:59 {$search.current_day}"></div>
                         </td>
 
-                        <td align="right">
+                        <td {$analisys_rowspan} align="right">
                             {if $prohibition.$ps_id == "Y"}<img src="skins/basic/admin/addons/uns_plans/images/prohibition.png" alt="X"/>{else}&nbsp;{/if}
                         </td>
 
                         {*Склад Готовой Продукции*}
                         {assign var="q" value=$sgp.$ps_id|default:0}
-                        <td class="b_l  center {if !$q}zero{/if}">{$q}</td>
+                        <td {$analisys_rowspan} class="b_l  center {if !$q}zero{/if}">{$q}</td>
 
                         {*План продаж*}
                         {assign var="q" value=$requirement.curr_month.$ps_id|default:0}
-                        <td class="b_l center {if !$q}zero{/if}">{$q}</td>
+                        <td {$analisys_rowspan} {$sale_progressbar} class="b_l center {if !$q and !$sale_value}zero{/if}">{$sale_tpl}{$q}</td>
                         {assign var="q" value=$requirement.next_month.$ps_id|default:0}
-                        <td class="b1_l center {if !$q}zero{/if}">{$q}</td>
+                        <td {$analisys_rowspan} class="b1_l center {if !$q}zero{/if}">{$q}</td>
 
                         {if $search.type_of_production_plan == "actual"}
                             {*План производства*}
                             {assign var="q" value=$initial_production_plan.curr_month.$ps_id|default:0}
-                            <td class="b3_l  center {if !$q}zero{/if}">{$q}</td>
+                            <td {$analisys_rowspan} class="b3_l  center {if !$q}zero{/if}">{$q}</td>
                             {assign var="q" value=$initial_production_plan.next_month.$ps_id|default:0}
-                            <td class="b1_l center {if !$q}zero{/if}">{$q}</td>
+                            <td {$analisys_rowspan} class="b1_l center {if !$q}zero{/if}">{$q}</td>
                             {assign var="q" value=$initial_production_plan.next2_month.$ps_id|default:0}
-                            <td class="b1_l center {if !$q}zero{/if}">{$q}</td>
+                            <td {$analisys_rowspan} class="b1_l center {if !$q}zero{/if}">{$q}</td>
 
                         {elseif $search.type_of_production_plan == "parties"}
                             {*Плановая сдача партий насосов на СГП*}
                             {assign var="q" value=$initial_production_plan_parties.curr_month.$ps_id|default:0}
-                            <td class="b3_l  center {if !$q}zero{/if}">{$q}</td>
+                            <td {$analisys_rowspan} class="b3_l  center {if !$q}zero{/if}">{$q}</td>
                             {assign var="q" value=$initial_production_plan_parties.next_month.$ps_id|default:0}
-                            <td class="b1_l center {if !$q}zero{/if}">{$q}</td>
+                            <td {$analisys_rowspan} class="b1_l center {if !$q}zero{/if}">{$q}</td>
                             {assign var="q" value=$initial_production_plan_parties.next2_month.$ps_id|default:0}
-                            <td class="b1_l center {if !$q}zero{/if}">{$q}</td>
+                            <td {$analisys_rowspan} class="b1_l center {if !$q}zero{/if}">{$q}</td>
                         {/if}
 
                         {*ЗАДЕЛ*}
                         {assign var="q" value=$zadel_current_day.$ps_id|default:0}
-                        <td style="background-color: #FFEF8C;" class="b3_l center {if !$q}zero{else}bold{/if}">{$q}</td>
+                        <td {$analisys_rowspan} style="background-color: #FFEF8C;" class="b3_l center {if !$q}zero{else}bold{/if}">{$q}</td>
 
                         {*ВЫПОЛНЕНО*}
                         {assign var="q" value=$done_current_day.$ps_id|default:0}
-                        <td style="background-color: #C0FF9A;" class="b2_l center {if !$q}zero{else}bold{/if}">{$q}</td>
+                        <td {$analisys_rowspan} style="background-color: #C0FF9A;" class="b2_l center {if !$q}zero{else}bold{/if}">{$q}</td>
 
                         {*ОСТАЛОСЬ*}
                         {if $search.type_of_production_plan == "actual"}
@@ -147,15 +157,16 @@
 
                         {*Склад Готовой Продукции*}
                         {assign var="q" value=$sgp_current_day.$ps_id|default:0}
-                        <td class="b3_l  center {if !$q}zero{else}bold{/if}">{$q}</td>
+                        <td {$analisys_rowspan} class="b3_l  center {if !$q}zero{else}bold{/if}">{$q}</td>
 
                         {*КРАТНОСТЬ ПАРТИИ НАСОСОВ*}
                         {if $search.type_of_production_plan == "parties"}
-                            <td class="b3_l center">
+                            <td {$analisys_rowspan} class="b3_l center">
                                 {$ps.party_size_min}-{$ps.party_size_max},{$ps.party_size_step}
                             </td>
                         {/if}
                     </tr>
+                    {$analisys_add_rows}
                     {/foreach}
                 </tbody>
                 {/foreach}

@@ -70,9 +70,21 @@
                 <label for="type_of_production_plan">Тип плана производства:</label>
                 <div class="break">
                     <select name="type_of_production_plan" id="type_of_production_plan">
-                        <option value="parties" {if $search.type_of_production_plan == "parties"}selected="selected"{/if}>План производства по партиям</option>
-                        <option value="actual"  {if $search.type_of_production_plan == "actual"}selected="selected"{/if}>План производства фактический</option>
+                        <option value="parties" {if $search.type_of_production_plan == "parties"}selected="selected"{/if}>По партиям</option>
+                        <option value="actual"  {if $search.type_of_production_plan == "actual"}selected="selected"{/if}>Фактический</option>
                     </select>
+                </div>
+            </td>
+            <td class="nowrap search-field" style="border-left: 1px solid #808080;">
+                <label for="analisys_of_production_plan">Анализ плана:</label>
+                <div class="break">
+                    {include file="addons/uns/views/components/get_form_field.tpl"
+                        f_type  ="checkbox"
+                        f_id    ="analisys_of_production_plan"
+                        f_name  ="analisys_of_production_plan"
+                        f_value =$search.analisys_of_production_plan|default:"N"
+                        f_simple=true
+                    }
                 </div>
             </td>
         </tr>

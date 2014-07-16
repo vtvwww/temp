@@ -693,15 +693,85 @@ if ($mode == "manage") {
         $view->assign("remaining_production_plan_parties_current_day", $remaining_production_plan_parties_current_day);
         $data["remaining_production_plan_parties_current_day"]    = $remaining_production_plan_parties_current_day;
 
-
-
-
         $view->assign("weights", $weights);
 
         // СОХРАНЕНИЕ ДАННЫХ В СЕССИЮ
         $_SESSION["uns_plan_of_mech_dep"] = $data;
         unset($_SESSION["balance_of_details"]);
         unset($_SESSION["balance_of_casts"]);
+
+
+        //**********************************************************************
+        //**********************************************************************
+        // РАСЧЕТЫ ДЛЯ АНАЛИЗА ПЛАНА
+        //**********************************************************************
+        if ($_REQUEST["analisys_of_production_plan"] == "Y"){
+            //SALE_PROGRESS
+            $pump_series = array_shift(fn_uns__get_pump_series(array('only_active' => true, "view_in_plans"=>"Y",)));
+            $begin  = strtotime($_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1" . " 00:00:00");
+            $end    = strtotime(date("Y-m-d", fn_parse_date($_REQUEST["current_day"])) . " 23:59:59");
+            $sales = fn_uns__get_sales_pump_series_by_period(array_keys($pump_series), $begin, $end);
+            $sales_tpl = null;
+            foreach ($pump_series as $ps_id=>$ps){
+                // расчет процентов
+                $plan_curr_month = $plan["group_by_item"]["S"][$ps_id]["ukr_curr"]+$plan["group_by_item"]["S"][$ps_id]["exp_curr"];
+                if ($plan_curr_month == 0){
+                    $perc = $sales[$ps_id]*100;
+                }elseif ($sales[$ps_id] == 0){
+                    $perc = 0;
+                }else{
+                    $perc = 100*$sales[$ps_id]/$plan_curr_month;
+                }
+
+                // расчет положения прогрессбара
+                $progress_bar = -150;
+                if ($perc <= 200) $progress_bar = -100 + $perc/2;
+
+                $sales_tpl[$ps_id]["perc"] = $perc;
+                $sales_tpl[$ps_id]["bar"]  = $progress_bar;
+            }
+            $view->assign("sales", $sales);
+            $view->assign("sales_tpl", $sales_tpl);
+
+            // ANALISYS_PROGRESS
+            $analisys = null;
+            foreach ($pump_series as $ps_id=>$ps){
+                $total_pumps = $sgp[$ps_id] + $done_current_day[$ps_id];
+                $total_requirement = $requirement["curr_month"][$ps_id] + $requirement["next_month"][$ps_id] + $requirement["next2_month"][$ps_id];
+
+                $z = $zadel_current_day[$ps_id];
+                $progress_total = 0;
+                $progress_zadel = 0;
+                $step = 52;
+                if (($total_pumps + $z) == 0){
+                    $progress_total = 0;
+                }elseif (($total_pumps + $z) >= $total_requirement){
+                    if ($total_pumps == 0){
+                        $progress_zadel = $step + $step + $step;
+                    }elseif ($z == 0){
+                        $progress_total = $step + $step + $step;
+                    }elseif ($total_pumps <= $requirement["curr_month"][$ps_id]){
+                        
+                    }
+                }else{
+//                    $total_pumps < $total_requirement;
+                    if ($total_pumps >= ($requirement["curr_month"][$ps_id] + $requirement["next_month"][$ps_id])){
+                        $progress_total += $step + $step;
+                        $progress_total += $step*($total_pumps - $requirement["curr_month"][$ps_id] - $requirement["next_month"][$ps_id])/$requirement["next2_month"][$ps_id];
+                    }elseif ($total_pumps >= $requirement["curr_month"][$ps_id]){
+                        $progress_total += $step;
+                        $progress_total += $step*($total_pumps - $requirement["curr_month"][$ps_id])/$requirement["next_month"][$ps_id];
+                    }else{
+                        $progress_total += $step*($total_pumps)/$requirement["curr_month"][$ps_id];
+                    }
+                }
+
+
+                $analisys[$ps_id]["total"] = $progress_total;
+                $analisys[$ps_id]["zadel"] = $progress_zadel;
+            }
+            $view->assign("analisys", $analisys);
+        }
     }
 }
 
@@ -1103,6 +1173,7 @@ function fn_uns_plan_of_mech_dep__search ($controller){
         "months_supply",
         "current_day",
         "type_of_production_plan",
+        "analisys_of_production_plan",
     );
     fn_uns_search_set_get_params($controller, $params);
     return true;
