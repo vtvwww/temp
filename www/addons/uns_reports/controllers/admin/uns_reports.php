@@ -251,7 +251,7 @@ if ($mode == 'get_report'){
 
             // 3.0.0 Список всех насосов
             // 3.0.1 Список всех серий насосов
-            $pumps = array_shift(fn_uns__get_pumps());
+            $pumps = array_shift(fn_uns__get_pumps(array("without_sets_of_details"=>true, )));
             $pump_series = array_shift(fn_uns__get_pump_series());
 
 
@@ -273,20 +273,35 @@ if ($mode == 'get_report'){
             $p = array("type" => 7, "o_id" => 19, "with_items" =>  true, "info_unit"=>false, "info_item" => false, "sorting_schemas" => "view_asc"); // RO = 7; Sklad Litya = 8
             list($sales_SGP) = fn_uns__get_documents(array_merge($_REQUEST, $p));
             $sales_SGP_groups = null;
+            $sales_SGP_details = null;
             foreach ($sales_SGP as $doc){
                 foreach ($doc["items"] as $item){
                     if (in_array($item["item_type"], array("P", "PF", "PA")) and is__more_0($item["quantity"])){
                         $sales_SGP_groups[$pumps[$item["item_id"]]["ps_id"]] += $item["quantity"];
+                    }elseif ($item["item_type"] == "D" and is__more_0($item["quantity"])){
+                        $sales_SGP_details[$item["item_id"]] += $item["quantity"];
                     }
                 }
             }
-//            fn_print_r($sales_SGP);
+
+            // Анализ проданных деталей
+            if (is__array($sales_SGP_details)){
+                $details = array_shift(fn_uns__get_details(array("detail_id"=>array_keys($sales_SGP_details), "with_accounting" => true, )));
+                $list_details =  null;
+                foreach ($details as $detail_id=>$d){
+                    $list_details[$d["dcat_name"]][$detail_id] = array(
+                        "name"   => $d["detail_name"] . " " . $d["detail_no"],
+                        "sold"   => $sales_SGP_details[$detail_id],
+                        "weight" => $d["accounting_data"]["weight"]["M"],
+                    );
+                }
+                $sales_SGP_details = $list_details;
+//                fn_print_r($list_details);
+            }
 
             list($customers) = fn_uns__get_customers(array('status'=>'A'));
-//            fn_print_r($regions);
 
-            fn_rpt__general_report(array("report_VLC"=>$report_VLC, "sales_VLC"=>$sales_VLC, "vn_SGP"=>$vn_SGP, "vn_SGP_groups"=>$vn_SGP_groups, "sales_SGP"=>$sales_SGP, "sales_SGP_groups"=>$sales_SGP_groups, "customers"=>$customers, "pump_series"=>$pump_series));
-
+            fn_rpt__general_report(array("report_VLC"=>$report_VLC, "sales_VLC"=>$sales_VLC, "vn_SGP"=>$vn_SGP, "vn_SGP_groups"=>$vn_SGP_groups, "sales_SGP"=>$sales_SGP, "sales_SGP_groups"=>$sales_SGP_groups, "sales_SGP_details"=>$sales_SGP_details, "customers"=>$customers, "pump_series"=>$pump_series));
         break;
 
         case "planning_report":

@@ -120,10 +120,10 @@ if ($mode == "manage") {
             $requirement["next_month"][$id]  = $v["ukr_next"]+$v["exp_next"];
 
             // +2 мес. = след. след. мес. - среднее (тек. мес. и след. мес.)
-            $requirement["next2_month"][$id] = ceil(($requirement["curr_month"][$id]+$requirement["next_month"][$id])/2);
+            $requirement["next2_month"][$id] = floor(($requirement["curr_month"][$id]+$requirement["next_month"][$id])/2);
 
             // +3 мес. = 50% от +2 мес.
-            $requirement["next3_month"][$id] = ceil(0.5*$requirement["next2_month"][$id]);
+            $requirement["next3_month"][$id] = floor(0.5*$requirement["next2_month"][$id]);
 
             // ВЕС
             $weights["requirement"]["curr_month"][$id]  = $ps_weight[$id]*$requirement["curr_month"][$id];
@@ -735,40 +735,25 @@ if ($mode == "manage") {
 
             // ANALISYS_PROGRESS
             $analisys = null;
+            $month_px = 52;
             foreach ($pump_series as $ps_id=>$ps){
-                $total_pumps = $sgp[$ps_id] + $done_current_day[$ps_id];
-                $total_requirement = $requirement["curr_month"][$ps_id] + $requirement["next_month"][$ps_id] + $requirement["next2_month"][$ps_id];
+                $t = $sgp[$ps_id] + $done_current_day[$ps_id];
+                $z = fn_fvalue($zadel_current_day[$ps_id]);
 
-                $z = $zadel_current_day[$ps_id];
-                $progress_total = 0;
-                $progress_zadel = 0;
-                $step = 52;
-                if (($total_pumps + $z) == 0){
-                    $progress_total = 0;
-                }elseif (($total_pumps + $z) >= $total_requirement){
-                    if ($total_pumps == 0){
-                        $progress_zadel = $step + $step + $step;
-                    }elseif ($z == 0){
-                        $progress_total = $step + $step + $step;
-                    }elseif ($total_pumps <= $requirement["curr_month"][$ps_id]){
-                        
-                    }
+                $a = $requirement["curr_month"][$ps_id];
+                $b = $requirement["next_month"][$ps_id];
+                $c = $requirement["next2_month"][$ps_id];
+                $s = $a + $b + $c;
+
+                $_TOTAL = fn_uns_calc_progress ($a, $b, $c, $t);
+                if ($t > 0 and $_TOTAL["OSTALOS"]["a"] == 0 and $_TOTAL["OSTALOS"]["b"] == 0 and $_TOTAL["OSTALOS"]["c"] == 0){
+                    $analisys[$ps_id]["total"] = $month_px * 3;
                 }else{
-//                    $total_pumps < $total_requirement;
-                    if ($total_pumps >= ($requirement["curr_month"][$ps_id] + $requirement["next_month"][$ps_id])){
-                        $progress_total += $step + $step;
-                        $progress_total += $step*($total_pumps - $requirement["curr_month"][$ps_id] - $requirement["next_month"][$ps_id])/$requirement["next2_month"][$ps_id];
-                    }elseif ($total_pumps >= $requirement["curr_month"][$ps_id]){
-                        $progress_total += $step;
-                        $progress_total += $step*($total_pumps - $requirement["curr_month"][$ps_id])/$requirement["next_month"][$ps_id];
-                    }else{
-                        $progress_total += $step*($total_pumps)/$requirement["curr_month"][$ps_id];
-                    }
+                    $analisys[$ps_id]["total"] = $month_px * ($_TOTAL["ZAPOLNENIE"]["a"]/$a + $_TOTAL["ZAPOLNENIE"]["b"]/$b + $_TOTAL["ZAPOLNENIE"]["c"]/$c);
+                    $_ZADEL = fn_uns_calc_progress ($_TOTAL["OSTALOS"]["a"], $_TOTAL["OSTALOS"]["b"], $_TOTAL["OSTALOS"]["c"], $z);
+                    $analisys[$ps_id]["zadel"] = $month_px * ($_ZADEL["ZAPOLNENIE"]["a"]/$a + $_ZADEL["ZAPOLNENIE"]["b"]/$b + $_ZADEL["ZAPOLNENIE"]["c"]/$c);
                 }
 
-
-                $analisys[$ps_id]["total"] = $progress_total;
-                $analisys[$ps_id]["zadel"] = $progress_zadel;
             }
             $view->assign("analisys", $analisys);
         }
@@ -1165,6 +1150,53 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
 
 
 }
+
+function fn_uns_calc_progress ($a=0, $b=0, $c=0, $t=0){
+    $res = array(
+        "ZAPOLNENIE"=>array("a"=>0, "b"=>0, "c"=>0),
+        "OSTALOS"   =>array("a"=>0, "b"=>0, "c"=>0),
+        "TOTAL"     =>array("a"=>0, "b"=>0, "c"=>0),
+    );
+
+    if ($a == 0 and $b == 0 and $c == 0 and $t == 0) return $res;
+
+    if ($t == 0){
+        $res = array(
+            "ZAPOLNENIE"=>array("a"=>0,     "b"=>0,     "c"=>0),
+            "OSTALOS"   =>array("a"=>$a,    "b"=>$b,    "c"=>$c),
+            "TOTAL"     =>array("a"=>0,     "b"=>0,     "c"=>0),
+        );
+        return $res;
+    }
+
+    if ($t >= ($a + $b + $c)){
+        $res = array(
+            "ZAPOLNENIE"=>array("a"=>$a,    "b"=>$b,    "c"=>$c),
+            "OSTALOS"   =>array("a"=>0,     "b"=>0,     "c"=>0),
+            "TOTAL"     =>array("a"=>0,     "b"=>0,     "c"=>0),
+        );
+    }elseif ($t >= ($a + $b)){
+        $res = array(
+            "ZAPOLNENIE"=>array("a"=>$a,    "b"=>$b,    "c"=>$t-$a-$b),
+            "OSTALOS"   =>array("a"=>0,     "b"=>0,     "c"=>$a+$b+$c-$t),
+            "TOTAL"     =>array("a"=>0,     "b"=>0,     "c"=>0),
+        );
+    }elseif ($t >= $a){
+        $res = array(
+            "ZAPOLNENIE"=>array("a"=>$a,    "b"=>$t-$a,    "c"=>0),
+            "OSTALOS"   =>array("a"=>0,     "b"=>$a+$b-$t, "c"=>$c),
+            "TOTAL"     =>array("a"=>0,     "b"=>0,     "c"=>0),
+        );
+    }elseif ($t > 0){
+        $res = array(
+            "ZAPOLNENIE"=>array("a"=>$t,    "b"=>0,     "c"=>0),
+            "OSTALOS"   =>array("a"=>$a-$t, "b"=>$b,    "c"=>$c),
+            "TOTAL"     =>array("a"=>0,     "b"=>0,     "c"=>0),
+        );
+    }
+    return $res;
+}
+
 
 function fn_uns_plan_of_mech_dep__search ($controller){
     $params = array(

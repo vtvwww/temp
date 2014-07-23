@@ -83,10 +83,10 @@
                     {if $search.analisys_of_production_plan == "Y"}
                         {assign var="sale_progressbar" value=" style='background-image: url(images/uns/bar-50px.png); background-position: `$sales_tpl.$ps_id.bar`px center;' "}
                         {assign var="sale_value" value=$sales.$ps_id|default:0}
-                        {assign var="sale_tpl" value="<span style='font-size:9px; font-weight:bold;'>`$sale_value` /</span> "}
+                        {assign var="sale_tpl" value="<span style='font-size:9px;'>`$sale_value` из<br></span> "}
                         {assign var="analisys_rowspan" value=" rowspan='2' "}
-                        {assign var="analisys_progress" value="<div style='background-color: #666;border-bottom: 1px solid #666;border-top: 1px solid #666;float: left;height: 5px;width: `$analisys.$ps_id.total`px;'></div><div style='background-color: #fff;border-bottom: 1px solid #666;border-top: 1px solid #666;border-right: 1px solid #666;float: left;height: 5px;width: `$analisys.$ps_id.zadel`px;'></div>"}
-                        {assign var="analisys_add_rows" value="<tr><td style='border-top: 1px solid #d0d0d0;height: 19px;padding: 0;background-image: url(images/uns/ruler.png);' class='b3_l' colspan='3'>`$analisys_progress`</td></tr>"}
+                        {assign var="analisys_progress" value="<div style='background-color: #666;border-bottom: 1px solid #666;border-top: 1px solid #666;float: left;height: 8px;width: `$analisys.$ps_id.total`px;'></div><div style='background-color: #fff;border-bottom: 2px solid #666;border-top: 2px solid #666;box-shadow: -2px 0 0 0 #666 inset;float: left;height: 6px;width: `$analisys.$ps_id.zadel`px;'></div>"}
+                        {assign var="analisys_add_rows" value="<tr><td valign='bottom' style='border-bottom:none;padding: 0;' class='b3_l' colspan='3'>`$analisys_progress`</td></tr>"}
                     {/if}
 
                     <tr>
