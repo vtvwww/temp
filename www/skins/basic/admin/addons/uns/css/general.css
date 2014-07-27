@@ -508,6 +508,7 @@ input.q_changed{
     , .header-wrap
     , .buttons-container
     , .mainbox-breadcrumbs
+    , span.action-add
     {
         display: none;
     }

@@ -702,10 +702,9 @@ if ($mode == "manage") {
 
 
         //**********************************************************************
+        // РАСЧЕТЫ ДЛЯ АНАЛИЗА ПРОДАЖ
         //**********************************************************************
-        // РАСЧЕТЫ ДЛЯ АНАЛИЗА ПЛАНА
-        //**********************************************************************
-        if ($_REQUEST["analisys_of_production_plan"] == "Y"){
+        if ($_REQUEST["analisis_of_sales"] == "Y"){
             //SALE_PROGRESS
             $pump_series = array_shift(fn_uns__get_pump_series(array('only_active' => true, "view_in_plans"=>"Y",)));
             $begin  = strtotime($_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1" . " 00:00:00");
@@ -732,26 +731,47 @@ if ($mode == "manage") {
             }
             $view->assign("sales", $sales);
             $view->assign("sales_tpl", $sales_tpl);
+        }
 
+        //**********************************************************************
+        // РАСЧЕТЫ ДЛЯ АНАЛИЗА ПЛАНА
+        //**********************************************************************
+        if ($_REQUEST["analisys_of_production_plan"] == "Y"){
             // ANALISYS_PROGRESS
+            // Определить смещение относительно текущего дня:
+            $day_of_the_month = date('j', fn_parse_date($_REQUEST["current_day"]));
+            $number_of_days_in_the_month = date('t', fn_parse_date($_REQUEST["current_day"]));
+            $offset_in_the_month = $day_of_the_month/$number_of_days_in_the_month;
+//            fn_print_r($day_of_the_month, $number_of_days_in_the_month, fn_fvalue($offset_in_the_month,1));
+
+
+
+            $view->assign("bar_offset", 10);
             $analisys = null;
-            $month_px = 52;
+            $month_px = 51;
+
+
+
             foreach ($pump_series as $ps_id=>$ps){
-                $t = $sgp[$ps_id] + $done_current_day[$ps_id];
-                $z = fn_fvalue($zadel_current_day[$ps_id]);
+                $analisys[$ps_id]["offset"] =  fn_fvalue((100/3)*$offset_in_the_month, 2);
+                $offset_a = $offset_in_the_month;
+//                $analisys[$ps_id]["offset"] =  0;
+//                $t = $sgp[$ps_id] + $done_current_day[$ps_id];
+                $t = $sgp_current_day[$ps_id];
+                $z = $zadel_current_day[$ps_id];
 
-                $a = $requirement["curr_month"][$ps_id];
-                $b = $requirement["next_month"][$ps_id];
-                $c = $requirement["next2_month"][$ps_id];
-                $s = $a + $b + $c;
+                $a = $requirement["curr_month"][$ps_id];    //10
+                $b = $requirement["next_month"][$ps_id];    //30
+                $c = $requirement["next2_month"][$ps_id];   //50
 
-                $_TOTAL = fn_uns_calc_progress ($a, $b, $c, $t);
+                $_TOTAL = fn_uns_calc_progress ($a, $b, $c, $t, $offset_a);
                 if ($t > 0 and $_TOTAL["OSTALOS"]["a"] == 0 and $_TOTAL["OSTALOS"]["b"] == 0 and $_TOTAL["OSTALOS"]["c"] == 0){
-                    $analisys[$ps_id]["total"] = $month_px * 3;
+                    $analisys[$ps_id]["total"] = fn_fvalue(100*($month_px * 3)/(3*$month_px), 2);
                 }else{
-                    $analisys[$ps_id]["total"] = $month_px * ($_TOTAL["ZAPOLNENIE"]["a"]/$a + $_TOTAL["ZAPOLNENIE"]["b"]/$b + $_TOTAL["ZAPOLNENIE"]["c"]/$c);
+                    $analisys[$ps_id]["total"] = fn_fvalue(100*($month_px * ($_TOTAL["ZAPOLNENIE"]["a"]/$a + $_TOTAL["ZAPOLNENIE"]["b"]/$b + $_TOTAL["ZAPOLNENIE"]["c"]/$c)/(3*$month_px)), 2);
                     $_ZADEL = fn_uns_calc_progress ($_TOTAL["OSTALOS"]["a"], $_TOTAL["OSTALOS"]["b"], $_TOTAL["OSTALOS"]["c"], $z);
-                    $analisys[$ps_id]["zadel"] = $month_px * ($_ZADEL["ZAPOLNENIE"]["a"]/$a + $_ZADEL["ZAPOLNENIE"]["b"]/$b + $_ZADEL["ZAPOLNENIE"]["c"]/$c);
+                    $analisys[$ps_id]["zadel"] = fn_fvalue(100*($month_px * ($_ZADEL["ZAPOLNENIE"]["a"]/$a + $_ZADEL["ZAPOLNENIE"]["b"]/$b + $_ZADEL["ZAPOLNENIE"]["c"]/$c)/(3*$month_px)), 2);
+                    $analisys[$ps_id]["none"] = 100-($analisys[$ps_id]["offset"]+$analisys[$ps_id]["total"]+$analisys[$ps_id]["zadel"]);
                 }
 
             }
@@ -1151,12 +1171,14 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
 
 }
 
-function fn_uns_calc_progress ($a=0, $b=0, $c=0, $t=0){
+function fn_uns_calc_progress ($a=0, $b=0, $c=0, $t=0, $offset_a = 0){
     $res = array(
         "ZAPOLNENIE"=>array("a"=>0, "b"=>0, "c"=>0),
         "OSTALOS"   =>array("a"=>0, "b"=>0, "c"=>0),
         "TOTAL"     =>array("a"=>0, "b"=>0, "c"=>0),
     );
+
+    $a = $a - $a*$offset_a;
 
     if ($a == 0 and $b == 0 and $c == 0 and $t == 0) return $res;
 
@@ -1206,6 +1228,7 @@ function fn_uns_plan_of_mech_dep__search ($controller){
         "current_day",
         "type_of_production_plan",
         "analisys_of_production_plan",
+        "analisis_of_sales",
     );
     fn_uns_search_set_get_params($controller, $params);
     return true;

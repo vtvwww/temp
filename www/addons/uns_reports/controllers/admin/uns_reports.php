@@ -261,7 +261,7 @@ if ($mode == 'get_report'){
             $vn_SGP_groups = null;
             foreach ($vn_SGP as $doc){
                 foreach ($doc["items"] as $item){
-                    if (in_array($item["item_type"], array("P", "PF", "PA")) and is__more_0($item["quantity"])){
+                    if (in_array($item["item_type"], array("P", "PF", "PA")) and is__more_0($item["quantity"]) and is__array($pumps[$item["item_id"]])){
                         $vn_SGP_groups[$pumps[$item["item_id"]]["ps_id"]] += $item["quantity"];
                     }
                 }
