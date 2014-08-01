@@ -103,6 +103,7 @@ if ($mode == "manage") {
         //======================================================================
         // 2. ПОЛУЧЕНИЕ ПЛАНОВОЙ ПОТРЕБНОСТИ НА ВЫБРАННЫЙ МЕСЯЦ
         //======================================================================
+        $pump_series = array_shift(fn_uns__get_pump_series(array("only_active" => true, "view_in_plans"=>"Y",)));
         $p = array(
             "with_count"        => true,
             "with_sum"          => true,
@@ -113,6 +114,7 @@ if ($mode == "manage") {
         $plan = array_shift(array_shift(fn_uns__get_plans($p)));
         $requirement = array();
         foreach ($plan["group_by_item"]["S"] as $id=>$v){
+            if  (!is__array($pump_series[$id])) continue;
             // +0 мес. = тек. мес. - план продаж
             $requirement["curr_month"][$id]  = $v["ukr_curr"]+$v["exp_curr"];
 
@@ -1171,6 +1173,33 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
 
 }
 
+
+if ($mode == "planning" and $action == "balance_of_details"){
+    if (!is__more_0($_REQUEST["material_id"])) return array(CONTROLLER_STATUS_REDIRECT, $controller . "." . $suffix);
+    // Получить список деталей, которые сделаны из material_id
+    $details = db_get_fields(UNS_DB_PREFIX . "
+                select ?:details.detail_id
+                from ?:details
+                    left join ?:detail__and__items on (?:details.detail_id = ?:detail__and__items.detail_id)
+                where
+                    ?:details.detail_status = 'A'
+                    and ?:detail__and__items.material_id = " . $_REQUEST["material_id"] . " ");
+
+
+    if (!is__array($details)) return array(CONTROLLER_STATUS_REDIRECT, $controller . "." . $suffix);
+    $p_D['period'] = "M";
+    $p_D['accessory_pumps'] = "Y";
+    $p_D['item_id'] = $details;
+    list ($p_D['time_from'], $p_D['time_to']) = fn_create_periods($p_D);
+    list($balances_D, $search_D) = fn_uns__get_balance_mc_sk_su($p_D, true, true, true);
+    $view->assign('balances_D',     $balances_D);
+    $view->assign('search',       $search_D);
+}
+
+
+
+
+// Расчет заполнения полосы продаж по месяцам
 function fn_uns_calc_progress ($a=0, $b=0, $c=0, $t=0, $offset_a = 0){
     $res = array(
         "ZAPOLNENIE"=>array("a"=>0, "b"=>0, "c"=>0),

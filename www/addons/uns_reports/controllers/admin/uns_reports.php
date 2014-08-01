@@ -30,11 +30,16 @@ if ($mode == 'manage'){
     $view->assign('pumps', $pumps);
     $view->assign('search', $_REQUEST);
 
+    $production_LC_date_from = strtotime(date("Y-m-", fn_parse_date($_REQUEST['time_to'])) . "1");
+    $view->assign('production_LC_date_from', $production_LC_date_from);
+
 }
 
 if ($mode == 'get_report'){
     if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "D"; // Текущий месяц
     list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
+    $view->assign('search', $_REQUEST);
+
     switch ($action){
         case "foundry":
             $data = array();
@@ -234,20 +239,31 @@ if ($mode == 'get_report'){
             }
         break;
 
-        // отчет работы предприятия
+        // Отчет работы предприятия
         case "general_report":
             if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "LM"; // Текущий месяц
             list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
 
             // 1. Выпуск Литейного цеха
+            $total_weight_VLC = null;
             $p = array("with_weight_per_each_document" => true, "with_total_weight_all_documents" => true, "sorting_schemas"=>"view_asc");
             list($report_VLC) = fn_acc__get_report_VLC(array_merge($_REQUEST, $p));
-//            fn_print_r($report_VLC);
+
+            if ($_REQUEST["production_LC_from_the_beginning_of_the_month"] == "Y"){
+                $production_LC_date_from = strtotime(date("Y-m-", fn_parse_date($_REQUEST['time_to'])) . "1");
+                $p = array(
+                    "with_total_weight_all_documents"   => true,
+                    "time_from"                         => $production_LC_date_from,
+                    "time_to"                           => $_REQUEST['time_to'],
+                );
+                list(, $s) = fn_acc__get_report_VLC(array_merge($_REQUEST, $p));
+                $total_weight_VLC = $s['total_weight'];
+            }
+
 
             // 2. Продажа отливок со Склада литья
-            $p = array("type" => 7, "o_id" => 8, "with_items" =>  true, "info_unit"=>false, "info_item" => false, "sorting_schemas" => "view_asc"); // RO = 7; Sklad Litya = 8
+            $p = array("type" => 7, "o_id" => 8, "only_active" =>  true, "with_items" =>  true, "info_unit"=>false, "info_item" => false, "sorting_schemas" => "view_asc"); // RO = 7; Sklad Litya = 8
             list($sales_VLC) = fn_uns__get_documents(array_merge($_REQUEST, $p));
-//            fn_print_r($sales_VLC);
 
             // 3.0.0 Список всех насосов
             // 3.0.1 Список всех серий насосов
@@ -256,28 +272,37 @@ if ($mode == 'get_report'){
 
 
             // 3. Выпуск насосной продукции
-            $p = array("type" => 13, "o_id" => 19, "with_items" =>  true, "info_unit"=>false, "info_item" => false, "sorting_schemas" => "view_asc"); // RO = 7; Sklad Litya = 8
+            $p = array("type" => 13, "o_id" => 19, "only_active" =>  true, "with_items" =>  true, "info_unit"=>false, "info_item" => false, "sorting_schemas" => "view_asc"); // RO = 7; Sklad Litya = 8
             list($vn_SGP) = fn_uns__get_documents(array_merge($_REQUEST, $p));
             $vn_SGP_groups = null;
+            $vn_SGP_groups_weight = null;
             foreach ($vn_SGP as $doc){
                 foreach ($doc["items"] as $item){
                     if (in_array($item["item_type"], array("P", "PF", "PA")) and is__more_0($item["quantity"]) and is__array($pumps[$item["item_id"]])){
                         $vn_SGP_groups[$pumps[$item["item_id"]]["ps_id"]] += $item["quantity"];
+                        $vn_SGP_groups_weight[$pumps[$item["item_id"]]["ps_id"]] += $item["quantity"]*$pumps[$item["item_id"]]["weight_p"];
                     }
                 }
             }
 
-//            fn_print_r($vn_SGP);
+            // 4.0. Список клиентов
+            $customers = array_shift(fn_uns__get_customers(array("only_active"=>true,)));
 
             // 4. Продажа насосной продукции
-            $p = array("type" => 7, "o_id" => 19, "with_items" =>  true, "info_unit"=>false, "info_item" => false, "sorting_schemas" => "view_asc"); // RO = 7; Sklad Litya = 8
+            $p = array("type" => 7, "o_id" => 19, "only_active" =>  true, "with_items" =>  true, "info_unit"=>false, "info_item" => false, "sorting_schemas" => "view_asc"); // RO = 7; СГП = 8
             list($sales_SGP) = fn_uns__get_documents(array_merge($_REQUEST, $p));
             $sales_SGP_groups = null;
+            $sales_SGP_groups_weight = null;
             $sales_SGP_details = null;
             foreach ($sales_SGP as $doc){
                 foreach ($doc["items"] as $item){
-                    if (in_array($item["item_type"], array("P", "PF", "PA")) and is__more_0($item["quantity"])){
-                        $sales_SGP_groups[$pumps[$item["item_id"]]["ps_id"]] += $item["quantity"];
+                    if (in_array($item["item_type"], array("P", "PF", "PA")) and is__more_0($item["quantity"]) and is__array($pumps[$item["item_id"]])){
+                        $ps_id          = $pumps[$item["item_id"]]["ps_id"];
+                        $customer_id    = $doc["customer_id"];
+                        $to_export      = ($customers[$customer_id]["to_export"]=="Y")?"EXP":"UKR";
+                        $weight         = ($item["item_type"] == "P")?$pumps[$item["item_id"]]["weight_p"]:$pumps[$item["item_id"]]["weight_pf"];
+                        $sales_SGP_groups[$to_export][$customer_id][$ps_id] += $item["quantity"];
+                        $sales_SGP_groups_weight[$to_export][$customer_id][$ps_id] += $item["quantity"]*$weight;
                     }elseif ($item["item_type"] == "D" and is__more_0($item["quantity"])){
                         $sales_SGP_details[$item["item_id"]] += $item["quantity"];
                     }
@@ -296,12 +321,11 @@ if ($mode == 'get_report'){
                     );
                 }
                 $sales_SGP_details = $list_details;
-//                fn_print_r($list_details);
             }
 
             list($customers) = fn_uns__get_customers(array('status'=>'A'));
 
-            fn_rpt__general_report(array("report_VLC"=>$report_VLC, "sales_VLC"=>$sales_VLC, "vn_SGP"=>$vn_SGP, "vn_SGP_groups"=>$vn_SGP_groups, "sales_SGP"=>$sales_SGP, "sales_SGP_groups"=>$sales_SGP_groups, "sales_SGP_details"=>$sales_SGP_details, "customers"=>$customers, "pump_series"=>$pump_series));
+            fn_rpt__general_report(array("report_VLC"=>$report_VLC, "total_weight_VLC"=>$total_weight_VLC, "production_LC_date_from"=>$production_LC_date_from, "sales_VLC"=>$sales_VLC, "vn_SGP"=>$vn_SGP, "vn_SGP_groups"=>$vn_SGP_groups, "vn_SGP_groups_weight"=>$vn_SGP_groups_weight, "sales_SGP"=>$sales_SGP, "sales_SGP_groups"=>$sales_SGP_groups, "sales_SGP_groups_weight"=>$sales_SGP_groups_weight, "sales_SGP_details"=>$sales_SGP_details, "customers"=>$customers, "pump_series"=>$pump_series, "pumps"=>$pumps));
         break;
 
         case "planning_report":
@@ -311,3 +335,15 @@ if ($mode == 'get_report'){
     }
     exit;
 }
+
+
+function fn_uns_reports__search ($controller){
+    $params = array(
+        "time_from",
+        "time_to",
+        "production_LC_from_the_beginning_of_the_month",
+    );
+    fn_uns_search_set_get_params($controller, $params);
+    return true;
+}
+

@@ -13,7 +13,14 @@
                     {include file="buttons/button.tpl" but_text="Общий отчет" but_name="dispatch[`$controller`.get_report.general_report]" but_role="submit"}
                 </td>
                 <td align="right">
-                    <label>Добавить в отчет продажу деталей: <input type="checkbox" name="with_details" value="Y"/></label>
+                    <label style="cursor: pointer;">Добавить значение выпуска литейного цеха<br>с начала месяца: <input type="checkbox" name="production_LC_from_the_beginning_of_the_month" checked="checked" value="Y"/></label>
+                    {*{include file="addons/uns/views/components/get_form_field.tpl"*}
+                        {*f_id="production_LC_date_from"*}
+                        {*f_type="date"*}
+                        {*f_name="production_LC_date_from"*}
+                        {*f_value=$production_LC_date_from*}
+                        {*f_simple=true*}
+                    {*}*}
                 </td>
             </tr>
             <tr>

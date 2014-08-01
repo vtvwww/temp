@@ -235,7 +235,7 @@
                 <tbody>
                     {*КОЛИЧЕСТВО*}
                     <tr>
-                        <td class="b3_t b3_b bold" colspan="1" rowspan="2" style="text-align: right; font-size: 14px;">ИТОГО:</td>
+                        <td class="b3_t bold" colspan="1" rowspan="2" style="text-align: right; font-size: 14px;">ИТОГО:</td>
                         <td class="b3_t b1_l bold center" style="font-size: 14px;">шт</td>
 
                         {*СКЛАД ГОТОВОЙ ПРОДУКЦИИ*}
@@ -304,76 +304,145 @@
 
                         {*КРАТНОСТЬ ПАРТИИ*}
                         {if $analysis_of_plan}
-                            <td class="b3_t b3_l center b3_b" rowspan="2">&nbsp;</td>
+                            <td class="b3_t b3_l center b3_b" rowspan="3">&nbsp;</td>
                         {/if}
                     </tr>
 
                     {*ВЕС*}
                     <tr>
-                        <td class="b_t b1_l b3_b bold center" style="font-size: 14px;">т</td>
+                        <td class="b_t b1_l bold center" style="font-size: 14px;">т</td>
 
                         {*СКЛАД ГОТОВОЙ ПРОДУКЦИИ*}
                         {assign var="q" value=$weights.sgp|array_sum}
-                        <td style="font-size: 12px;" class="b_t b3_b b_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                        <td style="font-size: 12px;" class="b_t b_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
 
                         {*ПОТРЕБНОСТЬ*}
                         {assign var="q" value=$weights.requirement.curr_month|array_sum}
-                        <td style="font-size: 12px;" class="b_t b3_b b_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                        <td style="font-size: 12px;" class="b_t b_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
                         {assign var="q" value=$weights.requirement.next_month|array_sum}
-                        <td style="font-size: 12px;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                        <td style="font-size: 12px;" class="b_t b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
                         {if $analysis_of_plan}
                         {assign var="q" value=$weights.requirement.next2_month|array_sum}
-                        <td style="font-size: 12px;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                        <td style="font-size: 12px;" class="b_t b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
                         {/if}
 
                         {*ПЛАН ПРОИЗВОДСТВА*}
                         {if $search.type_of_production_plan == "actual"}
                             {assign var="q" value=$weights.initial_production_plan.curr_month|array_sum}
-                            <td style="font-size: 12px;" class="b_t b3_b b3_l  center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                            <td style="font-size: 12px;" class="b_t b3_l  center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
                             {assign var="q" value=$weights.initial_production_plan.next_month|array_sum}
-                            <td style="font-size: 12px;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                            <td style="font-size: 12px;" class="b_t b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
                             {assign var="q" value=$weights.initial_production_plan.next2_month|array_sum}
-                            <td style="font-size: 12px;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                            <td style="font-size: 12px;" class="b_t b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
 
                         {elseif $search.type_of_production_plan == "parties"}
                             {assign var="q" value=$weights.initial_production_plan_parties.curr_month|array_sum}
-                            <td style="font-size: 12px;" class="b_t b3_b b3_l  center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                            <td style="font-size: 12px;" class="b_t b3_l  center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
                             {assign var="q" value=$weights.initial_production_plan_parties.next_month|array_sum}
-                            <td style="font-size: 12px;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                            <td style="font-size: 12px;" class="b_t b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
                             {assign var="q" value=$weights.initial_production_plan_parties.next2_month|array_sum}
-                            <td style="font-size: 12px;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                            <td style="font-size: 12px;" class="b_t b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
 
                         {/if}
 
                         {*ЗАДЕЛ*}
                         {assign var="q" value=$weights.zadel|array_sum}
-                        <td style="font-size: 12px; background-color: #FFEF8C;" class="b_t b3_b b3_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                        <td style="font-size: 12px; background-color: #FFEF8C;" class="b_t b3_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
 
                         {*ВЫПОЛНЕНО*}
                         {assign var="q" value=$weights.done|array_sum}
-                        <td style="font-size: 12px; background-color: #C0FF9A;" class="b_t b3_b b2_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                        <td style="font-size: 12px; background-color: #C0FF9A;" class="b_t b2_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
 
                         {*ОСТАЛОСЬ*}
                         {if $search.type_of_production_plan == "actual"}
                             {assign var="q" value=$weights.remaining_production_plan_current_day.curr_month|array_sum}
-                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
                             {assign var="q" value=$weights.remaining_production_plan_current_day.next_month|array_sum}
-                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
                             {assign var="q" value=$weights.remaining_production_plan_current_day.next2_month|array_sum}
-                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
 
                         {elseif $search.type_of_production_plan == "parties"}
                             {assign var="q" value=$weights.remaining_production_plan_parties_current_day.curr_month|array_sum}
-                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
                             {assign var="q" value=$weights.remaining_production_plan_parties_current_day.next_month|array_sum}
-                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
                             {assign var="q" value=$weights.remaining_production_plan_parties_current_day.next2_month|array_sum}
-                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b1_l center  {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
                         {/if}
 
                         {*СКЛАД ГОТОВОЙ ПРОДУКЦИИ*}
                         {assign var="q" value=$weights.sgp_current_day|array_sum}
-                        <td style="font-size: 12px;" class="b_t b3_b b3_l center {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                        <td style="font-size: 12px;" class="b_t b3_l center {if !$q}zero{/if}">{$q/1000|fn_fvalue:1}</td>
+                    </tr>
+
+                    {* Средний вес*}
+                    <tr>
+                        <td class="b_t b3_b bold" colspan="1" rowspan="2" style="text-align: right; font-size: 14px;">Средний вес:</td>
+                        <td class="b_t b1_l b3_b bold center" style="font-size: 14px;">кг</td>
+
+                        {*СКЛАД ГОТОВОЙ ПРОДУКЦИИ*}
+                        {assign var="q" value=$weights.sgp|array_sum}
+                        <td style="font-size: 12px;" class="b_t b3_b b_l center  {if !$q}zero{/if}">{$q/$sgp.total|fn_fvalue:0}</td>
+
+                        {*ПОТРЕБНОСТЬ*}
+                        {assign var="q" value=$weights.requirement.curr_month|array_sum}
+                        <td style="font-size: 12px;" class="b_t b3_b b_l center  {if !$q}zero{/if}">{$q/$requirement.curr_month.total|fn_fvalue:0}</td>
+                        {assign var="q" value=$weights.requirement.next_month|array_sum}
+                        <td style="font-size: 12px;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/$requirement.next_month.total|fn_fvalue:0}</td>
+                        {if $analysis_of_plan}
+                        {assign var="q" value=$weights.requirement.next2_month|array_sum}
+                        <td style="font-size: 12px;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/$requirement.next2_month.total|fn_fvalue:0}</td>
+                        {/if}
+
+                        {*ПЛАН ПРОИЗВОДСТВА*}
+                        {if $search.type_of_production_plan == "actual"}
+                            {assign var="q" value=$weights.initial_production_plan.curr_month|array_sum}
+                            <td style="font-size: 12px;" class="b_t b3_b b3_l  center  {if !$q}zero{/if}">{$q/$initial_production_plan.curr_month.total|fn_fvalue:0}</td>
+                            {assign var="q" value=$weights.initial_production_plan.next_month|array_sum}
+                            <td style="font-size: 12px;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/$initial_production_plan.next_month.total|fn_fvalue:0}</td>
+                            {assign var="q" value=$weights.initial_production_plan.next2_month|array_sum}
+                            <td style="font-size: 12px;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/$initial_production_plan.next2_month.total|fn_fvalue:0}</td>
+
+                        {elseif $search.type_of_production_plan == "parties"}
+                            {assign var="q" value=$weights.initial_production_plan_parties.curr_month|array_sum}
+                            <td style="font-size: 12px;" class="b_t b3_b b3_l  center  {if !$q}zero{/if}">{$q/$initial_production_plan_parties.curr_month.total|fn_fvalue:0}</td>
+                            {assign var="q" value=$weights.initial_production_plan_parties.next_month|array_sum}
+                            <td style="font-size: 12px;" class="b_t b3_b b1_l center   {if !$q}zero{/if}">{$q/$initial_production_plan_parties.next_month.total|fn_fvalue:0}</td>
+                            {assign var="q" value=$weights.initial_production_plan_parties.next2_month|array_sum}
+                            <td style="font-size: 12px;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/$initial_production_plan_parties.next2_month.total|fn_fvalue:0}</td>
+
+                        {/if}
+
+                        {*ЗАДЕЛ*}
+                        {assign var="q" value=$weights.zadel|array_sum}
+                        <td style="font-size: 12px; background-color: #FFEF8C;" class="b_t b3_b b3_l center  {if !$q}zero{/if}">{$q/$zadel_current_day.total|fn_fvalue:0}</td>
+
+                        {*ВЫПОЛНЕНО*}
+                        {assign var="q" value=$weights.done|array_sum}
+                        <td style="font-size: 12px; background-color: #C0FF9A;" class="b_t b3_b b2_l center  {if !$q}zero{/if}">{$q/$done_current_day.total|fn_fvalue:0}</td>
+
+                        {*ОСТАЛОСЬ*}
+                        {if $search.type_of_production_plan == "actual"}
+                            {assign var="q" value=$weights.remaining_production_plan_current_day.curr_month|array_sum}
+                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b_l center  {if !$q}zero{/if}">{$q/$remaining_production_plan_current_day.curr_month.total|fn_fvalue:0}</td>
+                            {assign var="q" value=$weights.remaining_production_plan_current_day.next_month|array_sum}
+                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/$remaining_production_plan_current_day.next_month.total|fn_fvalue:0}</td>
+                            {assign var="q" value=$weights.remaining_production_plan_current_day.next2_month|array_sum}
+                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/$remaining_production_plan_current_day.next2_month.total|fn_fvalue:0}</td>
+
+                        {elseif $search.type_of_production_plan == "parties"}
+                            {assign var="q" value=$weights.remaining_production_plan_parties_current_day.curr_month|array_sum}
+                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b_l center  {if !$q}zero{/if}">{$q/$remaining_production_plan_parties_current_day.curr_month.total|fn_fvalue:0}</td>
+                            {assign var="q" value=$weights.remaining_production_plan_parties_current_day.next_month|array_sum}
+                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/$remaining_production_plan_parties_current_day.next_month.total|fn_fvalue:0}</td>
+                            {assign var="q" value=$weights.remaining_production_plan_parties_current_day.next2_month|array_sum}
+                            <td style="font-size: 12px; background-color: #B8C1FF;" class="b_t b3_b b1_l center  {if !$q}zero{/if}">{$q/$remaining_production_plan_parties_current_day.next2_month.total|fn_fvalue:0}</td>
+                        {/if}
+
+                        {*СКЛАД ГОТОВОЙ ПРОДУКЦИИ*}
+                        {assign var="q" value=$weights.sgp_current_day|array_sum}
+                        <td style="font-size: 12px;" class="b_t b3_b b3_l center {if !$q}zero{/if}">{$q/$sgp_current_day.total|fn_fvalue:0}</td>
                     </tr>
                 </tbody>
                 <tbody>
