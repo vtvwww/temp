@@ -242,7 +242,7 @@ if ($mode == 'get_report'){
         // Отчет работы предприятия
         case "general_report":
             if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "LM"; // Текущий месяц
-            list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
+            list ($_REQUEST['time_from'],    $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
 
             // 1. Выпуск Литейного цеха
             $total_weight_VLC = null;
@@ -288,8 +288,8 @@ if ($mode == 'get_report'){
             // 4.0. Список клиентов
             $customers = array_shift(fn_uns__get_customers(array("only_active"=>true,)));
 
-            // 4. Продажа насосной продукции
-            $p = array("type" => 7, "o_id" => 19, "only_active" =>  true, "with_items" =>  true, "info_unit"=>false, "info_item" => false, "sorting_schemas" => "view_asc"); // RO = 7; СГП = 8
+            // 4. Продажа насосной продукции (19 - сгп александрия; 25 - сгп днепропетровск)
+            $p = array("type" => 7, "o_id" => array(19, 25), "only_active" =>  true, "with_items" =>  true, "info_unit"=>false, "info_item" => false, "sorting_schemas" => "view_order_by_customer",); // RO = 7; СГП = 8
             list($sales_SGP) = fn_uns__get_documents(array_merge($_REQUEST, $p));
             $sales_SGP_groups = null;
             $sales_SGP_groups_weight = null;
@@ -299,10 +299,12 @@ if ($mode == 'get_report'){
                     if (in_array($item["item_type"], array("P", "PF", "PA")) and is__more_0($item["quantity"]) and is__array($pumps[$item["item_id"]])){
                         $ps_id          = $pumps[$item["item_id"]]["ps_id"];
                         $customer_id    = $doc["customer_id"];
-                        $to_export      = ($customers[$customer_id]["to_export"]=="Y")?"EXP":"UKR";
+//                        $to_export      = ($customers[$customer_id]["to_export"]=="Y")?"EXP":"UKR";
+                        $object         = $doc["object_to"];
                         $weight         = ($item["item_type"] == "P")?$pumps[$item["item_id"]]["weight_p"]:$pumps[$item["item_id"]]["weight_pf"];
-                        $sales_SGP_groups[$to_export][$customer_id][$ps_id] += $item["quantity"];
-                        $sales_SGP_groups_weight[$to_export][$customer_id][$ps_id] += $item["quantity"]*$weight;
+                        $sales_SGP_groups        [$object][$customer_id][$ps_id] += $item["quantity"];
+                        $sales_SGP_groups_weight [$object][$customer_id][$ps_id] += $item["quantity"]*$weight;
+                        $sales_SGP_groups_counter[$ps_id] += $item["quantity"];
                     }elseif ($item["item_type"] == "D" and is__more_0($item["quantity"])){
                         $sales_SGP_details[$item["item_id"]] += $item["quantity"];
                     }
@@ -325,7 +327,7 @@ if ($mode == 'get_report'){
 
             list($customers) = fn_uns__get_customers(array('status'=>'A'));
 
-            fn_rpt__general_report(array("report_VLC"=>$report_VLC, "total_weight_VLC"=>$total_weight_VLC, "production_LC_date_from"=>$production_LC_date_from, "sales_VLC"=>$sales_VLC, "vn_SGP"=>$vn_SGP, "vn_SGP_groups"=>$vn_SGP_groups, "vn_SGP_groups_weight"=>$vn_SGP_groups_weight, "sales_SGP"=>$sales_SGP, "sales_SGP_groups"=>$sales_SGP_groups, "sales_SGP_groups_weight"=>$sales_SGP_groups_weight, "sales_SGP_details"=>$sales_SGP_details, "customers"=>$customers, "pump_series"=>$pump_series, "pumps"=>$pumps));
+            fn_rpt__general_report(array("report_VLC"=>$report_VLC, "total_weight_VLC"=>$total_weight_VLC, "production_LC_date_from"=>$production_LC_date_from, "sales_VLC"=>$sales_VLC, "vn_SGP"=>$vn_SGP, "vn_SGP_groups"=>$vn_SGP_groups, "vn_SGP_groups_weight"=>$vn_SGP_groups_weight, "sales_SGP"=>$sales_SGP, "sales_SGP_groups"=>$sales_SGP_groups, "sales_SGP_groups_weight"=>$sales_SGP_groups_weight, "sales_SGP_groups_counter"=>$sales_SGP_groups_counter, "sales_SGP_details"=>$sales_SGP_details, "customers"=>$customers, "pump_series"=>$pump_series, "pumps"=>$pumps));
         break;
 
         case "planning_report":

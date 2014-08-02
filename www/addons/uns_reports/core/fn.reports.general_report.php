@@ -246,8 +246,6 @@ function fn_rpt__general_report($data){
     // -------------------------------------------------------------------------
     // 3. ВЫПУСК НАСОСНОЙ ПРОДУКЦИИ --------------------------------------------
     // -------------------------------------------------------------------------
-    if ($pdf->GetY() >= 280){$pdf->AddPage();$pdf->ln(2);}
-
     $h          = 6;
     $border     = 1;
     $align      = 'C';
@@ -269,6 +267,7 @@ function fn_rpt__general_report($data){
     $pdf->SetFillColor(255); // BLACK = 0 WHITE = 255
     $pdf->SetTextColor(0); // BLACK = 0
     $pdf->ln(10);
+    if ($pdf->GetY() >= 280){$pdf->AddPage();$pdf->ln(2);}
     $pdf->MultiCell(170,  10, "3. ВЫПУСК НАСОСНОЙ ПРОДУКЦИИ (без учета роторов и корпусов в сборе)", 0, "L", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
     $pdf->ln(7);
 
@@ -276,6 +275,7 @@ function fn_rpt__general_report($data){
         $pdf->uns_SetFont("I", 12);
         $pdf->MultiCell(170,  10, "  Нет данных за указанный период!", 0, "L", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
     }else{
+        if ($pdf->GetY() >= 280){$pdf->AddPage();$pdf->ln(2);}
         // THEAD --------------------------------
         $pdf->uns_SetFont("B", 12);
         $pdf->SetFillColor(120); // BLACK = 0 WHITE = 255
@@ -299,7 +299,8 @@ function fn_rpt__general_report($data){
 
         foreach ($data["pump_series"] as $ps_id=>$ps){
             if (is__more_0($q = $data["vn_SGP_groups"][$ps_id])){
-                if ($pdf->GetY() >= 280){$pdf->AddPage();$pdf->ln(2);}                    $i++;
+                if ($pdf->GetY() >= 280){$pdf->AddPage();$pdf->ln(2);}
+                $i++;
                 $k = 0;
                 $total_q += $q;
                 $pdf->MultiCell($w[$k++],  $h, $i, $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
@@ -352,10 +353,8 @@ function fn_rpt__general_report($data){
     //************************
     // Предварительный анализ
     // 1. Получить список клиентов по Украине и на экспорт
-    $customers_of_UKR = array_keys($data["sales_SGP_groups"]["UKR"]);
-    $customers_of_EXP = array_keys($data["sales_SGP_groups"]["EXP"]);
-    $UKR = count($customers_of_UKR);
-    $EXP = count($customers_of_EXP);
+    $ALEX   = $data["sales_SGP_groups"][19];
+    $DNEPR  = $data["sales_SGP_groups"][25];
 
     // TITLE
     $pdf->uns_SetFont("B", 18);
@@ -369,49 +368,47 @@ function fn_rpt__general_report($data){
         $pdf->uns_SetFont("I", 12);
         $pdf->MultiCell(170,  10, "  Нет данных за указанный период!", 0, "L", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
     }else{
+        // ---------------------------------------------------------------------
         // THEAD --------------------------------
+        // ---------------------------------------------------------------------
         $pdf->uns_SetFont("B", 12);
         $pdf->SetFillColor(120); // BLACK = 0 WHITE = 255
         $pdf->SetTextColor(255); // BLACK = 0
         $h = $maxh = 8;
         $k = 0;
-
-        if ($UKR > 0 and $EXP == 0){
-            $pdf->MultiCell($w[$k++],  $h, "№", $border,           "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->MultiCell($w[$k++],  $h, "Наименование", $border, "C",  $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->MultiCell($w[$k++],  $h,  "по\nУкраине", $border,          "C",   $fill, 1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-
-        }elseif ($UKR == 0 and $EXP > 0){
-            $pdf->MultiCell($w[$k++],  $h,  "",     0,          "C",  false,  $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->MultiCell($w[$k++],  $h,  "",     0,          "C",  false,  $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->MultiCell($w[$k]*$EXP,$h,  "ЭКСПОРТ", $border,          "C",  true,  1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $k=0;
-            $pdf->MultiCell($w[$k++],  $h, "№", $border,           "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->MultiCell($w[$k++],  $h, "Наименование", $border, "C",  $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            foreach ($data["sales_SGP_groups"]["EXP"] as $customer_id=>$sales){
-                $pdf->MultiCell($w[$k]  ,  $h,  $data["customers"][$customer_id]["name_short"], $border,          "C",   $fill, ($EXP > 1)?$ln:1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            }
-            if ($EXP > 1){
-                $pdf->MultiCell($w[$k],$h,  "Сумма", $border,          "C",  $fill,  1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            }
-
-        }elseif ($UKR > 0 and $EXP > 0){
-            $pdf->MultiCell($w[$k++],  $h,  "",     0,          "C",  false,  $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->MultiCell($w[$k++],  $h,  "",     0,          "C",  false,  $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->MultiCell($w[$k]  ,   $h,  "",    0,          "C",  false, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->MultiCell($w[$k]*$EXP,$h,  "ЭКСПОРТ", $border,          "C",  true,  1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-
-            $k = 0;
-            $pdf->MultiCell($w[$k++],  $h, "№", $border,           "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->MultiCell($w[$k++],  $h, "Наименование", $border, "C",  $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->MultiCell($w[$k]  ,  $h,  "по\nУкраине", $border,          "C",   $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            foreach ($data["sales_SGP_groups"]["EXP"] as $customer_id=>$sales){
-                $pdf->MultiCell($w[$k]  ,  $h,  $data["customers"][$customer_id]["name_short"], $border,          "C",   $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            }
-            $pdf->MultiCell($w[$k],$h,  "Сумма", $border,          "C",  $fill,  1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->MultiCell(10+45,  $h, "Склад готовой продукции",                     $border, "C",  $fill,  $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        if (count($ALEX)){
+            $pdf->MultiCell(0.5,  $h, "", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            $pdf->MultiCell(15*(count($ALEX)),   $h,  (count($ALEX)>1)?"Александрия":"Алек-\nсандрия", $border, "C",   $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
         }
+        if (count($DNEPR)){
+            $pdf->MultiCell(0.5,  $h, "", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            $pdf->MultiCell(15*(count($DNEPR)),  $h,  (count($DNEPR)>1)?"Днепропетровск":"Днепро-\nпетровск",  $border, "C",   $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        }
+        $pdf->MultiCell(0.5,  $h, "", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->MultiCell(15,  $h,  "",                                           $border, "C",   $fill, 1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
 
-        // TBODY --------------------------------
+
+        $pdf->MultiCell(10,  $h, "№",                                          $border, "C", $fill,   $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->MultiCell(45,  $h, "Регион/Клиент",                     $border, "C",  $fill,  $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        if (count($ALEX)){// Отобразить всех клиентов продаж со склада в Александрии
+            $pdf->MultiCell(0.5,  $h, "", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            foreach (array_keys($ALEX) as $c_id){
+                $pdf->MultiCell(15,  $h,  $data["customers"][$c_id]["name_short"],  $border, "C",   $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            }
+        }
+        if (count($DNEPR)){// Отобразить всех клиентов продаж со склада в Днепропетровске
+            $pdf->MultiCell(0.5,  $h, "", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            foreach (array_keys($DNEPR) as $c_id){
+                $pdf->MultiCell(15,  $h,  $data["customers"][$c_id]["name_short"],  $border, "C",   $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            }
+        }
+        $pdf->MultiCell(0.5,  $h, "", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->MultiCell(15,  $h,  "Σ",                                      $border, "C",   $fill, 1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+
+        // ---------------------------------------------------------------------
+        // TBODY ---------------------------------------------------------------
+        // ---------------------------------------------------------------------
         $pdf->uns_SetFont("R", 13);
         $pdf->SetFillColor(255); // BLACK = 0 WHITE = 255
         $pdf->SetTextColor(0); // BLACK = 0
@@ -421,228 +418,147 @@ function fn_rpt__general_report($data){
         $total_q = null;
         $total_w = null;
         foreach ($data["pump_series"] as $ps_id=>$ps){
-            $q = null;
-            if ($UKR > 0 and $EXP == 0){
-                if (is__more_0($q[1] = $data["sales_SGP_groups"]["UKR"][1][$ps_id])){
-                    if ($pdf->GetY() >= 280){$pdf->AddPage();$pdf->ln(5);}
-                    $k = 0;
-                    $total_q[1] += $q[1];
-                    $total_w[1] += $data["sales_SGP_groups_weight"]["UKR"][1][$ps_id];
-                    $pdf->MultiCell($w[$k++],  $h, $i++, $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-                    $pdf->MultiCell($w[$k++],  $h, $ps["ps_name"], $border, "L", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-                    $pdf->MultiCell($w[$k++],  $h, fn_fvalue(array_sum($q)), $border, "C", $fill, 1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-                }
-            }elseif ($UKR == 0 and $EXP > 0){
-                // Добавить кол-во на экспорт
-                foreach ($data["sales_SGP_groups"]["EXP"] as $customer_id=>$sales){
-                    $q[$customer_id] = $sales[$ps_id];
-                }
-                if (is__more_0(array_sum($q))){
-                    if ($pdf->GetY() >= 280){$pdf->AddPage();$pdf->ln(2);}
-                    $pdf->uns_SetFont("R", 13);
-                    $k = 0;
-                    $pdf->MultiCell($w[$k++],  $h, $i++, $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-                    $pdf->MultiCell($w[$k++],  $h, $ps["ps_name"], $border, "L", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-                    // Экспорт
-                    foreach ($data["sales_SGP_groups"]["EXP"] as $customer_id=>$sales){
-                        $total_q[$customer_id] += $q[$customer_id];
-                        $total_w[$customer_id] += $data["sales_SGP_groups_weight"]["EXP"][$customer_id][$ps_id];
-                        $pdf->MultiCell($w[$k],  $h, ($q[$customer_id])?$q[$customer_id]:"", $border, "C", $fill, ($EXP > 1)?$ln:1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-                    }
-                    if ($EXP > 1){
-                        $pdf->SetFillColor(220); // BLACK = 0 WHITE = 255
-                        $pdf->SetTextColor(0); // BLACK = 0
-                        // Сумма
-                        $pdf->uns_SetFont("BI", 13);
-                        $pdf->MultiCell($w[$k],     $h, fn_fvalue(array_sum($q)), $border, "R", $fill, 1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-                        $pdf->SetFillColor(255); // BLACK = 0 WHITE = 255
-                        $pdf->SetTextColor(0); // BLACK = 0
+            if (is__more_0($data["sales_SGP_groups_counter"][$ps_id])){
+                if ($pdf->GetY() >= 280){$pdf->AddPage();$pdf->ln(5);}
+
+                $pdf->MultiCell(10,  $h, $i++, $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+                $pdf->MultiCell(45,  $h, $ps["ps_name"], $border, "L", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+
+                // Продажи по Александрии
+                if (count($ALEX)){
+                    $pdf->MultiCell(0.5,  $h, "", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+                    foreach ($ALEX as $c_id=>$d){
+                        $total_q["ALEX"][$c_id] += $d[$ps_id];
+                        $total_w["ALEX"][$c_id] += $data["sales_SGP_groups_weight"][19][$c_id][$ps_id];
+                        $pdf->MultiCell(15,  $h, ($d[$ps_id])?fn_fvalue($d[$ps_id]):"", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
                     }
                 }
-            }elseif ($UKR > 0 and $EXP > 0){
-                // Добавить кол-во по Украине
-                $q[1] = $data["sales_SGP_groups"]["UKR"][1][$ps_id];
 
-                // Добавить кол-во на экспорт
-                foreach ($data["sales_SGP_groups"]["EXP"] as $customer_id=>$sales){
-                    $q[$customer_id] = $sales[$ps_id];
-                }
-                if (is__more_0(array_sum($q))){
-                    if ($pdf->GetY() >= 280){$pdf->AddPage();$pdf->ln(2);}
-                    $pdf->uns_SetFont("R", 13);
-                    $k = 0;
-                    $pdf->MultiCell($w[$k++],  $h, $i++, $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-                    $pdf->MultiCell($w[$k++],  $h, $ps["ps_name"], $border, "L", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-
-                    // Украина
-                    $total_q[1] += $q[1];
-                    $total_w[1] += $data["sales_SGP_groups_weight"]["UKR"][1][$ps_id];
-                    $pdf->MultiCell($w[$k],  $h, ($q[1])?$q[1]:"", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-
-                    // Экспорт
-                    foreach ($data["sales_SGP_groups"]["EXP"] as $customer_id=>$sales){
-                        $total_q[$customer_id] += $q[$customer_id];
-                        $total_w[$customer_id] += $data["sales_SGP_groups_weight"]["EXP"][$customer_id][$ps_id];
-                        $pdf->MultiCell($w[$k],  $h, ($q[$customer_id])?$q[$customer_id]:"", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+                // Продажи по Днепропетровску
+                if (count($DNEPR)){
+                    $pdf->MultiCell(0.5,  $h, "", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+                    foreach ($DNEPR as $c_id=>$d){
+                        $total_q["DNEPR"][$c_id] += $d[$ps_id];
+                        $total_w["DNEPR"][$c_id] += $data["sales_SGP_groups_weight"][25][$c_id][$ps_id];
+                        $pdf->MultiCell(15,  $h, ($d[$ps_id])?fn_fvalue($d[$ps_id]):"", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
                     }
-
-                    $pdf->SetFillColor(220); // BLACK = 0 WHITE = 255
-                    $pdf->SetTextColor(0); // BLACK = 0
-                    // Сумма
-                    $pdf->uns_SetFont("BI", 13);
-                    $pdf->MultiCell($w[$k],     $h, fn_fvalue(array_sum($q)), $border, "R", $fill, 1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-
-                    $pdf->SetFillColor(255); // BLACK = 0 WHITE = 255
-                    $pdf->SetTextColor(0); // BLACK = 0
                 }
+
+                // Сумма
+                $pdf->MultiCell(0.5,  $h, "", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+                $pdf->uns_SetFont("BI", 13);
+                $pdf->SetFillColor(220); // BLACK = 0 WHITE = 255
+                $pdf->SetTextColor(0); // BLACK = 0
+                $pdf->MultiCell(15,  $h, fn_fvalue($data["sales_SGP_groups_counter"][$ps_id]), $border, "R", $fill, 1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+                $pdf->uns_SetFont("R", 13);
+                $pdf->SetFillColor(255); // BLACK = 0 WHITE = 255
+                $pdf->SetTextColor(0); // BLACK = 0
             }
         }
+        // ---------------------------------------------------------------------
         // TFOOT --------------------------------
+        // ---------------------------------------------------------------------
+        //------------------------------------------------------------------
+        // ИТОГО (в штуках) ************************************************
+        //------------------------------------------------------------------
         $pdf->uns_SetFont("B", 13);
         $pdf->SetFillColor(220); // BLACK = 0 WHITE = 255
         $pdf->SetTextColor(0); // BLACK = 0
         if ($pdf->GetY() >= 270){$pdf->AddPage();$pdf->ln(5);}
+        $pdf->uns_SetFont("BI", 13);
+        $pdf->MultiCell(10+45,  $h, "ИТОГО, шт:", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->uns_SetFont("B", 13);
 
-        $k = 0;
-        if ($UKR > 0 and $EXP == 0){
-            //------------------------------------------------------------------
-            // ИТОГО (в штуках) ************************************************
-            $pdf->uns_SetFont("BI", 13);
-            $pdf->MultiCell($w[$k++] + $w[$k++],  $h, "ИТОГО, шт:", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->uns_SetFont("B", 13);
-            $pdf->MultiCell($w[$k++],  $h, ($total_q[1])?$total_q[1]:"", $border, "C", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-
-            //------------------------------------------------------------------
-            // ИТОГО (в тоннах) ************************************************
-            $k = 0;
-            $pdf->uns_SetFont("BI", 13);
-            $pdf->MultiCell($w[$k++] + $w[$k++],  $h, "ИТОГО, т:", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->uns_SetFont("B", 13);
-            $pdf->MultiCell($w[$k],  $h, ($total_w[1])?fn_fvalue($total_w[1]/1000,1,false):"", $border, "C", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-
-            //------------------------------------------------------------------
-            // Cредний вес насоса (в кг) ************************************************
-            if (is__more_0($total_q[1]) and is__more_0($total_w[1])){
-                $k = 0;
-                $pdf->uns_SetFont("BI", 13);
-                $pdf->MultiCell($w[$k++] + $w[$k++],  $h, "Cредний вес насоса, кг:", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-                $pdf->uns_SetFont("B", 13);
-                $pdf->MultiCell($w[$k],  $h, fn_fvalue($total_w[1]/$total_q[1],0), $border, "C", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        // Продажи по Александрии
+        if (count($ALEX)){
+            $pdf->MultiCell(0.5,  $h, "", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            foreach ($ALEX as $c_id=>$d){
+                $pdf->MultiCell(15,  $h, ($total_q["ALEX"][$c_id])?fn_fvalue($total_q["ALEX"][$c_id]):"", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             }
-
-        }elseif ($UKR == 0 and $EXP > 0){
-            //------------------------------------------------------------------
-            // ИТОГО (в штуках) ************************************************
-            $pdf->uns_SetFont("BI", 13);
-            $pdf->MultiCell($w[$k++] + $w[$k++],  $h, "ИТОГО, шт:", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->uns_SetFont("B", 13);
-            // Экспорт
-            foreach ($data["sales_SGP_groups"]["EXP"] as $customer_id=>$sales){
-                $total_q[$customer_id] += $q[$customer_id];
-                $pdf->MultiCell($w[$k],  $h, ($total_q[$customer_id])?$total_q[$customer_id]:"", $border, "C", $fill, ($EXP > 1)?$ln:1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            }
-
-            if ($EXP > 1){
-                $pdf->uns_SetFont("BI", 13);
-                $pdf->SetFillColor(180); // BLACK = 0 WHITE = 255
-                $pdf->MultiCell($w[$k],  $h, (array_sum($total_q))?array_sum($total_q):"", $border, "R", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-                $pdf->SetFillColor(220); // BLACK = 0 WHITE = 255
-            }
-
-
-            //------------------------------------------------------------------
-            // ИТОГО (в тоннах) ************************************************
-            $k = 0;
-            $pdf->uns_SetFont("BI", 13);
-            $pdf->MultiCell($w[$k++]+$w[$k++],  $h, "ИТОГО, т:", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->uns_SetFont("B", 13);
-
-            // Экспорт
-            foreach ($data["sales_SGP_groups"]["EXP"] as $customer_id=>$sales){
-                $total_q[$customer_id] += $q[$customer_id];
-                $pdf->MultiCell($w[$k],  $h, ($total_w[$customer_id])?fn_fvalue($total_w[$customer_id]/1000,1,false):"", $border, "C", $fill, ($EXP > 1)?$ln:1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            }
-            if ($EXP > 1){
-                $pdf->uns_SetFont("BI", 13);
-                $pdf->SetFillColor(180); // BLACK = 0 WHITE = 255
-                $pdf->MultiCell($w[$k],  $h, (array_sum($total_w))?fn_fvalue(array_sum($total_w)/1000,1,false):"", $border, "R", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            }
-
-            //------------------------------------------------------------------
-            // Cредний вес насоса (в кг) ************************************************
-            $k = 0;
-            $pdf->uns_SetFont("BI", 13);
-            $pdf->MultiCell($w[$k++]+$w[$k++],  $h, "Cредний вес насоса, кг:", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->uns_SetFont("B", 13);
-
-            // Экспорт
-            foreach ($data["sales_SGP_groups"]["EXP"] as $customer_id=>$sales){
-                $total_q[$customer_id] += $q[$customer_id];
-                $pdf->MultiCell($w[$k],  $h, fn_fvalue($total_w[$customer_id]/$total_q[$customer_id],0), $border, "C", $fill, ($EXP > 1)?$ln:1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            }
-            if ($EXP > 1){
-                $pdf->uns_SetFont("BI", 13);
-                $pdf->SetFillColor(180); // BLACK = 0 WHITE = 255
-                $pdf->MultiCell($w[$k],  $h, fn_fvalue(array_sum($total_w)/array_sum($total_q),0), $border, "R", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            }
-        }elseif ($UKR > 0 and $EXP > 0){
-            //------------------------------------------------------------------
-            // ИТОГО (в штуках) ************************************************
-            $pdf->uns_SetFont("BI", 13);
-            $pdf->MultiCell($w[$k++] + $w[$k++],  $h, "ИТОГО, шт:", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->uns_SetFont("B", 13);
-            // Украина
-            $pdf->MultiCell($w[$k],  $h, ($total_q[1])?$total_q[1]:"", $border, "C", $fill, $ln,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            // Экспорт
-            foreach ($data["sales_SGP_groups"]["EXP"] as $customer_id=>$sales){
-                $total_q[$customer_id] += $q[$customer_id];
-                $pdf->MultiCell($w[$k],  $h, ($total_q[$customer_id])?$total_q[$customer_id]:"", $border, "C", $fill, $ln,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            }
-            $pdf->uns_SetFont("BI", 13);
-            $pdf->SetFillColor(180); // BLACK = 0 WHITE = 255
-            $pdf->MultiCell($w[$k],  $h, (array_sum($total_q))?array_sum($total_q):"", $border, "R", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->SetFillColor(220); // BLACK = 0 WHITE = 255
-
-
-            //------------------------------------------------------------------
-            // ИТОГО (в тоннах) ************************************************
-            $k = 0;
-            $pdf->uns_SetFont("BI", 13);
-            $pdf->MultiCell($w[$k++]+$w[$k++],  $h, "ИТОГО, т:", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->uns_SetFont("B", 13);
-
-            // Украина
-            $pdf->MultiCell($w[$k],  $h, ($total_w[1])?fn_fvalue($total_w[1]/1000,1,false):"", $border, "C", $fill, $ln,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            // Экспорт
-            foreach ($data["sales_SGP_groups"]["EXP"] as $customer_id=>$sales){
-                $total_q[$customer_id] += $q[$customer_id];
-                $pdf->MultiCell($w[$k],  $h, ($total_w[$customer_id])?fn_fvalue($total_w[$customer_id]/1000,1,false):"", $border, "C", $fill, $ln,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            }
-            $pdf->uns_SetFont("BI", 13);
-            $pdf->SetFillColor(180); // BLACK = 0 WHITE = 255
-            $pdf->MultiCell($w[$k],  $h, (array_sum($total_w))?fn_fvalue(array_sum($total_w)/1000,1,false):"", $border, "R", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->SetFillColor(220); // BLACK = 0 WHITE = 255
-
-
-            //------------------------------------------------------------------
-            // Cредний вес насоса (в кг) ************************************************
-            $k = 0;
-            $pdf->uns_SetFont("BI", 13);
-            $pdf->MultiCell($w[$k++]+$w[$k++],  $h, "Cредний вес насоса, кг:", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->uns_SetFont("B", 13);
-
-            // Украина
-            $pdf->MultiCell($w[$k],  $h, fn_fvalue($total_w[1]/$total_q[1],0), $border, "C", $fill, $ln,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            // Экспорт
-            foreach ($data["sales_SGP_groups"]["EXP"] as $customer_id=>$sales){
-                $total_q[$customer_id] += $q[$customer_id];
-                $pdf->MultiCell($w[$k],  $h, fn_fvalue($total_w[$customer_id]/$total_q[$customer_id],0), $border, "C", $fill, $ln,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            }
-            $pdf->uns_SetFont("BI", 13);
-            $pdf->SetFillColor(180); // BLACK = 0 WHITE = 255
-            $pdf->MultiCell($w[$k],  $h, fn_fvalue(array_sum($total_w)/array_sum($total_q),0), $border, "R", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->SetFillColor(220); // BLACK = 0 WHITE = 255
         }
+
+        // Продажи по Днепропетровску
+        if (count($DNEPR)){
+            $pdf->MultiCell(0.5,  $h, "", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            foreach ($DNEPR as $c_id=>$d){
+                $pdf->MultiCell(15,  $h, ($total_q["DNEPR"][$c_id])?fn_fvalue($total_q["DNEPR"][$c_id]):"", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            }
+        }
+
+        // Сумма
+        $pdf->MultiCell(0.5,  $h, "", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->uns_SetFont("BI", 13);
+        $pdf->SetFillColor(180); // BLACK = 0 WHITE = 255
+        $pdf->SetTextColor(0); // BLACK = 0
+        $pdf->MultiCell(15,  $h, fn_fvalue(array_sum($total_q["ALEX"])+array_sum($total_q["DNEPR"])), $border, "R", $fill, 1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+
+        //------------------------------------------------------------------
+        // ИТОГО (в т) ************************************************
+        //------------------------------------------------------------------
+        $pdf->uns_SetFont("B", 13);
+        $pdf->SetFillColor(220); // BLACK = 0 WHITE = 255
+        $pdf->SetTextColor(0); // BLACK = 0
+        if ($pdf->GetY() >= 270){$pdf->AddPage();$pdf->ln(5);}
+        $pdf->uns_SetFont("BI", 13);
+        $pdf->MultiCell(10+45,  $h, "ИТОГО, т:", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->uns_SetFont("B", 13);
+
+        // Продажи по Александрии
+        if (count($ALEX)){
+            $pdf->MultiCell(0.5,  $h, "", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            foreach ($ALEX as $c_id=>$d){
+                $pdf->MultiCell(15,  $h, ($total_w["ALEX"][$c_id])?fn_fvalue($total_w["ALEX"][$c_id]/1000,1,false):"", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            }
+        }
+
+        // Продажи по Днепропетровску
+        if (count($DNEPR)){
+            $pdf->MultiCell(0.5,  $h, "", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            foreach ($DNEPR as $c_id=>$d){
+                $pdf->MultiCell(15,  $h, ($total_w["DNEPR"][$c_id])?fn_fvalue($total_w["DNEPR"][$c_id]/1000,1,false):"", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            }
+        }
+
+        // Сумма
+        $pdf->MultiCell(0.5,  $h, "", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->uns_SetFont("BI", 13);
+        $pdf->SetFillColor(180); // BLACK = 0 WHITE = 255
+        $pdf->SetTextColor(0); // BLACK = 0
+        $pdf->MultiCell(15,  $h, fn_fvalue((array_sum($total_w["ALEX"])+array_sum($total_w["DNEPR"]))/1000,1,false), $border, "R", $fill, 1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+
+        //------------------------------------------------------------------
+        // Cредний вес насоса (в кг) ************************************************
+        //------------------------------------------------------------------
+        $pdf->uns_SetFont("B", 13);
+        $pdf->SetFillColor(220); // BLACK = 0 WHITE = 255
+        $pdf->SetTextColor(0); // BLACK = 0
+        if ($pdf->GetY() >= 270){$pdf->AddPage();$pdf->ln(5);}
+        $pdf->uns_SetFont("BI", 13);
+        $pdf->MultiCell(10+45,  $h, "Средний вес насоса, кг:", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->uns_SetFont("B", 13);
+
+        // Продажи по Александрии
+        if (count($ALEX)){
+            $pdf->MultiCell(0.5,  $h, "", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            foreach ($ALEX as $c_id=>$d){
+                $pdf->MultiCell(15,  $h, ($total_w["ALEX"][$c_id])?fn_fvalue($total_w["ALEX"][$c_id]/$total_q["ALEX"][$c_id],0):"", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            }
+        }
+
+        // Продажи по Днепропетровску
+        if (count($DNEPR)){
+            $pdf->MultiCell(0.5,  $h, "", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            foreach ($DNEPR as $c_id=>$d){
+                $pdf->MultiCell(15,  $h, ($total_w["DNEPR"][$c_id])?fn_fvalue($total_w["DNEPR"][$c_id]/$total_q["DNEPR"][$c_id],0):"", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            }
+        }
+
+        // Сумма
+        $pdf->MultiCell(0.5,  $h, "", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->uns_SetFont("BI", 13);
+        $pdf->SetFillColor(180); // BLACK = 0 WHITE = 255
+        $pdf->SetTextColor(0); // BLACK = 0
+        $pdf->MultiCell(15,  $h, fn_fvalue((array_sum($total_w["ALEX"])+array_sum($total_w["DNEPR"]))/(array_sum($total_q["ALEX"])+array_sum($total_q["DNEPR"])),0), $border, "R", $fill, 1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
     }
 
 

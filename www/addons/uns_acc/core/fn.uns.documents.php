@@ -142,8 +142,8 @@ function fn_uns__get_documents($params = array(), $items_per_page = 0){
     $m_tbl = "?:_acc_documents";
     $m_key = "document_id";
 
-//    $j_tbl_1  = "?:_acc_document_date_cast";
-//    $j_key_1  = "document_id";
+    $j_tbl_1  = "?:_acc_customers";
+    $j_key_1  = "customer_id";
 
     $fields = array(
         "$m_tbl.$m_key",
@@ -162,12 +162,17 @@ function fn_uns__get_documents($params = array(), $items_per_page = 0){
 
     $sorting_schemas = array(
         "view" => array(
-            "$m_tbl.date"  => "desc",
-            "$m_tbl.document_id"  => "desc",
+            "$m_tbl.date"           => "desc",
+            "$m_tbl.document_id"    => "desc",
         ),
         "view_asc" => array(
-            "$m_tbl.date"  => "asc",
-            "$m_tbl.document_id"  => "asc",
+            "$m_tbl.date"           => "asc",
+            "$m_tbl.document_id"    => "asc",
+        ),
+        "view_order_by_customer" => array(
+            "$j_tbl_1.position"     => "asc",
+            "$m_tbl.date"           => "asc",
+            "$m_tbl.document_id"    => "asc",
         ),
 
     );
@@ -230,7 +235,7 @@ function fn_uns__get_documents($params = array(), $items_per_page = 0){
     // *************************************************************************
     // 2. ПРИСОЕДИНИТЬ ТАБЛИЦЫ
     // *************************************************************************
-//    $join .= db_quote(" LEFT JOIN $j_tbl_1 ON ($j_tbl_1.$j_key_1  = $m_tbl.$m_key) ");
+    $join .= db_quote(" LEFT JOIN $j_tbl_1 ON ($j_tbl_1.$j_key_1  = $m_tbl.customer_id) ");
 
     if (!empty($params['limit'])) {
         $limit = db_quote(' LIMIT 0, ?i', $params['limit']);
