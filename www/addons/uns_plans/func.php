@@ -5,15 +5,15 @@ if(!defined('AREA')){
 }
 
 // Запрос продаж по серии за период
-function fn_uns__get_sales_pump_series_by_period ($ps_id, $begin, $end){
+function fn_uns__get_sales_pump_series_by_period ($ps_id, $begin, $end, $o_id = array(19)){
     $res = array();
     if (fn_is_not_empty($ps_id) and is__more_0($begin, $end)){
         list($pumps) = fn_uns__get_pumps(array("only_active"=>true, "without_sets_of_details"=>true, ));
         $params = array(
             "time_from"     => $begin,
             "time_to"       => $end,
-            "type"          => 7,           // Расходные ордера
-            "o_id"          => 19,          // Склад готовой продукции
+            "type"          => 7,               // Расходные ордера
+            "o_id"          => $o_id,   // Склад готовой продукции
             "only_active"   => true,
             "item_type"     => array("P", "PF", "PA"),
             "with_items"    => true,

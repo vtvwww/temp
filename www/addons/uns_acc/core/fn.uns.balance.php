@@ -28,6 +28,7 @@ function fn_uns__get_type_balance_for_object($o_id){
         18 => array("type"=>"S", "objects"=>array(18)),                         //  |--->Участок сборки  [18]
                                                                                 //  |
         19 => array("type"=>"S", "objects"=>array(19)),                         //  |--->Склад Гот. продукции [19]
+        25 => array("type"=>"S", "objects"=>array(25)),                         //  |--->Склад Гот. продукции днепр [25]
                                                                                 //  |
         20 => array("type"=>"A", "objects"=>array(21,22)),                      //  `--->Склад Брака [20]
         21 => array("type"=>"S", "objects"=>array(21)),                         //       |--->На отжиг [21]
@@ -545,21 +546,23 @@ function fn_uns__get_balance($params = array(), $time=false){
             foreach ($pump_types as $pt_k=>$pt_v){
                 foreach ($pumps as $p_k=>$p_v){
                     if ($pt_k == $p_v["pt_id"]){
-                        $dcat_items[$pt_k]["group_id"]              = $pt_k;
-                        $dcat_items[$pt_k]["group"]                 = $pt_v["pt_name"];
-                        $dcat_items[$pt_k]["items"][$p_k]["id"]     = $p_v["p_id"];
-                        $dcat_items[$pt_k]["items"][$p_k]["name"]   = $p_v["p_name"];
+                        if (($data[$p_k]["no"] + $data[$p_k]["prih"] + $data[$p_k]["rash"] + $data[$p_k]["ko"])>0){
+                            $dcat_items[$pt_k]["group_id"]              = $pt_k;
+                            $dcat_items[$pt_k]["group"]                 = $pt_v["pt_name"];
+                            $dcat_items[$pt_k]["items"][$p_k]["id"]     = $p_v["p_id"];
+                            $dcat_items[$pt_k]["items"][$p_k]["name"]   = $p_v["p_name"];
 
-                        if (is__array($data[$p_k])){
-                            $dcat_items[$pt_k]["items"][$p_k]["nach"]        = fn_fvalue($data[$p_k]["no"], 2);
-                            $dcat_items[$pt_k]["items"][$p_k]["current__in"] = fn_fvalue($data[$p_k]["prih"], 2);;
-                            $dcat_items[$pt_k]["items"][$p_k]["current__out"]= fn_fvalue($data[$p_k]["rash"], 2);;
-                            $dcat_items[$pt_k]["items"][$p_k]["konech"]      = fn_fvalue($data[$p_k]["ko"], 2);;
-                        }else{
-                            $dcat_items[$pt_k]["items"][$p_k]["nach"]        = 0;
-                            $dcat_items[$pt_k]["items"][$p_k]["current__in"] = 0;
-                            $dcat_items[$pt_k]["items"][$p_k]["current__out"]= 0;
-                            $dcat_items[$pt_k]["items"][$p_k]["konech"]      = 0;
+                            if (is__array($data[$p_k])){
+                                $dcat_items[$pt_k]["items"][$p_k]["nach"]        = fn_fvalue($data[$p_k]["no"], 2);
+                                $dcat_items[$pt_k]["items"][$p_k]["current__in"] = fn_fvalue($data[$p_k]["prih"], 2);;
+                                $dcat_items[$pt_k]["items"][$p_k]["current__out"]= fn_fvalue($data[$p_k]["rash"], 2);;
+                                $dcat_items[$pt_k]["items"][$p_k]["konech"]      = fn_fvalue($data[$p_k]["ko"], 2);;
+                            }else{
+                                $dcat_items[$pt_k]["items"][$p_k]["nach"]        = 0;
+                                $dcat_items[$pt_k]["items"][$p_k]["current__in"] = 0;
+                                $dcat_items[$pt_k]["items"][$p_k]["current__out"]= 0;
+                                $dcat_items[$pt_k]["items"][$p_k]["konech"]      = 0;
+                            }
                         }
                     }
                 }
@@ -1012,8 +1015,8 @@ function fn_uns__get_balance_sgp($params, $pump=false, $pump_frame=false, $pump_
         "total_balance_of_details"  => "Y",
         "accessory_pumps"           => "Y",
         "with_weight"               => true,
-        "prihod_doc_types"          => array("'AIO'", "'VN'", "'PN'",),
-        "rashod_doc_types"          => array("'AIO'", "'RO'", "'PN'",),
+        "prihod_doc_types"          => array("'AIO'", "'VN'", "'PN'", '"MCP"'),
+        "rashod_doc_types"          => array("'AIO'", "'RO'", "'PN'", '"MCP"'),
     );
     $p = array_merge($p, $params);
 
@@ -1033,6 +1036,11 @@ function fn_uns__get_balance_sgp($params, $pump=false, $pump_frame=false, $pump_
                                     and uns__acc_document_items.change_type = 'POZ'
                                     and uns__acc_document_items.motion_type like '%I%'
                                  )
+                                 OR
+                                 (
+                                        uns__acc_document_types.type        = 'MCP'
+                                    and uns__acc_document_items.motion_type like '%I%'
+                                 )
                             )
                             ";
     $p["cond_rash"]    = " AND (
@@ -1049,6 +1057,11 @@ function fn_uns__get_balance_sgp($params, $pump=false, $pump_frame=false, $pump_
                                  (
                                         uns__acc_document_types.type        = 'AIO'
                                     and uns__acc_document_items.change_type = 'NEG'
+                                    and uns__acc_document_items.motion_type like '%O%'
+                                 )
+                                 OR
+                                 (
+                                        uns__acc_document_types.type        = 'MCP'
                                     and uns__acc_document_items.motion_type like '%O%'
                                  )
                             )";

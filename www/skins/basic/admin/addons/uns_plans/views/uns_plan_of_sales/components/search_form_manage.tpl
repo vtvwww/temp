@@ -41,6 +41,7 @@
                     </select>
                 </div>
             </td>
+            {$add_cond}
         </tr>
     </table>
 {/capture}

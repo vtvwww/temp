@@ -1,4 +1,4 @@
-{include file="common_templates/subheader.tpl" title="Насосная продукция"}
+{include file="common_templates/subheader.tpl" title="Насосная продукция `$target_town`"}
 <div class="subheader_block">
 <table cellpadding="0" cellspacing="0" border="0" class="table">
     <thead>
@@ -77,23 +77,23 @@
                     {if $smarty.foreach.p.first}
                     <td class="{if !$smarty.foreach.ps.first}b2_t{/if}" style="min-width: 100px;" {if $ps.pumps|count > 1} rowspan="{$ps.pumps|count}" {/if}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         {assign var="n" value=$ps.ps_name}
-                        {assign var="href" value="uns_balance_sgp.motion?item_id=`$p.p_id`&period=`$search.period`&time_from=`$search.time_from`&time_to=`$search.time_to`"}
+                        {assign var="href" value="uns_balance_sgp.motion?item_id=`$p.p_id`&period=`$search.period`&time_from=`$search.time_from`&time_to=`$search.time_to`&o_id=`$search.o_id`"}
                         <a  rev="content_item_{$p.p_id}" id="opener_item_{$m_id}" href="{$href|fn_url}" class="cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$n}</a>
-                        <div id="content_item_{$p.p_id}" class="hidden" title="Движения <i><u>{$p.p_name}</u></i> по Складу готовой продукции"></div>
+                        <div id="content_item_{$p.p_id}" class="hidden" title="Движения <i><u>{$p.p_name}</u></i> по Складу готовой продукции {$target_town}"></div>
                     </td>
                     {/if}
 
                     <td class="b1_l {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}" style="min-width: 50px;">{*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*}
                         {assign var="n" value=$p.p_name|replace:"`$ps.ps_name`":""}
-                        {assign var="href" value="uns_balance_sgp.motion?item_id=`$p.p_id`&period=`$search.period`&time_from=`$search.time_from`&time_to=`$search.time_to`"}
+                        {assign var="href" value="uns_balance_sgp.motion?item_id=`$p.p_id`&period=`$search.period`&time_from=`$search.time_from`&time_to=`$search.time_to`&o_id=`$search.o_id`"}
                         <a  rev="content_item_{$p.p_id}" id="opener_item_{$m_id}" href="{$href|fn_url}" class="block cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$n|trim}</a>
-                        <div id="content_item_{$p.p_id}" class="hidden" title="Движения <i><u>{$p.p_name}</u></i> по Складу готовой продукции"></div>
+                        <div id="content_item_{$p.p_id}" class="hidden" title="Движения <i><u>{$p.p_name}</u></i> по Складу готовой продукции {$target_town}"></div>
                     </td>
 
                     {*************************************************************************************}
                     {*НАСОС*}
                     {*************************************************************************************}
-                    <td align="center" class="b3_l {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}" style="background-color: #D3D3D3;">
+                    <td align="center" class="b3_l {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}" {if is__array($orders)}style="background-color: #D3D3D3;"{/if}>
                         <span class="{if $p.balances.P<0}info_warning_block{elseif $p.balances.P==0}zero{elseif $p.balances.P>0}bold{/if}">
                             {$p.balances.P|fn_fvalue:2}
                             {assign var="curr_q" value=$p.balances.P}
@@ -136,7 +136,7 @@
                     {*************************************************************************************}
                     {*НАСОС НА РАМЕ*}
                     {*************************************************************************************}
-                    <td align="center" class="b3_l {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}" style="background-color: #D3D3D3;">
+                    <td align="center" class="b3_l {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}" {if is__array($orders)}style="background-color: #D3D3D3;"{/if}>
                         <span class="{if $p.balances.PF<0}info_warning_block{elseif $p.balances.PF==0}zero{elseif $p.balances.PF>0}bold{/if}">
                             {$p.balances.PF|fn_fvalue:2}
                             {assign var="curr_q" value=$p.balances.PF}
@@ -179,7 +179,7 @@
                     {*************************************************************************************}
                     {*НАСОС АГРЕГАТ*}
                     {*************************************************************************************}
-                    <td align="center" class="b3_l {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}" style="background-color: #D3D3D3;">
+                    <td align="center" class="b3_l {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}" {if is__array($orders)}style="background-color: #D3D3D3;"{/if}>
                         <span class="{if $p.balances.PA<0}info_warning_block{elseif $p.balances.PA==0}zero{elseif $p.balances.PA>0}bold{/if}">
                             {$p.balances.PA|fn_fvalue:2}
                             {assign var="curr_q" value=$p.balances.PA}
@@ -233,14 +233,14 @@
         {**** ИТОГО: ***************************************************}
         {***************************************************************}
         <tr>
-            <td align="right" rowspan="4" colspan="2" class="b2_t">
+            <td align="right" rowspan="4" colspan="2" class="b3_t b3_b">
                 <span style="font-size: 15px; font-weight: bold; text-align: right;">ИТОГО:</span>
             </td>
 
             {*************************************************************************************}
             {* ИТОГО НАСОС*}
             {*************************************************************************************}
-            <td rowspan="2" align="center" style="border-left: 3px solid #000000; background-color: #D3D3D3;" class="b2_t">
+            <td rowspan="2" align="center" style="border-left: 3px solid #000000; background-color: #D3D3D3;" class="b3_t">
                 <span class="{if $total_q_P<0}info_warning_block{elseif $total_q_P==0}zero{/if}">
                     <b>{$total_q_P|fn_fvalue:2}</b>
                 </span>
@@ -254,13 +254,13 @@
                 {/foreach}
 
                 {if $total_q_P_order > 0}
-                    <td colspan="2" class="b2_t" align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">
+                    <td colspan="2" class="b3_t" align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">
                         <span class="{if $total_q_P_order<0}info_warning_block{elseif $total_q_P_order==0}zero{/if}">
                             {$total_q_P_order|fn_fvalue:2}
                         </span>
                     </td>
                 {else}
-                    <td colspan="2" class="b2_t" align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">
+                    <td colspan="2" class="b3_t" align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">
                         &nbsp;
                     </td>
                 {/if}
@@ -269,7 +269,7 @@
             {*************************************************************************************}
             {* ИТОГО НАСОС НА РАМЕ*}
             {*************************************************************************************}
-            <td rowspan="2" align="center" style="border-left: 3px solid #000000; background-color: #D3D3D3;" class="b2_t">
+            <td rowspan="2" align="center" style="border-left: 3px solid #000000; background-color: #D3D3D3;" class="b3_t">
                 <span class="{if $total_q_PF<0}info_warning_block{elseif $total_q_PF==0}zero{/if}">
                     <b>{$total_q_PF|fn_fvalue:2}</b>
                 </span>
@@ -283,13 +283,13 @@
                 {/foreach}
 
                 {if $total_q_PF_order > 0}
-                    <td colspan="2" class="b2_t" align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">
+                    <td colspan="2" class="b3_t" align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">
                         <span class="{if $total_q_PF_order<0}info_warning_block{elseif $total_q_PF_order==0}zero{/if}">
                             {$total_q_PF_order|fn_fvalue:2}
                         </span>
                     </td>
                 {else}
-                    <td colspan="2" class="b2_t" align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">
+                    <td colspan="2" class="b3_t" align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">
                         &nbsp;
                     </td>
                 {/if}
@@ -298,7 +298,7 @@
             {*************************************************************************************}
             {* ИТОГО НАСОС АГРЕГАТ*}
             {*************************************************************************************}
-            <td rowspan="2" align="center" style="border-left: 3px solid #000000; background-color: #D3D3D3;" class="b2_t">
+            <td rowspan="2" align="center" style="border-left: 3px solid #000000; background-color: #D3D3D3;" class="b3_t">
                 <span class="{if $total_q_PA<0}info_warning_block{elseif $total_q_PA==0}zero{/if}">
                     <b>{$total_q_PA|fn_fvalue:2}</b>
                 </span>
@@ -312,13 +312,13 @@
                 {/foreach}
 
                 {if $total_q_PA_order > 0}
-                    <td colspan="2" class="b2_t" align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">
+                    <td colspan="2" class="b3_t" align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">
                         <span class="{if $total_q_PA_order<0}info_warning_block{elseif $total_q_PA_order==0}zero{/if}">
                             {$total_q_PA_order|fn_fvalue:2}
                         </span>
                     </td>
                 {else}
-                    <td colspan="2" class="b2_t" align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">
+                    <td colspan="2" class="b3_t" align="center" style="{if $smarty.foreach.o.first}border-left: 3px solid #000000;{else}border-left: 1px solid #000000;{/if}">
                         &nbsp;
                     </td>
                 {/if}

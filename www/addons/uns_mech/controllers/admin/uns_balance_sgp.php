@@ -17,10 +17,34 @@ if($mode == 'manage' or $mode == 'update' or $mode == 'add'){
 }
 
 
-if($mode == 'manage'){
+if($mode == 'manage' or $mode == 'dnepr'){
     if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "M"; // Текущий месяц
     list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
     if (!isset($_REQUEST["total_balance_of_details"])) $_REQUEST["total_balance_of_details"] = "Y";
+
+    if ($mode == "dnepr"){ // Склад готовой продукции в Днепропетровске
+        $_REQUEST["o_id"] = 25;
+        $_REQUEST["mode"] = $mode;
+    }else{
+        $_REQUEST["o_id"] = 19; // СГП Александрия
+        // Запрос ЗАКАЗОВ
+        $p = array(
+            "with_items"        => true,
+            "full_info"         => true,
+            "with_count"        => true,
+            "only_active"       => true,
+            "data_for_tmp"      => true,
+            "remaining_time"    => true,
+            "sorting_schemas"   => "view_in_sgp",
+            "total_weight_and_quantity"   => true,
+        );
+        list($orders, $search) = fn_acc__get_orders(array_merge($_REQUEST, $p));
+        $view->assign('orders', $orders);
+
+        // customerS
+        list($customers) = fn_uns__get_customers();
+        $view->assign('customers', $customers);
+    }
 
     $balances = array();
     list($balances, $search) = fn_uns__get_balance_sgp($_REQUEST, true, true, true, true);
@@ -33,37 +57,6 @@ if($mode == 'manage'){
     $view->assign('search',     $_REQUEST);
     $view->assign('expand_all', false);
 //    fn_print_r($search);
-
-
-    // Запрос ЗАКАЗОВ
-    $p = array(
-        "with_items"        => true,
-        "full_info"         => true,
-        "with_count"        => true,
-        "only_active"       => true,
-        "data_for_tmp"      => true,
-        "remaining_time"    => true,
-        "sorting_schemas"   => "view_in_sgp",
-        "total_weight_and_quantity"   => true,
-    );
-    list($orders, $search) = fn_acc__get_orders(array_merge($_REQUEST, $p));
-//    fn_print_r($orders);
-    $view->assign('orders', $orders);
-
-    // customerS
-    list($customers) = fn_uns__get_customers();
-    $view->assign('customers', $customers);
-
-    // Запрос категорий
-    list($dcategories_plain) = fn_uns__get_details_categories(array("plain" => true, "with_q_ty"=>false, "view_in_reports" => true));
-    $view->assign('dcategories_plain', $dcategories_plain);
-    $view->assign('dcategories_plain_with_q_ty', false);
-
-    // OBJECTS *****************************************************************
-    list($objects_plain, $search) = fn_uns__get_objects(array('plain' => true, 'all'   => true));
-    $view->assign('objects_plain', $objects_plain);
-    $view->assign('enabled_objects', array(9,10,14,17));
-
 }
 
 
@@ -91,7 +84,7 @@ if (defined('AJAX_REQUEST') and  $mode == 'motion'){
         return false;
     }
     $p = array(
-        "o_id"          => 19,  // Склад литья
+        "o_id"          => $_REQUEST["o_id"],  // Склад литья
         "item_type"     => array("P", "PF", "PA"),
         "typesize"      => "M",
         "item_id"       => $_REQUEST['item_id'],
@@ -210,12 +203,11 @@ function fn_uns_balance_sgp__format_for_tmpl($b, $params) {
                 }
 
                 // Проход по каждому заказу, если они есть
-                if (is__array($orders)){
+                if (is__array($orders) and $params["mode"] != "dnepr"){
                     foreach ($orders as $k_o=>$v_o){
                         foreach ($v_o["items"] as $i){
                             if (in_array($i["item_type"], array("P", "PF", "PA")) and $i["p_id"] == $k_p){
                                 $res[$k_pt]["pump_series"][$k_ps]["pumps"][$k_p]["orders"][$k_o][$i["item_type"]] = $i["quantity"];
-//                                $res[$k_pt]["pump_series"][$k_ps]["pumps"][$k_p]["orders"][$k_o][$i["item_type"]] = $i["quantity"];
                             }
                         }
                     }
@@ -232,7 +224,7 @@ function fn_uns_balance_sgp__format_for_tmpl($b, $params) {
             foreach ($v_pt["pump_series"] as $k_ps=>$v_ps){
                 foreach ($v_ps["pumps"] as $k_p=>$v_p){
                     $sum_orders = fn_uns_balance_sgp__sum_orders($v_p["orders"]);
-                    if (!array_sum($v_p["balances"]) and !$sum_orders){
+                    if (!array_sum(array_map('abs', $v_p["balances"])) and !$sum_orders){
                         unset($res[$k_pt]["pump_series"][$k_ps]["pumps"][$k_p]);
                     }
                 }

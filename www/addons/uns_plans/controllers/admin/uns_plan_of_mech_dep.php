@@ -711,7 +711,7 @@ if ($mode == "manage") {
             $pump_series = array_shift(fn_uns__get_pump_series(array('only_active' => true, "view_in_plans"=>"Y",)));
             $begin  = strtotime($_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1" . " 00:00:00");
             $end    = strtotime(date("Y-m-d", fn_parse_date($_REQUEST["current_day"])) . " 23:59:59");
-            $sales = fn_uns__get_sales_pump_series_by_period(array_keys($pump_series), $begin, $end);
+            $sales = fn_uns__get_sales_pump_series_by_period(array_keys($pump_series), $begin, $end); // По СГП
             $sales_tpl = null;
             foreach ($pump_series as $ps_id=>$ps){
                 // расчет процентов

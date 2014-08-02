@@ -1,6 +1,7 @@
 <uns_mech>
     <item title="uns_balance_mc_sk_su"  dispatch="uns_balance_mc_sk_su.manage"/>    <!-- Баланс МЦ + Скл.КМП + Сб.Уч. -->
     <item title="uns_balance_sgp"       dispatch="uns_balance_sgp.manage"/>         <!-- Баланс СГП -->
+    <item title="uns_balance_sgp_dnepr" dispatch="uns_balance_sgp.dnepr"/>          <!-- Баланс СГП Днепропетровск-->
 
     <item title="uns_sheets"            dispatch="uns_sheets.manage"/>              <!-- Сопроводительные листы -->
     <item title="uns_kits"              dispatch="uns_kits.manage"/>                <!-- Партии насосов -->

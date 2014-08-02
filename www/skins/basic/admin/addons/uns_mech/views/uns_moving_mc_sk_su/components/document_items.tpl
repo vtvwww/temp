@@ -12,6 +12,13 @@
     {assign var="item_type_detail"      value=false}
 
     {assign var="typesize_disabled"     value=true}
+
+    {if (($d.object_to == 19 and $d.object_from == 25) or ($d.object_to == 25 and $d.object_from == 19))}
+        {assign var="is_SGP"        value=true}
+        {assign var="item_type_p"   value=true}
+        {assign var="item_type_pf"  value=true}
+        {assign var="item_type_pa"  value=true}
+    {/if}
 {/if}
 
 {if $doc_type == $smarty.const.DOC_TYPE__AIO
@@ -24,7 +31,7 @@
     {assign var="item_type_detail"      value=true}
 
     {*Дополнительные элементы для P, PF и PA*}
-    {if ($doc_type == $smarty.const.DOC_TYPE__AIO or $doc_type == $smarty.const.DOC_TYPE__RO) and $d.object_to == 19} {*Склад готовой продукции*}
+    {if ($doc_type == $smarty.const.DOC_TYPE__AIO or $doc_type == $smarty.const.DOC_TYPE__RO) and ($d.object_to == 19 or $d.object_to == 25)} {*Склад готовой продукции*}
         {assign var="is_SGP"        value=true}
         {assign var="item_type_p"   value=true}
         {assign var="item_type_pf"  value=true}

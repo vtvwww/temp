@@ -255,10 +255,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                     // ---------------------------------------------------------
                     // или РАСХОДНЫЙ ОРДЕР
                     // или АКТ ИЗМЕНЕНИЯ ОСТАТКА
+                    // или МЕЖЦЕХОВОЕ ПЕРЕМЕЩЕНИЕ
                     // ---------------------------------------------------------
-                    }elseif (in_array($document_types[$_REQUEST["document_type"]]["type"], array("RO", "AIO"))
+                    }elseif (in_array($document_types[$_REQUEST["document_type"]]["type"], array("RO", "AIO", "MCP"))
                             and in_array($_REQUEST['item_type'], array("D", "P", "PF", "PA"))
-                            and $_REQUEST['object_to'] == "19" // СГП
+                            and (   $_REQUEST['object_to'] == "19"
+                                 or $_REQUEST['object_to'] == "25"      // СГП Днепр
+                                 or $_REQUEST['object_from'] == "19"
+                                 or $_REQUEST['object_from'] == "25"    // СГП Днепр
+                            )
                     ){
                         // UNITS
                         $p = array('detail_id'  => $_REQUEST['item_id'],
@@ -297,7 +302,43 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                         }
 
                         $balance = fn_fvalue($balance[$_REQUEST['item_type']][$_REQUEST['item_id']]['ko']);
-                        $balance_html = "<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_to']]["path"] . "::.' class='item_balance " . (($balance==0)?"zero":(($balance<0)?"neg":"pos")) . "'>" . $balance . "</span>";
+                        $balance_html = "<nobr><b>{$objects_plain[$_REQUEST['object_to']]["o_shortname"]}:&nbsp;</b></nobr>" . "<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_to']]["path"] . "::.' class='item_balance " . (($balance==0)?"zero":(($balance<0)?"neg":"pos")) . "'>" . $balance . "</span>";
+
+                        // Это баланс если перемещение происходит между CUG Александрия и СГП Днепропетровск
+                        if ($document_types[$_REQUEST["document_type"]]["type"] == "MCP"
+                            and (
+                                    $_REQUEST['object_to'] == "19"
+                                 or $_REQUEST['object_to'] == "25"      // СГП Днепр
+                                 or $_REQUEST['object_from'] == "19"
+                                 or $_REQUEST['object_from'] == "25"    // СГП Днепр)
+                                )
+                            )
+                        {
+                            // БАЛАНС
+                            $balance = "н/д";
+                            $p = array(
+                                "plain"             => true,
+                                "all"               => true,
+                                "o_id"              => array($_REQUEST['object_from']),  // Склад литья
+                                "item_type"         => $_REQUEST['item_type'],
+                                "item_id"           => $_REQUEST['item_id'],
+                                "add_item_info"     => false,
+                            );
+                            list ($p['time_from'], $p['time_to']) = fn_create_periods(null);
+
+                            if ($_REQUEST['item_type'] == "D"){
+                                list($balance) = fn_uns__get_balance_sgp($p, false, false, false, true);
+                            }elseif ($_REQUEST['item_type'] == "P"){
+                                list($balance) = fn_uns__get_balance_sgp($p, true, false, false, false);
+                            }elseif ($_REQUEST['item_type'] == "PF"){
+                                list($balance) = fn_uns__get_balance_sgp($p, false, true, false, false);
+                            }elseif ($_REQUEST['item_type'] == "PA"){
+                                list($balance) = fn_uns__get_balance_sgp($p, false, false, true, false);
+                            }
+
+                            $balance = fn_fvalue($balance[$_REQUEST['item_type']][$_REQUEST['item_id']]['ko']);
+                            $balance_html = "<nobr><b>{$objects_plain[$_REQUEST['object_from']]["o_shortname"]}:&nbsp;</b></nobr>" . "<span title='Текущий остаток на .::" . $objects_plain[$_REQUEST['object_from']]["path"] . "::.' class='item_balance " . (($balance==0)?"zero":(($balance<0)?"neg":"pos")) . "'>" . $balance . "</span>" . "<br>" .$balance_html;
+                        }
 
 
                     // =========================================================

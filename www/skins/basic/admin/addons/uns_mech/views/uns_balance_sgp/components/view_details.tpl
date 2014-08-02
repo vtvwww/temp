@@ -1,4 +1,4 @@
-{include file="common_templates/subheader.tpl" title="Детали"}
+{include file="common_templates/subheader.tpl" title="Детали `$target_town`"}
 <div class="subheader_block">
 
     {***************************************************************************}
@@ -182,7 +182,7 @@
                                     <a  rev="content_item_{$m.id}" id="opener_item_{$m_id}" href="{$href|fn_url}" class="cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black" onclick="mark_item($(this));">{$n}</a>
                                     <div id="content_item_{$m.id}" class="hidden" title="Движение по {$n}"></div>
                                 </td>
-                                <td align="center"><span class="info_warning">{$m.material_no|replace:' ':'&nbsp;'}</span></td>
+                                <td align="center" class="b1_l"><span class="info_warning">{$m.material_no|replace:' ':'&nbsp;'}</span></td>
                                 {assign var="q_obj_19" value=$m.konech}
                                 <td align="center" style="border-left: 1px solid  black;"><span class="{if $q_obj_19<0}info_warning_block{elseif $q_obj_19==0}zero{/if}"><b>{$q_obj_19|fn_fvalue:2}</b></span></td>
                                 <td align="left" style="border-left: 1px solid #808080;">

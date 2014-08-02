@@ -490,6 +490,9 @@
 
             <ol style="color: red;">
                 <li style="font-weight: bold;">
+                    <span style="font-weight: normal;">СГП - остатки по Складу готовой продукции только в Александрии (без учета склада в Днепропетровске).</span>
+                </li>
+                <li style="font-weight: bold;">
                     <span style="font-weight: normal;">В плане производства исключены данные по комплектам деталей - корпус насоса в сборе или ротор насоса в сборе.</span>
                 </li>
                 <li style="font-weight: bold;">

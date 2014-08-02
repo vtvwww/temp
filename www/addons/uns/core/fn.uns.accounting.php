@@ -61,7 +61,7 @@ function fn_uns__get_accounting_item_weights($item_type, $item_id){
     $join .= db_quote(" LEFT JOIN $j_table ON ($m_table.ai_id = $j_table.ai_id) ");
 
     $condition .= db_quote(" AND $m_table.item_id in (?n) ", $item_id);
-    $condition .= db_quote(" AND $m_table.item_type = ?s ", $item_type);
+    $condition .= db_quote(" AND $m_table.item_type = ?s ", (in_array($item_type, array("P", "PF", "PA")))?"P":$item_type);
 
     $sorting = " ORDER BY $m_table.item_id asc, $j_table.timestamp desc ";
 
@@ -100,7 +100,7 @@ function fn_uns__get_accounting_items($item_type, $item_id=array()){
 
     $join .= db_quote(" LEFT JOIN ?:units as m_units ON (m_units.u_id = $m_table.u_id) ");
 
-    $condition .= db_quote(" AND $m_table.item_type = ?s AND $m_table.item_id in (?n) ", $item_type, $item_id);
+    $condition .= db_quote(" AND $m_table.item_type = ?s AND $m_table.item_id in (?n) ", (in_array($item_type, array("P", "PF", "PA")))?"P":$item_type, $item_id);
 
     $data = db_get_hash_array(UNS_DB_PREFIX . "SELECT " . implode(', ', $fields) . " FROM $m_table $join WHERE 1 $condition $sorting $limit", "item_id");
 

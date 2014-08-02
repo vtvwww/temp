@@ -106,9 +106,13 @@ function fn_uns__get_enabled_objects($document_type){
                 19 => true,
             ),
 
+            19 => array(
+                25 => true,
+            ),
 
-
-
+            25 => array(
+                19 => true,
+            ),
         ),
         DOC_TYPE__AIO => array(     // АКТ ИЗМЕНЕНИЕ ОСТАТКОВ
             5 => array(             // Склад Литья
@@ -132,7 +136,10 @@ function fn_uns__get_enabled_objects($document_type){
             18 => array(
                 0=> true,
             ),
-            19 => array(
+            19 => array( // СГП Александрия
+                0=> true,
+            ),
+            25 => array( // СГП Днепропетровск
                 0=> true,
             ),
         ),
@@ -148,6 +155,9 @@ function fn_uns__get_enabled_objects($document_type){
                 0=> true,          // Мех.цех -> Склад материалов
             ),
             19 => array(           // Склад готовой продукции
+                0=> true,
+            ),
+            25 => array(           // Склад готовой продукции Днепр
                 0=> true,
             ),
         ),
@@ -292,6 +302,7 @@ function fn_uns__get_objects($params = array()){
         "$m_table.o_id",
         "$m_table.o_parent_id",
         "$m_table.o_name",
+        "$m_table.o_shortname",
         "$m_table.o_id_path",
         "$m_table.o_position",
         "$m_table.o_status"

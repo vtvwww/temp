@@ -180,7 +180,7 @@ if ($mode == "tracking") {
         $pump_series = array_shift(fn_uns__get_pump_series(array('only_active' => true, "view_in_plans"=>"Y",)));
         $begin  = $_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1" . " 00:00:00";
         $end    = $_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . date("t", strtotime($begin))  . " 23:59:59";
-        $sales = fn_uns__get_sales_pump_series_by_period(array_keys($pump_series), strtotime($begin), strtotime($end));
+        $sales = fn_uns__get_sales_pump_series_by_period(array_keys($pump_series), strtotime($begin), strtotime($end), explode("_", $_REQUEST["select_sgp"]));
         $view->assign('sales', $sales);
 
         // ПОЛУЧИТЬ ПРОЦЕНТЫ ВЫПОЛНЕНИЯ ПЛАНА ПРОДАЖ
@@ -260,6 +260,7 @@ function fn_uns_plan_of_sales__search ($controller){
         "week_supply",
         "years_for_analysis",
         "koef_plan_prodazh",
+        "select_sgp",
     );
     fn_uns_search_set_get_params($controller, $params);
     return true;

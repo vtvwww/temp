@@ -23,7 +23,19 @@
     </style>
 {/literal}
 {capture name="mainbox"}
-    {include file="addons/uns_plans/views/uns_plan_of_sales/components/search_form_manage.tpl" dispatch="`$controller`.$mode" search_content=$smarty.capture.search_content but_text="ВЫПОЛНИТЬ АНАЛИЗ"}
+    {capture name="add_cond"}
+        <td class="nowrap search-field">
+            <label for="select_sgp">Выбор СКЛАДА ГОТОВОЙ ПРОДУКЦИИ:</label>
+            <div class="break">
+                <select name="select_sgp" id="select_sgp">
+                    <option value="19_25"   {if $search.select_sgp == "19_25"}selected="selected"{/if}>Александрия + Днепропетровск</option>
+                    <option value="19"      {if $search.select_sgp == "19"   }selected="selected"{/if}>Александрия</option>
+                    <option value="25"      {if $search.select_sgp == "25"   }selected="selected"{/if}>Днепропетровск</option>
+                </select>
+            </div>
+        </td>
+    {/capture}
+    {include file="addons/uns_plans/views/uns_plan_of_sales/components/search_form_manage.tpl" dispatch="`$controller`.$mode" search_content=$smarty.capture.search_content but_text="ВЫПОЛНИТЬ АНАЛИЗ" add_cond=$smarty.capture.add_cond}
     <h2>Выполнение Плана продаж на {$months[$search.month]} {$search.year} г.</h2>
     {if is__array($pump_series)}
         <table cellpadding="0" cellspacing="0" border="0" class="table" style="margin: 10px; 0">

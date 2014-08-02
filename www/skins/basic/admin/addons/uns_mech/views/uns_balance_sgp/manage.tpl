@@ -19,7 +19,13 @@
             </tr>
         </table>
     {/capture}
-    {include file="addons/uns/views/components/search/search.tpl" dispatch="`$controller`.manage" search_content=$smarty.capture.search_content}
+    {include file="addons/uns/views/components/search/search.tpl" dispatch="`$controller`.`$mode`" search_content=$smarty.capture.search_content}
+
+    {if $mode == 'dnepr'}
+        {assign var="target_town" value="(Днепропетровск)"}
+    {else}
+        {assign var="target_town" value="(Александрия)"}
+    {/if}
 
     {* БАЛАНС ПО НАСОСНОЙ ПРОДУКЦИИ *}
     {include file="addons/uns_mech/views/uns_balance_sgp/components/view_orders.tpl"}
@@ -32,4 +38,4 @@
 {/capture}
 {assign var="last_date" value=$info_of_the_last_movement.date|fn_parse_date|date_format:"%d/%m/%Y"}
 {assign var="last_document_id" value=$info_of_the_last_movement.document_id}
-{include file="common_templates/mainbox.tpl" title="Баланс СКЛАДА ГОТОВОЙ ПРОДУКЦИИ `$last_date`" content=$smarty.capture.mainbox tools=$smarty.capture.tools}
+{include file="common_templates/mainbox.tpl" title="Баланс СКЛАДА ГОТОВОЙ ПРОДУКЦИИ `$target_town` `$last_date`" content=$smarty.capture.mainbox tools=$smarty.capture.tools}
