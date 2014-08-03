@@ -546,7 +546,7 @@ function fn_uns__get_balance($params = array(), $time=false){
             foreach ($pump_types as $pt_k=>$pt_v){
                 foreach ($pumps as $p_k=>$p_v){
                     if ($pt_k == $p_v["pt_id"]){
-                        if (($data[$p_k]["no"] + $data[$p_k]["prih"] + $data[$p_k]["rash"] + $data[$p_k]["ko"])>0){
+//                        if ((abs($data[$p_k]["no"]) + abs($data[$p_k]["prih"]) + abs($data[$p_k]["rash"]) + abs($data[$p_k]["ko"]))>0){
                             $dcat_items[$pt_k]["group_id"]              = $pt_k;
                             $dcat_items[$pt_k]["group"]                 = $pt_v["pt_name"];
                             $dcat_items[$pt_k]["items"][$p_k]["id"]     = $p_v["p_id"];
@@ -563,7 +563,7 @@ function fn_uns__get_balance($params = array(), $time=false){
                                 $dcat_items[$pt_k]["items"][$p_k]["current__out"]= 0;
                                 $dcat_items[$pt_k]["items"][$p_k]["konech"]      = 0;
                             }
-                        }
+//                        }
                     }
                 }
             }
@@ -1022,46 +1022,46 @@ function fn_uns__get_balance_sgp($params, $pump=false, $pump_frame=false, $pump_
 
     $p["cond_prih"]    = " AND (
                                  (
-                                        uns__acc_document_types.type        = 'VN'
+                                        uns__acc_document_types.type        =    'VN'
                                     and uns__acc_document_items.motion_type like '%I%'
                                  )
                                  OR
                                  (
-                                        uns__acc_document_types.type        = 'PN'
+                                        uns__acc_document_types.type        =    'PN'
                                     and uns__acc_document_items.motion_type like '%I%'
                                  )
                                  OR
                                  (
-                                        uns__acc_document_types.type        = 'AIO'
-                                    and uns__acc_document_items.change_type = 'POZ'
+                                        uns__acc_document_types.type        =    'AIO'
+                                    and uns__acc_document_items.change_type =    'POZ'
                                     and uns__acc_document_items.motion_type like '%I%'
                                  )
                                  OR
                                  (
-                                        uns__acc_document_types.type        = 'MCP'
+                                        uns__acc_document_types.type        =    'MCP'
                                     and uns__acc_document_items.motion_type like '%I%'
                                  )
                             )
                             ";
     $p["cond_rash"]    = " AND (
                                  (
-                                        uns__acc_document_types.type        = 'RO'
+                                        uns__acc_document_types.type        =    'RO'
                                     and uns__acc_document_items.motion_type like '%O%'
                                  )
                                  OR
                                  (
-                                        uns__acc_document_types.type        = 'PN'
+                                        uns__acc_document_types.type        =    'PN'
                                     and uns__acc_document_items.motion_type like '%O%'
                                  )
                                  OR
                                  (
-                                        uns__acc_document_types.type        = 'AIO'
-                                    and uns__acc_document_items.change_type = 'NEG'
+                                        uns__acc_document_types.type        =    'AIO'
+                                    and uns__acc_document_items.change_type =    'NEG'
                                     and uns__acc_document_items.motion_type like '%O%'
                                  )
                                  OR
                                  (
-                                        uns__acc_document_types.type        = 'MCP'
+                                        uns__acc_document_types.type        =    'MCP'
                                     and uns__acc_document_items.motion_type like '%O%'
                                  )
                             )";
