@@ -1,5 +1,29 @@
 {capture name="mainbox"}
-    <table cellpadding="0" cellspacing="0" border="0" class="table">
+    {literal}
+        <style>
+            table.table.LC td.w{
+                font-size: 11px;
+                color: #808080;
+            }
+
+            table.table.LC td.g{ /* gray */
+                background-color: #f1f1f1;
+            }
+
+            table.table.LC td.dg{ /* dark gray */
+                background-color: #D3D3D3;
+            }
+
+            table.table.LC td.r{ /* remaining */
+                background-color: #B8C1FF;
+            }
+
+            table.table.LC td.prh{ /* prohibition */
+                background: url('skins/basic/admin/addons/uns_plans/images/prohibition.png') no-repeat center center;
+            }
+        </style>
+    {/literal}
+    <table cellpadding="0" cellspacing="0" border="0" class="table LC">
         <thead>
             <tr style="background-color: #D4D0C8;">
                 <th rowspan="2" style="text-align: center;" width="250px">

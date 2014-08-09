@@ -54,17 +54,17 @@
                <a target="_blank" href="{"uns_plan_of_mech_dep.planning.LC"|fn_url}"><b>План производства Лит. цеха</b></a>
             </span>
 
-            {* АНАЛИЗ РАЗРЕШЕННЫХ НАСОСОВ *}
+{*            *}{* АНАЛИЗ РАЗРЕШЕННЫХ НАСОСОВ *}{*
             &nbsp;&nbsp;&nbsp;&nbsp;
             <span class="action-add">
                <a target="_blank" href="{"uns_plan_of_mech_dep.analysis_of_pumps.allowance"|fn_url}">Анализ <b>РАЗРЕШЕННЫХ</b> насосов</a>
             </span>
 
-            {* АНАЛИЗ ЗАПРЕЩЕННЫХ НАСОСОВ *}
+            *}{* АНАЛИЗ ЗАПРЕЩЕННЫХ НАСОСОВ *}{*
             &nbsp;&nbsp;&nbsp;&nbsp;
             <span class="action-add">
                <a target="_blank" href="{"uns_plan_of_mech_dep.analysis_of_pumps.prohibition"|fn_url}">Анализ <b>ЗАПРЕЩЕННЫХ</b> насосов</a>
-            </span>
+            </span>*}
 
             <table cellpadding="0" cellspacing="0" border="0" class="table" style="margin: 10px; 0">
                 <thead>
