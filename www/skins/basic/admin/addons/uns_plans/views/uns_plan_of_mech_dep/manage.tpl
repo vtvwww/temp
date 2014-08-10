@@ -156,7 +156,7 @@
 
                         {*Склад Готовой Продукции*}
                         {assign var="q" value=$sgp.$ps_id|default:0}
-                        <td {$analisys_rowspan} class="b_l b2_t center {if !$q}zero{/if}">{$q}</td>
+                        <td {$analisys_rowspan} class="b_l b2_t center {if !$q}zero{/if}">{if $q>=0}{$q}{else}<span class="info_warning_block">{$q}</span>{/if}</td>
 
                         {*План продаж*}
                         {assign var="q" value=$requirement.curr_month.$ps_id|default:0}
@@ -215,7 +215,7 @@
 
                         {*Склад Готовой Продукции*}
                         {assign var="q" value=$sgp_current_day.$ps_id|default:0}
-                        <td {$analisys_rowspan} class="b3_l b2_t center {if !$q}zero{else}bold{/if}">{$q}</td>
+                        <td {$analisys_rowspan} class="b3_l b2_t center {if !$q}zero{else}bold{/if}">{if $q>=0}{$q}{else}<span class="info_warning_block">{$q}</span>{/if}</td>
 
                         {*КРАТНОСТЬ ПАРТИИ НАСОСОВ*}
                         {if $analysis_of_plan}
