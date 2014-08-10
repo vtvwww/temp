@@ -112,8 +112,9 @@ if ($mode == "manage") {
         );
         $p = array_merge($_REQUEST, $p);
         $plan = array_shift(array_shift(fn_uns__get_plans($p)));
+        $data["plan"] = $plan;
         $requirement = array();
-        foreach ($plan["group_by_item"]["S"] as $id=>$v){
+        foreach ($plan["group_by_item"]["S"] as $id=>$v){ // Отбор только по насосам
             if  (!is__array($pump_series[$id])) continue;
             // +0 мес. = тек. мес. - план продаж
             $requirement["curr_month"][$id]  = $v["ukr_curr"]+$v["exp_curr"];
@@ -927,6 +928,25 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
     $view->assign("data", $data);
 
     //-----------------------------------------------------------------------------
+    // -1. ПОЛУЧИТЬ ВСЕ ДЕТАЛИ которые заложены в план продаж
+    //-----------------------------------------------------------------------------
+    $sales_plan_of_details = null;
+    foreach ($data["plan"]["group_by_item"]["D"] as $id=>$v){ // Отбор только по деталям
+        // +0 мес. = тек. мес. - план продаж
+        $sales_plan_of_details["curr_month"][$id]  = $v["ukr_curr"]+$v["exp_curr"];
+
+        // +1 мес. = след. мес. - план продаж
+        $sales_plan_of_details["next_month"][$id]  = $v["ukr_next"]+$v["exp_next"];
+
+        // +2 мес. = след. след. мес. - среднее (тек. мес. и след. мес.)
+        $sales_plan_of_details["next2_month"][$id] = floor(($sales_plan_of_details["curr_month"][$id]+$sales_plan_of_details["next_month"][$id])/2);
+
+        // +3 мес. = 50% от +2 мес.
+        $sales_plan_of_details["next3_month"][$id] = floor(0.5*$sales_plan_of_details["next2_month"][$id]);
+    }
+
+
+    //-----------------------------------------------------------------------------
     // 0. ПОЛУЧИТЬ ВСЕ ДЕТАЛИ, по которым необходимо отслеживать минимальный остаток
     //-----------------------------------------------------------------------------
     $min_rest_of_details = db_get_hash_array(UNS_DB_PREFIX . "SELECT detail_id, min_rest_value FROM ?:details WHERE detail_status = 'A' and min_rest_state = 'Y' and min_rest_value > 0 ", "detail_id");
@@ -948,7 +968,7 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
                     $details[$k] = array_merge($details[$k], $set[$k]);
                 }
                 foreach ($details as $detail){
-                    $details_requirement[$month][$detail["detail_id"]] += $detail["quantity"]*$pump_quantity;
+                    $details_requirement[$month][$detail["detail_id"]] += $detail["quantity"]*$pump_quantity + $sales_plan_of_details[$month][$detail["detail_id"]];
                 }
             }
         }

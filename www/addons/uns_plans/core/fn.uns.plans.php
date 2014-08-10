@@ -269,15 +269,15 @@ function fn_uns__upd_plan_items($id, $data){
     $m_table = "?:_plan_items";
     $pi_ids = array();
     foreach ($data as $i){
-        if (is__more_0($i['item_id']) and  is_numeric($i['ukr_curr']) and  is_numeric($i['ukr_next']) and  is_numeric($i['exp_curr']) and  is_numeric($i['exp_next']) and fn_check_type($i['item_type'], "|S|D|")){
+        if (is__more_0($i['item_id']) and fn_check_type($i['item_type'], "|S|D|")){
             $v = array(
                 'plan_id'       => $id,
                 'item_type'     => $i['item_type'],
                 'item_id'       => $i['item_id'],
-                'ukr_curr'      => $i['ukr_curr'],
-                'ukr_next'      => $i['ukr_next'],
-                'exp_curr'      => $i['exp_curr'],
-                'exp_next'      => $i['exp_next'],
+                'ukr_curr'      => is__more_0($i['ukr_curr'])?$i['ukr_curr']:0,
+                'ukr_next'      => is__more_0($i['ukr_next'])?$i['ukr_next']:0,
+                'exp_curr'      => is__more_0($i['exp_curr'])?$i['exp_curr']:0,
+                'exp_next'      => is__more_0($i['exp_next'])?$i['exp_next']:0,
             );
 
             if (is__more_0($i['pi_id']) and is__more_0(db_get_field(UNS_DB_PREFIX . "SELECT pi_id FROM $m_table WHERE pi_id = ?i", $i['pi_id']))){
