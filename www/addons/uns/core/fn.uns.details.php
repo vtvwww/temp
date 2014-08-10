@@ -514,6 +514,20 @@ function fn_uns__get_details($params = array(), $items_per_page = 0){
         }
     }
 
+    // Сгруппировать детали по категориям
+    if ($params["group_by_categories"]){
+        list($dcategories_plain) = fn_uns__get_details_categories(array('only_active' => true,"view_in_reports" => true));
+        foreach ($data as $k=>$v){
+            if (in_array($v["dcat_id"], array_keys($dcategories_plain))){
+                $dcategories_plain[$v["dcat_id"]]["details"][$v["detail_id"]] = array(
+                    "detail_id"     => $v["detail_id"],
+                    "detail_name"   => $v["detail_name"] . ((strlen($v["detail_no"]))?" [" . $v["detail_no"] . "]":""),
+                );
+            }
+        }
+        $data = $dcategories_plain;
+    }
+
     return array($data, $params, $total);
 }
 

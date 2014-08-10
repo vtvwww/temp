@@ -38,6 +38,20 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                         $view->assign("f_optgroups", $pump_series);
                         $view->assign("f_optgroup_label", "pt_name_short");
                         $view->assign('f_simple_2', true);
+
+                    }elseif ($_REQUEST["item_type"] == "D"){
+                        $p = array(
+                            'only_active' => true,
+                            'group_by_categories'=>true,
+                        );
+                        list($category_details) = fn_uns__get_details($p);
+                        $view->assign("f_type", "select_by_group");
+                        $view->assign("f_options", "details");
+                        $view->assign("f_option_id", "detail_id");
+                        $view->assign("f_option_value", "detail_name");
+                        $view->assign("f_optgroups", $category_details);
+                        $view->assign("f_optgroup_label", "dcat_name");
+                        $view->assign('f_simple_2', true);
                     }
                 }
                 $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
@@ -143,6 +157,10 @@ if($mode == 'update'){
     // Серии насосов
     list($pump_series) = fn_uns__get_pump_series(array('only_active' => true,'group_by_types'=>true, "view_in_plans"=>"Y",));
     $view->assign('pump_series', $pump_series);
+
+    // Детали по категориям
+    list($category_details) = fn_uns__get_details(array('only_active' => true,'group_by_categories'=>true,));
+    $view->assign('category_details', $category_details);
 }
 
 if($mode == 'delete'){
