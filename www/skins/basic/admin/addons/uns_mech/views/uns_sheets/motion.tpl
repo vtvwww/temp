@@ -257,7 +257,7 @@
                 {if ($document_type_name == "PVP") or ($document_type_name == "VCP") or ($document_type_name == "VCP_COMPLETE")}
                     {assign var="f1__default" value=true}
                     {assign var="f2__default" value=false}
-                    {if ($sheet.target_object == 10 and $document_type_name == "VCP") or ($sheet.target_object == 14 and $document_type_name == "VCP_COMPLETE")}
+                    {if ($smarty.request.o_id == 14 and $document_type_name == "PVP") or ($sheet.target_object == 10 and $document_type_name == "VCP") or ($sheet.target_object == 14 and $document_type_name == "VCP_COMPLETE")}
                         {assign var="f1__default" value=false}
                         {assign var="f2__default" value=true}
                     {/if}

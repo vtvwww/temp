@@ -12,13 +12,16 @@ body:before {
   }
 
 .content-table{
-    max-width: 1020px;
-    min-width: 960px;
+    background-color: #ffffff;
+    max-width: 990px;
+    min-width: 990px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
 }
 
 #header{
-    max-width: 1020px;
+    max-width: 990px;
     min-width: 960px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
 }
 
 .form-field, .search-field{
@@ -341,8 +344,8 @@ input.radio:checked + label.radio {
 /*******************************************************************************/
 /*******************************************************************************/
 a.uns-tool{
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
     display: block;
 }
 
@@ -504,13 +507,21 @@ input.q_changed{
         box-shadow: none;
     }
 
-    .side-menu
+      .side-menu
     , .header-wrap
     , .buttons-container
     , .mainbox-breadcrumbs
     , span.action-add
+    , .edit_sales
+    , .section-border
+    , div.mainbox-breadcrumbs
     {
         display: none;
+    }
+
+    div#main_column{
+        box-shadow: none;
+        margin-top: -10px;
     }
 
 }

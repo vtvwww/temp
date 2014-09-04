@@ -315,7 +315,7 @@ class plan_of_sales {
         // Размеры графика
         $size = array("w" => 460, "h" => 300);
         $margin = 20;
-
+        $month_arab = array(1=>"I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII");
 
         /* Create and populate the pData object */
         $MyData = new pData();
@@ -425,11 +425,11 @@ class plan_of_sales {
                     "FontFactor"            => 5,
                 )
             );
-
-
             $MyData->removeSerie($k_s);
-//            $MyData->removeSerie($k_s . "_export");
         }
+
+        // Линия указывающая на текущий месяц
+        $myPicture->drawXThreshold($month_arab[$data["ref_month"]],array("ValueIsLabel"=>TRUE,"Alpha"=>100,"Ticks"=>2, "Weight"=>0.4,));
 
         // Добавить на график расчетное значение плана продаж на расчетный месяц
         $d = array(VOID, VOID, VOID, VOID, VOID, VOID, VOID, VOID, VOID, VOID, VOID, VOID);

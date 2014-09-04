@@ -114,19 +114,3 @@
 		</li>*}
 	</ul>
 <!--header--></div></div>
-
-{literal}
-<script type="text/javascript">
-//<![CDATA[
-$(function() {
-	if ($.isMobile()) {
-		$("#menu li a").click(function(){
-		});
-		$("#top_menu li a").click(function(){
-		});
-		$('#header').css('padding-top', '15px !important'); 
-	}
-});
-//]]>
-</script>
-{/literal}

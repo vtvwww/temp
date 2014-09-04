@@ -64,10 +64,10 @@
                    {*<td> *}{*ПОЗИЦИЙ*}
                        {*{$i.count}*}
                    {*</td>*}
-                   <td class="b1_l">
+                   <td class="b1_l center">
                        {$i.total_quantity}
                    </td>
-                   <td class="b1_l">
+                   <td class="b1_l right">
                        <nobr>{$i.total_weight|number_format:1:".":" "}</nobr>
                    </td>
                    <td class="nowrap right b1_l">
@@ -96,7 +96,7 @@
 
    {capture name="tools"}
        {include file="common_templates/tools.tpl" tool_href="`$controller`.add"    prefix="top" link_text="Добавить ЗАКАЗ"  hide_tools=true}
-       {include file="common_templates/tools.tpl" tool_href="`$controller`.add"    prefix="top" link_text="Добавить КЛИЕНТА"  hide_tools=true}
+       {include file="common_templates/tools.tpl" tool_href="uns_customers.add"    prefix="top" link_text="Добавить КЛИЕНТА"  hide_tools=true}
    {/capture}
 
 

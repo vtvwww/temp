@@ -18,14 +18,14 @@
             <th class="center" width="3%">
                 <input type="checkbox" name="check_all" value="Y" title="{$lang.check_uncheck_all}" class="checkbox cm-check-items" /></th>
             <th width="50px">Кол-во</th>
-            <th width="95%">
+            <th width="55%">
                 <div class="float-left">
                     <img src="{$images_dir}/plus_minus.gif" width="13" height="12" border="0" alt="{$lang.expand_collapse_list}" title="{$lang.expand_collapse_list}" id="on_cat" class="hand cm-combinations{if $expand_all} hidden{/if}" />
                     <img src="{$images_dir}/minus_plus.gif" width="13" height="12" border="0" alt="{$lang.expand_collapse_list}" title="{$lang.expand_collapse_list}" id="off_cat" class="hand cm-combinations{if !$expand_all} hidden{/if}" />
                 </div>
                 &nbsp;{$lang.name}
             </th>
-            <th width="3%">Поз.</th>
+            <th width="10%">Поз.</th>
             <th width="30%">&nbsp;</th>
         </tr>
     {/if}
@@ -41,7 +41,7 @@
         <td width="50px">
             <a href="{"uns_details.manage?dcat_id=`$id`"|fn_url}" class="uns-num-items{if $category.q_ty==0} zero {/if}">{$category.q_ty} шт.</a>
         </td>
-        <td width="100%">
+        <td width="55%">
             {strip}
             <span class="strong" style="padding-left: {$shift}px;">
                 {if $category.has_children || $category.subcategories}
@@ -52,7 +52,7 @@
             </span>
             {/strip}
         </td>
-        <td width="3%">
+        <td width="10%" class="right">
             {$category.dcat_position}
         </td>
         <td width="30%" class="nowrap right">

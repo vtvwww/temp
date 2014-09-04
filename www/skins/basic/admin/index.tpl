@@ -6,10 +6,21 @@
 {strip}
 <title>
 {if $page_title}
-{$page_title}
+    {$page_title}
 {else}
 {*{if $navigation.selected_tab}{$lang[$navigation.selected_tab]}{if $navigation.subsection} :: {$lang[$navigation.subsection]}{/if}{if $navigation.subitem} :: {$lang[$navigation.subitem]}{/if} - {/if}{$lang.admin_panel}*}
-{if $navigation.selected_tab}{if $navigation.selected_tab!="uns"}{$lang[$navigation.selected_tab]}{/if}{if $navigation.subsection}{if $navigation.selected_tab!="uns"} :: {/if}{$lang[$navigation.subsection]}{/if}{if $navigation.subitem} :: {$lang[$navigation.subitem]}{/if} - {/if}{$lang.admin_panel}
+{*{if $navigation.selected_tab}{if $navigation.selected_tab!="uns"}{$lang[$navigation.selected_tab]}{/if}{if $navigation.subsection}{if $navigation.selected_tab!="uns"} :: {/if}{$lang[$navigation.subsection]}{/if}{if $navigation.subitem} :: {$lang[$navigation.subitem]}{/if} - {/if}{$lang.admin_panel}*}
+    {if $navigation.selected_tab}
+        {*{if $navigation.selected_tab!="uns"}{$lang[$navigation.selected_tab]}{/if}*}
+        {*{if $navigation.subsection}*}
+            {*{if $navigation.selected_tab!="uns"} :: {/if}*}
+            {$lang[$navigation.subsection]}
+        {*{/if}*}
+        {if $navigation.subitem} :: {$lang[$navigation.subitem]}{/if}
+        {*{$lang[$navigation.subitem]}*}
+        {*-*}
+    {/if}
+    {*{$lang.admin_panel}*}
 {/if}
 </title>
 {/strip}

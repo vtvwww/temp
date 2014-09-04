@@ -107,18 +107,59 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
         }
 
         // подготовка данных для smarty
-        if ($params["data_for_tmp"]){
-            if (is__array($items)){
-                foreach ($items as $k_o=>$v_o){
-                    foreach ($v_o as $i){
-                        $data[$k_o]["data_for_tmp"][$i["item_type"]][$i["item_id"]] = $i;
-                    }
-                }
+//        if ($params["data_for_tmp"]){
+//            if (is__array($items)){
+//                foreach ($items as $k_o=>$v_o){
+//                    foreach ($v_o as $i){
+//                        if (is__array($data[$k_o]["data_for_tmp"][$i["item_type"]][$i["item_id"]])){
+//                            $data[$k_o]["data_for_tmp"][$i["item_type"]][$i["item_id"]]["quantity"] += $i["quantity"];
+//                        }else{
+//                            $data[$k_o]["data_for_tmp"][$i["item_type"]][$i["item_id"]] = $i;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+    }
+
+    // Объединить заказы по Украине
+    if ($params['group_orders'] == "UKR"){
+        $customers_of_ukr = array_shift(fn_uns__get_customers(array("to_export"=>"N",))); // Клиенты только по Украине
+        $customers_of_ukr_keys = array_keys($customers_of_ukr);
+        $data_temp["ukr"]["order_id"]   = "ukr";
+        $data_temp["ukr"]["customer_id"]= "ukr";
+        $data_temp["ukr"]["items"]      = array();
+        foreach ($data as $k_d=>$v_d){
+            if (in_array($v_d["customer_id"], $customers_of_ukr_keys)){
+                $data_temp["ukr"]["items"] = array_merge($data_temp["ukr"]["items"], $v_d["items"]);
+            }else{
+                $data_temp[$k_d] = $v_d;
             }
+        }
+//        fn_print_r($customers_of_ukr);
+//        fn_print_r($data_temp);
+//        fn_print_r($data);
+        if (count($data_temp["ukr"]["items"])){
+            $data = $data_temp;
         }
     }
 
     if ($params["total_weight_and_quantity"]){
+        $weight     = array("pumps"=>0, "details"=>0,);
+        $quantity   = array("pumps"=>0, "details"=>0,);
+        foreach ($data as $order_id=>$order_data){
+            if (is__array($order_data["items"])){
+                foreach ($order_data["items"] as $i){
+                    if ($i["item_type"] == "D"){
+                        $data[$order_id]["quantity"]["details"] += $i["quantity"];
+                        $data[$order_id]["weight"]  ["details"] += $i["quantity"]*$i["weight"];
+                    }elseif (in_array($i["item_type"], array("P", "PF", "PA"))){
+                        $data[$order_id]["quantity"]["pumps"]   += $i["quantity"];
+                        $data[$order_id]["weight"]  ["pumps"]   += $i["quantity"]*$i["weight"];
+                    }
+                }
+            }
+        }
         $sql = db_quote(UNS_DB_PREFIX . "SELECT sum(weight*quantity) as total_weight, sum(quantity) as total_quantity, order_id FROM ?:_acc_order_items WHERE order_id IN (?n) GROUP BY order_id", array_keys($data));
         $totals = db_get_hash_array($sql, "order_id");
         foreach ($data as $k_d=>$v_d){

@@ -301,6 +301,28 @@ function fn_uns__upd_plan_items($id, $data){
 }
 
 /**
+ * Обновить позицию плана производства при редактировании из ПЛАНА ПРОИЗВОДСТВА
+ */
+function fn_uns__upd_plan_item($month, $year, $data){
+    if (is__more_0($month, $year) and !is__array($data)) return false;
+    $data = trim__data($data);
+    $m_table = "?:_plan_items";
+    if (is__more_0(db_get_field(UNS_DB_PREFIX . "SELECT pi_id FROM $m_table WHERE pi_id = ?i", $data['pi_id']))){
+        $v = array(
+            'ukr_curr'      => is__more_0($data['ukr_curr'])?$data['ukr_curr']:0,
+            'ukr_next'      => is__more_0($data['ukr_next'])?$data['ukr_next']:0,
+            'exp_curr'      => is__more_0($data['exp_curr'])?$data['exp_curr']:0,
+            'exp_next'      => is__more_0($data['exp_next'])?$data['exp_next']:0,
+        );
+        db_query(UNS_DB_PREFIX . "UPDATE $m_table SET ?u WHERE pi_id = ?i", $v, $data['pi_id']);
+    }
+    return true;
+}
+
+
+
+
+/**
  * Обновить информацию о плане производства
  * @param $id
  * @param $data

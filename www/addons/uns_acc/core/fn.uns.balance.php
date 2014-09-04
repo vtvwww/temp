@@ -168,6 +168,13 @@ function fn_uns__get_balance($params = array(), $time=false){
         $cond__items .= db_quote(" AND uns_details.dcat_id in (?n) ", $params['dcat_id_array']);
     }
 
+    // Категории материалов
+    if (is__array($params['mcat_id_array'] = to__array($params['mcat_id']))){
+        $cond__tables = " , uns_materials ";
+        $cond__items .= db_quote(" AND uns__acc_document_items.item_id = uns_materials.material_id ");
+        $cond__items .= db_quote(" AND uns_materials.mcat_id in (?n) ", $params['mcat_id_array']);
+    }
+
     // =========================================================================
     // JOINS
     // =========================================================================
@@ -399,6 +406,7 @@ function fn_uns__get_balance($params = array(), $time=false){
                             $mcat_items[$mcats_k]["items"][$materials_k]["accessory_pump_series"]   = $materials_v["accessory_pump_series"];
                             $mcat_items[$mcats_k]["items"][$materials_k]["accessory_pump_manual"]   = $materials_v["accessory_manual"];     // M - вручную
                             $mcat_items[$mcats_k]["items"][$materials_k]["weight"]                  = fn_fvalue($materials_v["accounting_data"]["weight"],2);
+                            $mcat_items[$mcats_k]["items"][$materials_k]["u_name"]                  = $materials_v["accounting_data"]["u_name"];
                             $mcat_items[$mcats_k]["items"][$materials_k]["mcat_id"]                 = $mcats_v["mcat_id"];
 
                             if (is__array($data[$materials_k])){
@@ -992,6 +1000,71 @@ function fn_uns__get_balance_mc_sk_su($params, $mc=true, $sk=true, $su=false, $p
 
     return array($res, $p);
 }
+
+
+//******************************************************************************
+// Запрос баланса по Складу Метизов и Подшипников
+function fn_uns__get_balance_store($params){
+    $res = array();
+    $p = array(
+        "plain"                     => true,
+        "all"                       => true,
+        "item_type"                 => "M",
+        "check_dcat_id"             => true,
+        "add_item_info"             => true,
+        "with_material_info"        => true,
+        "view_all_position"         => "Y",
+        "total_balance_of_details"  => "Y",
+        "with_weight"               => true,
+        "prihod_doc_types"          => array("'AIO'", "'MCP'", "'PO'",),
+        "rashod_doc_types"          => array("'AIO'", "'MCP'",),
+    );
+
+    $p = array_merge($p, $params);
+    if (fn_is_empty($p["mcat_id"])){
+        fn_set_notification("E", "Укажите категорию материалов", "");
+        return array(array(), $p);
+    }
+    if (!is__more_0($p["o_id"])){
+        fn_set_notification("E", "Укажите склад", "");
+        return array(array(), $p);
+    }
+
+    $p["cond_prih"]    = " AND (
+                                 (
+                                        uns__acc_document_types.type        = 'PO'
+                                    and uns__acc_document_items.motion_type like '%I%'
+                                 )
+                                 OR
+                                 (
+                                        uns__acc_document_types.type        = 'MCP'
+                                    and uns__acc_document_items.motion_type like '%I%'
+                                 )
+                                 OR
+                                 (
+                                        uns__acc_document_types.type        = 'AIO'
+                                    and uns__acc_document_items.change_type = 'POZ'
+                                    and uns__acc_document_items.motion_type like '%I%'
+                                 )
+                            )
+                            ";
+    $p["cond_rash"]    = " AND (
+                                 (
+                                        uns__acc_document_types.type        = 'MCP'
+                                    and uns__acc_document_items.motion_type like '%O%'
+                                 )
+                                 OR
+                                 (
+                                        uns__acc_document_types.type        = 'AIO'
+                                    and uns__acc_document_items.change_type = 'NEG'
+                                    and uns__acc_document_items.motion_type like '%O%'
+                                 )
+                            )";
+    list($res, , $time) = fn_uns__get_balance($p, true);
+
+    return array($res, $p);
+}
+
 
 
 /**

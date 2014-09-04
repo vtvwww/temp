@@ -11,7 +11,7 @@ html {
 	overflow-y: scroll;
 }
 body {
-	background: #f3f3f3 url(images/header_bg.gif) repeat-x top;
+	background: #dedede url(images/main_bg.png) top;
 }
 body.nobackground {
 	background: none;
@@ -264,14 +264,21 @@ div.cm-sortable, div#addons_list, div#statuses_list, div#update_features_list, d
 }
 .mainbox-breadcrumbs {
 	color: #8c8c8c;
-	margin: 0 auto 15px;
-	padding-left: 30px;
-	padding-right: 250px;
+	margin: 0;
+	padding-left: 20px;
+	/*padding-right: 250px;*/
 	max-width: 1305px;
-	min-height: 5px;
+	min-height: 0;
 }
 .mainbox-breadcrumbs a, .mainbox-title-container .float-right a {
 	color: #8c8c8c;
+    /*font-weight: bold;*/
+}
+
+.mainbox-breadcrumbs a{
+    height: 30px;
+    display: block;
+    line-height: 30px;
 }
 /* Corrections for the Veiws/Tools & Extra tools */
 .mainbox-title-container {
@@ -1220,8 +1227,8 @@ input[type=checkbox].cm-failed-field {
 /* Main markup */
 .header-wrap {
 	width: 100%;
-	background: url(images/header_bg.gif) repeat-x top;
-	height: 95px;
+	/*background: url(images/header_bg.gif) repeat-x top;*/
+	height: 73px;
 	position: relative;
 	z-index: 21;
 }
@@ -1231,7 +1238,7 @@ input[type=checkbox].cm-failed-field {
 	margin: 0 auto;
 	max-width: 1321px;
 	min-width: 960px;
-	height: 68px;
+	height: 30px;
 }
 #header .float-left a.select-link.cm-combination {
 	color: #daf1f9;
@@ -1243,7 +1250,7 @@ input[type=checkbox].cm-failed-field {
 	color: #fff;
 	margin-left: 15px;
 	font-size: 11px;
-	line-height: 17px;
+	line-height: 8px;
 	padding-top: 9px;
 }
 #header .float-left > a {
@@ -1257,9 +1264,9 @@ input[type=checkbox].cm-failed-field {
 	border-color: #fff;
 }
 #logo {
-	padding: 8px 0 0 30px;
-	float: left;
-	height: 29px;
+    float: left;
+    height: 26px;
+    padding: 4px 0 0 9px;
 }
 #logo a {
 	font-size: 14px;
@@ -1276,10 +1283,10 @@ input[type=checkbox].cm-failed-field {
 	background-position: right -30px;
 }
 #top_quick_links {
-	float: right;
-	white-space: nowrap;
-	padding: 10px 25px 0 0;
-	line-height: 15px;
+    float: right;
+    line-height: 15px;
+    padding: 5px 0 0;
+    white-space: nowrap;
 }
 #top_quick_links div {
 	float: left;
@@ -1321,7 +1328,7 @@ input[type=checkbox].cm-failed-field {
 .content-table {
 	max-width: 1320px;
 	min-width: 960px;
-	display: block;
+	/*display: block;*/
 	margin: 0px auto;
 }
 .content {
@@ -1331,17 +1338,17 @@ input[type=checkbox].cm-failed-field {
 	min-height: 370px;
 }
 div#main_column {
-	margin: 0 30px 50px;
+	margin: 0;
 	border: 1px solid #d4d4d4;
 	border-color: #e0e0e0 #d4d4d4 #bbb;
 	background-color: #ffffff;
 	padding: 7px 21px 3px;
-	-moz-border-radius: 6px;
-	-webkit-border-radius: 6px;
-	border-radius: 6px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
-    -moz-box-shadow: 0 4px 15px rgba(0,0,0,0.25);
-    -webkit-box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+	/*-moz-border-radius: 6px;*/
+	/*-webkit-border-radius: 6px;*/
+	/*border-radius: 6px;*/
+    /*box-shadow: 0 4px 15px rgba(0,0,0,0.25);*/
+    /*-moz-box-shadow: 0 4px 15px rgba(0,0,0,0.25);*/
+    /*-webkit-box-shadow: 0 4px 15px rgba(0,0,0,0.25);*/
 }
 /*div#right_column {
 	margin: 0 0 0 15px;
@@ -1362,8 +1369,9 @@ div#main_column {
 	list-style: none;
 	width: 100%;
 	height: 39px;
-	padding: 0px 30px 0px 30px;
-	background: #e5e5e5 url(images/mm_bg.gif) repeat-x;
+	padding: 0px 0px 0px 0px;
+	background-color: transparent;
+	/*background: #e5e5e5 url(images/mm_bg.gif1) repeat-x;*/
 	clear: both;
 }
 #menu li, #alt_menu li {
@@ -1387,7 +1395,8 @@ div#main_column {
 	text-decoration: none;
 	padding: 8px 18px 10px;
 	cursor:default;
-	text-transform: capitalize;
+    font-weight: bold;
+	/*text-transform: capitalize;*/
 	text-shadow:1px 1px #ebebeb;
 }
 
@@ -1452,7 +1461,8 @@ div#main_column {
     -webkit-box-shadow: 0 3px 3px rgba(0,0,0,0.25);
 }
 .dropdown-second-level {
-	margin: 0 auto;
+	/*margin: 0 auto;*/
+    margin: -5px 5px;
 	float: left;
 	position: absolute;
 	left: -999em;/* Hides the drop down */
@@ -1506,8 +1516,13 @@ div#main_column {
 	background-image: none;
 }
 #menu li:hover div a:hover, #menu li.active:hover div a:hover, #alt_menu li:hover div a:hover, #alt_menu li.active:hover div a:hover {
-	color: #0987b1;
+	/*color: #0081C1;*/
 	cursor: pointer;
+    background-color: #0081c2;
+    background-image: linear-gradient(to bottom, #08c, #0077b3);
+    background-repeat: repeat-x;
+    color: #fff;
+    text-decoration: none;
 }
 #menu li:hover div a .hint {
 	display: block;
@@ -1548,7 +1563,7 @@ div#main_column {
 	margin: 0;
 }
 #menu li:hover ul li a, #menu li.active ul li a, #alt_menu li:hover ul li a, #alt_menu li.active ul li a {
-	padding-left: 35px;
+	padding-left: 15px;
 	text-shadow: none;
 }
 #menu li ul li a, #alt_menu li ul li a {
@@ -1563,7 +1578,8 @@ div#main_column {
 	z-index: 110;
 }
 #menu li ul li.sub-level:hover {
-	background: #ddf3fa url(images/icons/menu_sub_level_hover.gif) no-repeat 238px 14px;
+	/*background: #ddf3fa url(images/icons/menu_sub_level_hover.gif) no-repeat 238px 14px;*/
+	/*background: transparent;*/
 }
 #menu li ul li.sub-level.active, #menu li ul li.sub-level.active:hover {
 	background: #d0d0d0 url(images/icons/menu_sub_level_hover.gif) no-repeat 238px 14px;
@@ -1588,7 +1604,7 @@ div#main_column {
 	background-color: #d0d0d0;
 }
 #menu li ul li.blank a, #menu li.active ul li.blank a {
-	background: transparent url(images/icons/menu/blank.png) 11px 10px no-repeat;
+	background: transparent /*url(images/icons/menu/blank.png) 11px 10px no-repeat*/;
 }
 #menu li ul li.view_orders a, #menu li.active ul li.view_orders a {
 	background: url(images/icons/menu/view_orders.png) 11px 10px no-repeat;
@@ -1753,6 +1769,7 @@ div#main_column {
 	float: right;
 	position: relative;
 	z-index: 11;
+    height: 10px;
 }
 #top_menu #alt_menu {
 	background: none;
@@ -1992,7 +2009,8 @@ div#main_column {
 #navigation ul {
 	list-style-type: none;
 	width: 186px;
-	margin-left: 30px;
+	margin-left: 0;
+    margin-top: 12px;
 }
 #navigation li span {
 	display: block;
@@ -3027,7 +3045,7 @@ ul.statistic-list .total em {
 	border-radius: 6px;
 }
 #main_column_login h1 {
-	margin: -70px auto 0 0;
+	margin: -49px 0 0 -43px;
 	position: absolute;
 	padding: 17px 23px 15px 0px;
 	font-size: 16px;
@@ -3079,8 +3097,14 @@ ul.statistic-list .total em {
 	margin: 0 -8px 0 0;
 }
 #simple_view {
-	background-image: none;
+	/*background-image: none;*/
 }
+#simple_view table.content-table {
+    height: 0;
+    background-color: transparent;
+    box-shadow: none;
+}
+
 /* /Login */
 
 /* Upgrade center */
@@ -3510,7 +3534,7 @@ span.action-add a {
 	display: inline-block;
 	margin-left: -7px;
 	border: 1px solid #cfcfcf;
-	text-transform: capitalize;
+	/*text-transform: capitalize;*/
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;

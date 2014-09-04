@@ -81,6 +81,10 @@ function fn_uns__get_customers($params = array(), $items_per_page = 0){
         $condition .= db_quote(" AND $m_table.ps_id in (?n)", $params['ps_id_array']);
     }
 
+    if (in_array($params['to_export'], array("N", "Y"))){
+        $condition .= db_quote(" AND $m_table.to_export = ?s ", $params['to_export']);
+    }
+
     if ($params['only_active']) {
         $condition .= db_quote(" AND $m_table.status in ('A') ");
     } else {

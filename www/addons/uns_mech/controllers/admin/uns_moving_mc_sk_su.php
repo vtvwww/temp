@@ -268,7 +268,7 @@ if($mode == 'manage'){
         "with_count_items"  => true,
         "object_name"       => true,
         "packages"          => array(UNS_PACKAGE_TYPE__N),
-        "o_id_exclude"      => 8, // кроме СКЛАДА ЛИТЬЯ
+        "o_id_exclude"      => array(8, 6), // кроме СКЛАДА ЛИТЬЯ и склада Метизов и Подшипников
     );
 
     if ($_REQUEST["include_sheets"] == "Y") $p["packages"][] = UNS_PACKAGE_TYPE__SL;

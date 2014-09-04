@@ -3,17 +3,17 @@
 {include file="addons/uns/views/uns_pumps/components/search_form.tpl" dispatch="`$controller`.manage"}
 <form action="{""|fn_url}" method="post" name="{$controller}_form" class="{if ""|fn_check_form_permissions} cm-hide-inputs{/if}">
     {include file="common_templates/pagination.tpl"}
-    <table cellpadding="0" cellspacing="0" border="0" width="100%" class="table">
+    <table cellpadding="0" cellspacing="0" border="0" class="table">
         <tr>
-            <th width="5%">
+            <th width="5px">
                 <input type="checkbox" name="check_all" value="Y" title="{$lang.check_uncheck_all}" class="checkbox cm-check-items" />
             </th>
-            <th width="1%">&nbsp;</th>
-            <th width="1%">&nbsp;</th>
-            <th width="100%">{$lang.uns_pumps}</th>
+            <th width="1px">&nbsp;</th>
+            <th width="1px">&nbsp;</th>
+            <th width="500px">{$lang.uns_pumps}</th>
             {*<th width="5%">Н/Р/Д</th>*}
-            <th width="5%">Статус</th>
-            <th width="5%">Поз.</th>
+            <th width="10px">Ст.</th>
+            <th width="60px">Поз.</th>
             <th>&nbsp;</th>
         </tr>
         {foreach from=$pumps item=i}

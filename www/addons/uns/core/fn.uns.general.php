@@ -92,7 +92,7 @@ function fn_uns_defaul_functions($controller, $mode) {
             break;
 
 
-        case "foundry_get_balance":
+//        case "foundry_get_balance":
         case "foundry_get_report":
             Registry::set('navigation.selected_tab', 'uns_foundry');
             break;

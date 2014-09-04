@@ -24,6 +24,7 @@
                     f_name="name"
                     f_value=$i.name
                     f_description="Полное имя"
+                    f_tooltip="<страна> : <город> : <полное наименование>"
                 }
 
                 {include file="addons/uns/views/components/get_form_field.tpl"
@@ -53,6 +54,14 @@
                     f_default="0"
                     f_description="Позиция"
                 }
+
+                <div class="form-field">
+                    <label class="cm-required " for="to_export">Куда отгрузка:</label>
+                    <select id="to_export" name="data[to_export]">
+                        <option value="N">по Украине</option>
+                        <option value="Y" {if $i.to_export == "Y"}selected="selected"{/if}>за пределами Украины (экспорт)</option>
+                    </select>
+                </div>
 
                 {include file="addons/uns/views/components/get_form_field.tpl"
                     f_id=$id

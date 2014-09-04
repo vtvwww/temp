@@ -82,7 +82,7 @@
                         f_type  ="checkbox"
                         f_id    ="analisys_of_production_plan"
                         f_name  ="analisys_of_production_plan"
-                        f_value =$search.analisys_of_production_plan|default:"N"
+                        f_value =$search.analisys_of_production_plan|default:"Y"
                         f_simple=true
                     }
                 </div>

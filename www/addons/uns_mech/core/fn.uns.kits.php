@@ -63,6 +63,14 @@ function fn_acc__get_kits($params = array(), $items_per_page = 0){
         $condition .= db_quote(" AND $m_tbl.status != 'Z' ");
     }
 
+    if (in_array($params["status"], array("K", "U", "Z"))){
+        $condition .= db_quote(" AND $m_tbl.status = ?s ", $params["status"]);
+    }
+
+    if ($params["status"] == "not_Z"){
+        $condition .= db_quote(" AND $m_tbl.status != 'Z' ");
+    }
+
     // ОТСЛЕЖИВАНИЕ ПАРТИЙ - ЗАДЕЛ
     if ($params["tracking_type"] == "zadel" and is__more_0($params["tracking_time_end"])){
         $condition .= db_quote(" AND
@@ -164,6 +172,24 @@ function fn_acc__get_kits($params = array(), $items_per_page = 0){
         );
 
         if (($params["tracking_type"] == "zadel" or $params["tracking_type"] == "done") and is__more_0($params["tracking_time_begin"], $params["tracking_time_end"])){
+            // т.к. необходим процесс отслеживания выполнения партии насосов,
+            // то может быть ситуация, когда необходимо отслеживать уже ранее
+            // частично закрытую партию, поэтому необходимо предварительно
+            // вычесть ранее выпущенные насосы до интервала времени отслеживания
+            $p["time_from"] = $params["tracking_time_begin"]-365*24*60*60; // минус 1 год, так с пионерским запасом
+            $p["time_to"]   = $params["tracking_time_begin"]-1;
+            list($documents) = fn_uns__get_documents($p);
+            if (is__array($documents)){
+                foreach ($documents as $d){
+                    foreach ($d["items"] as $i){
+                        if (in_array($i["item_type"], array("P", "PF", "PA"))){
+                            $data[$d["package_id"]]["p_quantity"] -= $i["quantity"];
+                        }
+                    }
+                }
+            }
+
+            // требуемый интервал времени для отслеживания
             $p["time_from"] = $params["tracking_time_begin"];
             $p["time_to"]   = $params["tracking_time_end"];
         }

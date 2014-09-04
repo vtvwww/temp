@@ -40,7 +40,9 @@ function fn_uns__get_enabled_objects($document_type){
     if (!is__more_0($document_type)) return array();
     $obj = array(
         DOC_TYPE__PO    => array(   // ПРИХОДНЫЙ ОРДЕР
-
+            6 => array(
+                0 => true,
+            ),              // СКЛАД МЕТИЗОВ И ПОДШИПНИКОВ
         ),
         DOC_TYPE__VLC   => array(   // ВЫПУСК ЛИТ. ЦЕХА
             7 => array(             // Лит цех

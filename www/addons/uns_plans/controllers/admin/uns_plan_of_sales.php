@@ -19,6 +19,18 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         $suffix = "update&plan_id={$id}&selected_section={$_REQUEST['selected_section']}";
     }
 
+    // обновить план продаж по конкретному насосу со страницы ПЛАН ПРОИЗВОДСТВА
+    if($mode == 'update_ps_plan'){
+        fn_uns__upd_plan_item($_REQUEST["month"], $_REQUEST["year"], $_REQUEST['data']);
+//        if($id !== false){
+//            fn_set_notification("N", $_REQUEST['data']['o_name'], UNS_DATA_UPDATED);
+//        }
+//        fn_delete_notification('changes_saved');
+//        $suffix = "update&plan_id={$id}&selected_section={$_REQUEST['selected_section']}";
+        return array(CONTROLLER_STATUS_REDIRECT, "uns_plan_of_mech_dep" . "." . "manage"."?mark_id=".$_REQUEST["data"]["item_id"]);
+
+    }
+
 
     if (defined('AJAX_REQUEST') and $mode == 'plan_items'){
         switch ($_REQUEST['event']){
@@ -269,6 +281,151 @@ if ($mode == "tracking") {
         $view->assign('percs', $percs);
     }
 }
+
+if ($mode == "edit_sales" and defined('AJAX_REQUEST')) {
+    //--------------------------------------------------------------------------
+    // ПОЛУЧЕНИЕ СТАТИСТИКИ/ГРАФИКА ПРОДАЖ
+    //--------------------------------------------------------------------------
+    $graphs_key = substr(md5(microtime().mt_rand()), 0, 10);
+    $params = array(
+        "ps_id"                         => $_REQUEST["item_id"],
+        "month"                         => $_REQUEST["month"],
+        "year"                          => $_REQUEST["year"],
+        "week_supply"                   => 0,
+        "koef_plan_prodazh"             => 0,
+        "graphs_key"                    => $graphs_key,
+        "display_sale_of_current_month" => true,
+    );
+
+    list($pump_series, $sales, $sales_ukr_exp, $analysis, $plan, $ps_order) = $pl->calculation($params);
+    $view->assign('pump_series',    $pump_series);
+    $view->assign('sales',          $sales);
+    $view->assign('analysis',       $analysis);
+    $view->assign('plan',           $plan);
+    $view->assign('ps_order',       $ps_order);
+    $view->assign('search',         $_REQUEST);
+    $view->assign('ps_id',          $_REQUEST["item_id"]);
+    $view->assign("graphs_key",     $graphs_key);
+
+    //--------------------------------------------------------------------------
+    // СПИСОК ИМЕЮЩИХСЯ ЗАКАЗОВ ПО ВЫБРАННОЙ СЕРИИ
+    //--------------------------------------------------------------------------
+    list($customers) = fn_uns__get_customers();
+    $view->assign('customers', $customers);
+
+    $orders = null;
+    $p = array(
+        "with_items"            =>true,
+        "remaining_time"        =>true,
+        "date_finished_begin"   => strtotime($_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1"),             // Временной диапазон текущего и следующего месяца начало
+        "date_finished_end"     => strtotime($_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1 +2 month")-1,  // Временной диапазон текущего и следующего месяца конец
+        "sorting_schemas"       => "view_in_sgp",
+    );
+    $all_orders = array_shift(fn_acc__get_orders($p));
+    if (is__array($all_orders)){
+        foreach ($all_orders as $order_id=>$order){
+            foreach ($order["items"] as $oi_id=>$item){
+                if (in_array($item["item_type"], array("P", "PF", "PA")) and $item["ps_id"] == $_REQUEST["item_id"]){
+                    $ukr_exp = ($customers[$order["customer_id"]]["to_export"] == "Y")?"EXP":"UKR";
+                    $orders[$ukr_exp][$order_id]["comment"]             = $order["comment"];
+                    $orders[$ukr_exp][$order_id]["status"]              = $order["status"];
+                    $orders[$ukr_exp][$order_id]["date_updated"]        = $order["date_updated"];
+                    $orders[$ukr_exp][$order_id]["date_finished"]       = $order["date_finished"];
+                    $orders[$ukr_exp][$order_id]["remaining_time"]      = $order["remaining_time"];
+                    $orders[$ukr_exp][$order_id]["customer_id"]         = $order["customer_id"];
+                    $orders[$ukr_exp][$order_id]["customer_name"]       = $customers[$order["customer_id"]]["name"];
+                    $orders[$ukr_exp][$order_id]["customer_short_name"] = $customers[$order["customer_id"]]["name_short"];
+                    $orders[$ukr_exp][$order_id]["items"][$oi_id]       = $item;
+                }
+            }
+        }
+    }
+    $view->assign('orders', $orders);
+
+    //--------------------------------------------------------------------------
+    // ПРОДАЖИ ЗА ТЕКУЩИЙ МЕСЯЦ
+    //--------------------------------------------------------------------------
+    list($pumps) = fn_uns__get_pumps(array("only_active"=>true, "ps_id"=>$_REQUEST["item_id"],));
+    $params = array(
+        "time_from"     => strtotime($_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1"),
+        "time_to"       => strtotime($_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1 +1 month")-1,
+        "type"          => 7,               // Расходные ордера
+        "o_id"          => 19,   // Склад готовой продукции АЛЕКСАНДРИЯ
+        "only_active"   => true,
+        "item_type"     => array("P", "PF", "PA"),
+        "item_id"       => array_keys($pumps),
+        "with_items"    => true,
+        "info_category" => false,
+        "info_item"     => true,
+        "info_unit"     => false,
+        "sorting_schemas"=>"view_asc",
+    );
+    list($docs) = fn_uns__get_documents($params);
+//    fn_print_r($docs);
+
+    $sales = null;
+    $pumps_keys = array_keys($pumps);
+    foreach ($docs as $document_id=>$d){
+        foreach ($d["items"] as $di_id=>$item){
+            if (in_array($item["item_type"], array("P", "PF", "PA")) and in_array($item["item_id"], $pumps_keys)){
+                $ukr_exp = ($customers[$d["customer_id"]]["to_export"] == "Y")?"EXP":"UKR";
+                $sales[$ukr_exp][$document_id]["date"]                = $d["date"];
+                $sales[$ukr_exp][$document_id]["customer_id"]         = $d["customer_id"];
+                $sales[$ukr_exp][$document_id]["customer_name"]       = $customers[$d["customer_id"]]["name"];
+                $sales[$ukr_exp][$document_id]["customer_short_name"] = $customers[$d["customer_id"]]["name_short"];
+                $sales[$ukr_exp][$document_id]["items"][$di_id]       = $item;
+            }
+        }
+    }
+    $view->assign('sales', $sales);
+    $view->assign('pumps', $pumps);
+//    fn_print_r($sales, $pumps);
+
+
+    //--------------------------------------------------------------------------
+    // ДАННЫЕ ДЛЯ РЕДАКТИРОВАНИЯ ПЛАНА ПРОДАЖ
+    //--------------------------------------------------------------------------
+    if (is__more_0($_REQUEST["month"], $_REQUEST["year"], $_REQUEST["item_id"])){
+        $sql =db_quote("
+                SELECT
+                  ?:_plan_items.pi_id,
+                  ?:_plan_items.item_id,
+                  ?:_plan_items.item_type,
+                  ?:_plan_items.ukr_curr,
+                  ?:_plan_items.ukr_next,
+                  ?:_plan_items.exp_curr,
+                  ?:_plan_items.exp_next
+                FROM ?:_plan_items
+                  LEFT JOIN ?:_plans ON (?:_plans.plan_id = ?:_plan_items.plan_id)
+                WHERE
+                      ?:_plans.month = ?i
+                  and ?:_plans.year = ?i
+                  and ?:_plan_items.item_type = ?s
+                  and ?:_plan_items.item_id = ?i
+                  ",
+            $_REQUEST["month"],
+            $_REQUEST["year"],
+            $_REQUEST["item_type"],
+            $_REQUEST["item_id"]
+        );
+        $ps_plan = db_get_row(UNS_DB_PREFIX . $sql);
+
+        $view->assign('ps_plan',    $ps_plan);
+        $view->assign('item_id',    $_REQUEST["item_id"]);
+        $view->assign('item_type',  $_REQUEST["item_type"]);
+        $view->assign('month',      $_REQUEST["month"]);
+        $view->assign('year',       $_REQUEST["year"]);
+
+        $php_curr_month = strtotime($_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1");
+        $php_next_month = strtotime($_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1 +1 month");
+        $curr_month     = $months[date("n", $php_curr_month)]  . " " . date("Y", $php_curr_month);
+        $next_month     = $months[date("n", $php_next_month)]  . " " . date("Y", $php_next_month);
+        $view->assign("tpl_curr_month",  $curr_month);
+        $view->assign("tpl_next_month",  $next_month);
+    }
+}
+
+
 
 
 function fn_uns_plan_of_sales__search ($controller){

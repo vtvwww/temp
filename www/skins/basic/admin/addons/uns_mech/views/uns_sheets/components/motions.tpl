@@ -25,11 +25,23 @@
     <span class="action-add">
             {include    file="common_templates/table_tools_list.tpl"
                         popup=true
-                        id="add_PVP"
-                        text="Передать в производство [10]"
+                        id="add_PVP_10"
+                        text="Передать в производство на МЦ1"
                         act="edit"
-                        link_text="В производство"
-                        href="`$controller`.motion.add?document_type=10&sheet_id=`$sheet.sheet_id`"
+                        link_text="В производство МЦ1"
+                        href="`$controller`.motion.add?document_type=10&sheet_id=`$sheet.sheet_id`&o_id=10"
+                        link_class="cm-dialog-auto-size"
+                        tools_list=$smarty.capture.tools_items}
+    </span>
+    &nbsp;&nbsp;
+    <span class="action-add">
+            {include    file="common_templates/table_tools_list.tpl"
+                        popup=true
+                        id="add_PVP_14"
+                        text="Передать в производство на МЦ2"
+                        act="edit"
+                        link_text="В производство МЦ2"
+                        href="`$controller`.motion.add?document_type=10&sheet_id=`$sheet.sheet_id`&o_id=14"
                         link_class="cm-dialog-auto-size"
                         tools_list=$smarty.capture.tools_items}
     </span>
@@ -43,7 +55,7 @@
                     link_text="В брак"
                     href="`$controller`.motion.add?document_type=11&sheet_id=`$sheet.sheet_id`"
                     link_class="cm-dialog-auto-size"
-                    tools_list=$smarty.capture.tools_items}</li>
+                    tools_list=$smarty.capture.tools_items}
     </span>
     &nbsp;&nbsp;
     <span class="action-add">
@@ -55,7 +67,7 @@
                     link_text="МЦ1 <=> МЦ2"
                     href="`$controller`.motion.add?document_type=3&sheet_id=`$sheet.sheet_id`"
                     link_class="cm-dialog-auto-size"
-                    tools_list=$smarty.capture.tools_items}</li>
+                    tools_list=$smarty.capture.tools_items}
     </span>
     &nbsp;&nbsp;
     <span class="action-add">
@@ -67,7 +79,7 @@
                     link_text="Завершено"
                     href="`$controller`.motion.add?document_type=12&sheet_id=`$sheet.sheet_id`"
                     link_class="cm-dialog-auto-size"
-                    tools_list=$smarty.capture.tools_items}</li>
+                    tools_list=$smarty.capture.tools_items}
     </span>
     &nbsp;&nbsp;
     <span class="action-add">
@@ -79,7 +91,7 @@
                     link_text="Сдать на СКМП / Сб.Уч. / СГП"
                     href="`$controller`.motion.add?document_type=2&sheet_id=`$sheet.sheet_id`"
                     link_class="cm-dialog-auto-size"
-                    tools_list=$smarty.capture.tools_items}</li>
+                    tools_list=$smarty.capture.tools_items}
     </span>
 
     <br>

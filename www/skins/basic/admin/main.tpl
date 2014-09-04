@@ -12,7 +12,7 @@
 
 <table cellpadding="0" cellspacing="0" border="0" class="content-table">
 <tr valign="top">
-	<td width="1px" class="side-menu">
+	<td width="" class="side-menu">
 	<div id="right_column">
 		{if $smarty.request.rev && $smarty.request.rev|is_array}
 			{assign var="rev_id" value=$smarty.request.rev_id|reset}

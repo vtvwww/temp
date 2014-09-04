@@ -16,6 +16,16 @@
                         <input id="view_all_pumps" type="checkbox" value="Y" name="view_all_pumps" {if $search.view_all_pumps == "Y"}checked="checked"{/if} />
                     </div>
                 </td>
+                <td class="b1_l nowrap search-field">
+                    <label for="group_orders">Объединить заказы:</label>
+                    <div class="break">
+                        <select id="group_orders" name="group_orders">
+                            <option>---</option>
+                            <option {if $search.group_orders == "UKR" or !isset($search.group_orders)}selected="selected"{/if} value="UKR">по Украине</option>
+                            {*<option {if $search.group_orders == "UKR_EXP"}  selected="selected"{/if} value="UKR_EXP">и по Украине и на Экспорт</option>*}
+                        </select>
+                    </div>
+                </td>
             </tr>
         </table>
     {/capture}

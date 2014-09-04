@@ -39,7 +39,7 @@
                             f_option_value="ps_name"
                             f_option_target_id=$search.ps_id
                             f_optgroups=$pump_series
-                            f_optgroup_label="pt_name"
+                            f_optgroup_label="pt_name_short"
                             f_simple=true
                             f_blank=true
                         }

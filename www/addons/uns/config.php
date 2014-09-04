@@ -24,6 +24,7 @@ define("UNS_ITEMS_PER_PAGE", 100);
 define ("UNS_UNIT_CATEGORY__AREA",      4);     // ID категории ед. изм. Единицы площади
 define ("UNS_UNIT_WEIGHT",              21);    // ID ед. изм. "кг"
 define ("UNS_MATERIAL_CATEGORY__CAST",  27);    // ID категории отливок
+define ("UNS_MATERIAL_CATEGORY__GI",    84);    // ID категории метизов и подщшипников - готовых изделий
 
 // Состояние
 define("UNS_Y_N", "|Y|N|");

@@ -47,6 +47,16 @@
                             }
                         </div>
                     </td>
+                    <td class="nowrap search-field">
+                        <label for="status">Статус:</label>
+                        <div class="break">
+                            <select name="status" id="status">
+                              <option value="0">---</option>
+                              <option {if $search.status == "not_Z"}selected="selected"{/if}    value="not_Z">Партия комплектуется или укоплектована</option>
+                              <option {if $search.status == "Z"}selected="selected"{/if}        value="Z">Партия закрыта</option>
+                            </select>
+                        </div>
+                    </td>
                 </tr>
             </table>
             <hr>

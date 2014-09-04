@@ -106,4 +106,4 @@
 
 
 {/capture}
-{include file="common_templates/mainbox.tpl" title="Журнал документов/движений по МЦ, Скл.КМП. и Сб.Уч. " content=$smarty.capture.mainbox tools=$smarty.capture.tools}
+{include file="common_templates/mainbox.tpl" title="Движения по МЦ, Скл. КМП и Складу готовой продукции" content=$smarty.capture.mainbox tools=$smarty.capture.tools}

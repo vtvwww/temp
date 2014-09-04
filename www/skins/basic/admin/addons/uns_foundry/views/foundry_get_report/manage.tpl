@@ -13,10 +13,10 @@
             <th>Чугун белый, кг</th>
         </tr>
         <tr>
-            <td align="center"><b>{$total_weight.C}</b></td>
-            <td align="center"><b>{$total_weight.S}</b></td>
-            <td align="center"><b>{$total_weight.A}</b></td>
-            <td align="center"><b>{$total_weight.W}</b></td>
+            <td align="center"><b>{if $total_weight.C}{$total_weight.C|number_format:1:".":" "}{else}&nbsp;{/if}</b></td>
+            <td align="center"><b>{if $total_weight.S}{$total_weight.S|number_format:1:".":" "}{else}&nbsp;{/if}</b></td>
+            <td align="center"><b>{if $total_weight.A}{$total_weight.A|number_format:1:".":" "}{else}&nbsp;{/if}</b></td>
+            <td align="center"><b>{if $total_weight.W}{$total_weight.W|number_format:1:".":" "}{else}&nbsp;{/if}</b></td>
         </tr>
     </table>
 
@@ -59,16 +59,16 @@
                   <span class="date">{$i.date_cast|fn_parse_date|date_format:"%a %d/%m/%Y"}</span>
               </td>
               <td class="" align="right">
-                  {if $i.weight.C}{$i.weight.C}{else}&nbsp;{/if}
+                  {if $i.weight.C}{$i.weight.C|number_format:1:".":" "}{else}&nbsp;{/if}
               </td>
               <td class="b1_l" align="right">
-                  {if $i.weight.S}{$i.weight.S}{else}&nbsp;{/if}
+                  {if $i.weight.S}{$i.weight.S|number_format:1:".":" "}{else}&nbsp;{/if}
               </td>
               <td class="b1_l" align="right">
-                  {if $i.weight.A}{$i.weight.A}{else}&nbsp;{/if}
+                  {if $i.weight.A}{$i.weight.A|number_format:1:".":" "}{else}&nbsp;{/if}
               </td>
               <td class="b1_l" align="right">
-                  {if $i.weight.W}{$i.weight.W}{else}&nbsp;{/if}
+                  {if $i.weight.W}{$i.weight.W|number_format:1:".":" "}{else}&nbsp;{/if}
               </td>
           </tr>
           {foreachelse}

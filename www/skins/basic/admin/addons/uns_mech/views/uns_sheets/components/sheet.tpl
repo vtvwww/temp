@@ -35,7 +35,7 @@
     f_required=true
     f_autocomplete="off"
     f_value=$sheet_no
-    f_class="input-text-short"
+    f_class="input-text-medium"
     f_disabled=$disabled
     f_description="Номер"
 }

@@ -1,7 +1,7 @@
 <div class="login-wrap">
 <h1 class="clear">
 	<a href="{$index_script|fn_url}" class="float-left">{$settings.Company.company_name|truncate:40:'...':true}</a>
-	<span>{$lang.administration_panel}</span>
+	{*<span>{$lang.administration_panel}</span>*}
 </h1>
 <form action="{$config.current_location}/{$index_script}" method="post" name="main_login_form" class="cm-form-highlight cm-skip-check-items">
 <input type="hidden" name="return_url" value="{$smarty.request.return_url|default:$index_script}" />

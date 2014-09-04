@@ -16,12 +16,6 @@
                 <div id="content_general">
                     {* Добавить описание листа *}
                     {include file="addons/uns_mech/views/uns_sheets/components/sheet.tpl"}
-
-                    {* Добавить движения документа *}
-                    {if $id>0}
-                        {include file="addons/uns_mech/views/uns_sheets/components/motions.tpl"}
-                        {include file="addons/uns_mech/views/uns_sheets/components/ostatki.tpl"}
-                    {/if}
                 </div>
             {/capture}
 
@@ -35,6 +29,12 @@
                 {/if}
             </div>
         </form>
+        <br/>
+        {* Добавить движения документа *}
+        {if $id>0}
+            {include file="addons/uns_mech/views/uns_sheets/components/motions.tpl"}
+            {include file="addons/uns_mech/views/uns_sheets/components/ostatki.tpl"}
+        {/if}
     </div>
     {capture name="tools"}
         {include file="common_templates/tools.tpl" tool_href="`$controller`.add" prefix="top" link_text="Добавить СЛ"  hide_tools=true}

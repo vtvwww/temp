@@ -192,8 +192,9 @@ function fn_uns__get_documents($params = array(), $items_per_page = 0){
 
     }
 
-    if (is__more_0($params["type"])){
-        $condition .= db_quote(" AND $m_tbl.type = ?i", $params['type']);
+//    if (is__more_0($params["type"])){
+    if ($params["type_array"] = to__array($params["type"])){
+        $condition .= db_quote(" AND $m_tbl.type in (?n)", $params['type_array']);
     }
 
     if ($params['only_active']) {
@@ -230,6 +231,13 @@ function fn_uns__get_documents($params = array(), $items_per_page = 0){
         $condition .= db_quote(" AND $m_tbl.customer_id in (?n) ", $params["customer_id_array"]);
     }
 
+    // Если есть информация по ITEM_ID и ITEM_TYPE
+    if (is__array($params["item_type"]) and ($params["item_id_array"] = to__array($params["item_id"]))){
+        $j_tbl_2 = "?:_acc_document_items";
+        $join .= db_quote(" LEFT JOIN $j_tbl_2 ON ($j_tbl_2.document_id  = $m_tbl.document_id) ");
+        $condition .= db_quote(" AND $j_tbl_2.item_type in (?a) ", $params["item_type"]);
+        $condition .= db_quote(" AND $j_tbl_2.item_id   in (?n) ", $params["item_id_array"]);
+    }
 
 
     // *************************************************************************
@@ -442,7 +450,8 @@ function fn_uns__get_document_items($params = array()){
     if ($params["info_unit"]){
         // информация о единицах измерениях
         foreach ($data as $k_d => $v_d) {
-            list($units) = fn_uns__get_units(array('u_id'=>array($v_d['items'][$v_d['item_id']]['accounting_data']['u_id']/*, UNS_UNIT_WEIGHT*/)));
+            $u_id = is__more_0($v_d['items'][$v_d['item_id']]['accounting_data']['u_id'])?$v_d['items'][$v_d['item_id']]['accounting_data']['u_id']:$v_d['u_id'];
+            list($units) = fn_uns__get_units(array('u_id'=>array($u_id)));
             $data[$k_d]['units'] = $units;
         }
     }
@@ -790,6 +799,7 @@ function fn_uns__upd_document_info($id = 0, $doc){;
             }
         break;
 
+        case DOC_TYPE__PO:      // Приходный ордер
         case DOC_TYPE__RO:      // Расходный ордер
         case DOC_TYPE__AIO:     // АКТ изменения отстатка
         case DOC_TYPE__AS_VLC:  // АКТ списания мат. на лит. цех
@@ -984,6 +994,7 @@ function fn_uns__upd_document_motions($document_id){
 
         // ПРИХОД на объект ====================================================
         switch ($doc["type"]){
+            case DOC_TYPE__PO:  // Приходный ордер
             case DOC_TYPE__AIO: // АКТ изменения остатков
             case DOC_TYPE__VLC: // Выпуск лит. цеха
             case DOC_TYPE__MCP: // Межцеховое перемещение

@@ -1,7 +1,7 @@
 <uns_mech>
     <item title="uns_balance_mc_sk_su"  dispatch="uns_balance_mc_sk_su.manage"/>    <!-- Баланс МЦ + Скл.КМП + Сб.Уч. -->
-    <item title="uns_balance_sgp"       dispatch="uns_balance_sgp.manage"/>         <!-- Баланс СГП -->
-    <item title="uns_balance_sgp_dnepr" dispatch="uns_balance_sgp.dnepr"/>          <!-- Баланс СГП Днепропетровск-->
+    <!--<item title="uns_balance_sgp"       dispatch="uns_balance_sgp.manage"/>         &lt;!&ndash; Баланс СГП &ndash;&gt;-->
+    <!--<item title="uns_balance_sgp_dnepr" dispatch="uns_balance_sgp.dnepr"/>          &lt;!&ndash; Баланс СГП Днепропетровск&ndash;&gt;-->
 
     <item title="uns_sheets"            dispatch="uns_sheets.manage"/>              <!-- Сопроводительные листы -->
     <item title="uns_kits"              dispatch="uns_kits.manage"/>                <!-- Партии насосов -->
@@ -9,3 +9,19 @@
     <item title="uns_moving_mc_sk_su"   dispatch="uns_moving_mc_sk_su.manage"/>           <!-- Движения по МЦ -->
     <!--<item title="uns_moving_sgp"        dispatch="uns_moving_sgp.manage"/>-->          <!-- Движения по СГП -->
 </uns_mech>
+<uns_stores>
+    <item title="uns_balance_stores"    dispatch="uns_balance_stores.manage"/>           <!-- Баланс Склада М/П -->
+    <item title="uns_moving_stores"     dispatch="uns_moving_stores.manage"/>           <!-- Движения по Складам -->
+</uns_stores>
+<uns_sgp>
+    <!--<item title="uns_foundry_balance"   dispatch="foundry_get_balance.manage"/>-->
+    <!--<item title="uns_balance_mc_sk_su"  dispatch="uns_balance_mc_sk_su.manage"/>    &lt;!&ndash; Баланс МЦ + Скл.КМП + Сб.Уч. &ndash;&gt;-->
+    <item title="uns_balance_sgp"       dispatch="uns_balance_sgp.manage"/>         <!-- Баланс СГП -->
+    <item title="uns_balance_sgp_dnepr" dispatch="uns_balance_sgp.dnepr"/>          <!-- Баланс СГП Днепропетровск-->
+
+    <!--<item title="uns_sheets"            dispatch="uns_sheets.manage"/>              &lt;!&ndash; Сопроводительные листы &ndash;&gt;-->
+    <!--<item title="uns_kits"              dispatch="uns_kits.manage"/>                &lt;!&ndash; Партии насосов &ndash;&gt;-->
+<!---->
+    <!--<item title="uns_moving_mc_sk_su"   dispatch="uns_moving_mc_sk_su.manage"/>           &lt;!&ndash; Движения по МЦ &ndash;&gt;-->
+    <!--<item title="uns_moving_sgp"        dispatch="uns_moving_sgp.manage"/>-->          <!-- Движения по СГП -->
+</uns_sgp>

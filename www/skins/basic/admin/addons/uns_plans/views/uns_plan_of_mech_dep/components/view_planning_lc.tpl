@@ -20,7 +20,7 @@
                     {/if}
                     {assign var="href" value="uns_plan_of_mech_dep.planning.balance_of_details?material_id=`$m.id`&period=`$search.period`&time_from=`$search.time_from`&time_to=`$search.time_to`"}
                     <a  rev="content_item_{$m.id}" id="opener_item_{$m.id}" href="{$href|fn_url}" class="cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$n}</a>
-                    <div id="content_item_{$m.id}" class="hidden" title="Остаток деталей {$n|upper}"></div>
+                    <div id="content_item_{$m.id}" class="hidden" title="Остаток деталей по цехам и складу КМП по заготовке {$n|upper}"></div>
                 </td>
 
                 {*ВЕС*}

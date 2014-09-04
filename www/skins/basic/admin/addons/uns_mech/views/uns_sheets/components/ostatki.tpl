@@ -43,7 +43,7 @@
 
 
 {assign var="search" value=$search_D}
-{include file="common_templates/subheader.tpl" title="Остатки как детали (на МЦ, Складе КМП и Сб.уч.)"}
+{include file="common_templates/subheader.tpl" title="Остатки как детали (на мех. цехах и складе КМП)"}
 <div class="subheader_block">
     {if $search.mode_report == "P"}
     {else}

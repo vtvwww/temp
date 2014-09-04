@@ -21,15 +21,15 @@
         {if count($orders)}
         <tr style="background-color: #EDEDED">
             {*Насос*}
-            <th rowspan="2" style="text-transform: none; text-align: center; border-left: 3px solid #000000; border-top : 1px solid #808080; background-color: #D3D3D3;">Тек.<br>ост.</th>
+            <th rowspan="2" style="text-transform: none; text-align: center; border-left: 3px solid #000000; background-color: #D3D3D3;">Тек.<br>ост.</th>
             <th colspan="{math equation="2*x" x=$orders|count}" style="text-align: center; border-left: 3px solid #000000; border-bottom: 1px solid #000000; border-top: 3px solid #000000;">Заказы</th>
 
             {*На раме*}
-            <th rowspan="2" style="text-transform: none; text-align: center; border-left: 3px solid #000000; border-top : 1px solid #808080; background-color: #D3D3D3;">Тек.<br>ост.</th>
+            <th rowspan="2" style="text-transform: none; text-align: center; border-left: 3px solid #000000; background-color: #D3D3D3;">Тек.<br>ост.</th>
             <th colspan="{math equation="2*x" x=$orders|count}" style="text-align: center; border-left: 3px solid #000000; border-bottom: 1px solid #000000; border-top: 3px solid #000000;">Заказы</th>
 
             {*Агрегат*}
-            <th rowspan="2" style="text-transform: none; text-align: center; border-left: 3px solid #000000; border-top : 1px solid #808080; background-color: #D3D3D3;">Тек.<br>ост.</th>
+            <th rowspan="2" style="text-transform: none; text-align: center; border-left: 3px solid #000000; background-color: #D3D3D3;">Тек.<br>ост.</th>
             <th colspan="{math equation="2*x" x=$orders|count}" style="text-align: center; border-left: 3px solid #000000; border-bottom: 1px solid #000000; border-top: 3px solid #000000;">Заказы</th>
         </tr>
         <tr style="background-color: #EDEDED">
@@ -75,7 +75,7 @@
                 <tr>
                     {assign var="curr_q" value=0}
                     {if $smarty.foreach.p.first}
-                    <td class="{if !$smarty.foreach.ps.first}b2_t{/if}" style="min-width: 100px;" {if $ps.pumps|count > 1} rowspan="{$ps.pumps|count}" {/if}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <td class="{if !$smarty.foreach.ps.first}b2_t{/if}" style="min-width: 100px;" {if $ps.pumps|count > 1} rowspan="{$ps.pumps|count}" {/if}>&nbsp;
                         {assign var="n" value=$ps.ps_name}
                         {assign var="href" value="uns_balance_sgp.motion?item_id=`$p.p_id`&period=`$search.period`&time_from=`$search.time_from`&time_to=`$search.time_to`&o_id=`$search.o_id`"}
                         <a  rev="content_item_{$p.p_id}" id="opener_item_{$m_id}" href="{$href|fn_url}" class="cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$n}</a>

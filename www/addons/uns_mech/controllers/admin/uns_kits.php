@@ -139,6 +139,7 @@ if($mode == 'manage'){
         "with_details"      => true,
         "sorting_schemas"   => "view_1",
         "with_doc_type_VN"  => true,
+        "status"            => $_REQUEST["status"],
     );
     $p = array_merge($_REQUEST, $p);
     list($kits, $search) = fn_acc__get_kits($p, UNS_ITEMS_PER_PAGE);
@@ -314,6 +315,7 @@ function fn_uns_kits__search ($controller){
         'time_from',
         'time_to',
         'ps_id',
+        'status',
     );
     fn_uns_search_set_get_params($controller, $params);
     return true;

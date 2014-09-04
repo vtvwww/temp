@@ -20,7 +20,9 @@ if($mode == 'manage' or $mode == 'update' or $mode == 'add'){
 if($mode == 'manage' or $mode == 'dnepr'){
     if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "M"; // Текущий месяц
     list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
-    if (!isset($_REQUEST["total_balance_of_details"])) $_REQUEST["total_balance_of_details"] = "Y";
+    if (!isset($_REQUEST["total_balance_of_details"]))  $_REQUEST["total_balance_of_details"] = "Y";
+    if (!isset($_REQUEST["group_orders"]))              $_REQUEST["group_orders"] = "UKR";
+
 
     if ($mode == "dnepr"){ // Склад готовой продукции в Днепропетровске
         $_REQUEST["o_id"] = 25;
@@ -29,21 +31,46 @@ if($mode == 'manage' or $mode == 'dnepr'){
         $_REQUEST["o_id"] = 19; // СГП Александрия
         // Запрос ЗАКАЗОВ
         $p = array(
-            "with_items"        => true,
-            "full_info"         => true,
-            "with_count"        => true,
-            "only_active"       => true,
-            "data_for_tmp"      => true,
-            "remaining_time"    => true,
-            "sorting_schemas"   => "view_in_sgp",
-            "total_weight_and_quantity"   => true,
+            "with_items"                => true,
+            "full_info"                 => true,
+            "with_count"                => true,
+            "only_active"               => true,
+            "data_for_tmp"              => true,
+            "remaining_time"            => true,
+            "sorting_schemas"           => "view_in_sgp",
+            "total_weight_and_quantity" => true,
+            "group_orders"              => (in_array($_REQUEST["group_orders"], array("UKR", "UKR_EXP")))?$_REQUEST["group_orders"]:null,
         );
         list($orders, $search) = fn_acc__get_orders(array_merge($_REQUEST, $p));
         $view->assign('orders', $orders);
 
         // customerS
-        list($customers) = fn_uns__get_customers();
+        if ($_REQUEST["group_orders"] == "UKR"){
+            list($customers) = fn_uns__get_customers(array("to_export"=>"Y",));
+            $customers["ukr"] = array(
+                "customer_id"   => "ukr",
+                "name"          => "Украина",
+                "name_short"    => "УКР",
+            );
+        }else{
+            list($customers) = fn_uns__get_customers();
+        }
         $view->assign('customers', $customers);
+
+        //----------------------------------------------------------------------
+        // Для отображения списка Заказов независимо от группировки
+        $view->assign('customers_tpl', array_shift(fn_uns__get_customers()));
+        $p = array(
+            "with_items"                => true,
+            "full_info"                 => true,
+            "with_count"                => true,
+            "only_active"               => true,
+            "data_for_tmp"              => true,
+            "remaining_time"            => true,
+            "sorting_schemas"           => "view_in_sgp",
+            "total_weight_and_quantity" => true,
+        );
+        $view->assign('orders_tpl', array_shift(fn_acc__get_orders($p)));
     }
 
     $balances = array();
@@ -181,6 +208,7 @@ function fn_uns_balance_sgp__format_for_tmpl($b, $params) {
     $p = array(
         "with_items"        => true,
         "only_active"       => true,
+        "group_orders"      => (in_array($params["group_orders"], array("UKR", "UKR_EXP")))?$params["group_orders"]:null,
     );
     list($orders, $search) = fn_acc__get_orders(array_merge($_REQUEST, $p));
 //    fn_print_r($orders);
@@ -207,7 +235,7 @@ function fn_uns_balance_sgp__format_for_tmpl($b, $params) {
                     foreach ($orders as $k_o=>$v_o){
                         foreach ($v_o["items"] as $i){
                             if (in_array($i["item_type"], array("P", "PF", "PA")) and $i["p_id"] == $k_p){
-                                $res[$k_pt]["pump_series"][$k_ps]["pumps"][$k_p]["orders"][$k_o][$i["item_type"]] = $i["quantity"];
+                                $res[$k_pt]["pump_series"][$k_ps]["pumps"][$k_p]["orders"][$k_o][$i["item_type"]] += $i["quantity"];
                             }
                         }
                     }
