@@ -16,7 +16,7 @@
 if ( !defined('AREA') )	{ die('Access denied');	}
 
 // Generate dashboard
-if ($mode == 'index') {
+if ($mode == 'index_terra') {
 
 	$condition = '';
 	$stats = '';

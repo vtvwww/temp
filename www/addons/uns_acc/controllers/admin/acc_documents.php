@@ -600,6 +600,10 @@ if($mode == 'add'){
     $view->assign('document_types', $document_types);
     $document_types_enabled = array('VLC', 'RO', 'AIO', 'AS_VLC');
     $view->assign('document_types_enabled', $document_types_enabled);
+    // OBJECTS *****************************************************************
+    list($objects_plain, $search) = fn_uns__get_objects(array('plain' => true,
+                                                              'all'   => true));
+    $view->assign('objects_plain', $objects_plain);
 }
 
 

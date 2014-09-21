@@ -37,7 +37,7 @@
                         {$n}
                     </td>
                     <td align="center" class="b1_l"><span class="info_warning">{$m.material_no|replace:' ':'&nbsp;'}</span></td>
-                    <td align="center">{if $mode_report == "P"}<b>{$pump_materials[$m.id].quantity|fn_fvalue:2}</b>{/if}</td>
+                    {*<td align="center">{if $mode_report == "P"}<b>{$pump_materials[$m.id].quantity|fn_fvalue:2}</b>{/if}</td>*}
                     {assign var="q_obj_10_P" value=$balances[10][$group_id].items[$k_m].processing}
                     {assign var="q_obj_10_C" value=$balances[10][$group_id].items[$k_m].complete}
                     {assign var="q_obj_14_P" value=$balances[14][$group_id].items[$k_m].processing}
@@ -45,16 +45,14 @@
                     {assign var="q_obj_17" value=$balances[17][$group_id].items[$k_m].konech}
                     {assign var="q_obj_18" value=$balances[18][$group_id].items[$k_m].konech}
                     {assign var="q_obj_total" value=$q_obj_10_P+$q_obj_10_C+$q_obj_14_P+$q_obj_14_C+$q_obj_17}
-                    <td align="center" style="border-left: 1px solid  black;"><span class="{if $q_obj_10_P<0}info_warning_block{elseif $q_obj_10_P==0}zero{/if}">{$q_obj_10_P|fn_fvalue:2}</span></td>
-                    <td align="center" style="border-left: 1px dashed #808080;"><span class="{if $q_obj_10_C<0}info_warning_block{elseif $q_obj_10_C==0}zero{/if}">{$q_obj_10_C|fn_fvalue:2}</span></td>
-                    <td align="center" style="border-left: 1px solid  black;"><span class="{if $q_obj_14_P<0}info_warning_block{elseif $q_obj_14_P==0}zero{/if}">{$q_obj_14_P|fn_fvalue:2}</span></td>
-                    <td align="center" style="border-left: 1px dashed #808080;"><span class="{if $q_obj_14_C<0}info_warning_block{elseif $q_obj_14_C==0}zero{/if}">{$q_obj_14_C|fn_fvalue:2}</span></td>
-                    <td align="center" style="background-color: #D3D3D3; border-left: 2px solid  black;"><span class=" {if $q_obj_17<0}info_warning_block{elseif $q_obj_17==0}zero{/if}">{$q_obj_17|fn_fvalue:2}</span></td>
+                    <td class="center b_l"><span class="{if $q_obj_10_P<0}info_warning_block{elseif $q_obj_10_P==0}zero{/if}">{if !$q_obj_10_P}&nbsp;{else}{$q_obj_10_P|fn_fvalue:2}{/if}</span></td>
+                    <td class="center b1_l"><span class="{if $q_obj_10_C<0}info_warning_block{elseif $q_obj_10_C==0}zero{/if}">{if !$q_obj_10_C}&nbsp;{else}{$q_obj_10_C|fn_fvalue:2}{/if}</span></td>
+                    <td class="center b_l" ><span class="{if $q_obj_14_P<0}info_warning_block{elseif $q_obj_14_P==0}zero{/if}">{if !$q_obj_14_P}&nbsp;{else}{$q_obj_14_P|fn_fvalue:2}{/if}</span></td>
+                    <td class="center b1_l"><span class="{if $q_obj_14_C<0}info_warning_block{elseif $q_obj_14_C==0}zero{/if}">{if !$q_obj_14_C}&nbsp;{else}{$q_obj_14_C|fn_fvalue:2}{/if}</span></td>
+                    <td class="center b_l" style="background-color: #D3D3D3;"><span class=" {if $q_obj_17<0}info_warning_block{elseif $q_obj_17==0}zero{/if}">{if !$q_obj_17}&nbsp;{else}{$q_obj_17|fn_fvalue:2}{/if}</span></td>
                     {*<td align="center" style="border-left: 2px solid  black;"><span class="{if $q_obj_18<0}info_warning_block{elseif $q_obj_18==0}zero{/if}"><b>{$q_obj_18|fn_fvalue:2}</b></span></td>*}
                     {if $search.accessory_pumps == "Y"}
-                    <td align="left" style="border-left: 1px solid #808080;">
-
-
+                    <td align="left" class="b_l">
                         {if $m.accessory_view == "M"}
                             {assign var="accessory_view" value="`$m.accessory_pump_manual` <span class='info_warning'>(`$m.accessory_view`)</span>"}
                         {elseif $m.accessory_view == "P"}

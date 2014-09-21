@@ -709,7 +709,7 @@ function fn_uns__get_motions($params){
                             AND uns__acc_document_items.change_type = 'NEG'
                             AND uns__acc_motions.motion_type = 'O')
                         OR (
-                            uns__acc_document_types.type IN ('VLC', 'PVP', 'MCP', 'RO', 'AS_VLC', 'VN'))
+                            uns__acc_document_types.type IN ('VLC', 'PVP', 'MCP', 'RO', 'AS_VLC', 'VN', 'PO'))
                   )
             ORDER BY uns__acc_documents.date ASC, uns__acc_documents.document_id ASC
     ";
@@ -823,10 +823,12 @@ function fn_uns__get_balance_mc_sk_su($params, $mc=true, $sk=true, $su=false, $p
             if ($print) fn_print_r($o_id . " (processing) = " . fn_fvalue($time, 3));
             if (is__array($mc_processing[$o_id])){
                 foreach ($mc_processing[$o_id] as $k_gr=>$v_gr){
-                    foreach ($v_gr["items"] as $k_d=>$v_d){
-                        $mc_processing[$o_id][$k_gr]["items"][$k_d]["processing"]       = $mc_processing[$o_id][$k_gr]["items"][$k_d]["konech"];
-                        $mc_processing[$o_id][$k_gr]["items"][$k_d]["processing_nach"]  = $mc_processing[$o_id][$k_gr]["items"][$k_d]["nach"];
-                        $mc_processing[$o_id][$k_gr]["items"][$k_d]["processing_konech"]= $mc_processing[$o_id][$k_gr]["items"][$k_d]["konech"];
+                    if (is_array($v_gr["items"])){
+                        foreach ($v_gr["items"] as $k_d=>$v_d){
+                            $mc_processing[$o_id][$k_gr]["items"][$k_d]["processing"]       = $mc_processing[$o_id][$k_gr]["items"][$k_d]["konech"];
+                            $mc_processing[$o_id][$k_gr]["items"][$k_d]["processing_nach"]  = $mc_processing[$o_id][$k_gr]["items"][$k_d]["nach"];
+                            $mc_processing[$o_id][$k_gr]["items"][$k_d]["processing_konech"]= $mc_processing[$o_id][$k_gr]["items"][$k_d]["konech"];
+                        }
                     }
                 }
             }
@@ -897,11 +899,13 @@ function fn_uns__get_balance_mc_sk_su($params, $mc=true, $sk=true, $su=false, $p
             if ($print) fn_print_r($o_id . " (complete) = " . fn_fvalue($time, 3));
             if (is__array($mc_complete[$o_id])){
                 foreach ($mc_complete[$o_id] as $k_gr=>$v_gr){
-                    foreach ($v_gr["items"] as $k_d=>$v_d){
-                        $mc_processing[$o_id][$k_gr]["items"][$k_d]["complete"]         = $mc_complete[$o_id][$k_gr]["items"][$k_d]["konech"];
-                        $mc_processing[$o_id][$k_gr]["items"][$k_d]["complete_nach"]    = $mc_complete[$o_id][$k_gr]["items"][$k_d]["nach"];
-                        $mc_processing[$o_id][$k_gr]["items"][$k_d]["complete_konech"]  = $mc_complete[$o_id][$k_gr]["items"][$k_d]["konech"];
+                    if (is_array($v_gr["items"])){
+                        foreach ($v_gr["items"] as $k_d=>$v_d){
+                            $mc_processing[$o_id][$k_gr]["items"][$k_d]["complete"]         = $mc_complete[$o_id][$k_gr]["items"][$k_d]["konech"];
+                            $mc_processing[$o_id][$k_gr]["items"][$k_d]["complete_nach"]    = $mc_complete[$o_id][$k_gr]["items"][$k_d]["nach"];
+                            $mc_processing[$o_id][$k_gr]["items"][$k_d]["complete_konech"]  = $mc_complete[$o_id][$k_gr]["items"][$k_d]["konech"];
 
+                        }
                     }
                 }
             }
@@ -1022,7 +1026,7 @@ function fn_uns__get_balance_store($params){
 
     $p = array_merge($p, $params);
     if (fn_is_empty($p["mcat_id"])){
-        fn_set_notification("E", "Укажите категорию материалов", "");
+//        fn_set_notification("E", "Укажите категорию материалов", "");
         return array(array(), $p);
     }
     if (!is__more_0($p["o_id"])){

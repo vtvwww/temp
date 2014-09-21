@@ -75,18 +75,18 @@
                     </select>
                 </div>
             </td>
-            <td class="nowrap search-field" style="border-left: 1px solid #808080;">
-                <label for="analisys_of_production_plan">Анализ плана:</label>
-                <div class="break">
-                    {include file="addons/uns/views/components/get_form_field.tpl"
-                        f_type  ="checkbox"
-                        f_id    ="analisys_of_production_plan"
-                        f_name  ="analisys_of_production_plan"
-                        f_value =$search.analisys_of_production_plan|default:"Y"
-                        f_simple=true
-                    }
-                </div>
-            </td>
+            {*<td class="nowrap search-field" style="border-left: 1px solid #808080;">*}
+                {*<label for="analisys_of_production_plan">Анализ плана:</label>*}
+                {*<div class="break">*}
+                    {*{include file="addons/uns/views/components/get_form_field.tpl"*}
+                        {*f_type  ="checkbox"*}
+                        {*f_id    ="analisys_of_production_plan"*}
+                        {*f_name  ="analisys_of_production_plan"*}
+                        {*f_value =$search.analisys_of_production_plan|default:"Y"*}
+                        {*f_simple=true*}
+                    {*}*}
+                {*</div>*}
+            {*</td>*}
             <td class="nowrap search-field" style="border-left: 1px solid #808080;">
                 <label for="analisis_of_sales">Анализ продаж:</label>
                 <div class="break">

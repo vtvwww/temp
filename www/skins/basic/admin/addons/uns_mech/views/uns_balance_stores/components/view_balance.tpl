@@ -16,11 +16,10 @@
                         {if $m.no != ""}
                             {assign var="n" value="`$n` [`$m.no`]"}
                         {/if}
-                        {*{assign var="href" value="uns_balance_mc_sk_su.motions?item_type=D&item_id=`$m.id`&period=`$search.period`&time_from=`$search.time_from`&time_to=`$search.time_to`"}*}
-                        {*{assign var="href" value="uns_balance_mc_sk_su.motions?item_type=D&item_id=`$m.id`&period=`$search.period`&time_from=`$search.time_from`&time_to=`$search.time_to`"}*}
-                        {*<a  rev="content_item_{$m.id}" id="opener_item_{$m_id}" href="{$href|fn_url}" class="cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black" onclick="mark_item($(this));">{$n}</a>*}
-                        {*<div id="content_item_{$m.id}" class="hidden" title="Движение по {$n}"></div>*}
-                        {$n}
+                        {assign var="href" value="uns_balance_stores.motion?item_type=M&item_id=`$m.id`&period=`$search.period`&time_from=`$search.time_from`&time_to=`$search.time_to`&o_id=`$search.o_id`&nach=`$m.nach`&current__in=`$m.current__in`&current__out=`$m.current__out`&konech=`$m.konech`"}
+                        <a  rev="content_item_{$m.id}" id="opener_item_{$m_id}" href="{$href|fn_url}" class="cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black" onclick="mark_item($(this));">{$n}</a>
+                        <div id="content_item_{$m.id}" class="hidden" title="Движение: {$n}"></div>
+                        {*{$n}*}
                     </td>
                     <td class="center b1_l">
                         {$m.u_name}

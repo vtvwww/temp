@@ -55,11 +55,11 @@ $config['db_type'] = 'mysqli';
  */
 
 // Host and directory where software is installed on no-secure server
-$config['http_host'] = "192.168.0.168";
+$config['http_host'] = (PROJECT_NAME == "uns")?"192.168.0.188":"192.168.0.188";
 $config['http_path'] = "/" . PROJECT_NAME . "/www";
 
 // Host and directory where software is installed on secure server
-$config['https_host'] = "192.168.0.168";
+$config['https_host'] = (PROJECT_NAME == "uns")?"192.168.0.188":"192.168.0.188";
 $config['https_path'] = "/" . PROJECT_NAME . "/www";
 
 /*

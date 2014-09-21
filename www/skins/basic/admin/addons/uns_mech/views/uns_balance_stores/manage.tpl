@@ -28,5 +28,7 @@
         {/if}
     </table>
 {/capture}
-{assign var="last_date" value=$search.period|fn_get_period_name:$search.time_from:$search.time_to}
-{include file="common_templates/mainbox.tpl" title="Баланс по Складам (`$last_date`)" content=$smarty.capture.mainbox tools=$smarty.capture.tools}
+{assign var="time_from" value=$search.time_from|fn_parse_date|date_format:"%d/%m/%Y"}
+{assign var="time_to" value=$search.time_to|fn_parse_date|date_format:"%d/%m/%Y"}
+{assign var="object_name" value="Склад Метизов и Подшипников"}
+{include file="common_templates/mainbox.tpl" title="Баланс `$object_name` (`$time_from` - `$time_to`)" content=$smarty.capture.mainbox tools=$smarty.capture.tools}

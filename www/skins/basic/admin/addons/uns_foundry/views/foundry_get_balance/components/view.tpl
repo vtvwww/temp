@@ -24,11 +24,11 @@
                     <div id="content_item_{$m.id}" class="hidden" title="Движение {$n|upper} по Складу литья"></div>
                 </td>
                 <td align="center">{if $mode_report == "P"}<b>{$pump_materials[$m.id].quantity|fn_fvalue:2}</b>{/if}</td>
-                <td align="center" class="b1_r b1_l"><span style="font-size: 11px; color: #808080;">{$m.weight}</span></td>
-                <td align="center" class="b1_r b1_l"><span class="{if $m.nach<0}info_warning_block{elseif $m.nach==0}zero{/if}">{$m.nach|fn_fvalue:2}</span></td>
-                <td align="center" class="b1_r b1_l"><span class="{if $m.current__in<0}info_warning_block{elseif $m.current__in==0}zero{/if}">{$m.current__in|fn_fvalue:2}</span></td>
-                <td align="center" class="b1_l"><span class="{if $m.current__out<0}info_warning_block{elseif $m.current__out==0}zero{/if}">{$m.current__out|fn_fvalue:2}</span></td>
-                <td align="center" class="b_l" style="background-color: #d3d3d3;" ><span class="{if $m.konech<0}info_warning_block{elseif $m.konech==0}zero{/if} bold">{$m.konech|fn_fvalue:2}</span></td>
+                <td align="center" class="b1_l"><span style="font-size: 11px; color: #808080;">{$m.weight}</span></td>
+                <td align="center" class="b_l"><span class="{if $m.nach<0}info_warning_block{elseif $m.nach==0}zero{/if}">{if !$m.nach}&nbsp;{else}{$m.nach|fn_fvalue:2}{/if}</span></td>
+                <td align="center" class="b_l"><span class="{if $m.current__in<0}info_warning_block{elseif $m.current__in==0}zero{/if}">{if !$m.current__in}&nbsp;{else}{$m.current__in|fn_fvalue:2}{/if}</span></td>
+                <td align="center" class="b1_l"><span class="{if $m.current__out<0}info_warning_block{elseif $m.current__out==0}zero{/if}">{if !$m.current__out}&nbsp;{else}{$m.current__out|fn_fvalue:2}{/if}</span></td>
+                <td align="center" class="b_l" style="background-color: #d3d3d3;" ><span class="{if $m.konech<0}info_warning_block{elseif $m.konech==0}zero{/if} bold">{if !$m.konech}&nbsp;{else}{$m.konech|fn_fvalue:2}{/if}</span></td>
                 {if $search.accessory_pumps == "Y"}
                 <td align="left" class="b_l">
                     {if $m.accessory_view == "M"}

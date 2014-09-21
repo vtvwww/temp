@@ -29,6 +29,7 @@ $data = array();
 if ($mode == "manage") {
     if (is__more_0($_REQUEST["month"], $_REQUEST["year"], $_REQUEST["months_supply"], fn_parse_date($_REQUEST["current_day"]))){
         $_REQUEST["type_of_production_plan"] = ($_REQUEST["type_of_production_plan"] == "actual")?"actual":"parties";
+        $_REQUEST["analisys_of_production_plan"] = "Y"; // Анализ плана принудительно всегда!
         $view->assign('search', $_REQUEST);
         $data["month"]                  = $_REQUEST["month"];
         $data["year"]                   = $_REQUEST["year"];
@@ -467,9 +468,11 @@ if ($mode == "manage") {
         foreach ($kits_done as $kit_id=>$v){
             if (in_array($v["p_id"], $pumps_ids)){
                 $ps_id = $pumps[$v["p_id"]]["ps_id"];
-                foreach ($v["VN"] as $pump_item){
-                    $done[$ps_id] += $pump_item["quantity"];
-                    $weights["done"][$ps_id]  += $ps_weight[$ps_id]*$pump_item["quantity"];
+                if (is__array(($v["VN"]))){
+                    foreach ($v["VN"] as $pump_item){
+                        $done[$ps_id] += $pump_item["quantity"];
+                        $weights["done"][$ps_id]  += $ps_weight[$ps_id]*$pump_item["quantity"];
+                    }
                 }
             }
         }
@@ -512,9 +515,11 @@ if ($mode == "manage") {
         foreach ($kits_done as $kit_id=>$v){
             if (in_array($v["p_id"], $pumps_ids)){
                 $ps_id = $pumps[$v["p_id"]]["ps_id"];
-                foreach ($v["VN"] as $pump_item){
-                    $done_current_day[$ps_id] += $pump_item["quantity"];
-                    $weights["done"][$ps_id]  += $ps_weight[$ps_id]*$pump_item["quantity"];
+                if (is__array($v["VN"])){
+                    foreach ($v["VN"] as $pump_item){
+                        $done_current_day[$ps_id] += $pump_item["quantity"];
+                        $weights["done"][$ps_id]  += $ps_weight[$ps_id]*$pump_item["quantity"];
+                    }
                 }
             }
         }
@@ -698,12 +703,6 @@ if ($mode == "manage") {
 
         $view->assign("weights", $weights);
 
-        // СОХРАНЕНИЕ ДАННЫХ В СЕССИЮ
-        $_SESSION["uns_plan_of_mech_dep"] = $data;
-        unset($_SESSION["balance_of_details"]);
-        unset($_SESSION["balance_of_casts"]);
-
-
         //**********************************************************************
         // РАСЧЕТЫ ДЛЯ АНАЛИЗА ПРОДАЖ
         //**********************************************************************
@@ -778,8 +777,14 @@ if ($mode == "manage") {
                 }
 
             }
+            $data["analisys"] = $analisys;
             $view->assign("analisys", $analisys);
         }
+
+        // СОХРАНЕНИЕ ДАННЫХ В СЕССИЮ
+        $_SESSION["uns_plan_of_mech_dep"] = $data;
+        unset($_SESSION["balance_of_details"]);
+        unset($_SESSION["balance_of_casts"]);
     }
 }
 
@@ -939,10 +944,12 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
         $sales_plan_of_details["next_month"][$id]  = $v["ukr_next"]+$v["exp_next"];
 
         // +2 мес. = след. след. мес. - среднее (тек. мес. и след. мес.)
-        $sales_plan_of_details["next2_month"][$id] = floor(($sales_plan_of_details["curr_month"][$id]+$sales_plan_of_details["next_month"][$id])/2);
+        $sales_plan_of_details["next2_month"][$id] = 0;
+//        $sales_plan_of_details["next2_month"][$id] = floor(($sales_plan_of_details["curr_month"][$id]+$sales_plan_of_details["next_month"][$id])/2);
 
         // +3 мес. = 50% от +2 мес.
-        $sales_plan_of_details["next3_month"][$id] = floor(0.5*$sales_plan_of_details["next2_month"][$id]);
+        $sales_plan_of_details["next3_month"][$id] = 0;
+//        $sales_plan_of_details["next3_month"][$id] = floor(0.5*$sales_plan_of_details["next2_month"][$id]);
     }
 
 
@@ -962,13 +969,8 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
                 // Комплектация насоса
                 $pump = array_shift(array_shift(fn_uns__get_pumps(array("ps_id"=>$ps_id))));
                 $set = fn_uns__get_packing_list_by_pump($pump["p_id"], "D", true);
-                list($details) = fn_uns__get_details(array("detail_id"=>array_keys($set), "with_material_info" => true, "with_material_info" => true,));
-                // Объединить данные
-                foreach ($details as $k=>$v){
-                    $details[$k] = array_merge($details[$k], $set[$k]);
-                }
-                foreach ($details as $detail){
-                    $details_requirement[$month][$detail["detail_id"]] += $detail["quantity"]*$pump_quantity + $sales_plan_of_details[$month][$detail["detail_id"]];
+                foreach ($set as $k=>$v){
+                    $details_requirement[$month][$k] += $v["quantity"]*$pump_quantity + $sales_plan_of_details[$month][$k];
                 }
             }
         }
@@ -1064,8 +1066,6 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
         }
     }
 
-
-
     //--------------------------------------------------------------------------
     // 5. ПОМЕСЯЧНАЯ ПЛАНОВАЯ ПОТРЕБНОСТЬ В ЗАГОТОВКАХ
     //--------------------------------------------------------------------------
@@ -1148,11 +1148,11 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
                             and $remaining_of_casts["next3_month"][$m_id] == 0
                             and $m["konech"] >= 0
                             and $group["group_id"] != 36 // Полумуфты
-                            and $group["group_id"] != 79 // На продажу
-                            and $group["group_id"] != 78 // На собственные нужды
-                            and $group["group_id"] != 76 // Детали ЦНС
-                            and $group["group_id"] != 28 // Гайки
                             and $group["group_id"] != 67 // Болванки и втулки
+                            and $group["group_id"] != 28 // Гайки
+                            and $group["group_id"] != 76 // Детали ЦНС
+                            and $group["group_id"] != 78 // На собственные нужды
+                            and $group["group_id"] != 79 // На продажу
                             and $group["group_id"] != 80 // Старое литья
                         ){
                             $prohibition_of_casts[$m_id] = "Y";
@@ -1190,9 +1190,88 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
     $view->assign("min_rest_of_details",    $min_rest_of_details);
     $view->assign("requirement_of_casts_for_min_rest",    $requirement_of_casts_for_min_rest);
 
+    //==========================================================================
+    // 8. "ГОРЯЩИЕ" заготовки
+    //==========================================================================
+    // Определить насосы, которых хватает менее чем на месяц, и получить список отливок, которые в них входят.
+    $priority_materials     = null;
+    $priority_materials_w   = null;  // Вес
+    $priority_materials_q   = null;  // Кол-во
+    $priority_ps_id         = null;
+    // R - red      - отливки высокого уровня приоритета
+    // Y - yellow   - отливки среднего уровня приоритета
 
+    // 1. Список "горящих" насосов
+    if (is__array($data["analisys"])){
+        foreach ($data["analisys"] as $id=>$v){
+            $t = $v["total"] + $v["zadel"];
+            // 30 дней = 33%
+            // 14 дней = 15.4%  - 2 недели
+            // 21 день = 23.1%  - 3 недели
+            // 28 день = 30.8%  - 4 недели
+            // 35 дней = 38.5%  - 5 недель
+
+            // RED уровень
+            if ($t < 15.4){    // насосов хватит до 2-х недель
+                $priority_ps_id["R"][] = $id;
+
+            // YELLOW уровень
+            }elseif ($t >= 15.4 and $t < 30.8){    // насосов хватит от 2-х до 4-х недель
+                $priority_ps_id["Y"][] = $id;
+            }
+        }
+    }
+
+    // 2. получить список отливок, которые в них входят
+    // КРАСНЫЙ УРОВЕНЬ
+    if (is__array($priority_ps_id["R"])){
+        foreach ($priority_ps_id["R"] as $ps_id){
+            $pump = array_shift(array_shift(fn_uns__get_pumps(array("ps_id"=>$ps_id))));
+            $pump_materials = fn_uns__get_packing_list_by_pump($pump["p_id"]);
+            if (is__array($pump_materials)){
+                foreach (array_keys($pump_materials) as $m_id){
+                    if (    ($prohibition_of_casts[$m_id] != "Y")
+                        and (fn_fvalue($remaining_of_casts["curr_month"][$m_id],0) > 0 or fn_fvalue($remaining_of_casts["next_month"][$m_id],0) > 0)
+                        and ($priority_materials["R"][$m_id] != "Y")
+                    ){
+                            $w = fn_uns__get_accounting_item_weights("M", $m_id);
+                            $w = $w[$m_id]["M"][0]['value'];
+                            $priority_materials_w["R"] += $w*($remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id]);
+                            $priority_materials_q["R"] +=     $remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id];
+                            $priority_materials["R"][$m_id] = "Y";
+                    }
+                }
+            }
+        }
+    }
+
+    // ЖЕЛТЫЙ УРОВЕНЬ
+    if (is__array($priority_ps_id["Y"])){
+        foreach ($priority_ps_id["Y"] as $ps_id){
+            $pump = array_shift(array_shift(fn_uns__get_pumps(array("ps_id"=>$ps_id))));
+            $pump_materials = fn_uns__get_packing_list_by_pump($pump["p_id"]);
+            if (is__array($pump_materials)){
+                foreach (array_keys($pump_materials) as $m_id){
+                    if (    ($prohibition_of_casts[$m_id] != "Y")
+                        and (fn_fvalue($remaining_of_casts["curr_month"][$m_id],0) > 0 or fn_fvalue($remaining_of_casts["next_month"][$m_id],0) > 0)
+                        and ($priority_materials["R"][$m_id] != "Y")
+                        and ($priority_materials["Y"][$m_id] != "Y")
+                    ){
+                            $w = fn_uns__get_accounting_item_weights("M", $m_id);
+                            $w = $w[$m_id]["M"][0]['value'];
+                            $priority_materials_w["Y"] += $w*($remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id]);
+                            $priority_materials_q["Y"] +=     $remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id];
+                            $priority_materials["Y"][$m_id] = "Y";
+                    }
+                }
+            }
+        }
+    }
+
+    $view->assign("priority_materials",     $priority_materials);
+    $view->assign("priority_materials_w",   $priority_materials_w);
+    $view->assign("priority_materials_q",   $priority_materials_q);
 }
-
 
 if ($mode == "planning" and $action == "balance_of_details"){
     if (!is__more_0($_REQUEST["material_id"])) return array(CONTROLLER_STATUS_REDIRECT, $controller . "." . $suffix);
@@ -1215,8 +1294,6 @@ if ($mode == "planning" and $action == "balance_of_details"){
     $view->assign('balances_D',     $balances_D);
     $view->assign('search',       $search_D);
 }
-
-
 
 
 // Расчет заполнения полосы продаж по месяцам

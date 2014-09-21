@@ -28,36 +28,37 @@
 
                 {*ПЛАН ПОТРЕБНОСТЬ*}
                 {assign var="q" value=$requirement_of_casts.curr_month[$m.id]|fn_fvalue:1}
-                <td class="center b3_l {if $q < 0}info_warning_block{elseif $q==0}zero{/if}">{$q}{if $q>0 and $requirement_of_casts_for_min_rest[$m.id] == "Y"}<span class="info_warning">*</span>{/if}</td>
+                <td class="center b3_l {if $q < 0}info_warning_block{elseif $q==0}zero{/if}">{if !$q}&nbsp;{else}{$q}{/if}{if $q>0 and $requirement_of_casts_for_min_rest[$m.id] == "Y"}<span class="info_warning">*</span>{/if}</td>
                 {assign var="q" value=$requirement_of_casts.next_month[$m.id]|fn_fvalue:1}
-                <td class="center b1_l {if $q < 0}info_warning_block{elseif $q==0}zero{/if}">{$q}</td>
+                <td class="center b1_l {if $q < 0}info_warning_block{elseif $q==0}zero{/if}">{if !$q}&nbsp;{else}{$q}{/if}</td>
                 {assign var="q" value=$requirement_of_casts.next2_month[$m.id]|fn_fvalue:1}
-                <td class="center b1_l {if $q < 0}info_warning_block{elseif $q==0}zero{/if}">{$q}</td>
+                <td class="center b1_l {if $q < 0}info_warning_block{elseif $q==0}zero{/if}">{if !$q}&nbsp;{else}{$q}{/if}</td>
 
                 {*СКЛАДА ЛИТЬЯ*}
                 {assign var="q" value=$m.nach|fn_fvalue:1}
-                <td class="center b3_l g {if $q < 0}info_warning_block{elseif $q==0}zero{/if}">{$q}</td>
+                <td class="center b3_l g {if $q < 0}info_warning_block{elseif $q==0}zero{/if}">{if !$q}&nbsp;{else}{$q}{/if}</td>
                 {assign var="q" value=$m.current__in|fn_fvalue:1}
-                <td class="center b2_l g {if $q < 0}info_warning_block{elseif $q==0}zero{/if}">{$q}</td>
+                <td class="center b2_l g {if $q < 0}info_warning_block{elseif $q==0}zero{/if}">{if !$q}&nbsp;{else}{$q}{/if}</td>
                 {assign var="q" value=$m.current__out|fn_fvalue:1}
-                <td class="center b1_l g {if $q < 0}info_warning_block{elseif $q==0}zero{/if}">{$q}</td>
+                <td class="center b1_l g {if $q < 0}info_warning_block{elseif $q==0}zero{/if}">{if !$q}&nbsp;{else}{$q}{/if}</td>
                 {assign var="q" value=$m.konech|fn_fvalue:1}
-                <td class="center b2_l dg {if $q < 0}info_warning_block{elseif $q==0}zero{else}bold{/if}">{$q}</td>
+                <td class="center b2_l dg {if $q < 0}info_warning_block{elseif $q==0}zero{else}bold{/if}">{if !$q}&nbsp;{else}{$q}{/if}</td>
 
                 {*ОСТАЛОСЬ ОТЛИТЬ ПО ПЛАНУ ПОТРЕБНОСТИ В ЗАГОТОВКАХ*}
                 {assign var="q" value=$remaining_of_casts.curr_month[$m.id]|fn_fvalue:0}
-                <td class="center b3_l r {if $q > 0}bold{else}zero{/if}">{$q}{if $q>0 and $requirement_of_casts_for_min_rest[$m.id] == "Y"}<span class="info_warning">*</span>{/if}</td>
+                <td class="center b3_l r {if $q > 0}bold{else}zero{/if}">{if !$q}&nbsp;{else}{$q}{/if}{if $q>0 and $requirement_of_casts_for_min_rest[$m.id] == "Y"}<span class="info_warning">*</span>{/if}</td>
                 {assign var="q" value=$remaining_of_casts.next_month[$m.id]|fn_fvalue:0}
-                <td class="center b1_l r {if $q > 0}bold{else}zero{/if}">{$q}</td>
+                <td class="center b1_l r {if $q > 0}bold{else}zero{/if}">{if !$q}&nbsp;{else}{$q}{/if}</td>
                 {assign var="q" value=$remaining_of_casts.next2_month[$m.id]|fn_fvalue:0}
-                <td class="center b1_l r {if $q > 0}bold{else}zero{/if}">{$q}</td>
+                <td class="center b1_l r {if $q > 0}bold{else}zero{/if}">{if !$q}&nbsp;{else}{$q}{/if}</td>
 
                 {*ЗАПРЕТ*}
-                <td class="b3_l {if $prohibition_of_casts[$m.id] == "Y"}prh{/if}">
+                <td class="b3_l {if $prohibition_of_casts[$m.id] == "Y"}prh{/if} {if $priority_materials.R[$m.id] == "Y"}p_r{/if} {if $priority_materials.Y[$m.id] == "Y"}p_y{/if}">
+                    &nbsp;
                 </td>
 
                 {*ПРИНАДЛЕЖНОСТЬ К НАСОСАМ*}
-                <td>
+                <td {if $priority_materials.R[$m.id] == "Y"} class="p_r" {elseif $priority_materials.Y[$m.id] == "Y"} class="p_y" {/if}>
                     {if $m.material_comment_1|strlen}
                         <span class="info_warning">{$m.material_comment_1}</span>
                     {else}

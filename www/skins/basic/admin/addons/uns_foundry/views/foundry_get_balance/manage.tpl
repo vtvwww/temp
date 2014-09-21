@@ -3,9 +3,9 @@
     {capture name="search_content"}
         {include file="addons/uns/views/components/search/s_time.tpl"}
         {include file="addons/uns/views/components/search/s_materials.tpl" material_classes_as_input=true}
-        {include file="addons/uns/views/components/search/s_mode_report.tpl"}
+        {*{include file="addons/uns/views/components/search/s_mode_report.tpl"}*}
         {*{include file="addons/uns/views/components/search/s_view_all_position.tpl"}*}
-        {include file="addons/uns/views/components/search/s_accessory_pumps.tpl"}
+        {*{include file="addons/uns/views/components/search/s_accessory_pumps.tpl"}*}
     {/capture}
     {include file="addons/uns/views/components/search/search.tpl" dispatch="`$controller`.manage" search_content=$smarty.capture.search_content}
 
@@ -29,11 +29,11 @@
                 {else}
                     <th>&nbsp;</th>
                 {/if}
-                <th class="b1_r b1_l" style="text-align: center;" width="25px">{include file="common_templates/tooltip.tpl" tooltip='Вес 1шт, кг'  tooltip_mark="<b>Вес</b>"}</th>
-                <th class="b1_r b1_l" style="text-align: center;" width="30px">
+                <th class="b1_l" style="text-align: center;" width="25px">{include file="common_templates/tooltip.tpl" tooltip='Вес 1шт, кг'  tooltip_mark="<b>Вес</b>"}</th>
+                <th class="b_l" style="text-align: center;" width="30px">
                     {include file="common_templates/tooltip.tpl" tooltip='Начальный остаток'  tooltip_mark="<b>НО</b>"}
                 </th>
-                <th class="b1_r b1_l" style="text-align: center;" width="30px">{include file="common_templates/tooltip.tpl" tooltip='Приход'  tooltip_mark="<b>П</b>"}</th>
+                <th class="b_l" style="text-align: center;" width="30px">{include file="common_templates/tooltip.tpl" tooltip='Приход'  tooltip_mark="<b>П</b>"}</th>
                 <th class="b1_l" style="text-align: center;" width="30px">{include file="common_templates/tooltip.tpl" tooltip='Расход'  tooltip_mark="<b>Р</b>"}</th>
                 <th class="b_l" style="background-color: #d3d3d3; text-align: center;" width="30px">
                     {include file="common_templates/tooltip.tpl" tooltip='Конечный остаток'  tooltip_mark="<b>КО</b>"}
@@ -52,6 +52,6 @@
         {/foreach}
     </table>
 {/capture}
-{assign var="last_date" value=$info_of_the_last_movement.date|fn_parse_date|date_format:"%d/%m/%Y"}
-{assign var="last_document_id" value=$info_of_the_last_movement.document_id}
-{include file="common_templates/mainbox.tpl" title="Баланс по Складу Литья на `$last_date` [`$last_document_id`]" content=$smarty.capture.mainbox tools=$smarty.capture.tools}
+{assign var="time_from" value=$search.time_from|fn_parse_date|date_format:"%d/%m/%Y"}
+{assign var="time_to" value=$search.time_to|fn_parse_date|date_format:"%d/%m/%Y"}
+{include file="common_templates/mainbox.tpl" title="Баланс по Складу Литья (`$time_from` - `$time_to`)" content=$smarty.capture.mainbox tools=$smarty.capture.tools}

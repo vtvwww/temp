@@ -51,27 +51,33 @@ if($mode == 'manage'){
 
 
 // ПРОСМОТР ИСТОРИИ ДВИЖЕНИЯ
-if ($mode == 'motions' /*and  defined('AJAX_REQUEST')*/){
+if ($mode == 'motion' /*and  defined('AJAX_REQUEST')*/){
     if (!is__more_0($_REQUEST['item_id'])){
         fn_set_notification('W', 'Ошибка запроса данных!', 'Обратитесь к администратору системы');
         return false;
     }
+    $p = array(
+        "o_id"          => $_REQUEST["o_id"],  // Склад литья
+        "item_type"     => $_REQUEST["item_type"],
+        "typesize"      => "M",
+        "item_id"       => $_REQUEST['item_id'],
+    );
+
     if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "M"; // Текущий месяц
     list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
-    $balances = array();
-    list($balances, $search) = fn_uns__get_balance_mc_sk_su($_REQUEST, true, true, true);
-    fn_print_r($balances);
-    $view->assign('balances', $_REQUEST);
-/*    // ДВИЖЕНИЯ
+
+    $p = array_merge($_REQUEST, $p);
+
+    // ДВИЖЕНИЯ
     $motions = fn_uns__get_motions($p);
+//    fn_print_r($motions);
     $view->assign('motions', $motions);
 
     // ТИПЫ ДОКУМЕНТОВ
     list($document_types) = fn_uns__get_document_types();
     $view->assign('document_types', $document_types);
 
-    */
-
+    $view->assign('params', $p);
 }
 
 

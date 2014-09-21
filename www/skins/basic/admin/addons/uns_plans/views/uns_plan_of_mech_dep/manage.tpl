@@ -8,34 +8,47 @@
 
             td.bar_available,
             td.bar_available:hover{
-                background-color:#ddd !important;
+                background-color:#f4f4f4 !important;
                 border: 1px solid #999 !important;
                 height:5px;
                 padding: 0 !important;
             }
 
-            td.bar_available.warning,
-            td.bar_available.warning:hover{
-                background-color: #dd5158 !important;
-                border-color: #dd5158 !important;
+            td.bar_available.p_r,
+            td.bar_available.p_r:hover{
+                background-color: #bb474e !important;
+                border-color: #bb474e !important;
+            }
+
+            td.bar_available.p_y,
+            td.bar_available.p_y:hover{
+                background-color: #e3ad32 !important;
+                border-color: #ccb055 !important;
             }
 
             td.bar_zadel,
             td.bar_zadel:hover{
-                background-color: #999 !important;
+                background-color: #bfbfbf !important;
                 border-bottom: 3px solid #fff !important;
-                border-right: 2px solid #999 !important;
-                border-left: 2px solid #999 !important;
+                border-right: 2px solid #bfbfbf !important;
+                border-left: 2px solid #bfbfbf !important;
                 border-top: 3px solid #fff !important;
                 padding: 0 !important;
                 height:3px;
             }
 
-            td.bar_zadel.warning,
-            td.bar_zadel.warning:hover{
-                background-color: #dd5158 !important;
-                border-right: 2px solid #dd5158 !important;
-                border-left: 2px solid #dd5158 !important;
+            td.bar_zadel.p_r,
+            td.bar_zadel.p_r:hover{
+                background-color: #bb474e !important;
+                border-right: 2px solid #bb474e !important;
+                border-left: 2px solid #bb474e !important;
+            }
+
+            td.bar_zadel.p_y,
+            td.bar_zadel.p_y:hover{
+                background-color: #ccb055 !important;
+                border-left: 2px solid #ccb055 !important;
+                border-right: 2px solid #ccb055 !important;
             }
 
             td.bar_space,
@@ -76,7 +89,15 @@
             <span class="action-add">
                <a target="_blank" href="{"uns_plan_of_mech_dep.analysis_of_pumps.prohibition"|fn_url}">Анализ <b>ЗАПРЕЩЕННЫХ</b> насосов</a>
             </span>*}
-
+            <table style="margin: 10px" width="100%">
+                <tr>
+                    <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_r.png"/> - запас насосов до 2-х недель</td>
+                    <td class="b1_l"></td>
+                    <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_y.png"/> - запас насосов от 2-х до 4-х недель</td>
+                    <td class="b1_l"></td>
+                    <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_g.png"/> - запас насосов более 4-х недель</td>
+                </tr>
+            </table>
             <table cellpadding="0" cellspacing="0" border="0" class="table" style="margin: 10px; 0">
                 <thead>
                     <tr style="background-color: #D4D0C8;">
@@ -143,10 +164,17 @@
                     {if $analysis_of_plan}
                         {assign var="analisys_rowspan" value=" rowspan='2' "}
                         {assign var="b_offset"    value="<td class='bar_space'        style='width:`$analisys.$ps_id.offset`%;'></td>"}
+                        {*// 30 дней = 33%*}
+                        {*// 14 дней = 15.4%  - 2 недели*}
+                        {*// 21 день = 23.1%  - 3 недели*}
+                        {*// 28 день = 30.8%  - 4 недели*}
+                        {*// 35 дней = 38.5%  - 5 недель*}
 
                         {assign var="warning" value=""}
-                        {if $analisys.$ps_id.total+$analisys.$ps_id.zadel<33}
-                            {assign var="warning" value="warning"}
+                        {if $analisys.$ps_id.total+$analisys.$ps_id.zadel<=15.4} {*23.1 - соответствует трем неделям, а 33 = 30 дней*}
+                            {assign var="warning" value="p_r"}
+                        {elseif $analisys.$ps_id.total+$analisys.$ps_id.zadel>15.4 and $analisys.$ps_id.total+$analisys.$ps_id.zadel<30.8} {*38.5 - соответствует пяти неделям, а 33 = 30 дней*}
+                            {assign var="warning" value="p_y"}
                         {/if}
 
                         {if $analisys.$ps_id.total>0}
@@ -177,7 +205,7 @@
                             {*<nobr>*}
                             {if $prohibition.$ps_id == "Y"}<img src="skins/basic/admin/addons/uns_plans/images/prohibition.png" alt="X"/>{else}&nbsp;{/if}
                             {* Редактировать может только vtv@uns.ua *}
-                            {if $analisis_of_sales and $auth.user_id == 9}
+                            {if $analisis_of_sales and ($auth.usergroup_ids[0] == 6 or $auth.usergroup_ids[0] == 8)}
                                 {if $prohibition.$ps_id == "Y"}&nbsp;{/if}
                                 <a  rev="content_sales_{$ps_id}" id="opener_sales_{$ps_id}" href="{"uns_plan_of_sales.edit_sales?item_id=`$ps_id`&item_type=S&month=`$search.month`&year=`$search.year`"|fn_url}" class="cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black edit_sales" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>
                                     <img width="20" src="skins/basic/admin/addons/uns_plans/images/edit_sales.png" alt="X" title="Редактирование плана продаж"/>
@@ -204,46 +232,46 @@
                         {if $search.type_of_production_plan == "actual"}
                             {*План производства*}
                             {assign var="q" value=$initial_production_plan.curr_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} class="b3_l b2_t center {$mark} {if !$q}zero{/if}">{$q}</td>
+                            <td {$analisys_rowspan} class="b3_l b2_t center {$mark}">{if !$q}&nbsp;{else}{$q}{/if}</td>
                             {assign var="q" value=$initial_production_plan.next_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} class="b1_l b2_t center {$mark} {if !$q}zero{/if}">{$q}</td>
+                            <td {$analisys_rowspan} class="b1_l b2_t center {$mark}">{if !$q}&nbsp;{else}{$q}{/if}</td>
                             {assign var="q" value=$initial_production_plan.next2_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} class="b1_l b2_t center {$mark} {if !$q}zero{/if}">{$q}</td>
+                            <td {$analisys_rowspan} class="b1_l b2_t center {$mark}">{if !$q}&nbsp;{else}{$q}{/if}</td>
 
                         {elseif $search.type_of_production_plan == "parties"}
                             {*Плановая сдача партий насосов на СГП*}
                             {assign var="q" value=$initial_production_plan_parties.curr_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} class="b3_l b2_t center {$mark} {if !$q}zero{/if}">{$q}</td>
+                            <td {$analisys_rowspan} class="b3_l b2_t center {$mark}">{if !$q}&nbsp;{else}{$q}{/if}</td>
                             {assign var="q" value=$initial_production_plan_parties.next_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} class="b1_l b2_t center {$mark} {if !$q}zero{/if}">{$q}</td>
+                            <td {$analisys_rowspan} class="b1_l b2_t center {$mark}">{if !$q}&nbsp;{else}{$q}{/if}</td>
                             {assign var="q" value=$initial_production_plan_parties.next2_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} class="b1_l b2_t center {$mark} {if !$q}zero{/if}">{$q}</td>
+                            <td {$analisys_rowspan} class="b1_l b2_t center {$mark}">{if !$q}&nbsp;{else}{$q}{/if}</td>
                         {/if}
 
                         {*ЗАДЕЛ*}
                         {assign var="q" value=$zadel_current_day.$ps_id|default:0}
-                        <td {$analisys_rowspan} style="background-color: #FFEF8C;" class="b3_l b2_t center {$mark} {if !$q}zero{else}bold{/if}">{$q}</td>
+                        <td {$analisys_rowspan} style="background-color: #FFEF8C;" class="b3_l b2_t center {$mark} bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
 
                         {*ВЫПОЛНЕНО*}
                         {assign var="q" value=$done_current_day.$ps_id|default:0}
-                        <td {$analisys_rowspan} style="background-color: #C0FF9A;" class="b2_l b2_t center {$mark} {if !$q}zero{else}bold{/if}">{$q}</td>
+                        <td {$analisys_rowspan} style="background-color: #C0FF9A;" class="b2_l b2_t center {$mark} bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
 
                         {*ОСТАЛОСЬ*}
                         {if $search.type_of_production_plan == "actual"}
                             {assign var="q" value=$remaining_production_plan_current_day.curr_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b_l b2_t center {$mark} {if !$q}zero{else}bold{/if}">{$q}</td>
+                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b_l b2_t center {$mark} bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
                             {assign var="q" value=$remaining_production_plan_current_day.next_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b1_l b2_t center {$mark} {if !$q}zero{else}bold{/if}">{$q}</td>
+                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b1_l b2_t center {$mark} bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
                             {assign var="q" value=$remaining_production_plan_current_day.next2_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b1_l b2_t center {$mark} {if !$q}zero{else}bold{/if}">{$q}</td>
+                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b1_l b2_t center {$mark} bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
 
                         {elseif $search.type_of_production_plan == "parties"}
                             {assign var="q" value=$remaining_production_plan_parties_current_day.curr_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b_l b2_t center {$mark} {if !$q}zero{else}bold{/if}">{$q}</td>
+                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b_l b2_t center {$mark} bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
                             {assign var="q" value=$remaining_production_plan_parties_current_day.next_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b1_l b2_t center {$mark} {if !$q}zero{else}bold{/if}">{$q}</td>
+                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b1_l b2_t center {$mark} bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
                             {assign var="q" value=$remaining_production_plan_parties_current_day.next2_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b1_l b2_t center {$mark} {if !$q}zero{else}bold{/if}">{$q}</td>
+                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b1_l b2_t center {$mark} bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
                         {/if}
 
                         {*Склад Готовой Продукции*}
@@ -526,7 +554,6 @@
                     <span style="font-weight: normal;">
                         <img src="skins/basic/admin/addons/uns_plans/images/total.png"/> - показывает на какой период времени хватит имеющихся насосов на СГП.<br>
                         <img src="skins/basic/admin/addons/uns_plans/images/zadel.png"/> - показывает на какой период времени хватит насосов ожидающих сборку.<br>
-                        <img src="skins/basic/admin/addons/uns_plans/images/warning.png"/> - указывает на то, что имеющихся насосов на СГП и ожидающих сборку хватает менее чем на месяц.<br>
                     </span>
                 </li>
                 <li style="font-weight: bold;">

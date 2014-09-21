@@ -63,35 +63,35 @@
 
             {*План производства*}
             {assign var="q" value=$data.initial_production_plan.curr_month.$ps_id|default:0}
-            <td class="b3_l  center {if !$q}zero{/if}">{$q}</td>
+            <td class="b3_l  center {if !$q}zero{/if}">{if !$q}&nbsp;{else}{$q}{/if}</td>
             {assign var="q" value=$data.initial_production_plan.next_month.$ps_id|default:0}
-            <td class="b1_l center {if !$q}zero{/if}">{$q}</td>
+            <td class="b1_l center {if !$q}zero{/if}">{if !$q}&nbsp;{else}{$q}{/if}</td>
             {assign var="q" value=$data.initial_production_plan.next2_month.$ps_id|default:0}
-            <td class="b1_l center {if !$q}zero{/if}">{$q}</td>
+            <td class="b1_l center {if !$q}zero{/if}">{if !$q}&nbsp;{else}{$q}{/if}</td>
 
             {*Плановая сдача партий насосов на СГП*}
             {assign var="q" value=$data.initial_production_plan_parties.curr_month.$ps_id|default:0}
-            <td class="b3_l  center {if !$q}zero{/if}">{$q}</td>
+            <td class="b3_l  center {if !$q}zero{/if}">{if !$q}&nbsp;{else}{$q}{/if}</td>
             {assign var="q" value=$data.initial_production_plan_parties.next_month.$ps_id|default:0}
-            <td class="b1_l center {if !$q}zero{/if}">{$q}</td>
+            <td class="b1_l center {if !$q}zero{/if}">{if !$q}&nbsp;{else}{$q}{/if}</td>
             {assign var="q" value=$data.initial_production_plan_parties.next2_month.$ps_id|default:0}
-            <td class="b1_l center {if !$q}zero{/if}">{$q}</td>
+            <td class="b1_l center {if !$q}zero{/if}">{if !$q}&nbsp;{else}{$q}{/if}</td>
 
             {*Задел*}
             {assign var="q" value=$data.zadel_current_day.$ps_id|default:0}
-            <td style="background-color: #FFEF8C;" class="b3_l center {if !$q}zero{else}bold{/if}">{$q}</td>
+            <td style="background-color: #FFEF8C;" class="b3_l center {if !$q}zero{else}bold{/if}">{if !$q}&nbsp;{else}{$q}{/if}</td>
 
             {*Выполнено*}
             {assign var="q" value=$data.done_current_day.$ps_id|default:0}
-            <td style="background-color: #C0FF9A;" class="b2_l center {if !$q}zero{else}bold{/if}">{$q}</td>
+            <td style="background-color: #C0FF9A;" class="b2_l center {if !$q}zero{else}bold{/if}">{if !$q}&nbsp;{else}{$q}{/if}</td>
 
             {*Осталось*}
             {assign var="q" value=$data.remaining_production_plan_parties_current_day.curr_month.$ps_id|default:0}
-            <td style="background-color: #B8C1FF;" class="b3_l center {if !$q}zero{else}bold{/if}">{$q}</td>
+            <td style="background-color: #B8C1FF;" class="b3_l center {if !$q}zero{else}bold{/if}">{if !$q}&nbsp;{else}{$q}{/if}</td>
             {assign var="q" value=$data.remaining_production_plan_parties_current_day.next_month.$ps_id|default:0}
-            <td style="background-color: #B8C1FF;" class="b1_l center {if !$q}zero{else}bold{/if}">{$q}</td>
+            <td style="background-color: #B8C1FF;" class="b1_l center {if !$q}zero{else}bold{/if}">{if !$q}&nbsp;{else}{$q}{/if}</td>
             {assign var="q" value=$data.remaining_production_plan_parties_current_day.next2_month.$ps_id|default:0}
-            <td style="background-color: #B8C1FF;" class="b1_l center {if !$q}zero{else}bold{/if}">{$q}</td>
+            <td style="background-color: #B8C1FF;" class="b1_l center {if !$q}zero{else}bold{/if}">{if !$q}&nbsp;{else}{$q}{/if}</td>
 
             {*Склад Готовой Продукции*}
             {assign var="q" value=$data.sgp_current_day.$ps_id|default:0}

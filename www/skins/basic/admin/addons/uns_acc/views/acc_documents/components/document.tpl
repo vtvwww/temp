@@ -7,6 +7,17 @@
     {assign var="disabled"          value=false}
     {assign var="date_cast_hide"    value=true}
 
+    {if $smarty.request.fast_link == "Y"}
+        {if $smarty.request.type == 1} {*Выпуск Литейного цеха*}
+            {assign var="date_cast_hide"    value=false}
+            {assign var="options_enabled"   value=','|explode:"7,8"}
+
+        {elseif $smarty.request.type == 7 or $smarty.request.type == 8 or $smarty.request.type == 9} {*Расходный ордер или Акт изм. остатка или Акт списания на Литейный цех*}
+            {assign var="options_enabled"   value=','|explode:"8"}
+            {assign var="hidden"            value=true}
+        {/if}
+    {/if}
+
 
 {elseif $mode == "update"}
     {assign var="document_id"       value=$d.document_id}
@@ -36,7 +47,7 @@
         f_integer_more_0=true
         f_options=$document_types
         f_with_id=true
-        f_target=$d.type
+        f_target=$d.type|default:$smarty.request.type
         f_disabled=$disabled
         f_enabled_items=$document_types_enabled
         f_blank=true
@@ -69,11 +80,14 @@
         f_type="objects_plain"
         f_full_name="`$e_n`[object_from]"
         f_required=true f_integer=true f_integer_more_0=true
-        f_target=$d.object_from
+        f_target=$d.object_from|default:$smarty.request.object_from
+        f_options_enabled=$options_enabled
         f_options=$objects_plain
         f_option_id="o_id"
         f_option_value="o_name"
+        f_view_id=true
         f_disabled=$disabled
+        f_hidden=$hidden
         f_description="Склад Откуда"
     }
 
@@ -82,10 +96,12 @@
         f_type="objects_plain"
         f_full_name="`$e_n`[object_to]"
         f_required=true f_integer=true f_integer_more_0=true
-        f_target=$d.object_to
+        f_target=$d.object_to|default:$smarty.request.object_to
+        f_options_enabled=$options_enabled
         f_options=$objects_plain
         f_option_id="o_id"
         f_option_value="o_name"
+        f_view_id=true
         f_disabled=$disabled
         f_description="Склад Куда"
     }

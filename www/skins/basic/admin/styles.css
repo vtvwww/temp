@@ -387,9 +387,9 @@ div.cm-sortable, div#addons_list, div#statuses_list, div#update_features_list, d
 	display: inline-block;
 	text-shadow: 0px 1px 0px #055c7a;
 	height: 25px;
-	-moz-border-radius: 14px;
-	-webkit-border-radius: 14px;
-	border-radius: 14px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
 }
 input:: -moz-focus-inner {
 	border: 0;
@@ -2241,7 +2241,7 @@ table .hidden-inputs .input-text-medium, table .hidden-inputs .input-text, table
 	padding: 0 11px;
 }
 .table tr:hover td, .table tbody.hover:hover td, .object-group:hover td, .object-group-elements:hover td {
-	background-color: #f9c578/* !important*/;
+	background-color: #DCF6FF /* !important*/;
 	/*border-bottom-color: #9fdaed;*/
 }
 .object-group:hover, .object-group-elements:hover, .table.scrollable p:hover {
@@ -3034,8 +3034,9 @@ ul.statistic-list .total em {
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	margin: -157px 0 0 -170px;
-	max-width: 330px;
+	margin: -157px 0 0 -175px;
+	/*max-width: 330px;*/
+	width: 350px;
 	border: 1px solid #e3e3e3;
     box-shadow: 0 4px 15px rgba(0,0,0,0.25);
     -moz-box-shadow: 0 4px 15px rgba(0,0,0,0.25);
@@ -3045,9 +3046,9 @@ ul.statistic-list .total em {
 	border-radius: 6px;
 }
 #main_column_login h1 {
-	margin: -49px 0 0 -43px;
+	margin: -49px 0 0 -21px;
 	position: absolute;
-	padding: 17px 23px 15px 0px;
+	padding: 17px 0 15px 0px;
 	font-size: 16px;
 	-moz-border-radius: 6px 6px 0 0;
 	-webkit-border-radius: 6px 6px 0 0;
@@ -4205,10 +4206,8 @@ a.underline-dashed:hover {
 .statistics-box {
 	margin-bottom: 12px;
 	margin-top: 10px;
-	border: 6px solid #ebebeb;
-	-moz-border-radius: 6px;
-	-webkit-border-radius: 6px;
-	border-radius: 6px;
+	border: 2px solid #ebebeb;
+	border-radius: 4px;
 }
 .statistics-box h2 {
 	margin: 0;
@@ -4218,8 +4217,30 @@ a.underline-dashed:hover {
 	border: 1px solid #e0e0e0;
 	border-bottom-width: 0;
 }
+
+.statistics-box .statistics-title {
+    -webkit-box-shadow: 0 1px 1px #efefef;
+    -moz-box-shadow: 0 1px 1px #efefef;
+    box-shadow: 0 1px 1px #efefef;
+    padding: 0 12px;
+    height: 24px;
+    border-bottom: 1px solid #d5d5d5;
+    color: #555;
+    text-align: left;
+    line-height: 24px;
+    background-color: #ebebeb;
+    background-image: -moz-linear-gradient(top,#f3f2f2,#e0e0e0);
+    background-image: -webkit-gradient(linear,0 0,0 100%,from(#f3f2f2),to(#e0e0e0));
+    background-image: -webkit-linear-gradient(top,#f3f2f2,#e0e0e0);
+    background-image: -o-linear-gradient(top,#f3f2f2,#e0e0e0);
+    background-image: linear-gradient(to bottom,#f3f2f2,#e0e0e0);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff3f2f2', endColorstr='#ffe0e0e0', GradientType=0);
+}
+
 .statistics-box .statistics-body {
-	border: 1px solid #e0e0e0;
+    background-color: #fafafa;
+    border: 0px solid #e0e0e0;
 	border-top-width: 0;
 	padding: 13px 14px;
 

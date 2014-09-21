@@ -4,6 +4,50 @@
 {assign var="show_inventory" value="products"|fn_check_permissions:'manage':'admin'}
 {assign var="show_users" value="profiles"|fn_check_permissions:'manage':'admin'}
 {hook name="index:index"}
+{if $auth.usergroup_ids[0] == 6 or $auth.usergroup_ids[0] == 8}
+{literal}
+    <style>
+        span.action-add a{
+            width: 250px;
+        }
+    </style>
+{/literal}
+<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table-fixed">
+    <tr>
+        <td width="370" valign="top">
+            <div class="statistics-box">
+                <div class="statistics-title">Литейный цех</div>
+                <div class="statistics-body">
+                    <span class="action-add">
+                        <a target="_blank" href="{"acc_documents.add&fast_link=Y&type=1&object_from=7&object_to=8"|fn_url}"><b>Выпуск Литейного цеха</b></a>
+                    </span>
+                    <br/><br/>
+                    <span class="action-add">
+                        <a target="_blank" href="{"acc_documents.add&fast_link=Y&type=7&object_to=8"|fn_url}"><b>Расходный ордер со Склада литья</b></a>
+                    </span>
+                    <br/><br/>
+                    <span class="action-add">
+                        <a target="_blank" href="{"acc_documents.add&fast_link=Y&type=8&object_to=8"|fn_url}"><b>Акт изм. остатка на Складе литья</b></a>
+                    </span>
+                    <br/><br/>
+                    <span class="action-add">
+                        <a target="_blank" href="{"acc_documents.add&fast_link=Y&type=9&object_to=8"|fn_url}"><b>Акт списания на Литейный цех</b></a>
+                    </span>
+                </div>
+            </div>
+        </td>
+        <td width="170"></td>
+        <td width="370" valign="top">
+            <div class="statistics-box">
+                <div class="statistics-title">Механический цех</div>
+                <div class="statistics-body">
+                    asdasd
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+{/if}
 <table cellpadding="0" cellspacing="0" border="0" width="100%" class="table-fixed">
 <tr valign="top">
 <td width="80%">

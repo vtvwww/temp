@@ -106,20 +106,16 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
             }
         }
 
-        // подготовка данных для smarty
-//        if ($params["data_for_tmp"]){
-//            if (is__array($items)){
-//                foreach ($items as $k_o=>$v_o){
-//                    foreach ($v_o as $i){
-//                        if (is__array($data[$k_o]["data_for_tmp"][$i["item_type"]][$i["item_id"]])){
-//                            $data[$k_o]["data_for_tmp"][$i["item_type"]][$i["item_id"]]["quantity"] += $i["quantity"];
-//                        }else{
-//                            $data[$k_o]["data_for_tmp"][$i["item_type"]][$i["item_id"]] = $i;
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        // подготовка общего кол-ва данных для smarty
+        if ($params["data_for_tmp"]){
+            if (is__array($items)){
+                foreach ($items as $k_o=>$v_o){
+                    foreach ($v_o as $i){
+                        $data[$k_o]["data_for_tmp"][$i["item_type"]][$i["item_id"]]["quantity"] += $i["quantity"];
+                    }
+                }
+            }
+        }
     }
 
     // Объединить заказы по Украине
@@ -131,14 +127,15 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
         $data_temp["ukr"]["items"]      = array();
         foreach ($data as $k_d=>$v_d){
             if (in_array($v_d["customer_id"], $customers_of_ukr_keys)){
+                // Клиент принадлежит Украине
                 $data_temp["ukr"]["items"] = array_merge($data_temp["ukr"]["items"], $v_d["items"]);
+                foreach ($v_d["items"] as $i){
+                    $data_temp["ukr"]["data_for_tmp"][$i["item_type"]][$i["item_id"]]["quantity"] += $i["quantity"];
+                }
             }else{
                 $data_temp[$k_d] = $v_d;
             }
         }
-//        fn_print_r($customers_of_ukr);
-//        fn_print_r($data_temp);
-//        fn_print_r($data);
         if (count($data_temp["ukr"]["items"])){
             $data = $data_temp;
         }
