@@ -1,18 +1,7 @@
 {strip}
     {assign var="id" value=$key}
-
-    {assign var="t_nach"            value=0}
-    {assign var="t_current__in"     value=0}
-    {assign var="t_current__out"    value=0}
-    {assign var="t_konech"          value=0}
-
     {capture name="category_items"}
         {foreach from=$item.items item=m}
-            {assign var="t_nach"            value=$t_nach+$m.nach}
-            {assign var="t_current__in"     value=$t_current__in+$m.current__in}
-            {assign var="t_current__out"    value=$t_current__out+$m.current__out}
-            {assign var="t_konech"          value=$t_konech+$m.konech}
-
             <tr class="category_items {$id} {if $expand_all} hidden {/if}" m_id={$m.id}>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     {assign var="n" value=$m.name}

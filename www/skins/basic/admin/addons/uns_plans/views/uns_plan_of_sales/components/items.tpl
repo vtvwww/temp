@@ -26,6 +26,7 @@
             <th rowspan="2" class="cm-non-cb b1_l center" width="140px">Наименование</th>
             <th colspan="2" class="cm-non-cb b1_l center b3_l" width="160px">УКРАИНА</th>
             <th colspan="2" class="cm-non-cb b1_l center b3_l" width="160px">ЭКСПОРТ</th>
+            <th rowspan="2" class="cm-non-cb b1_l center b3_l" width="10px">Приоритет</th>
             <th rowspan="2" class="cm-non-cb b1_l center b3_l">&nbsp;</th>
         </tr>
         <tr class="first-sibling" style="background-color: #F3F3F3;">
@@ -172,6 +173,15 @@
                             }
                         </td>
 
+                        {*FORCED_STATUS*}
+                        <td class="cm-non-cb center b3_l">
+                            <select name="{$e_n}[forced_status]">
+                                <option value="N">---</option>
+                                <option value="R" style="background-color: #BB474E;" {if $i.forced_status == "R"}selected="selected"{/if}>Красный</option>
+                                <option value="Y" style="background-color: #E3AD32;" {if $i.forced_status == "Y"}selected="selected"{/if}>Желтый</option>
+                            </select>
+                        </td>
+
                         <td class="right cm-non-cb b3_l">
                             {include file="buttons/multiple_buttons.tpl" item_id="`$id`_`$num`" tag_level="3" only_delete="Y"}
                         </td>
@@ -256,6 +266,15 @@
                     f_number=true
                     f_simple=true
                 }
+            </td>
+
+            {*FORCED_STATUS*}
+            <td class="cm-non-cb center b3_l">
+                <select name="{$e_n}[forced_status]">
+                    <option value="N">---</option>
+                    <option value="R" style="background-color: #BB474E;">Красный</option>
+                    <option value="Y" style="background-color: #E3AD32;">Желтый</option>
+                </select>
             </td>
             {*<td class="cm-non-cb" align="right">*}
                 {*{include file="addons/uns/views/components/get_form_field.tpl"*}

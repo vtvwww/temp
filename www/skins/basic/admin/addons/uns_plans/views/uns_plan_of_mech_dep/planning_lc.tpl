@@ -216,4 +216,6 @@
     <br/>
     &nbsp;&nbsp;&nbsp;<span style="color: red; font-weight: bold;">10*</span> - число со звездочкой - это потребность в заготовках для партий насосов + потребность в заготовках для коммерческого отдела при продаже деталей. <b>Заготовки со зведочкой выполняются в первую очередь!</b>
 {/capture}
-{include file="common_templates/mainbox.tpl" title="План производства ЛИТ. ЦЕХА на `$months_full[$data.month]` `$data.year` г. (на 23:59 `$data.current_day`)" content=$smarty.capture.mainbox tools=$smarty.capture.tools}
+
+{assign var="curr_month" value=$months_full[$data.month]|upper}
+{include file="common_templates/mainbox.tpl" title="План производства ЛИТ. ЦЕХА на `$curr_month` `$data.year` г. (на 23:59 `$data.current_day`)" content=$smarty.capture.mainbox tools=$smarty.capture.tools}

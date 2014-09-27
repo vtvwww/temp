@@ -3,24 +3,6 @@
     {capture name="search_content"}
         {include file="addons/uns/views/components/search/s_time.tpl"}
         {include file="addons/uns/views/components/search/s_details.tpl"}
-        {*Отобразить по всем категориям*}
-        <table cellpadding="10" cellspacing="0" border="0" class="search-header">
-            <tr>
-                <td class="nowrap search-field">
-                    <label for="all_details">Отобразить все детали:</label>
-                    {*<div class="break">*}
-                        {include file="addons/uns/views/components/get_form_field.tpl"
-                            f_type="checkbox"
-                            f_id="all_details"
-                            f_name="all_details"
-                            f_value=$search.all_details
-                            f_style="margin-top:5px;"
-                            f_simple=true
-                        }
-                    {*</div>*}
-                </td>
-            </tr>
-        </table>
     {/capture}
     {include file="addons/uns/views/components/search/search.tpl" dispatch="`$controller`.manage" search_content=$smarty.capture.search_content}
 
@@ -36,7 +18,7 @@
                         &nbsp;Наименование</th>
                     <th rowspan="3" class="center b1_l" style="text-transform: none; font-size: 11px;">Клеймо</th>
                     <th colspan="4" class="b_l center" style="width: 110px; text-transform: none;">МЕХАНИЧЕСКИЙ ЦЕХ</th>
-                    <th rowspan="3" class="b_l center" style="width:30px;">Скл<br>КМП</th>
+                    <th rowspan="3" class="b_l center" style="width:30px;">{include file="common_templates/tooltip.tpl" tooltip="Склад комплектующих" tooltip_mark="<b>Скл<br>КМП</b>"}</th>
                     <th rowspan="3" class="b_l center" style="text-transform: none;">Принадлежность к насосам</th>
                 </tr>
                 <tr>
@@ -136,4 +118,4 @@
 {/capture}
 {assign var="time_from" value=$search.time_from|fn_parse_date|date_format:"%d/%m/%Y"}
 {assign var="time_to" value=$search.time_to|fn_parse_date|date_format:"%d/%m/%Y"}
-{include file="common_templates/mainbox.tpl" title="Баланс Мех.цеха, Скл. Комплектующих (`$time_from` - `$time_to`)" content=$smarty.capture.mainbox tools=$smarty.capture.tools}
+{include file="common_templates/mainbox.tpl" title="Баланс Мех.цеха, Склада комплектующих (`$time_from` - `$time_to`)" content=$smarty.capture.mainbox tools=$smarty.capture.tools}

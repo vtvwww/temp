@@ -350,7 +350,7 @@ div.cm-sortable, div#addons_list, div#statuses_list, div#update_features_list, d
 	border-right-color: #c7c7c7;
 	display: inline-block;
 	height: 25px;
-	text-transform: capitalize;
+	/*text-transform: capitalize;*/
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;

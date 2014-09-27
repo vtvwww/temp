@@ -43,13 +43,27 @@
                 {/if}
             </tr>
         </thead>
-        {foreach from=$balance item=i key=k}
-            {include file="addons/uns_foundry/views/foundry_get_balance/components/view.tpl" item=$i key=$k mode_report=$search.mode_report pump_materials=$search.pump_materials}
-        {foreachelse}
-            <tr class="no-items">
-                <td colspan="5"><p>{$lang.no_data}</p></td>
+        {if $balance|is__array}
+            {*Список отливок*}
+            {foreach from=$balance item=i key=k}
+                {include file="addons/uns_foundry/views/foundry_get_balance/components/view.tpl" item=$i key=$k mode_report=$search.mode_report pump_materials=$search.pump_materials}
+            {/foreach}
+
+            {*Итого ВЕС*}
+            <tr>
+                <td style="background-color: #d3d3d3;" class="hand right  bold b2_t" colspan="3">ИТОГО, т:</td>
+                <td style="background-color: #d3d3d3;" class="hand center bold b2_t b_l"  title="{$weights.n} кг">{if $weights.n}{$weights.n/1000|number_format:1:".":" "}{else}&nbsp;{/if}</td>
+                <td style="background-color: #d3d3d3;" class="hand center bold b2_t b_l"  title="{$weights.p} кг">{if $weights.p}{$weights.p/1000|number_format:1:".":" "}{else}&nbsp;{/if}</td>
+                <td style="background-color: #d3d3d3;" class="hand center bold b2_t b1_l" title="{$weights.r} кг">{if $weights.r}{$weights.r/1000|number_format:1:".":" "}{else}&nbsp;{/if}</td>
+                <td style="background-color: #d3d3d3;" class="hand center bold b2_t b_l"  title="{$weights.k} кг">{if $weights.k}{$weights.k/1000|number_format:1:".":" "}{else}&nbsp;{/if}</td>
+                <td style="background-color: #d3d3d3;" class="hand left bold   b2_t b_l"><span class="info_warning">в кг при наведении курсора</span></td>
+
             </tr>
-        {/foreach}
+        {else}
+            <tr class="no-items">
+                <td style="background-color: #F7F7F7;" colspan="10">Выберите категорию отливок</td>
+            </tr>
+        {/if}
     </table>
 {/capture}
 {assign var="time_from" value=$search.time_from|fn_parse_date|date_format:"%d/%m/%Y"}

@@ -30,9 +30,9 @@
                 <td>
                     {include file="buttons/button.tpl" but_text="Баланс по мех. цеху" but_name="dispatch[`$controller`.get_report.mc]" but_role="submit"}
                 </td>
-                <td align="right">
-                    <label>Отчет в виде пустого бланка: <input type="checkbox" name="as_blank" value="Y"/></label>
-                </td>
+                {*<td align="right">*}
+                    {*<label>Отчет в виде пустого бланка: <input type="checkbox" name="as_blank" value="Y"/></label>*}
+                {*</td>*}
             </tr>
             <tr>
                 <td colspan="10"><hr style="border-color: #000000;"/></td>

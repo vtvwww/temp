@@ -116,7 +116,7 @@
 
                         {*Кратность партии*}
                         {if $analysis_of_plan}
-                        <th style="text-transform: none;"               rowspan="3"             class="center b3_l">{include file="common_templates/tooltip.tpl" tooltip="<b>Кратность партии насоса.</b><br>ОТ - ДО, ШАГ" tooltip_mark="<b>КП</b>"}</th>
+                        <th style="text-transform: none;"               rowspan="3"             class="center b3_l">{include file="common_templates/tooltip.tpl" tooltip="<b>Кратность партии насоса.</b><br>ОТ - ДО" tooltip_mark="<b>КП</b>"}</th>
                         {/if}
                     </tr>
                     <tr style="background-color: #D4D0C8;">
@@ -171,8 +171,25 @@
                         {*// 35 дней = 38.5%  - 5 недель*}
 
                         {assign var="warning" value=""}
-                        {if $analisys.$ps_id.total+$analisys.$ps_id.zadel<=15.4} {*23.1 - соответствует трем неделям, а 33 = 30 дней*}
+                        {assign var="forced_status" value=""}
+                        {assign var="forced_status_comment" value=""}
+                        {*RED уровень - по принудительному приоритету указанному в плане продаж*}
+                        {if $plan.group_by_item.S[$ps_id].forced_status == "R"}
                             {assign var="warning" value="p_r"}
+                            {assign var="forced_status" value="_r"}
+                            {assign var="forced_status_comment" value="Этот насос принудительно переведен в 'красный' статус. Если будет собрано достаточное кол-во насосов необходимо снять этот статус."}
+
+                        {*RED уровень - по фактическому наличию насосов на СГП и в заделе*}
+                        {elseif $analisys.$ps_id.total+$analisys.$ps_id.zadel<=15.4} {*23.1 - соответствует трем неделям, а 33 = 30 дней*}
+                            {assign var="warning" value="p_r"}
+
+                        {*YELLOW уровень - по принудительному приоритету указанному в плане продаж*}
+                        {elseif $plan.group_by_item.S[$ps_id].forced_status == "Y"}
+                            {assign var="warning" value="p_y"}
+                            {assign var="forced_status" value="_y"}
+                            {assign var="forced_status_comment" value="Этот насос принудительно переведен в 'желтый' статус. Если будет собрано достаточное кол-во насосов необходимо снять этот статус."}
+
+                        {*YELLOW уровень - по фактическому наличию насосов на СГП и в заделе*}
                         {elseif $analisys.$ps_id.total+$analisys.$ps_id.zadel>15.4 and $analisys.$ps_id.total+$analisys.$ps_id.zadel<30.8} {*38.5 - соответствует пяти неделям, а 33 = 30 дней*}
                             {assign var="warning" value="p_y"}
                         {/if}
@@ -208,7 +225,7 @@
                             {if $analisis_of_sales and ($auth.usergroup_ids[0] == 6 or $auth.usergroup_ids[0] == 8)}
                                 {if $prohibition.$ps_id == "Y"}&nbsp;{/if}
                                 <a  rev="content_sales_{$ps_id}" id="opener_sales_{$ps_id}" href="{"uns_plan_of_sales.edit_sales?item_id=`$ps_id`&item_type=S&month=`$search.month`&year=`$search.year`"|fn_url}" class="cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black edit_sales" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>
-                                    <img width="20" src="skins/basic/admin/addons/uns_plans/images/edit_sales.png" alt="X" title="Редактирование плана продаж"/>
+                                    <img width="20" src="skins/basic/admin/addons/uns_plans/images/edit_sales{$forced_status}.png" alt="X" title="Редактирование плана продаж. {$forced_status_comment}"/>
                                 </a>
                                 <div id="content_sales_{$ps_id}" class="hidden" title="План продаж <u>{$ps.ps_name}</u>"></div>
                             {/if}
@@ -281,7 +298,7 @@
                         {*КРАТНОСТЬ ПАРТИИ НАСОСОВ*}
                         {if $analysis_of_plan}
                             <td {$analisys_rowspan} class="b3_l b2_t center {$mark}">
-                                {$ps.party_size_min}-{$ps.party_size_max},{$ps.party_size_step}
+                                {$ps.party_size_min}-{$ps.party_size_max}{*,{$ps.party_size_step}*}
                             </td>
                         {/if}
                     </tr>
@@ -529,7 +546,7 @@
                         <th rowspan="3" style="text-transform: none;" class="b3_l center">СГП<br>на<br>23:59<br>{$search.current_day|fn_parse_date|date_format:"%d/%m"}<hr class="roman_dates">{$search.year}</th>
                         {*Кратность партии*}
                         {if $analysis_of_plan}
-                        <th style="text-transform: none;"               rowspan="3"             class="center b3_l">{include file="common_templates/tooltip.tpl" tooltip="<b>Кратность партии насоса.</b><br>ОТ - ДО, ШАГ" tooltip_mark="<b>КП</b>"}</th>
+                        <th style="text-transform: none;"               rowspan="3"             class="center b3_l">{include file="common_templates/tooltip.tpl" tooltip="<b>Кратность партии насоса.</b><br>ОТ - ДО" tooltip_mark="<b>КП</b>"}</th>
                         {/if}
                     </tr>
                     <tr style="background-color: #D4D0C8;">
@@ -577,5 +594,6 @@
     {/capture}
 
     {assign var="curr_time" value=$smarty.now|date_format:"%H:%M"}
-    {include file="common_templates/mainbox.tpl" title="План производства насосов на `$months_full[$search.month]` `$search.year` г. (на 23:59 `$search.current_day`)" content=$smarty.capture.mainbox tools=$smarty.capture.tools}
+    {assign var="curr_month" value=$months_full[$search.month]|upper}
+    {include file="common_templates/mainbox.tpl" title="План производства насосов на `$curr_month` `$search.year` г. (на 23:59 `$search.current_day`)" content=$smarty.capture.mainbox tools=$smarty.capture.tools}
 {/strip}

@@ -62,18 +62,41 @@ if($mode == 'manage'){
     $_REQUEST["accessory_pumps"] = "Y";
 
     $p = array_merge($_REQUEST, $p);
+    $view->assign('search', $p);
 
-    list($balance, $search) = fn_uns__get_balance($p);
-    $view->assign('balance', $balance);
-    $view->assign('search', $search);
+    if (!is__more_0($_REQUEST["mcat_id"]) and $_REQUEST["all_materials"] != "Y"){
+    }else{
+        list($balance, $search) = fn_uns__get_balance($p);
+        $view->assign('balance', $balance);
+        $view->assign('search', $search);
+    }
     $view->assign('expand_all', false);
+
+    // Расчет веса
+    $weights = array(
+        "n"  => 0,  // начальный остаток
+        "p"  => 0,  // приход
+        "r"  => 0,  // расход
+        "k"  => 0,  // конечный остаток
+    );
+    if (is__array($balance)){
+        foreach ($balance as $group){
+            if (is__array($group["items"])){
+                foreach ($group["items"] as $i){
+                    $weights["n"] += $i["weight"]*$i["nach"];
+                    $weights["p"] += $i["weight"]*$i["current__in"];
+                    $weights["r"] += $i["weight"]*$i["current__out"];
+                    $weights["k"] += $i["weight"]*$i["konech"];
+                }
+            }
+        }
+    }
+    $view->assign('weights', $weights);
 
     // Последняя дата движения
     $info_of_the_last_movement = fn_uns__get_info_of_the_last_movement(array('o_id'=>8)); // склад литья
     $view->assign('info_of_the_last_movement', $info_of_the_last_movement);
 
-
-    // ЗАГОТОВКИ
     // Запрос категорий материалов
     list($mcategories_plain) = fn_uns__get_materials_categories(array("plain" => true, "with_q_ty"=>false, "mcat_id"=>UNS_MATERIAL_CATEGORY__CAST));
     $view->assign('mcategories_plain', $mcategories_plain);
@@ -173,6 +196,7 @@ function fn_foundry_get_balance__search($controller) {
         'pump_id',
         'view_all_position',
         'accessory_pumps',
+        'all_materials',
     );
     fn_uns_search_set_get_params($controller, $params);
     return true;

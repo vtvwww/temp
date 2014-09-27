@@ -177,6 +177,7 @@ function fn_uns__get_plan_items($params = array(), $items_per_page = 0){
         "$m_tbl.exp_curr",
         "$m_tbl.exp_next",
         "$m_tbl.plan_id",
+        "$m_tbl.forced_status",
     );
 
     $sorting_schemas = array(
@@ -265,6 +266,7 @@ function fn_uns__upd_plan($id = 0, $data){
  */
 function fn_uns__upd_plan_items($id, $data){
     if (!is__more_0($id) or !is__array($data)) return false;
+    $forced_status = array("N", "R", "Y", "G");
     $data = trim__data($data);
     $m_table = "?:_plan_items";
     $pi_ids = array();
@@ -278,6 +280,7 @@ function fn_uns__upd_plan_items($id, $data){
                 'ukr_next'      => is__more_0($i['ukr_next'])?$i['ukr_next']:0,
                 'exp_curr'      => is__more_0($i['exp_curr'])?$i['exp_curr']:0,
                 'exp_next'      => is__more_0($i['exp_next'])?$i['exp_next']:0,
+                'forced_status' => in_array($i['forced_status'], $forced_status)?$i['forced_status']:"N",
             );
 
             if (is__more_0($i['pi_id']) and is__more_0(db_get_field(UNS_DB_PREFIX . "SELECT pi_id FROM $m_table WHERE pi_id = ?i", $i['pi_id']))){

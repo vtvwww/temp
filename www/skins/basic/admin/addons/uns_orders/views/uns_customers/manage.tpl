@@ -6,7 +6,7 @@
            <tr>
                <th width="10px">№</th>
                <th width="1px">&nbsp;</th>
-               <th width="300px">Полное имя</th>
+               <th width="500px">Полное имя</th>
                <th width="30px">Аббревиатура</th>
                <th width="20px">Статус</th>
                <th width="10px">Поз.</th>

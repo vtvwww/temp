@@ -64,7 +64,7 @@
                     }
                 </div>
             </td>
-            <td class="nowrap search-field {if $search.mclass_id !=1} hidden {/if}">
+            <td class="nowrap search-field {if $search.mclass_id !=1} hidden {/if} b1_l">
                 <label>Тип литья:</label>
                 <div class="break">
                     {include file="addons/uns/views/components/get_form_field.tpl"
@@ -76,7 +76,7 @@
                     }
                 </div>
             </td>
-            <td class="nowrap search-field">
+            <td class="nowrap search-field  b1_l">
                 <label>Наименование:</label>
                 <div class="break">
                     {include file="addons/uns/views/components/get_form_field.tpl"
@@ -89,7 +89,7 @@
                     }
                 </div>
             </td>
-            <td class="nowrap search-field">
+            <td class="nowrap search-field  b1_l">
                 <label>{$smarty.const.L_material_no}:</label>
                 <div class="break">
                     {include file="addons/uns/views/components/get_form_field.tpl"
@@ -97,6 +97,18 @@
                         f_required=true f_integer=false
                         f_name="material_no"
                         f_value=$search.material_no
+                        f_simple=true
+                    }
+                </div>
+            </td>
+            <td class="nowrap search-field  b1_l">
+                <label for="all_materials">Отобразить все заготовки:</label>
+                <div class="break">
+                    {include file="addons/uns/views/components/get_form_field.tpl"
+                        f_type="checkbox"
+                        f_id="all_materials"
+                        f_name="all_materials"
+                        f_value=$search.all_materials
                         f_simple=true
                     }
                 </div>
