@@ -69,7 +69,7 @@
                 {*Запрет*}
                 <th rowspan="2" class="b3_l" style="text-align: center;" width="10px">&nbsp;</th>
 
-                <th rowspan="2" class="" style="text-transform: none;">Принадлежность к насосам</th>
+                <th rowspan="2" class="" style="text-transform: none;">Применяемость в насосах</th>
             </tr>
             <tr style="background-color: #D4D0C8;">
                 {*ПЛАН*}
@@ -183,7 +183,7 @@
 
             *}{*Запрет*}{*
             <th rowspan="2" class="b3_l" style="text-align: center;" width="10px">&nbsp;</th>
-            <th rowspan="2" class="" style="text-transform: none;">Принадлежность к насосам</th>
+            <th rowspan="2" class="" style="text-transform: none;">Применяемость в насосах</th>
         </tr>
         <tr style="background-color: #D4D0C8;">
             <th colspan="3" class="b3_l b1_t center" style="text-transform: none;" width="60px">

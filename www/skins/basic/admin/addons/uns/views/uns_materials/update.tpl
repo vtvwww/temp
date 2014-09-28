@@ -132,7 +132,7 @@
                     <hr/>
                     {*Режим отображения принадлежности*}
                     <div class="form-field">
-                        <label for="accessory_view_{$id}" class="cm-required">Режим отображения принадлежности{include file="common_templates/tooltip.tpl" tooltip="<b>По сериям насосов</b><br>Во многих случаях стоит выбирать именно этот режим. Так как он является информативным и компактным.<br><img src='skins/basic/admin/images/tooltips/details_accessory_view_s.png'><br><br><b>По насосам</b> Может быть слишком избыточно.<br><img src='skins/basic/admin/images/tooltips/details_accessory_view_p.png'><br><br><b>Указать вручную</b><br>Бывают случаи, когда невозможно рассчитать принадлежность детали, тогда следует установить ее вручную в следующем поле для ввода.<br><img src='skins/basic/admin/images/tooltips/details_accessory_view_m.png'>"}:</label>
+                        <label for="accessory_view_{$id}" class="cm-required">Режим отображения применяемости{include file="common_templates/tooltip.tpl" tooltip="<b>По сериям насосов</b><br>Во многих случаях стоит выбирать именно этот режим. Так как он является информативным и компактным.<br><img src='skins/basic/admin/images/tooltips/details_accessory_view_s.png'><br><br><b>По насосам</b> Может быть слишком избыточно.<br><img src='skins/basic/admin/images/tooltips/details_accessory_view_p.png'><br><br><b>Указать вручную</b><br>Бывают случаи, когда невозможно рассчитать применяемость детали, тогда следует установить ее вручную в следующем поле для ввода.<br><img src='skins/basic/admin/images/tooltips/details_accessory_view_m.png'>"}:</label>
                         <select id="accessory_view_{$id}" name="data[accessory_view]">
                             <option {if $i.accessory_view == "S"} selected="selected" {/if} value="S">по сериям насосов</option>
                             <option {if $i.accessory_view == "P"} selected="selected" {/if} value="P">по насосам</option>
@@ -145,8 +145,8 @@
                         f_required=false f_integer=false
                         f_name="accessory_manual"
                         f_value=$i.accessory_manual
-                        f_description="Принадлежность насосов вручную"
-                        f_tooltip="Текст, который будет отображен как принадлежность к насосам, если в качестве <Режима отображения принадлежности> был выбран <указать вручную>.<br><img src='skins/basic/admin/images/tooltips/details_accessory_view_m_1.png'><br><br><img src='skins/basic/admin/images/tooltips/details_accessory_view_m.png'>"
+                        f_description="Применяемость в насосах вручную"
+                        f_tooltip="Текст, который будет отображен как применяемость в насосах, если в качестве <Режима отображения принадлежности> был выбран <указать вручную>.<br><img src='skins/basic/admin/images/tooltips/details_accessory_view_m_1.png'><br><br><img src='skins/basic/admin/images/tooltips/details_accessory_view_m.png'>"
                     }
 
                     <hr>

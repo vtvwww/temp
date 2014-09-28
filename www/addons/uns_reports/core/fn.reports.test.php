@@ -85,7 +85,7 @@ function fn_rpt__test($data){
                         $pdf->MultiCell($col_sizes[$k++],  $h, "Кол", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
                         $pdf->MultiCell($col_sizes[$k++],  $h, "КЛМ", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
                         $pdf->MultiCell($col_sizes[$k++],  $h, "Тип", $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-                        $pdf->MultiCell($col_sizes[$k++],  $h, "Принадлежность (Примечание)", $border, "C", $fill,   1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+                        $pdf->MultiCell($col_sizes[$k++],  $h, "Применяемость (Примечание)", $border, "C", $fill,   1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
                         $pdf->SetFillColor(255, 255, 255);
 
                         foreach ($details as $k_d=>$v_d){
@@ -229,7 +229,7 @@ function fn_rpt__test($data){
         $pdf->MultiCell(10,  $h, "МЦ2/О",         $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
         $pdf->MultiCell(10,  $h, "МЦ2/З",         $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
         $pdf->MultiCell(0.5,  $h, "",              $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-        $pdf->MultiCell($col_sizes[$k++],  $h, "Принадлежность",$border, $align, $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->MultiCell($col_sizes[$k++],  $h, "Применяемость",$border, $align, $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
         $k = 0;
 
         $m = 0;
@@ -311,7 +311,7 @@ function fn_rpt__test($data){
         $pdf->MultiCell($col_sizes[$k++],  $h, "МЦ2/З",         $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
         $pdf->MultiCell($col_sizes[$k++],  $h, "",              $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
         $pdf->MultiCell($col_sizes[$k++],  $h, "Скл. КМП",      $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-        $pdf->MultiCell($col_sizes[$k++],  $h, "Принадлежность",$border, $align, $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->MultiCell($col_sizes[$k++],  $h, "Применяемость",$border, $align, $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
 
         $pdf->ln(10);
     }

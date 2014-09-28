@@ -17,7 +17,7 @@
                     <th rowspan="2" style="border-left: 1px solid #808080; border-left: 3px solid #000000; background-color: #D3D3D3;">Тек.<br>ост.</th>
                     <th colspan="{$orders|count}" style="text-align: center; border-left: 3px solid #000000; border-bottom: 1px solid #808080;">Заказы</th>
                     <th rowspan="2" style="border-left: 1px solid #808080;">==</th>
-                    <th rowspan="2" style="border-left: 1px solid #808080; border-left: 3px solid #000000">Принадлежность к насосам</th>
+                    <th rowspan="2" style="border-left: 1px solid #808080; border-left: 3px solid #000000">Применяемость в насосах</th>
                 </tr>
                 <tr style="background-color: #EDEDED">
                     {foreach from=$orders item="o" name="o"}
@@ -148,7 +148,7 @@
                     </th>
                     <th style="border-left: 1px solid #808080;">КЛМ</th>
                     <th style="border-left: 1px solid #808080;">СГП</th>
-                    <th style="border-left: 1px solid #808080;">Принадлежность к насосам</th>
+                    <th style="border-left: 1px solid #808080;">Применяемость в насосах</th>
                 </tr>
             </thead>
             {if is__array($balances)}

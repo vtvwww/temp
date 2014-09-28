@@ -504,7 +504,7 @@ function fn_uns__get_details($params = array(), $items_per_page = 0){
         }
     }
 
-    // ПРИНАДЛЕЖНОСТЬ К НАСОСАМ
+    // ПРИМЕНЯЕМОСТЬ В НАСОСАХ
     if ($params["with_accessory_pumps"]){
         if (is__array($accessory_pumps = fn_uns__get_accessory_pumps('D', array_keys($data)))){
             foreach ($data as $k=>$v){

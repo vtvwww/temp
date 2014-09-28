@@ -19,7 +19,7 @@
                     <th rowspan="3" class="center b1_l" style="text-transform: none; font-size: 11px;">Клеймо</th>
                     <th colspan="4" class="b_l center" style="width: 110px; text-transform: none;">МЕХАНИЧЕСКИЙ ЦЕХ</th>
                     <th rowspan="3" class="b_l center" style="width:30px;">{include file="common_templates/tooltip.tpl" tooltip="Склад комплектующих" tooltip_mark="<b>Скл<br>КМП</b>"}</th>
-                    <th rowspan="3" class="b_l center" style="text-transform: none;">Принадлежность к насосам</th>
+                    <th rowspan="3" class="b_l center" style="text-transform: none;">Применяемость в насосах</th>
                 </tr>
                 <tr>
                     <th colspan="2" class="center b_l b1_t">№1</th>
@@ -70,7 +70,7 @@
                         Кон.&nbsp;ост.<br>
                         <span style="font-size: 9px; padding: 0;">({$search.time_to|fn_parse_date|date_format:"%d/%m/%y"})</span></th>
                     {if $search.accessory_pumps == "Y"}
-                        <th>Принадлежность к насосам</th>
+                        <th>Применяемость в насосах</th>
                     {/if}
                 </tr>
             </thead>
@@ -101,7 +101,7 @@
                         Кон.&nbsp;ост.<br>
                         <span style="font-size: 9px; padding: 0;">({$search.time_to|fn_parse_date|date_format:"%d/%m/%y"})</span></th>
                     {if $search.accessory_pumps == "Y"}
-                        <th>Принадлежность к насосам</th>
+                        <th>Применяемость в насосах</th>
                     {/if}
                 </tr>
             </thead>

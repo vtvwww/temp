@@ -57,7 +57,7 @@
                     &nbsp;
                 </td>
 
-                {*ПРИНАДЛЕЖНОСТЬ К НАСОСАМ*}
+                {*ПРИМЕНЯЕМОСТЬ В НАСОСАХ*}
                 <td {if $priority_materials.R[$m.id] == "Y"} class="p_r" {elseif $priority_materials.Y[$m.id] == "Y"} class="p_y" {/if}>
                     {if $m.material_comment_1|strlen}
                         <span class="info_warning">{$m.material_comment_1}</span>

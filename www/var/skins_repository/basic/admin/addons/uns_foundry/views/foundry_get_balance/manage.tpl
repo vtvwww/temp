@@ -22,7 +22,7 @@
                     <img id="on_cat" class="hand cm-combinations hidden" width="13" height="12" border="0" title="Расширить / сократить список элементов" alt="Расширить / сократить список элементов" src="/skins/basic/admin/images/plus_minus.gif">
                     <img id="off_cat" class="hand cm-combinations" width="13" height="12" border="0" title="Расширить / сократить список элементов" alt="Расширить / сократить список элементов" src="/skins/basic/admin/images/minus_plus.gif">
                     &nbsp;Наименование</th>
-                <th style="text-align: center;" width="100px">Принадлежность</th>
+                <th style="text-align: center;" width="100px">Применяемость</th>
                 <th style="border-left: 1px solid #EBEBEB; text-align: center;" width="80px">
                     Нач.&nbsp;ост.<br>
                     <span style="font-size: 9px; padding: 0;">({if $search.time_from == 0}Сначала{else}{$search.time_from|fn_parse_date|date_format:"%d/%m/%Y"}{/if})</span></th>

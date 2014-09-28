@@ -39,7 +39,7 @@
                     {include file="common_templates/tooltip.tpl" tooltip='Конечный остаток'  tooltip_mark="<b>КО</b>"}
                 </th>
                 {if $search.accessory_pumps == "Y"}
-                    <th class="b_l">Принадлежность к насосам</th>
+                    <th class="b_l">Применяемость в насосах</th>
                 {/if}
             </tr>
         </thead>

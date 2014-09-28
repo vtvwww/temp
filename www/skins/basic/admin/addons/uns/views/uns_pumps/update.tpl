@@ -102,7 +102,7 @@
                     f_id=$id
                     f_value=$i.include_to_accessory
                     f_name="include_to_accessory"
-                    f_description="Включить в список принадлежность к насосам"
+                    f_description="Включить в список Применяемость в насосах"
                     f_tooltip="Если в настройках детали(заготовки) выбран режим отображения принадлежности: <По насосоам>, тогда при установленой птичке, название этого насоса будет отображено в списке принадлежности к насосам.<br><br>Птичка установлена.<br><img src='skins/basic/admin/images/tooltips/pumps_include_to_accessory.png'><br><br>Птичка сброшена.<br><img src='skins/basic/admin/images/tooltips/pumps_include_to_accessory_1.png'>"
                 }
                 <hr/>

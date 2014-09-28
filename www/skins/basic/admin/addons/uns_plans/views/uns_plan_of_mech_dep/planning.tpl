@@ -12,7 +12,7 @@
                 <th rowspan="3" class="center b1_l" style="text-transform: none; font-size: 11px;">Клеймо</th>
                 <th colspan="4" class="b_l center" style="width: 110px; text-transform: none;">МЕХАНИЧЕСКИЙ ЦЕХ</th>
                 <th rowspan="3" class="b_l center" style="width:30px;">Скл<br>КМП</th>
-                <th rowspan="3" class="b_l center" style="text-transform: none;">Принадлежность к насосам</th>
+                <th rowspan="3" class="b_l center" style="text-transform: none;">Применяемость в насосах</th>
             </tr>
             <tr>
                 <th colspan="2" class="center b_l b1_t">№1</th>

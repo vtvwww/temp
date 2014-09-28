@@ -375,7 +375,7 @@ function fn_uns__get_balance($params = array(), $time=false){
             list($materials) = fn_uns__get_materials($p);
             if (is__array($materials)){
 
-                // ОТОБРАЗИТЬ ПРИНАДЛЕЖНОСТЬ НАСОСОВ
+                // ОТОБРАЗИТЬ ПРИМЕНЯЕМОСТЬ В НАСОСАХ
                 if ($params['accessory_pumps'] == true){
                     if (is__array($accessory_pumps = fn_uns__get_accessory_pumps('M',array_keys($materials)))){
                         foreach ($materials as $k_m=>$v_m){
@@ -477,7 +477,7 @@ function fn_uns__get_balance($params = array(), $time=false){
             // .....
             list($details) = fn_uns__get_details($p);
             if (is__array($details)){
-                 // ОТОБРАЗИТЬ ПРИНАДЛЕЖНОСТЬ НАСОСОВ
+                 // ОТОБРАЗИТЬ ПРИМЕНЯЕМОСТЬ В НАСОСАХ
                 if ($params['accessory_pumps'] == "Y"){
                     if (is__array($accessory_pumps = fn_uns__get_accessory_pumps('D', array_keys($details)))){
                         foreach ($details as $k_m=>$v_m){
@@ -582,7 +582,7 @@ function fn_uns__get_balance($params = array(), $time=false){
     return array($data, $params, ($time)?(microtime_float()-$start_time):0);
 }
 
-// Принадлежность насосов
+// ПРИМЕНЯЕМОСТЬ В НАСОСАХ
 function fn_uns__get_accessory_pumps ($item_type, $items){
     if (!in_array($item_type, array('M', 'D')) or !($items = to__array($items))) return false;
     else{
