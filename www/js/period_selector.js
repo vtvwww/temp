@@ -39,7 +39,12 @@
 			} else if (value == 'D') {
 				// default
 			} else if (value == 'W') {
-				from_date.day = date_obj.getUTCDate() - date_obj.getDay() + 1;
+				// исправление ошибки при выборе текущей недели если текущий день вск.
+                if (date_obj.getDay() == 0){
+                    from_date.day = date_obj.getUTCDate() - (date_obj.getDay() + 6);
+                }else{
+                    from_date.day = date_obj.getUTCDate() - date_obj.getDay() + 1;
+                }
 			} else if (value == 'M') {
 				from_date.day = 1;
 			} else if (value == 'Y') {
@@ -52,8 +57,14 @@
 			} else if (value == 'HH') {
 				from_date.day = date_obj.getUTCDate() - 1;
 			} else if (value == 'LW') {
-				from_date.day = date_obj.getUTCDate() - (date_obj.getDay() + 6);
-				to_date.day = date_obj.getUTCDate() - date_obj.getDay();
+				// исправление ошибки при выборе текущей недели если текущий день вск.
+                if (date_obj.getDay() == 0){
+                    from_date.day = date_obj.getUTCDate() - (date_obj.getDay() + 6 + 7);
+                    to_date.day = date_obj.getUTCDate() - (date_obj.getDay() + 7);
+                }else{
+                    from_date.day = date_obj.getUTCDate() - (date_obj.getDay() + 6);
+                    to_date.day = date_obj.getUTCDate() - date_obj.getDay();
+                }
 			} else if (value == 'LM') {
 				from_date.month = date_obj.getMonth() - 1;
 				from_date.day = 1;
