@@ -117,7 +117,7 @@ if ($mode == "calculation"){
     list($pump_series, $sales, $sales_ukr_exp, $analysis, $plan, $ps_order) = $pl->calculation($params);
     $view->assign('pump_series',    $pump_series);
     $view->assign('sales',          $sales);
-    $view->assign('$sales_ukr_exp', $sales_ukr_exp);
+//    $view->assign('$sales_ukr_exp', $sales_ukr_exp);
     $view->assign('analysis',       $analysis);
     $view->assign('plan',           $plan);
     $view->assign('ps_order',       $ps_order);

@@ -9,13 +9,14 @@
 
 <ol>
     {*1. Отобразить таблицу имеющихся заказов *}
-    {if $zone == "EXP" and $plan.$zone.$ps_id.orders|is__array}
+    {*{if $zone == "EXP" and $plan.$zone.$ps_id.orders|is__array}*}
+    {if $plan.$zone.$ps_id.orders|is__array}
     <li>Имеющиеся заказы на {$ps.ps_name} на {$months[$search.month]|mb_convert_case:1:"utf-8"} {$search.year} г.:
         <table border="0" class="simple" cellspacing="0" cellpadding="0" style="margin: 3px 0;">
             <thead>
                 <tr>
                     <th>№</th>
-                    <th>Клиент/Регион</th>
+                    <th>Регион/Клиент</th>
                     <th>Дата&nbsp;отгрузки</th>
                     <th>Кол.</th>
                 </tr>
@@ -96,9 +97,7 @@
     </tbody>
 </table>
 
-{*2. Прогнозируемый план продаж *}
-
-    {*<pre>{$customers|print_r}</pre>*}
-    {*<pre>{$orders|print_r}</pre>*}
-    {*<pre>{$plan.$ps_id|print_r}</pre>*}
+{*<pre>{$customers|print_r}</pre>*}
+{*<pre>{$orders|print_r}</pre>*}
+{*<pre>{$plan.$ps_id|print_r}</pre>*}
 {/strip}

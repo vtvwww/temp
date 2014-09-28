@@ -98,6 +98,7 @@ class plan_of_sales {
      */
     private function planning($pump_series, $sales, $sales_ukr_exp, $analysis, $order_ps, $ps_order, $ref_month, $ref_year, $week_supply, $koef_plan_prodazh){
         $res = array();
+        $customers = array_shift(fn_uns__get_customers()) ;
         if (is__array($pump_series) and is__array($sales) and is__array($sales_ukr_exp) and is__array($analysis)){
             $ps_ids = array_keys($pump_series);
 
@@ -108,7 +109,19 @@ class plan_of_sales {
 
             foreach (array("UKR", "EXP") as $zone_id){
                 foreach ($pump_series as $ps_id=>$ps){
-                    $v_total_orders = ($zone_id == "EXP")?array_sum($ps_order[$ps_id]):0;
+                    $v_total_orders = 0;
+                    $orders = null;
+                    // Отделить заказы по УКРАИНЕ (UKR) от заказов за Украину (EXP)
+                    foreach ($ps_order[$ps_id] as $order_id=>$q){
+                        $order = array_shift(array_shift(fn_acc__get_orders(array("order_id"=>$order_id))));
+                        if ((($zone_id == "UKR") and ($customers[$order["customer_id"]]["to_export"] == "N"))
+                            or
+                            (($zone_id == "EXP") and ($customers[$order["customer_id"]]["to_export"] == "Y")))
+                        {
+                            $v_total_orders += $q;
+                            $orders[$order_id] = $q;
+                        }
+                    }
 
                     $v_plan_prodazh_statistical = $plan_prodazh[$zone_id][$ps_id];          // Статистическое значение
                     $v_plan_prodazh_calc        = fn_fvalue($v_plan_prodazh_statistical, 0);// Расчетное значение
@@ -122,7 +135,7 @@ class plan_of_sales {
                     }
 
                     $res[$zone_id][$ps_id] = array(
-                        "orders"                    => $ps_order[$ps_id],
+                        "orders"                    => $orders,
                         "total_orders"              => $v_total_orders,
                         "plan_prodazh_statistical"  => $v_plan_prodazh_statistical,
                         "plan_prodazh_calc"         => $v_plan_prodazh_calc,
@@ -387,7 +400,7 @@ class plan_of_sales {
             }
 
 //            /* Тренд */
-//            $myPicture->drawBestFit();
+            $myPicture->drawBestFit();
 
             /* Среднее значение */
             if (is__more_0($avr = $data["analysis"][$k_s]["for_year"]["avr"])){
