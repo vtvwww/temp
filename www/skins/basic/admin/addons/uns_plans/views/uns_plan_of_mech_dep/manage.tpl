@@ -6,6 +6,14 @@
                 color: #d3d3d3;
             }
 
+            td.bar_zero.p_r,
+            td.bar_zero.p_r:hover{
+                background-color: #fff !important;
+                border: 2px solid #bb474e !important;
+                height:5px;
+                padding: 0 !important;
+            }
+
             td.bar_available,
             td.bar_available:hover{
                 background-color:#f4f4f4 !important;
@@ -89,7 +97,7 @@
             <span class="action-add">
                <a target="_blank" href="{"uns_plan_of_mech_dep.analysis_of_pumps.prohibition"|fn_url}">Анализ <b>ЗАПРЕЩЕННЫХ</b> насосов</a>
             </span>*}
-            <table style="margin: 10px" width="100%">
+            <table style="margin: 10px 0px" width="92%">
                 <tr>
                     <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_r.png"/> - запас насосов до 2-х недель</td>
                     <td class="b1_l"></td>
@@ -115,7 +123,7 @@
                         <th style="text-transform: none;"               rowspan="3"             class="center b3_l">СГП<br>на<br>23:59<br>{$search.current_day|fn_parse_date|date_format:"%d/%m"}<hr class="roman_dates">{$search.year}</th>
 
                         {*Кратность партии*}
-                        {if $analysis_of_plan}
+                        {if $analisis_of_sales}
                         <th style="text-transform: none;"               rowspan="3"             class="center b3_l">{include file="common_templates/tooltip.tpl" tooltip="<b>Кратность партии насоса.</b><br>ОТ - ДО" tooltip_mark="<b>КП</b>"}</th>
                         {/if}
                     </tr>
@@ -194,6 +202,13 @@
                             {assign var="warning" value="p_y"}
                         {/if}
 
+                        {* насос с нулевым остатком*}
+                        {if $analisys.$ps_id.zero>0 and ($requirement.curr_month.$ps_id>0 or $requirement.next_month.$ps_id>0) and $prohibition.$ps_id != "Y"}
+                            {assign var="b_zero"   value="<td class='bar_zero `$warning`'    style='width:`$analisys.$ps_id.zero`%;'></td>"}
+                        {else}
+                            {assign var="b_zero"   value=""}
+                        {/if}
+
                         {if $analisys.$ps_id.total>0}
                             {assign var="b_available"   value="<td class='bar_available `$warning`'    style='width:`$analisys.$ps_id.total`%;'></td>"}
                         {else}
@@ -207,7 +222,7 @@
                         {/if}
 
                         {assign var="b_none"            value="<td class='bar_none'         style='width:`$analisys.$ps_id.none`%;'></td>"}
-                        {assign var="analisys_progress" value="<table style='margin:1px 0 1px 0;' cellpadding='0' cellspacing='0' border='0' width='100%'><thead><tr>`$b_offset``$b_available``$b_zadel``$b_none`</tr></thead></table>"}
+                        {assign var="analisys_progress" value="<table style='margin:1px 0 1px 0;' cellpadding='0' cellspacing='0' border='0' width='100%'><thead><tr>`$b_offset``$b_zero``$b_available``$b_zadel``$b_none`</tr></thead></table>"}
                         {assign var="analisys_add_rows" value="<tr><td valign='bottom' style='border-top:none;border-bottom:none;padding: 0;' class='b_l' colspan='3'>`$analisys_progress`</td></tr>"}
                     {/if}
 
@@ -293,10 +308,11 @@
 
                         {*Склад Готовой Продукции*}
                         {assign var="q" value=$sgp_current_day.$ps_id|default:0}
-                        <td {$analisys_rowspan} class="b3_l b2_t center {$mark} {if !$q}zero{else}bold{/if}">{if $q>=0}{$q}{else}<span class="info_warning_block">{$q}</span>{/if}</td>
+                        {*<td {$analisys_rowspan} class="b3_l b2_t center {$mark} {if !$q}zero{else}bold{/if}">{if $q>=0}{$q}{else}<span class="info_warning_block">{$q}</span>{/if}</td>*}
+                        <td {$analisys_rowspan} class="b3_l b2_t center {$mark} {if $q}bold{/if}">{if $q>0}{$q}{elseif ($requirement.curr_month.$ps_id>0 or $requirement.next_month.$ps_id>0) and $prohibition.$ps_id != "Y" and $q<=0}<span class="info_warning_block">&nbsp;&nbsp;{$q}&nbsp;&nbsp;</span>{/if}</td>
 
                         {*КРАТНОСТЬ ПАРТИИ НАСОСОВ*}
-                        {if $analysis_of_plan}
+                        {if $analisis_of_sales}
                             <td {$analisys_rowspan} class="b3_l b2_t center {$mark}">
                                 {$ps.party_size_min}-{$ps.party_size_max}{*,{$ps.party_size_step}*}
                             </td>
@@ -381,7 +397,7 @@
                         <td style="font-size: 14px;" class="b3_t b3_l center bold {if !$q}zero{/if}">{$q}</td>
 
                         {*КРАТНОСТЬ ПАРТИИ*}
-                        {if $analysis_of_plan}
+                        {if $analisis_of_sales}
                             <td class="b3_t b3_l center b3_b" rowspan="3">&nbsp;</td>
                         {/if}
                     </tr>
@@ -545,7 +561,7 @@
                         <th style="background-color: #B8C1FF;" class="b1_l center">{$tpl_next2_month_roman.month}<hr class="roman_dates">{$tpl_next2_month_roman.year}</th>
                         <th rowspan="3" style="text-transform: none;" class="b3_l center">СГП<br>на<br>23:59<br>{$search.current_day|fn_parse_date|date_format:"%d/%m"}<hr class="roman_dates">{$search.year}</th>
                         {*Кратность партии*}
-                        {if $analysis_of_plan}
+                        {if $analisis_of_sales}
                         <th style="text-transform: none;"               rowspan="3"             class="center b3_l">{include file="common_templates/tooltip.tpl" tooltip="<b>Кратность партии насоса.</b><br>ОТ - ДО" tooltip_mark="<b>КП</b>"}</th>
                         {/if}
                     </tr>

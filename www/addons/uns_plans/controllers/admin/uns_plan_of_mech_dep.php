@@ -745,15 +745,10 @@ if ($mode == "manage") {
             $day_of_the_month = date('j', fn_parse_date($_REQUEST["current_day"]));
             $number_of_days_in_the_month = date('t', fn_parse_date($_REQUEST["current_day"]));
             $offset_in_the_month = $day_of_the_month/$number_of_days_in_the_month;
-//            fn_print_r($day_of_the_month, $number_of_days_in_the_month, fn_fvalue($offset_in_the_month,1));
-
-
 
             $view->assign("bar_offset", 10);
             $analisys = null;
             $month_px = 51;
-
-
 
             foreach ($pump_series as $ps_id=>$ps){
                 $analisys[$ps_id]["offset"] =  fn_fvalue((100/3)*$offset_in_the_month, 2);
@@ -774,7 +769,12 @@ if ($mode == "manage") {
                     $analisys[$ps_id]["total"] = fn_fvalue(100*($month_px * ($_TOTAL["ZAPOLNENIE"]["a"]/$a + $_TOTAL["ZAPOLNENIE"]["b"]/$b + $_TOTAL["ZAPOLNENIE"]["c"]/$c)/(3*$month_px)), 2);
                     $_ZADEL = fn_uns_calc_progress ($_TOTAL["OSTALOS"]["a"], $_TOTAL["OSTALOS"]["b"], $_TOTAL["OSTALOS"]["c"], $z);
                     $analisys[$ps_id]["zadel"] = fn_fvalue(100*($month_px * ($_ZADEL["ZAPOLNENIE"]["a"]/$a + $_ZADEL["ZAPOLNENIE"]["b"]/$b + $_ZADEL["ZAPOLNENIE"]["c"]/$c)/(3*$month_px)), 2);
-                    $analisys[$ps_id]["none"] = 100-($analisys[$ps_id]["offset"]+$analisys[$ps_id]["total"]+$analisys[$ps_id]["zadel"]);
+
+                    // Проверка если вообще нет насоса!
+                    if (!is__more_0($analisys[$ps_id]["total"] + $analisys[$ps_id]["zadel"])){
+                        $analisys[$ps_id]["zero"] = 1;
+                    }
+                    $analisys[$ps_id]["none"] = 100-($analisys[$ps_id]["offset"]+$analisys[$ps_id]["total"]+$analisys[$ps_id]["zadel"]+$analisys[$ps_id]["zero"]);
                 }
 
             }
