@@ -66,7 +66,7 @@ function fn_rpt__general_report($data){
     $autopadding= false;
     $valign     = 'M';
     $fitcell    = true;
-    $w = array(10, 50, 30, 30, 30, 30);
+    $w = array(10, 70, 25, 25, 25, 25);
     //************************
 
     // TITLE
@@ -100,12 +100,16 @@ function fn_rpt__general_report($data){
         $pdf->SetTextColor(0); // BLACK = 0
         $h  = $maxh = 6;
 
+        $workdays = null; // Массив рабочих дней литейного цеха
         $i = 0;
         $weight_C = array();
         $weight_S = array();
         $weight_A = array();
         $weight_W = array();
         foreach ($data["report_VLC"] as $doc){
+            // Добавить рабочий день литейного цеха
+            $workdays[fn_date_format($doc['date_cast'], "%a %d/%m/%Y")] += 1;
+
             if ($pdf->GetY() >= 280){$pdf->AddPage();$pdf->ln(2);}
             $i++;
             $weight_C[] =  ($doc['weight']['C'])?$doc['weight']['C']:0;
@@ -114,7 +118,7 @@ function fn_rpt__general_report($data){
             $weight_W[] =  ($doc['weight']['W'])?$doc['weight']['W']:0;
             $k = 0;
             $pdf->MultiCell($w[$k++],  $h, $i, $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-            $pdf->MultiCell($w[$k++],  $h, fn_date_format($doc['date_cast'], "%a %d/%m/%Y"), $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            $pdf->MultiCell($w[$k++],  $h, fn_date_format($doc['date_cast'], "%a %d/%m/%Y"), $border, "L", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             $pdf->MultiCell($w[$k++],  $h, ($doc['weight']['C'])?number_format($doc['weight']['C'], 1, ".", " "):"", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             $pdf->MultiCell($w[$k++],  $h, ($doc['weight']['S'])?number_format($doc['weight']['S'], 1, ".", " "):"", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             $pdf->MultiCell($w[$k++],  $h, ($doc['weight']['A'])?number_format($doc['weight']['A'], 1, ".", " "):"", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
@@ -127,7 +131,7 @@ function fn_rpt__general_report($data){
             $pdf->SetFillColor(220); // BLACK = 0 WHITE = 255
             $pdf->SetTextColor(0); // BLACK = 0
             $k = 0;
-            $pdf->MultiCell($w[$k++] + $w[$k++],  $h, "ИТОГО, кг:", 1, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            $pdf->MultiCell($w[$k++] + $w[$k++],  $h, "ИТОГО, кг", 1, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             $pdf->MultiCell($w[$k++],  $h, (!array_sum($weight_C))?"":number_format(array_sum($weight_C), 1, ".", " "), $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             $pdf->MultiCell($w[$k++],  $h, (!array_sum($weight_S))?"":number_format(array_sum($weight_S), 1, ".", " "), $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             $pdf->MultiCell($w[$k++],  $h, (!array_sum($weight_A))?"":number_format(array_sum($weight_A), 1, ".", " "), $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
@@ -139,11 +143,27 @@ function fn_rpt__general_report($data){
             $pdf->SetFillColor(220); // BLACK = 0 WHITE = 255
             $pdf->SetTextColor(0); // BLACK = 0
             $k = 0;
-            $pdf->MultiCell($w[$k++] + $w[$k++],  $h, "ИТОГО с " . fn_date_format($data['production_LC_date_from'], "%d/%m/%Y") . ", кг:", 1, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            $pdf->MultiCell($w[$k++] + $w[$k++],  $h, "ИТОГО с " . fn_date_format($data['production_LC_date_from'], "%d/%m/%Y") . ", кг", 1, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             $pdf->MultiCell($w[$k++],  $h, ($data["total_weight_VLC"]["C"])?number_format($data["total_weight_VLC"]["C"], 1, ".", " "):"", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             $pdf->MultiCell($w[$k++],  $h, ($data["total_weight_VLC"]["S"])?number_format($data["total_weight_VLC"]["S"], 1, ".", " "):"", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             $pdf->MultiCell($w[$k++],  $h, ($data["total_weight_VLC"]["A"])?number_format($data["total_weight_VLC"]["A"], 1, ".", " "):"", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
             $pdf->MultiCell($w[$k++],  $h, ($data["total_weight_VLC"]["W"])?number_format($data["total_weight_VLC"]["W"], 1, ".", " "):"", $border, "R", $fill, 1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        }else{
+            if (count(array_keys($workdays))){
+                $pdf->uns_SetFont("BI", 13);
+                $pdf->SetFillColor(220); // BLACK = 0 WHITE = 255
+                $pdf->SetTextColor(0); // BLACK = 0
+                $k = 0;
+                $pdf->MultiCell($w[$k++] + $w[$k++],  $h, "Ср. знач. за " . count(array_keys($workdays)) . " дней плавок, кг", 1, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+                $v_C = (array_sum($weight_C))?number_format(array_sum($weight_C)/count(array_keys($workdays)), 1, ".", " "):"";
+                $v_S = (array_sum($weight_S))?number_format(array_sum($weight_S)/count(array_keys($workdays)), 1, ".", " "):"";
+                $v_A = (array_sum($weight_A))?number_format(array_sum($weight_A)/count(array_keys($workdays)), 1, ".", " "):"";
+                $v_W = (array_sum($weight_W))?number_format(array_sum($weight_W)/count(array_keys($workdays)), 1, ".", " "):"";
+                $pdf->MultiCell($w[$k++],  $h, $v_C, $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+                $pdf->MultiCell($w[$k++],  $h, $v_S, $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+                $pdf->MultiCell($w[$k++],  $h, $v_A, $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+                $pdf->MultiCell($w[$k++],  $h, $v_W, $border, "R", $fill, 1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            }
         }
     }
     // -------------------------------------------------------------------------
@@ -220,7 +240,7 @@ function fn_rpt__general_report($data){
                 $pdf->MultiCell($w[$k++],  $h, fn_date_format($doc['date'], "%a %d/%m/%y"), $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
                 $pdf->MultiCell($w[$k++],  $h, $name, $border, "L", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
                 $pdf->MultiCell($w[$k++],  $h, fn_fvalue($item["weight"], 1, false), $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-                $pdf->MultiCell($w[$k++],  $h, fn_fvalue($item["quantity"]), $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+                $pdf->MultiCell($w[$k++],  $h, fn_fvalue($item["quantity"]), $border, "C", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
                 $pdf->MultiCell($w[$k++],  $h, (!$weight["C"])?"":fn_fvalue($item["quantity"]*$weight["C"], 1, false), $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
                 $pdf->MultiCell($w[$k++],  $h, (!$weight["S"])?"":fn_fvalue($item["quantity"]*$weight["S"], 1, false), $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
                 $pdf->MultiCell($w[$k++],  $h, (!$weight["A"])?"":fn_fvalue($item["quantity"]*$weight["A"], 1, false), $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
@@ -233,7 +253,7 @@ function fn_rpt__general_report($data){
         $pdf->SetTextColor(0); // BLACK = 0
         $pdf->uns_SetFont("BI", 13);
         $k = 0;
-        $pdf->MultiCell($w[$k++] + $w[$k++] + $w[$k++] + $w[$k++] + $w[$k++],  $h, "ИТОГО, кг:", 1, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->MultiCell($w[$k++] + $w[$k++] + $w[$k++] + $w[$k++] + $w[$k++],  $h, "ИТОГО, кг", 1, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
 
         $pdf->MultiCell($w[$k++],  $h, (!array_sum($weights["C"]))?"":fn_fvalue(array_sum($weights["C"]), 1, false), $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
         $pdf->MultiCell($w[$k++],  $h, (!array_sum($weights["S"]))?"":fn_fvalue(array_sum($weights["S"]), 1, false), $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
@@ -314,18 +334,18 @@ function fn_rpt__general_report($data){
         $pdf->SetTextColor(0); // BLACK = 0
         $pdf->uns_SetFont("BI", 13);
         $k = 0;
-        $pdf->MultiCell($w[$k++] + $w[$k++] /*+ $w[$k++]*/,  $h, "ИТОГО, шт:", 1, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-        $pdf->MultiCell($w[$k++],  $h, $total_q, $border, "C", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->MultiCell($w[$k++] + $w[$k++] /*+ $w[$k++]*/,  $h, "ИТОГО, шт", 1, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->MultiCell($w[$k++],  $h, $total_q, $border, "R", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
 
         // Вес в т
         $k = 0;
-        $pdf->MultiCell($w[$k++] + $w[$k++] /*+ $w[$k++]*/,  $h, "ИТОГО, т:", 1, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-        $pdf->MultiCell($w[$k++],  $h, fn_fvalue(array_sum($data["vn_SGP_groups_weight"])/1000, 1, false), $border, "C", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->MultiCell($w[$k++] + $w[$k++] /*+ $w[$k++]*/,  $h, "ИТОГО, т ", 1, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->MultiCell($w[$k++],  $h, fn_fvalue(array_sum($data["vn_SGP_groups_weight"])/1000, 1, false), $border, "R", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
 
         // Средний вес насоса, кг
         $k = 0;
-        $pdf->MultiCell($w[$k++] + $w[$k++] /*+ $w[$k++]*/,  $h, "Средний вес насоса, кг:", 1, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-        $pdf->MultiCell($w[$k++],  $h, fn_fvalue(array_sum($data["vn_SGP_groups_weight"])/array_sum($data["vn_SGP_groups"]), 0), $border, "C", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->MultiCell($w[$k++] + $w[$k++] /*+ $w[$k++]*/,  $h, "Средний вес насоса, кг", 1, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->MultiCell($w[$k++],  $h, fn_fvalue(array_sum($data["vn_SGP_groups_weight"])/array_sum($data["vn_SGP_groups"]), 0), $border, "R", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
 
     }
 
@@ -466,7 +486,7 @@ function fn_rpt__general_report($data){
         $pdf->SetTextColor(0); // BLACK = 0
         if ($pdf->GetY() >= 270){$pdf->AddPage();$pdf->ln(5);}
         $pdf->uns_SetFont("BI", 13);
-        $pdf->MultiCell(10+45,  $h, "ИТОГО, шт:", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->MultiCell(10+45,  $h, "ИТОГО, шт", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
         $pdf->uns_SetFont("B", 13);
 
         // Продажи по Александрии
@@ -500,7 +520,7 @@ function fn_rpt__general_report($data){
         $pdf->SetTextColor(0); // BLACK = 0
         if ($pdf->GetY() >= 270){$pdf->AddPage();$pdf->ln(5);}
         $pdf->uns_SetFont("BI", 13);
-        $pdf->MultiCell(10+45,  $h, "ИТОГО, т:", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->MultiCell(10+45,  $h, "ИТОГО, т ", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
         $pdf->uns_SetFont("B", 13);
 
         // Продажи по Александрии
@@ -534,7 +554,7 @@ function fn_rpt__general_report($data){
         $pdf->SetTextColor(0); // BLACK = 0
         if ($pdf->GetY() >= 270){$pdf->AddPage();$pdf->ln(5);}
         $pdf->uns_SetFont("BI", 13);
-        $pdf->MultiCell(10+45,  $h, "Средний вес насоса, кг:", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->MultiCell(10+45,  $h, "Средний вес насоса, кг", $border, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
         $pdf->uns_SetFont("B", 13);
 
         // Продажи по Александрии
@@ -581,7 +601,7 @@ function fn_rpt__general_report($data){
     $valign     = 'M';
     $fitcell    = true;
 //    $w = array(6, 25, 65, 70, 14);
-    $w = array(10, 100, 15, 15, 20);
+    $w = array(10, 100, 25, 25, 25);
     //************************
 
     // TITLE
@@ -622,7 +642,11 @@ function fn_rpt__general_report($data){
             if ($pdf->GetY() >= 280){$pdf->AddPage();$pdf->ln(2);}
             $pdf->uns_SetFont("BI", 12);
             $k = 0;
-            $pdf->MultiCell($w[$k++] + $w[$k++] + $w[$k++],  $h, "  " . $group, $border, "L", $fill, 1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            $pdf->SetFillColor(220); // BLACK = 0 WHITE = 255
+            $pdf->SetTextColor(0); // BLACK = 0
+            $pdf->MultiCell($w[$k++] + $w[$k++] + $w[$k++],  $h, " " . $group, $border, "L", $fill, 1, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+            $pdf->SetFillColor(255); // BLACK = 0 WHITE = 255
+            $pdf->SetTextColor(0); // BLACK = 0
 
             $pdf->uns_SetFont("R", 12);
             foreach ($details as $d){
@@ -653,9 +677,12 @@ function fn_rpt__general_report($data){
         $pdf->SetTextColor(0); // BLACK = 0
         $pdf->uns_SetFont("BI", 13);
         $k = 0;
-        $pdf->MultiCell($w[$k++] + $w[$k++],  $h, "ИТОГО, шт:", 1, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-        $pdf->MultiCell($w[$k++],  $h, $total_q, $border, "C", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
-//        $pdf->MultiCell($w[$k++],  $h, fn_fvalue($total_w, 1, false), $border, "R", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->MultiCell($w[$k++] + $w[$k++],  $h, "ИТОГО, шт", 1, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->MultiCell($w[$k++],  $h, $total_q, $border, "R", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+
+        $k = 0;
+        $pdf->MultiCell($w[$k++] + $w[$k++],  $h, "ИТОГО, кг", 1, "R", $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
+        $pdf->MultiCell($w[$k++],  $h, ($total_w)?number_format($total_w, 1, ".", " "):"", $border, "R", $fill, 1,   $x, $y, $reseth, $stretch, $ishtml, $autopadding, $maxh, $valign, $fitcell);
     }
 
 

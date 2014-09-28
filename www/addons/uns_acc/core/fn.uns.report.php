@@ -133,7 +133,7 @@ function fn_acc__get_report_VLC($params = array(), $items_per_page = 0){
         list($weights) = fn_acc__get_weight_VLC($p, true);
         if (is__array($weights)){
             foreach ($weights as $k_data=>$v_data){
-                $params['total_weight'][$v_data['type_casting']] = fn_fvalue($v_data['weight'], 1, false);
+                $params['total_weight'][$v_data['type_casting']] = $v_data['weight'];
             }
         }
     }
@@ -232,7 +232,7 @@ function fn_acc__get_weight_VLC ($params = array(), $total_weight = false){
     if (!$total_weight){
         $tmp = array();
         foreach ($data as $k_data=>$v_data){
-            $tmp[$v_data['document_id']][$v_data['type_casting']] = fn_fvalue($v_data['weight'], 1, false);
+            $tmp[$v_data['document_id']][$v_data['type_casting']] = $v_data['weight'];
         }
         $data = $tmp;
     }
