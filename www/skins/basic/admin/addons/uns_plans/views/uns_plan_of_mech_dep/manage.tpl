@@ -5,68 +5,6 @@
             .zero, a.zero{
                 color: #d3d3d3;
             }
-
-            td.bar_zero.p_r,
-            td.bar_zero.p_r:hover{
-                background-color: #fff !important;
-                border: 2px solid #bb474e !important;
-                height:5px;
-                padding: 0 !important;
-            }
-
-            td.bar_available,
-            td.bar_available:hover{
-                background-color:#f4f4f4 !important;
-                border: 1px solid #999 !important;
-                height:5px;
-                padding: 0 !important;
-            }
-
-            td.bar_available.p_r,
-            td.bar_available.p_r:hover{
-                background-color: #bb474e !important;
-                border-color: #bb474e !important;
-            }
-
-            td.bar_available.p_y,
-            td.bar_available.p_y:hover{
-                background-color: #e3ad32 !important;
-                border-color: #ccb055 !important;
-            }
-
-            td.bar_zadel,
-            td.bar_zadel:hover{
-                background-color: #bfbfbf !important;
-                border-bottom: 3px solid #fff !important;
-                border-right: 2px solid #bfbfbf !important;
-                border-left: 2px solid #bfbfbf !important;
-                border-top: 3px solid #fff !important;
-                padding: 0 !important;
-                height:3px;
-            }
-
-            td.bar_zadel.p_r,
-            td.bar_zadel.p_r:hover{
-                background-color: #bb474e !important;
-                border-right: 2px solid #bb474e !important;
-                border-left: 2px solid #bb474e !important;
-            }
-
-            td.bar_zadel.p_y,
-            td.bar_zadel.p_y:hover{
-                background-color: #ccb055 !important;
-                border-left: 2px solid #ccb055 !important;
-                border-right: 2px solid #ccb055 !important;
-            }
-
-            td.bar_space,
-            td.bar_space:hover,
-            td.bar_none,
-            td.bar_none:hover{
-                background-color:#fff !important;
-                padding: 0 !important;
-                height:9px;
-            }
         </style>
     {/literal}
     {capture name="mainbox"}
@@ -86,6 +24,13 @@
                <a target="_blank" href="{"uns_plan_of_mech_dep.planning.LC"|fn_url}"><b>План производства Лит. цеха</b></a>
             </span>
 
+            {* ПЛАН ПРОДАЖ ТЕКУЩЕГО МЕСЯЦА *}
+            {if $auth.usergroup_ids[0] == 6 or $auth.usergroup_ids[0] == 8}
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="action-add">
+               <a target="_blank" href="{"uns_plan_of_sales.update&plan_id=`$plan.plan_id`"|fn_url}"><b>Редактировать План продаж</b></a>
+            </span>
+            {/if}
 {*            *}{* АНАЛИЗ РАЗРЕШЕННЫХ НАСОСОВ *}{*
             &nbsp;&nbsp;&nbsp;&nbsp;
             <span class="action-add">
@@ -106,7 +51,7 @@
                     <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_g.png"/> - запас насосов более 4-х недель</td>
                 </tr>
             </table>
-            <table cellpadding="0" cellspacing="0" border="0" class="table" style="margin: 10px; 0">
+            <table cellpadding="0" cellspacing="0" border="0" class="table MC" style="margin: 10px; 0">
                 <thead>
                     <tr style="background-color: #D4D0C8;">
                         <th style="text-transform: none;"               rowspan="3"             class="center">Наименование</th>
@@ -228,12 +173,12 @@
 
                     <tr>
                         {*Наименование*}
-                        <td {$analisys_rowspan} class="b2_t {$mark}">
+                        <td {$analisys_rowspan} class="b2_t {$mark} {$warning}">
                             <a  rev="content_item_name_{$ps_id}" id="opener_item_name_{$ps_id}" href="{"uns_plan_of_mech_dep.analysis_of_pumps.pump?ps_id=`$ps_id`"|fn_url}" class="block cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$ps.ps_name}</a>
                             <div id="content_item_name_{$ps_id}" class="hidden" title="Анализ насоса <u>{$ps.ps_name}</u> на 23:59 {$search.current_day}"></div>
                         </td>
 
-                        <td {$analisys_rowspan} align="right" class="b2_t {$mark}">
+                        <td {$analisys_rowspan} align="right" class="b2_t {$mark} {if $analisis_of_sales != "Y"}{$warning}{/if}">
                             {*<nobr>*}
                             {if $prohibition.$ps_id == "Y"}<img src="skins/basic/admin/addons/uns_plans/images/prohibition.png" alt="X"/>{else}&nbsp;{/if}
                             {* Редактировать может только vtv@uns.ua *}

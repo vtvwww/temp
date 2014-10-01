@@ -1,49 +1,22 @@
 {capture name="mainbox"}
-    {literal}
-        <style>
-            table.table.LC td.w{
-                font-size: 11px;
-                color: #808080;
-            }
-
-            table.table.LC td.g{ /* gray */
-                background-color: #f1f1f1;
-            }
-
-            table.table.LC td.dg{ /* dark gray */
-                background-color: #D3D3D3;
-            }
-
-            table.table.LC td.r{ /* remaining */
-                background-color: #B8C1FF;
-            }
-
-            table.table.LC td.prh{ /* prohibition */
-                background: url('skins/basic/admin/addons/uns_plans/images/prohibition.png') no-repeat center center;
-            }
-
-            table.table.LC td.p_r{ /* priority materials RED*/
-                background-color: #ff8888;
-            }
-            table.table.LC td.p_y{ /* priority materials YELLOW*/
-                background-color: #FFE388;
-            }
-        </style>
-    {/literal}
     <table style="margin: 10px" width="100%">
         <tr>
             <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_r.png"/> - потребность в ближайшие 2 недели</td>
             <td class="b1_l"></td>
             <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_y.png"/> - потребность на 2-й ÷ 4-й неделях</td>
             <td class="b1_l"></td>
-            <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_g.png"/> - потребность с 4-й недели</td>
+            <td class="right"><img src="skins/basic/admin/addons/uns_plans/images/p_g.png"/></td>
+            <td class="left"><label class="hand" for="p_n"> - потребность с 4-й недели</label></td>
+            <td class="left"><input type="checkbox" name="p_n" checked="checked" id="p_n" onchange="if ($(this).prop('checked')) $('table.LC tr.p_n').removeClass('hidden'); else $('table.LC tr.p_n').addClass('hidden')"></td>
         </tr>
         <tr>
             <td class="center bold">{$priority_materials_q.R|fn_fvalue:0} шт.; {$priority_materials_w.R/1000|fn_fvalue:1} т</td>
             <td class="b1_l"></td>
             <td class="center bold">{$priority_materials_q.Y|fn_fvalue:0} шт.; {$priority_materials_w.Y/1000|fn_fvalue:1} т</td>
             <td class="b1_l"></td>
-            <td></td>
+            <td class="right"><img src="skins/basic/admin/addons/uns_plans/images/prohibition.png"/></td>
+            <td class="left"><label class="hand" for="prh"> - под запретом</label></td>
+            <td class="left"><input type="checkbox" name="prh" checked="checked" id="prh" onchange="if ($(this).prop('checked')) $('table.LC tr.prh').removeClass('hidden'); else $('table.LC tr.prh').addClass('hidden')"></td>
         </tr>
     </table>
     <table cellpadding="0" cellspacing="0" border="0" class="table LC">
@@ -139,7 +112,7 @@
                 {assign var="q" value=$remaining_of_casts.next2_month.total_weight/1000|fn_fvalue:1|default:0}
                 <td class="center b3_t b1_l" style="background-color: #B8C1FF;"><span style="font-size: 15px; font-weight: bold;">{$q}</span></td>
 
-                <td class="b3_t b3_l b3_b" rowspan="2" colspan="2">&nbsp;</td>
+                <td class="b3_t b3_l b3_b" rowspan="2" colspan="2"><span class="info_warning">ИТОГО включает в себя "красные", "желтые", "белые" и "под запретом" отливки.</span></td>
             </tr>
             <tr class="">
                 {assign var="q" value=$requirement_of_casts.curr_month.total_weight+$requirement_of_casts.next_month.total_weight+$requirement_of_casts.next2_month.total_weight}

@@ -177,8 +177,8 @@
                         <td class="cm-non-cb center b3_l">
                             <select name="{$e_n}[forced_status]">
                                 <option value="N">---</option>
-                                <option value="R" style="background-color: #BB474E;" {if $i.forced_status == "R"}selected="selected"{/if}>Красный</option>
                                 <option value="Y" style="background-color: #E3AD32;" {if $i.forced_status == "Y"}selected="selected"{/if}>Желтый</option>
+                                <option value="R" style="background-color: #BB474E;" {if $i.forced_status == "R"}selected="selected"{/if}>Красный</option>
                             </select>
                         </td>
 

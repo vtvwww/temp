@@ -125,6 +125,17 @@
                 }
             </td>
         </tr>
+        <tr>
+            <td class="center" colspan="4">
+                Принудительная установка приоритета:
+                {*FORCED_STATUS*}
+                <select name="data[forced_status]">
+                    <option value="N">---</option>
+                    <option value="Y" style="background-color: #E3AD32;" {if $ps_plan.forced_status == "Y"}selected="selected"{/if}>Желтый</option>
+                    <option value="R" style="background-color: #BB474E;" {if $ps_plan.forced_status == "R"}selected="selected"{/if}>Красный</option>
+                </select>
+            </td>
+        </tr>
     </table>
     <div class="buttons-container">
         {include file="buttons/save_cancel.tpl" but_name="dispatch[uns_plan_of_sales.update_ps_plan]" cancel_action="close"}

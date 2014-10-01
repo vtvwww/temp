@@ -308,6 +308,7 @@ function fn_uns__upd_plan_items($id, $data){
  */
 function fn_uns__upd_plan_item($month, $year, $data){
     if (is__more_0($month, $year) and !is__array($data)) return false;
+    $forced_status = array("N", "R", "Y", "G");
     $data = trim__data($data);
     $m_table = "?:_plan_items";
     if (is__more_0(db_get_field(UNS_DB_PREFIX . "SELECT pi_id FROM $m_table WHERE pi_id = ?i", $data['pi_id']))){
@@ -316,6 +317,7 @@ function fn_uns__upd_plan_item($month, $year, $data){
             'ukr_next'      => is__more_0($data['ukr_next'])?$data['ukr_next']:0,
             'exp_curr'      => is__more_0($data['exp_curr'])?$data['exp_curr']:0,
             'exp_next'      => is__more_0($data['exp_next'])?$data['exp_next']:0,
+            'forced_status' => in_array($data['forced_status'], $forced_status)?$data['forced_status']:"N",
         );
         db_query(UNS_DB_PREFIX . "UPDATE $m_table SET ?u WHERE pi_id = ?i", $v, $data['pi_id']);
     }

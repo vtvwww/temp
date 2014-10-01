@@ -6,12 +6,24 @@
             <td colspan="16" style="background-color: #d3d3d3;">
                 <img width="14" category_items="{$id}" height="9" border="0" title="Расширить список" class="hand {$id} plus {if !$expand_all} hidden {/if}" alt="Расширить список" src="skins/basic/admin/images/plus.gif">
                 <img width="14" category_items="{$id}" height="9" border="0" title="Свернуть список" class="hand {$id} minus {if $expand_all} hidden {/if}" alt="Свернуть список" src="skins/basic/admin/images/minus.gif">
-                &nbsp;<span style="color: #000000; font-weight: bold; font-size: 14px;">{$item.group}</span>{if $item.group_comment} <span class="info_warning">({$item.group_comment})</span>{/if}</td>
+                &nbsp;<span class="category_name">{$item.group}</span>{if $item.group_comment} <span class="info_warning">({$item.group_comment})</span>{/if}</td>
         </tr>
         {foreach from=$item.items item=m key=k}
-            <tr class="category_items {$id} {if $expand_all} hidden {/if}" m_id={$m.id}>
-                {* Минимально необходимый остаток*}
+            {assign var="mark_prohibition"  value=""}
+            {assign var="mark_priority"     value="p_n"} {*priority none*}
+            {*Запрет*}
+            {if $prohibition_of_casts[$m.id] == "Y"}
+                {assign var="mark_prohibition"  value="prh"}
+                {assign var="mark_priority"     value=""}
 
+            {*Приоритет*}
+            {elseif $priority_materials.R[$m.id] == "Y"}
+                {assign var="mark_priority" value="p_r"}
+            {elseif $priority_materials.Y[$m.id] == "Y"}
+                {assign var="mark_priority" value="p_y"}
+            {/if}
+
+            <tr class="category_items {$id} {if $expand_all} hidden {/if} {if $mark_prohibition == "prh"}{$mark_prohibition}{/if} {if $mark_priority == "p_n"}{$mark_priority}{/if}" m_id={$m.id}>
                 {*НАИМЕНОВАНИЕ*}
                 <td>&nbsp;&nbsp;
                     {assign var="n" value=$m.name}
@@ -20,7 +32,7 @@
                     {/if}
                     {assign var="href" value="uns_plan_of_mech_dep.planning.balance_of_details?material_id=`$m.id`&period=`$search.period`&time_from=`$search.time_from`&time_to=`$search.time_to`"}
                     <a  rev="content_item_{$m.id}" id="opener_item_{$m.id}" href="{$href|fn_url}" class="cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$n}</a>
-                    <div id="content_item_{$m.id}" class="hidden" title="Остаток деталей по цехам и складу КМП по заготовке {$n|upper}"></div>
+                    <div id="content_item_{$m.id}" class="hidden" title="Остаток деталей {$n|upper}"></div>
                 </td>
 
                 {*ВЕС*}
@@ -53,12 +65,12 @@
                 <td class="center b1_l r {if $q > 0}bold{else}zero{/if}">{if !$q}&nbsp;{else}{$q}{/if}</td>
 
                 {*ЗАПРЕТ*}
-                <td class="b3_l {if $prohibition_of_casts[$m.id] == "Y"}prh{/if} {if $priority_materials.R[$m.id] == "Y"}p_r{/if} {if $priority_materials.Y[$m.id] == "Y"}p_y{/if}">
+                <td class="b3_l {$mark_prohibition} {$mark_priority}">
                     &nbsp;
                 </td>
 
                 {*ПРИМЕНЯЕМОСТЬ В НАСОСАХ*}
-                <td {if $priority_materials.R[$m.id] == "Y"} class="p_r" {elseif $priority_materials.Y[$m.id] == "Y"} class="p_y" {/if}>
+                <td class="{$mark_priority}">
                     {if $m.material_comment_1|strlen}
                         <span class="info_warning">{$m.material_comment_1}</span>
                     {else}

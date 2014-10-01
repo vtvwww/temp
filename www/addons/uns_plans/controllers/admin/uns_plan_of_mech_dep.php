@@ -744,7 +744,11 @@ if ($mode == "manage") {
             // Определить смещение относительно текущего дня:
             $day_of_the_month = date('j', fn_parse_date($_REQUEST["current_day"]));
             $number_of_days_in_the_month = date('t', fn_parse_date($_REQUEST["current_day"]));
-            $offset_in_the_month = $day_of_the_month/$number_of_days_in_the_month;
+            if ($day_of_the_month == 1){ // Первый день месяца
+                $offset_in_the_month = 0;
+            }elseif ($day_of_the_month == $number_of_days_in_the_month){ // Последний день месяца
+                $offset_in_the_month = ($day_of_the_month-1)/$number_of_days_in_the_month;
+            }
 
             $view->assign("bar_offset", 10);
             $analisys = null;

@@ -1,0 +1,98 @@
+td span.category_name{
+    color: #000000;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/*ПЛАН ПРОИЗВОДСТВА МЕХАНИЧЕСКОГО ЦЕХА*/
+td.bar_zero.p_r,
+td.bar_zero.p_r:hover{
+    background-color: #fff !important;
+    border: 2px solid #bb474e !important;
+    height:5px;
+    padding: 0 !important;
+}
+
+td.bar_available,
+td.bar_available:hover{
+    background-color:#f4f4f4 !important;
+    border: 1px solid #999 !important;
+    height:5px;
+    padding: 0 !important;
+}
+
+td.bar_available.p_r,
+td.bar_available.p_r:hover{
+    background-color: #bb474e !important;
+    border-color: #bb474e !important;
+}
+
+td.bar_available.p_y,
+td.bar_available.p_y:hover{
+    background-color: #e3ad32 !important;
+    border-color: #ccb055 !important;
+}
+
+td.bar_zadel,
+td.bar_zadel:hover{
+    background-color: #bfbfbf !important;
+    border-bottom: 3px solid #fff !important;
+    border-right: 2px solid #bfbfbf !important;
+    border-left: 2px solid #bfbfbf !important;
+    border-top: 3px solid #fff !important;
+    padding: 0 !important;
+    height:3px;
+}
+
+td.bar_zadel.p_r,
+td.bar_zadel.p_r:hover{
+    background-color: #bb474e !important;
+    border-right: 2px solid #bb474e !important;
+    border-left: 2px solid #bb474e !important;
+}
+
+td.bar_zadel.p_y,
+td.bar_zadel.p_y:hover{
+    background-color: #ccb055 !important;
+    border-left: 2px solid #ccb055 !important;
+    border-right: 2px solid #ccb055 !important;
+}
+
+td.bar_space,
+td.bar_space:hover,
+td.bar_none,
+td.bar_none:hover{
+    background-color:#fff !important;
+    padding: 0 !important;
+    height:9px;
+}
+
+
+/*ПЛАН ПРОИЗВОДСТВА ЛИТЕЙНОГО ЦЕХА*/
+table.table.LC td.w{
+    font-size: 11px;
+    color: #808080;
+}
+
+table.table.LC td.g{ /* gray */
+    background-color: #f1f1f1;
+}
+
+table.table.LC td.dg{ /* dark gray */
+    background-color: #D3D3D3;
+}
+
+table.table.LC td.r{ /* remaining */
+    background-color: #B8C1FF;
+}
+
+table.table.LC td.prh{ /* prohibition */
+    background: url('../images/prohibition.png') no-repeat center center;
+}
+
+table.table.LC td.p_r, table.table.MC td.p_r{ /* priority materials RED*/
+    background-color: #ff8888;
+}
+table.table.LC td.p_y, table.table.MC td.p_y{ /* priority materials YELLOW*/
+    background-color: #FFE388;
+}

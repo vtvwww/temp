@@ -1,0 +1,1 @@
+<link href="{$smarty.const.UNS_PLANS_DIR_CSS}/styles.css" rel="stylesheet" type="text/css" />

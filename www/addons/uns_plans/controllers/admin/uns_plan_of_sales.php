@@ -394,7 +394,8 @@ if ($mode == "edit_sales" and defined('AJAX_REQUEST')) {
                   ?:_plan_items.ukr_curr,
                   ?:_plan_items.ukr_next,
                   ?:_plan_items.exp_curr,
-                  ?:_plan_items.exp_next
+                  ?:_plan_items.exp_next,
+                  ?:_plan_items.forced_status
                 FROM ?:_plan_items
                   LEFT JOIN ?:_plans ON (?:_plans.plan_id = ?:_plan_items.plan_id)
                 WHERE
