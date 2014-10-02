@@ -959,7 +959,7 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
 
 
     //-----------------------------------------------------------------------------
-    // 0. ПОЛУЧИТЬ ВСЕ ДЕТАЛИ, по которым необходимо отслеживать минимальный остаток
+    // 0. ПОЛУЧИТЬ ВСЕ ДЕТАЛИ, по которым необходимо отслеживать минимальный остаток - это значение указывается в настройках детали
     //-----------------------------------------------------------------------------
     $min_rest_of_details = db_get_hash_array(UNS_DB_PREFIX . "SELECT detail_id, min_rest_value FROM ?:details WHERE detail_status = 'A' and min_rest_state = 'Y' and min_rest_value > 0 ", "detail_id");
 
@@ -1196,7 +1196,7 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
     $view->assign("requirement_of_casts_for_min_rest",    $requirement_of_casts_for_min_rest);
 
     //==========================================================================
-    // 8. "ГОРЯЩИЕ" заготовки
+    // 8. "ГОРЯЩИЕ" заготовки определенные остатками насосов
     //==========================================================================
     // Определить насосы, которых хватает менее чем на месяц, и получить список отливок, которые в них входят.
     $priority_materials     = null;
@@ -1291,7 +1291,7 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
 // ПРОСМОТР ОСТАТКОВ ДЕТАЛЕЙ ПО ВЫБРАННОЙ ЗАГОТОВКЕ в "плане производства литейного цеха"
 //=======================================================================================
 if ($mode == "planning" and $action == "balance_of_details"){
-    if (!is__more_0($_REQUEST["material_id"])) return array(CONTROLLER_STATUS_REDIRECT, $controller . "." . $suffix);
+    if (!is__more_0($_REQUEST["m_id"])) return array(CONTROLLER_STATUS_REDIRECT, $controller . "." . $suffix);
     // Получить список деталей, которые сделаны из material_id
     $details = db_get_fields(UNS_DB_PREFIX . "
                 select ?:details.detail_id
@@ -1299,7 +1299,7 @@ if ($mode == "planning" and $action == "balance_of_details"){
                     left join ?:detail__and__items on (?:details.detail_id = ?:detail__and__items.detail_id)
                 where
                     ?:details.detail_status = 'A'
-                    and ?:detail__and__items.material_id = " . $_REQUEST["material_id"] . " ");
+                    and ?:detail__and__items.material_id = " . $_REQUEST["m_id"] . " ");
 
 
     if (!is__array($details)) return array(CONTROLLER_STATUS_REDIRECT, $controller . "." . $suffix);

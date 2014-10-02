@@ -225,7 +225,7 @@ input.radio:checked + label.radio {
     color: #000000;
 }
 
-.bold{
+.b,.bold{
     font-weight: bold;
 }
 

@@ -69,6 +69,14 @@ td.bar_none:hover{
 
 
 /*ПЛАН ПРОИЗВОДСТВА ЛИТЕЙНОГО ЦЕХА*/
+table.table.LC td{
+    text-align: center;
+}
+
+table.table.LC td.l{
+    text-align: left;
+}
+
 table.table.LC td.w{
     font-size: 11px;
     color: #808080;
