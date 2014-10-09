@@ -88,7 +88,7 @@
                 {*</div>*}
             {*</td>*}
             <td class="nowrap search-field" style="border-left: 1px solid #808080;">
-                <label for="analisis_of_sales">Анализ продаж:</label>
+                <label style="cursor: pointer;" for="analisis_of_sales">Анализ продаж:</label>
                 <div class="break">
                     {include file="addons/uns/views/components/get_form_field.tpl"
                         f_type  ="checkbox"
@@ -96,6 +96,7 @@
                         f_name  ="analisis_of_sales"
                         f_value =$search.analisis_of_sales|default:"N"
                         f_simple=true
+                        f_style="cursor: pointer;"
                     }
                 </div>
             </td>

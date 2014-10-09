@@ -102,13 +102,25 @@
                 </div>
             </td>
             <td class="nowrap search-field  b1_l">
-                <label for="all_materials">Отобразить все заготовки:</label>
+                <label class="hand" for="all_materials">Отобразить все заготовки:</label>
                 <div class="break">
                     {include file="addons/uns/views/components/get_form_field.tpl"
                         f_type="checkbox"
                         f_id="all_materials"
                         f_name="all_materials"
                         f_value=$search.all_materials
+                        f_simple=true
+                    }
+                </div>
+            </td>
+            <td class="nowrap search-field  b1_l">
+                <label class="hand" for="only_for_pumps">Отливки только<br>для насосов: {include file="common_templates/tooltip.tpl" tooltip='Из отчета будут исключены отливки:<br><b>На собственные нужды</b><br><b>На продажу</b><br><b>Старое литье</b>'}</label>
+                <div class="break">
+                    {include file="addons/uns/views/components/get_form_field.tpl"
+                        f_type="checkbox"
+                        f_id="only_for_pumps"
+                        f_name="only_for_pumps"
+                        f_value=$search.only_for_pumps
                         f_simple=true
                     }
                 </div>

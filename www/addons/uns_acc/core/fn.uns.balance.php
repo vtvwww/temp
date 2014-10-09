@@ -168,11 +168,15 @@ function fn_uns__get_balance($params = array(), $time=false){
         $cond__items .= db_quote(" AND uns_details.dcat_id in (?n) ", $params['dcat_id_array']);
     }
 
-    // Категории материалов
+    // Категории материалов (Добавить или Исключить)
     if (is__array($params['mcat_id_array'] = to__array($params['mcat_id']))){
         $cond__tables = " , uns_materials ";
         $cond__items .= db_quote(" AND uns__acc_document_items.item_id = uns_materials.material_id ");
         $cond__items .= db_quote(" AND uns_materials.mcat_id in (?n) ", $params['mcat_id_array']);
+    }elseif (is__array($params['exclude_mcat_id_array'] = to__array($params['exclude_mcat_id']))){
+        $cond__tables = " , uns_materials ";
+        $cond__items .= db_quote(" AND uns__acc_document_items.item_id = uns_materials.material_id ");
+        $cond__items .= db_quote(" AND uns_materials.mcat_id not in (?n) ", $params['exclude_mcat_id_array']);
     }
 
     // =========================================================================
@@ -329,6 +333,10 @@ function fn_uns__get_balance($params = array(), $time=false){
                 $p["item_ids"] = $params['mcat_id'];
         }else{
             $p["mcat_id"] = 27; //Отливки 
+        }
+
+        if (is__array($p['exclude_mcat_id_array'] = to__array($params['exclude_mcat_id']))){
+            $p["mcat_id_exclude"] = $p['exclude_mcat_id_array'];
         }
 
         if (in_array($params['type_casting'], array("C", "S"))){

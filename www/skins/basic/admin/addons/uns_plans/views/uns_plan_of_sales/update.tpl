@@ -15,6 +15,79 @@
             <hr>
             <b>Продажи / Плановая потребность = {$p.sum_ukr_curr} / {$p.sum_ukr_next} / {$p.sum_exp_curr} / {$p.sum_exp_next} шт.</b>
             <hr>
+            <span class="info_warning">
+                Для кажого насоса и детали можно установить приоритет. Если на деталь припадает и приоритет по насосу и приоритет по детали, то важнее приоритет детали.<br/>
+                {literal}
+                    <style>
+                        table.simple td{
+                            padding: 5px 0;
+                        }
+                    </style>
+                {/literal}
+                <table class="simple">
+                    <thead>
+                    <tr>
+                        <th class="center" width="70">НАСОС<br>К20/30</th>
+                        <th class="center" width="70">Колесо<br>К20/30</th>
+                        <th class="center" width="70">Конечный<br>приоритет</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_g.png"></td>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_g.png"></td>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_g.png"></td>
+                    </tr>
+                    <tr>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_g.png"></td>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_y.png"></td>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_y.png"></td>
+                    </tr>
+                    <tr>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_g.png"></td>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_r.png"></td>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_r.png"></td>
+                    </tr>
+                    </tbody>
+
+                    <tbody>
+                    <tr>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_y.png"></td>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_g.png"></td>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_y.png"></td>
+                    </tr>
+                    <tr>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_y.png"></td>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_y.png"></td>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_y.png"></td>
+                    </tr>
+                    <tr>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_y.png"></td>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_y.png"></td>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_r.png"></td>
+                    </tr>
+                    </tbody>
+
+                    <tbody>
+                    <tr>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_r.png"></td>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_g.png"></td>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_r.png"></td>
+                    </tr>
+                    <tr>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_r.png"></td>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_y.png"></td>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_r.png"></td>
+                    </tr>
+                    <tr>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_r.png"></td>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_r.png"></td>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_r.png"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </span>
+            <hr>
             {include file="addons/uns_plans/views/uns_plan_of_sales/components/items.tpl"}
 
             <div class="buttons-container cm-toggle-button buttons-bg">

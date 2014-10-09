@@ -112,7 +112,7 @@
                 {assign var="q" value=$remaining_of_casts.next2_month.total_weight/1000|fn_fvalue:1|default:0}
                 <td class="b3_t b1_l" style="background-color: #B8C1FF;"><span style="font-size: 15px; font-weight: bold;">{$q}</span></td>
 
-                <td class="l b3_t b3_l b3_b" rowspan="2" colspan="2"><span class="info_warning">ИТОГО включает в себя "красные", "желтые", "белые" и "под запретом" отливки.</span></td>
+                <td class="l b3_t b3_l b3_b" rowspan="2" colspan="2"><span class="info_warning">ИТОГО включает в себя "красные", "желтые" и "белые" отливки.</span></td>
             </tr>
             <tr class="">
                 {assign var="q" value=$requirement_of_casts.curr_month.total_weight+$requirement_of_casts.next_month.total_weight+$requirement_of_casts.next2_month.total_weight}
@@ -185,7 +185,7 @@
     <br/>
     &nbsp;&nbsp;&nbsp;<span style="color: red; font-weight: bold;">П*</span> - (приход) это все поступления на склад литья с первого числа месяца по последнее число. Это значение может отличаться от выпуска литейного цеха текущего месяца на: последний выпуск литейного цеха предыдущего месяца <b>+</b> приход отливок после отжига <b>+</b> переучеты по складу литья <b>+</b> отливки на продажу или на собственные нужды.
     <br/>
-    &nbsp;&nbsp;&nbsp;<span style="color: red; font-weight: bold;">10*</span> - число со звездочкой - это потребность в заготовках для партий насосов + потребность в заготовках для коммерческого отдела при продаже деталей. <b>Заготовки со зведочкой выполняются в первую очередь!</b>
+    &nbsp;&nbsp;&nbsp;<span style="color: red; font-weight: bold;">10*</span> - число со звездочкой - это сумма отливок: на изготовление плановых насосов + поддержание минимального остатка <b>(МО)</b> на складе литья для продаж + отливки на продажу <b>(НП)</b>. <b>Заготовки со зведочкой выполняются в первую очередь!</b>
 {/capture}
 
 {assign var="curr_month" value=$months_full[$data.month]|upper}

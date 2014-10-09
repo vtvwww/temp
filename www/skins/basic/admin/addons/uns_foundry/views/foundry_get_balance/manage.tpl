@@ -49,15 +49,34 @@
                 {include file="addons/uns_foundry/views/foundry_get_balance/components/view.tpl" item=$i key=$k mode_report=$search.mode_report pump_materials=$search.pump_materials}
             {/foreach}
 
+            {*Итого Кол-во*}
+            <tr>
+                <td style="background-color: #d3d3d3;" class="hand right  bold b2_t" colspan="2" rowspan="2">ИТОГО</td>
+                <td style="background-color: #d3d3d3;" class="hand center  bold b2_t b1_l" colspan="1">шт</td>
+                <td style="background-color: #d3d3d3;" class="hand center bold b2_t b_l" >{if $amounts.n}{$amounts.n}{else}&nbsp;{/if}</td>
+                <td style="background-color: #d3d3d3;" class="hand center bold b2_t b_l" >{if $amounts.p}{$amounts.p}{else}&nbsp;{/if}</td>
+                <td style="background-color: #d3d3d3;" class="hand center bold b2_t b1_l">{if $amounts.r}{$amounts.r}{else}&nbsp;{/if}</td>
+                <td style="background-color: #d3d3d3;" class="hand center bold b2_t b_l" >{if $weights.k}{$amounts.k}{else}&nbsp;{/if}</td>
+                <td style="background-color: #d3d3d3;" class="hand left bold   b2_t b_l"></td>
+            </tr>
             {*Итого ВЕС*}
             <tr>
-                <td style="background-color: #d3d3d3;" class="hand right  bold b2_t" colspan="3">ИТОГО, т:</td>
-                <td style="background-color: #d3d3d3;" class="hand center bold b2_t b_l"  title="{$weights.n} кг">{if $weights.n}{$weights.n/1000|number_format:1:".":" "}{else}&nbsp;{/if}</td>
-                <td style="background-color: #d3d3d3;" class="hand center bold b2_t b_l"  title="{$weights.p} кг">{if $weights.p}{$weights.p/1000|number_format:1:".":" "}{else}&nbsp;{/if}</td>
-                <td style="background-color: #d3d3d3;" class="hand center bold b2_t b1_l" title="{$weights.r} кг">{if $weights.r}{$weights.r/1000|number_format:1:".":" "}{else}&nbsp;{/if}</td>
-                <td style="background-color: #d3d3d3;" class="hand center bold b2_t b_l"  title="{$weights.k} кг">{if $weights.k}{$weights.k/1000|number_format:1:".":" "}{else}&nbsp;{/if}</td>
-                <td style="background-color: #d3d3d3;" class="hand left bold   b2_t b_l"><span class="info_warning">в кг при наведении курсора</span></td>
-
+                <td style="background-color: #d3d3d3;" class="hand center  bold b1_t b1_l" colspan="1">т</td>
+                <td style="background-color: #d3d3d3;" class="hand center bold b1_t b_l"  title="{$weights.n|number_format:1:".":" "} кг">{if $weights.n}{$weights.n/1000|number_format:1:".":" "}{else}&nbsp;{/if}</td>
+                <td style="background-color: #d3d3d3;" class="hand center bold b1_t b_l"  title="{$weights.p|number_format:1:".":" "} кг">{if $weights.p}{$weights.p/1000|number_format:1:".":" "}{else}&nbsp;{/if}</td>
+                <td style="background-color: #d3d3d3;" class="hand center bold b1_t b1_l" title="{$weights.r|number_format:1:".":" "} кг">{if $weights.r}{$weights.r/1000|number_format:1:".":" "}{else}&nbsp;{/if}</td>
+                <td style="background-color: #d3d3d3;" class="hand center bold b1_t b_l"  title="{$weights.k|number_format:1:".":" "} кг">{if $weights.k}{$weights.k/1000|number_format:1:".":" "}{else}&nbsp;{/if}</td>
+                <td style="background-color: #d3d3d3;" class="hand left bold   b1_t b_l"><span class="info_warning">в кг при наведении курсора</span></td>
+            </tr>
+            {*Средний вес отливки*}
+            <tr>
+                <td style="background-color: #d3d3d3;" class="hand right  bold b1_t" colspan="2">Средний вес отливки</td>
+                <td style="background-color: #d3d3d3;" class="hand center bold b1_t b1_l" colspan="1">кг</td>
+                <td style="background-color: #d3d3d3;" class="hand center bold b1_t b_l" >{if $weights.n>0 and $amounts.n>0}{$weights.n/$amounts.n|number_format:1}{else}&nbsp;{/if}</td>
+                <td style="background-color: #d3d3d3;" class="hand center bold b1_t b_l" >{if $weights.p>0 and $amounts.p>0}{$weights.p/$amounts.p|number_format:1}{else}&nbsp;{/if}</td>
+                <td style="background-color: #d3d3d3;" class="hand center bold b1_t b1_l">{if $weights.r>0 and $amounts.r>0}{$weights.r/$amounts.r|number_format:1}{else}&nbsp;{/if}</td>
+                <td style="background-color: #d3d3d3;" class="hand center bold b1_t b_l" >{if $weights.k>0 and $amounts.k>0}{$weights.k/$amounts.k|number_format:1}{else}&nbsp;{/if}</td>
+                <td style="background-color: #d3d3d3;" class="hand left bold   b1_t b_l"></td>
             </tr>
         {else}
             <tr class="no-items">

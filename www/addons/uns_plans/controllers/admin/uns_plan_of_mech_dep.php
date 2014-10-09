@@ -748,6 +748,8 @@ if ($mode == "manage") {
                 $offset_in_the_month = 0;
             }elseif ($day_of_the_month == $number_of_days_in_the_month){ // Последний день месяца
                 $offset_in_the_month = ($day_of_the_month-1)/$number_of_days_in_the_month;
+            }else{
+                $offset_in_the_month = $day_of_the_month/$number_of_days_in_the_month;
             }
 
             $view->assign("bar_offset", 10);
@@ -1197,12 +1199,16 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
 
     //==========================================================================
     // 8. "ГОРЯЩИЕ" заготовки определенные остатками насосов
+    //     только для задания цветовой маркировки
     //==========================================================================
     // Определить насосы, которых хватает менее чем на месяц, и получить список отливок, которые в них входят.
     $priority_materials     = null;
     $priority_materials_w   = null;  // Вес
     $priority_materials_q   = null;  // Кол-во
-    $priority_ps_id         = null;
+    $priority_ps_id         = null;  // Приоритеты по насосам, указанные в плане продаж
+    $priority_details       = null;  // Приоритеты по деталям, указанные в плане продаж
+    $priority_materials__ps         = null; // Приоритеты отливок на основании приоритетов насосов в плане продаж
+    $priority_materials__details    = null; // Приоритеты отливок на основании приоритетов деталей в плане продаж
     // R - red      - отливки высокого уровня приоритета
     // Y - yellow   - отливки среднего уровня приоритета
 
@@ -1216,7 +1222,7 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
             // 28 день = 30.8%  - 4 недели
             // 35 дней = 38.5%  - 5 недель
 
-            // RED уровень - по принудительному приоритету указанному в плане продаж
+            // RED уровень - по принудительному приоритету насоса указанному в плане продаж
             if($data["plan"]["group_by_item"]["S"][$id]["forced_status"] == "R"){
                 $priority_ps_id["R"][$id] = $id;
 
@@ -1235,6 +1241,9 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
         }
     }
 
+    //--------------------------------------------------------------------------
+    // ПРИОРИТЕТНОСТЬ ПО НАСОСАМ в плане продаж
+    //--------------------------------------------------------------------------
     // 2. получить список отливок, которые в них входят
     // КРАСНЫЙ УРОВЕНЬ
     if (is__array($priority_ps_id["R"])){
@@ -1245,13 +1254,13 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
                 foreach (array_keys($pump_materials) as $m_id){
                     if (    ($prohibition_of_casts[$m_id] != "Y")
                         and (fn_fvalue($remaining_of_casts["curr_month"][$m_id],0) > 0 or fn_fvalue($remaining_of_casts["next_month"][$m_id],0) > 0)
-                        and ($priority_materials["R"][$m_id] != "Y")
+                        and ($priority_materials__ps["R"][$m_id] != "Y")
                     ){
-                            $w = fn_uns__get_accounting_item_weights("M", $m_id);
-                            $w = $w[$m_id]["M"][0]['value'];
-                            $priority_materials_w["R"] += $w*($remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id]);
-                            $priority_materials_q["R"] +=     $remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id];
-                            $priority_materials["R"][$m_id] = "Y";
+//                            $w = fn_uns__get_accounting_item_weights("M", $m_id);
+//                            $w = $w[$m_id]["M"][0]['value'];
+//                            $priority_materials_w["R"] += $w*($remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id]);
+//                            $priority_materials_q["R"] +=     $remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id];
+                            $priority_materials__ps["R"][$m_id] = "Y";
                     }
                 }
             }
@@ -1267,23 +1276,101 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
                 foreach (array_keys($pump_materials) as $m_id){
                     if (    ($prohibition_of_casts[$m_id] != "Y")
                         and (fn_fvalue($remaining_of_casts["curr_month"][$m_id],0) > 0 or fn_fvalue($remaining_of_casts["next_month"][$m_id],0) > 0)
-                        and ($priority_materials["R"][$m_id] != "Y")
-                        and ($priority_materials["Y"][$m_id] != "Y")
+                        and ($priority_materials__ps["R"][$m_id] != "Y")
+                        and ($priority_materials__ps["Y"][$m_id] != "Y")
                     ){
-                            $w = fn_uns__get_accounting_item_weights("M", $m_id);
-                            $w = $w[$m_id]["M"][0]['value'];
-                            $priority_materials_w["Y"] += $w*($remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id]);
-                            $priority_materials_q["Y"] +=     $remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id];
-                            $priority_materials["Y"][$m_id] = "Y";
+//                            $w = fn_uns__get_accounting_item_weights("M", $m_id);
+//                            $w = $w[$m_id]["M"][0]['value'];
+//                            $priority_materials_w["Y"] += $w*($remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id]);
+//                            $priority_materials_q["Y"] +=     $remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id];
+                            $priority_materials__ps["Y"][$m_id] = "Y";
                     }
                 }
             }
         }
     }
 
-    $view->assign("priority_materials",     $priority_materials);
-    $view->assign("priority_materials_w",   $priority_materials_w);
-    $view->assign("priority_materials_q",   $priority_materials_q);
+    //---------------------------------------------------------------------------------
+    // ПРИОРИТЕТНОСТЬ ПО ДЕТАЛЯМ в плане продаж (детали необходимо перевести в отливки)
+    //---------------------------------------------------------------------------------
+    // 0. Список "красных" и "желтых" деталей по плану продаж
+    if ($data["plan"]["group_by_item"]["D"]){
+        foreach ($data["plan"]["group_by_item"]["D"] as $d){
+            if (in_array($d["forced_status"], array("R", "Y"))){
+                $m_id = db_get_field(UNS_DB_PREFIX . "SELECT material_id FROM ?:detail__and__items WHERE detail_id = ?i", $d["item_id"]);
+                $priority_materials__details[$d["forced_status"]][$m_id] = "Y";
+            }
+        }
+    }
+
+    // Собрать все material_id с приоритетами
+    $materials = array();
+    if (is__array(array_keys($priority_materials__ps["R"])))        $materials = array_merge($materials, array_keys($priority_materials__ps["R"]));
+    if (is__array(array_keys($priority_materials__ps["Y"])))        $materials = array_merge($materials, array_keys($priority_materials__ps["Y"]));
+    if (is__array(array_keys($priority_materials__details["R"])))   $materials = array_merge($materials, array_keys($priority_materials__details["R"]));
+    if (is__array(array_keys($priority_materials__details["Y"])))   $materials = array_merge($materials, array_keys($priority_materials__details["Y"]));
+
+
+//    $materials = array_merge(array_keys($priority_materials__ps["R"]),
+//                             array_keys($priority_materials__ps["Y"]),
+//                             array_keys($priority_materials__details["R"]),
+//                             array_keys($priority_materials__details["Y"]));
+//    fn_print_r($priority_materials__ps["R"], count($priority_materials__ps["R"]));
+//    fn_print_r($priority_materials__ps["Y"], count($priority_materials__ps["Y"]));
+//    fn_print_r($priority_materials__details["R"], count($priority_materials__details["R"]));
+//    fn_print_r($priority_materials__details["Y"], count($priority_materials__details["Y"]));
+//    fn_print_r($materials, count($materials));
+    if (is__array($materials) and fn_is_not_empty($materials)){
+        foreach ($materials as $m_id){
+            if ($remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id] > 0){
+                $w = fn_uns__get_accounting_item_weights("M", $m_id);
+                $w = $w[$m_id]["M"][0]['value'];
+                if (//ps_RED + det_RED
+                    ($priority_materials__ps["R"][$m_id] == "Y" and $priority_materials__details["R"][$m_id] == "Y")
+                    or
+                    //ps_RED + det_YEL
+                    ($priority_materials__ps["R"][$m_id] == "Y" and $priority_materials__details["Y"][$m_id] == "Y")
+                    or
+                    //ps_RED + det_GRAY
+                    ($priority_materials__ps["R"][$m_id] == "Y" and ($priority_materials__details["R"][$m_id] != "Y" and $priority_materials__details["Y"][$m_id] != "Y"))
+                    or
+                    //ps_YEL + det_RED
+                    ($priority_materials__ps["Y"][$m_id] == "Y" and $priority_materials__details["R"][$m_id] == "Y")
+                    or
+                    //ps_GRAY + det_RED
+                    (($priority_materials__ps["R"][$m_id] != "Y" and $priority_materials__ps["Y"][$m_id] != "Y") and $priority_materials__details["R"][$m_id] == "Y")
+                ){
+                    $priority_materials_w["R"] += $w*($remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id]);
+                    $priority_materials_q["R"] +=     $remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id];
+                    $priority_materials  ["R"][$m_id] = "Y";
+
+                }elseif (
+                    //ps_YEL + det_YEL
+                    ($priority_materials__ps["Y"][$m_id] == "Y" and $priority_materials__details["Y"][$m_id] == "Y")
+                    or
+                    //ps_YEL + det_YEL
+                    ($priority_materials__ps["Y"][$m_id] == "Y" and ($priority_materials__details["R"][$m_id] != "Y" and $priority_materials__details["Y"][$m_id] != "Y"))
+                    or
+                    //ps_GRAY + det_YEL
+                    (($priority_materials__ps["R"][$m_id] != "Y" and $priority_materials__ps["Y"][$m_id] != "Y") and $priority_materials__details["Y"][$m_id] == "Y")
+                ){
+                    $priority_materials_w["Y"] += $w*($remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id]);
+                    $priority_materials_q["Y"] +=     $remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id];
+                    $priority_materials  ["Y"][$m_id] = "Y";
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+    $view->assign("priority_materials__details",$priority_materials__details);
+    $view->assign("priority_materials",         $priority_materials);
+    $view->assign("priority_materials_w",       $priority_materials_w);
+    $view->assign("priority_materials_q",       $priority_materials_q);
 }
 
 

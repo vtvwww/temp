@@ -24,6 +24,25 @@
             {/if}
 
             <tr class="category_items {$id} {if $expand_all} hidden {/if} {if $mark_prohibition == "prh"}{$mark_prohibition}{/if} {if $mark_priority == "p_n"}{$mark_priority}{/if}">
+                {assign var="mark" value=""}
+                {assign var="mark_star" value=""}
+                {assign var="q" value=$remaining_of_casts.curr_month[$m.id]|fn_fvalue:0}
+                {if $q>0}
+                    {if $requirement_of_casts_for_min_rest[$m.id] == "Y"
+                        and ($priority_materials__details.R[$m.id] == "Y" or $priority_materials__details.Y[$m.id] == "Y")}
+                        {assign var="mark" value="<sup title='Минимальный остаток + На продажу'>МО+НП</sup>"}
+                        {assign var="mark_star" value="<span class='info_warning'>*</span>"}
+
+                    {elseif $requirement_of_casts_for_min_rest[$m.id] == "Y"}
+                        {assign var="mark" value="<sup title='Минимальный остаток'>МО</sup>"}
+                        {assign var="mark_star" value="<span class='info_warning'>*</span>"}
+
+                    {elseif $priority_materials__details.R[$m.id] == "Y" or $priority_materials__details.Y[$m.id] == "Y"}
+                        {assign var="mark" value="<sup title='На продажу'>НП</sup>"}
+                        {assign var="mark_star" value="<span class='info_warning'>*</span>"}
+                    {/if}
+                {/if}
+
                 {*НАИМЕНОВАНИЕ*}
                 <td class="l">&nbsp;&nbsp;
                     {assign var="n" value=$m.name}
@@ -31,7 +50,7 @@
                         {assign var="n" value="`$n` [`$m.no`]"}
                     {/if}
                     {assign var="href" value="uns_plan_of_mech_dep.planning.balance_of_details?m_id=`$m.id`"}
-                    <a  rev="ci_{$m.id}" href="{$href|fn_url}" class="cm-dialog-opener cm-dialog-auto-size black" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$n}</a>
+                    <a  rev="ci_{$m.id}" href="{$href|fn_url}" class="cm-dialog-opener cm-dialog-auto-size black" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$n}{$mark}</a>
                     <div id="ci_{$m.id}" class="hidden" title="Остаток деталей {$n|upper}"></div>
                 </td>
 
@@ -40,7 +59,7 @@
 
                 {*ПЛАН ПОТРЕБНОСТЬ*}
                 {assign var="q" value=$requirement_of_casts.curr_month[$m.id]|fn_fvalue:1}
-                <td class="b3_l {if $q < 0}info_warning_block{elseif $q==0}{/if}">{if !$q}{else}{$q}{/if}{if $q>0 and $requirement_of_casts_for_min_rest[$m.id] == "Y"}<span class="info_warning">*</span>{/if}</td>
+                <td class="b3_l {if $q < 0}info_warning_block{elseif $q==0}{/if}">{if !$q}{else}{$q}{/if}</td>
                 {assign var="q" value=$requirement_of_casts.next_month[$m.id]|fn_fvalue:1}
                 <td class="b1_l {if $q < 0}info_warning_block{elseif $q==0}{/if}">{if !$q}{else}{$q}{/if}</td>
                 {assign var="q" value=$requirement_of_casts.next2_month[$m.id]|fn_fvalue:1}
@@ -58,7 +77,7 @@
 
                 {*ОСТАЛОСЬ ОТЛИТЬ ПО ПЛАНУ ПОТРЕБНОСТИ В ЗАГОТОВКАХ*}
                 {assign var="q" value=$remaining_of_casts.curr_month[$m.id]|fn_fvalue:0}
-                <td class="b3_l r {if $q > 0}b{else}{/if}">{if !$q}{else}{$q}{/if}{if $q>0 and $requirement_of_casts_for_min_rest[$m.id] == "Y"}<span class="info_warning">*</span>{/if}</td>
+                <td class="b3_l r {if $q > 0}b{else}{/if}">{if !$q}{else}{$q}{/if}{$mark_star}</td>
                 {assign var="q" value=$remaining_of_casts.next_month[$m.id]|fn_fvalue:0}
                 <td class="b1_l r {if $q > 0}b{else}{/if}">{if !$q}{else}{$q}{/if}</td>
                 {assign var="q" value=$remaining_of_casts.next2_month[$m.id]|fn_fvalue:0}

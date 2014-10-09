@@ -61,6 +61,10 @@ if($mode == 'manage'){
     list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
     $_REQUEST["accessory_pumps"] = "Y";
 
+    if ($_REQUEST["only_for_pumps"] == "Y" and !is__more_0($_REQUEST["mcat_id"])){
+        $p["exclude_mcat_id"] = array(78,79,80); // На собственные нужды, На продажу, Старые отливки
+    }
+
     $p = array_merge($_REQUEST, $p);
     $view->assign('search', $p);
 
@@ -79,6 +83,13 @@ if($mode == 'manage'){
         "r"  => 0,  // расход
         "k"  => 0,  // конечный остаток
     );
+    // Расчет кол-ва
+    $amounts = array(
+        "n"  => 0,  // начальный остаток
+        "p"  => 0,  // приход
+        "r"  => 0,  // расход
+        "k"  => 0,  // конечный остаток
+    );
     if (is__array($balance)){
         foreach ($balance as $group){
             if (is__array($group["items"])){
@@ -87,11 +98,17 @@ if($mode == 'manage'){
                     $weights["p"] += $i["weight"]*$i["current__in"];
                     $weights["r"] += $i["weight"]*$i["current__out"];
                     $weights["k"] += $i["weight"]*$i["konech"];
+
+                    $amounts["n"] += $i["nach"];
+                    $amounts["p"] += $i["current__in"];
+                    $amounts["r"] += $i["current__out"];
+                    $amounts["k"] += $i["konech"];
                 }
             }
         }
     }
     $view->assign('weights', $weights);
+    $view->assign('amounts', $amounts);
 
     // Последняя дата движения
     $info_of_the_last_movement = fn_uns__get_info_of_the_last_movement(array('o_id'=>8)); // склад литья
@@ -197,6 +214,7 @@ function fn_foundry_get_balance__search($controller) {
         'view_all_position',
         'accessory_pumps',
         'all_materials',
+        'only_for_pumps',
     );
     fn_uns_search_set_get_params($controller, $params);
     return true;

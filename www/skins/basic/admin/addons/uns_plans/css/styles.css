@@ -104,3 +104,8 @@ table.table.LC td.p_r, table.table.MC td.p_r{ /* priority materials RED*/
 table.table.LC td.p_y, table.table.MC td.p_y{ /* priority materials YELLOW*/
     background-color: #FFE388;
 }
+
+table.table.LC sup{
+    color: red;
+    font-weight: bold;
+}
