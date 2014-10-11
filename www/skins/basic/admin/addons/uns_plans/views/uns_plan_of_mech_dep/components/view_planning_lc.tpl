@@ -23,7 +23,7 @@
                 {assign var="mark_priority" value="p_y"}
             {/if}
 
-            <tr class="category_items {$id} {if $expand_all} hidden {/if} {if $mark_prohibition == "prh"}{$mark_prohibition}{/if} {if $mark_priority == "p_n"}{$mark_priority}{/if}">
+            <tr class="category_items {$id} {if $expand_all} hidden {/if} {if $mark_prohibition == "prh"}{$mark_prohibition}{/if} {$mark_priority}">
                 {assign var="mark" value=""}
                 {assign var="mark_star" value=""}
                 {assign var="q" value=$remaining_of_casts.curr_month[$m.id]|fn_fvalue:0}

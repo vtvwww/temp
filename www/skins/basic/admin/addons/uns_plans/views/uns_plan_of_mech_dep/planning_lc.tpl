@@ -1,20 +1,24 @@
 {capture name="mainbox"}
-    <table style="margin: 10px" width="100%">
+    <table style="margin: 10px 0" width="100%">
         <tr>
-            <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_r.png"/> - потребность в ближайшие 2 недели</td>
-            <td class="b1_l"></td>
-            <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_y.png"/> - потребность на 2-й ÷ 4-й неделях</td>
-            <td class="b1_l"></td>
-            <td class="right"><img src="skins/basic/admin/addons/uns_plans/images/p_g.png"/></td>
+            <td class="center"><label class="hand" for="p_r"><img src="skins/basic/admin/addons/uns_plans/images/p_r.png"/> - потребность в ближайшие 2 недели</label></td>
+            <td class="left"><input type="checkbox" name="p_r" checked="checked" id="p_r" onchange="if ($(this).prop('checked')) $('table.LC tr.p_r').removeClass('hidden'); else $('table.LC tr.p_r').addClass('hidden')"></td>
+            <td class="b2_l"></td>
+            <td class="center"><label class="hand" for="p_y"><img src="skins/basic/admin/addons/uns_plans/images/p_y.png"/> - потребность на 2-й ÷ 4-й неделях</label></td>
+            <td class="left"><input type="checkbox" name="p_y" checked="checked" id="p_y" onchange="if ($(this).prop('checked')) $('table.LC tr.p_y').removeClass('hidden'); else $('table.LC tr.p_y').addClass('hidden')"></td>
+            <td class="b2_l"></td>
+            <td class="right"><label class="hand" for="p_n"><img src="skins/basic/admin/addons/uns_plans/images/p_g.png"/></label></td>
             <td class="left"><label class="hand" for="p_n"> - потребность с 4-й недели</label></td>
             <td class="left"><input type="checkbox" name="p_n" checked="checked" id="p_n" onchange="if ($(this).prop('checked')) $('table.LC tr.p_n').removeClass('hidden'); else $('table.LC tr.p_n').addClass('hidden')"></td>
         </tr>
         <tr>
             <td class="center bold">{$priority_materials_q.R|fn_fvalue:0} шт.; {$priority_materials_w.R/1000|fn_fvalue:1} т</td>
-            <td class="b1_l"></td>
+            <td class=""></td>
+            <td class="b2_l"></td>
             <td class="center bold">{$priority_materials_q.Y|fn_fvalue:0} шт.; {$priority_materials_w.Y/1000|fn_fvalue:1} т</td>
-            <td class="b1_l"></td>
-            <td class="right"><img src="skins/basic/admin/addons/uns_plans/images/prohibition.png"/></td>
+            <td class=""></td>
+            <td class="b2_l"></td>
+            <td class="right"><label class="hand" for="prh"><img src="skins/basic/admin/addons/uns_plans/images/prohibition.png"/></label></td>
             <td class="left"><label class="hand" for="prh"> - под запретом</label></td>
             <td class="left"><input type="checkbox" name="prh" checked="checked" id="prh" onchange="if ($(this).prop('checked')) $('table.LC tr.prh').removeClass('hidden'); else $('table.LC tr.prh').addClass('hidden')"></td>
         </tr>
