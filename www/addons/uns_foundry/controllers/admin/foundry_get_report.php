@@ -63,6 +63,28 @@ if($mode == 'manage'){
     // ТИПЫ ДОКУМЕНТОВ
     list($document_types) = fn_uns__get_document_types();
     $view->assign('document_types', $document_types);
+
+    // Для расчета прогноза выпуска за месяц
+    if ($_REQUEST['period'] == "M" and is__array($documents)){
+        $workdays = null;
+        $weights = null;
+        $avr_weights = null;
+        foreach ($documents as $doc){
+            $workdays[fn_date_format($doc['date_cast'], "%a %d/%m/%Y")] += 1;
+            $weights["C"] += $doc["weight"]["C"];
+            $weights["S"] += $doc["weight"]["S"];
+            $weights["A"] += $doc["weight"]["A"];
+            $weights["W"] += $doc["weight"]["W"];
+        }
+        if (count($workdays) > 0){
+            $avr_weights["C"] = $weights["C"]/count($workdays);
+            $avr_weights["S"] = $weights["S"]/count($workdays);
+            $avr_weights["A"] = $weights["A"]/count($workdays);
+            $avr_weights["W"] = $weights["W"]/count($workdays);
+        }
+        $view->assign('avr_weights', $avr_weights);
+    }
+
 }
 
 

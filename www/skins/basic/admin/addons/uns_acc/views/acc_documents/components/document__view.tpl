@@ -11,20 +11,22 @@
 
     <table class="info">
         <tr>
-            <td align="right"><span class="h">Дата проведения:</span></td>
-            <td><span class="t">{$d.date|date_format:"%a %d/%m/%Y"}</span></td>
-        </tr>
-        <tr>
             <td align="right"><span class="h">Дата плавки:</span></td>
             <td><span class="t">{$d.date_cast|date_format:"%a %d/%m/%Y"}</span></td>
         </tr>
         <tr>
-            <td align="right"><span class="h">Движение:</span></td>
-            <td><span class="t">{$objects_plain[$d.object_from].path} -> {$objects_plain[$d.object_to].path}</span></td>
+            <td align="right"><span class="h">Дата сдачи на склад:</span></td>
+            <td><span class="t">{$d.date|date_format:"%a %d/%m/%Y"}</span></td>
         </tr>
+        {*<tr>*}
+            {*<td align="right"><span class="h">Движение:</span></td>*}
+            {*<td><span class="t">{$objects_plain[$d.object_from].path} -> {$objects_plain[$d.object_to].path}</span></td>*}
+        {*</tr>*}
+        {if $d.comment|strlen}
         <tr>
             <td align="right"><span class="h">Комментарий:</span></td>
-            <td><span class="t">{if $d.comment}{$d.comment}{else}-{/if}</span></td>
+            <td><span class="t">{$d.comment}</span></td>
         </tr>
+        {/if}
     </table>
 
