@@ -707,12 +707,13 @@ if ($mode == "manage") {
         //**********************************************************************
         // РАСЧЕТЫ ДЛЯ АНАЛИЗА ПРОДАЖ
         //**********************************************************************
+        $pump_series = array_shift(fn_uns__get_pump_series(array('only_active' => true, "view_in_plans"=>"Y",)));
+        $begin  = strtotime($_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1" . " 00:00:00");
+        $end    = strtotime(date("Y-m-d", fn_parse_date($_REQUEST["current_day"])) . " 23:59:59");
+        $sales = fn_uns__get_sales_pump_series_by_period(array_keys($pump_series), $begin, $end); // По СГП
+        $view->assign("sales", $sales);
         if ($_REQUEST["analisis_of_sales"] == "Y"){
             //SALE_PROGRESS
-            $pump_series = array_shift(fn_uns__get_pump_series(array('only_active' => true, "view_in_plans"=>"Y",)));
-            $begin  = strtotime($_REQUEST["year"] . "-" . $_REQUEST["month"] . "-" . "1" . " 00:00:00");
-            $end    = strtotime(date("Y-m-d", fn_parse_date($_REQUEST["current_day"])) . " 23:59:59");
-            $sales = fn_uns__get_sales_pump_series_by_period(array_keys($pump_series), $begin, $end); // По СГП
             $sales_tpl = null;
             foreach ($pump_series as $ps_id=>$ps){
                 // расчет процентов
@@ -732,7 +733,6 @@ if ($mode == "manage") {
                 $sales_tpl[$ps_id]["perc"] = $perc;
                 $sales_tpl[$ps_id]["bar"]  = $progress_bar;
             }
-            $view->assign("sales", $sales);
             $view->assign("sales_tpl", $sales_tpl);
         }
 
@@ -740,35 +740,26 @@ if ($mode == "manage") {
         // РАСЧЕТЫ ДЛЯ АНАЛИЗА ПЛАНА
         //**********************************************************************
         if ($_REQUEST["analisys_of_production_plan"] == "Y"){
-            // ANALISYS_PROGRESS
-            // Определить смещение относительно текущего дня:
-            $day_of_the_month = date('j', fn_parse_date($_REQUEST["current_day"]));
-            $number_of_days_in_the_month = date('t', fn_parse_date($_REQUEST["current_day"]));
-            if ($day_of_the_month == 1){ // Первый день месяца
-                $offset_in_the_month = 0;
-            }elseif ($day_of_the_month == $number_of_days_in_the_month){ // Последний день месяца
-                $offset_in_the_month = ($day_of_the_month-1)/$number_of_days_in_the_month;
-            }else{
-                $offset_in_the_month = $day_of_the_month/$number_of_days_in_the_month;
-            }
+            // ОБЩЕЕ КОЛ-ВО ДНЕЙ В ВЫБРАННЫЕ МЕСЯЦА
+            $curr_d = date("j", fn_parse_date($_REQUEST["current_day"]));
+            $curr_m = date("m", fn_parse_date($_REQUEST["current_day"]));
+            $curr_y = date("Y", fn_parse_date($_REQUEST["current_day"]));
+            $total_days = date("t", strtotime($curr_y . "-" . $curr_m . "-" . "1"))
+                        + date("t", strtotime($curr_y . "-" . $curr_m . "-" . "1" . " +1 month"))
+                        + date("t", strtotime($curr_y . "-" . $curr_m . "-" . "1" . " +2 month"));
 
-            $view->assign("bar_offset", 10);
             $analisys = null;
             $month_px = 51;
-
             foreach ($pump_series as $ps_id=>$ps){
-                $analisys[$ps_id]["offset"] =  fn_fvalue((100/3)*$offset_in_the_month, 2);
-                $offset_a = $offset_in_the_month;
-//                $analisys[$ps_id]["offset"] =  0;
-//                $t = $sgp[$ps_id] + $done_current_day[$ps_id];
-                $t = $sgp_current_day[$ps_id];
+                $max_day = 0;
+                $t = $sgp_current_day[$ps_id]+$sales[$ps_id];
                 $z = $zadel_current_day[$ps_id];
 
-                $a = $requirement["curr_month"][$ps_id];    //10
-                $b = $requirement["next_month"][$ps_id];    //30
-                $c = $requirement["next2_month"][$ps_id];   //50
+                $a = $requirement["curr_month"][$ps_id];
+                $b = $requirement["next_month"][$ps_id];
+                $c = $requirement["next2_month"][$ps_id];
 
-                $_TOTAL = fn_uns_calc_progress ($a, $b, $c, $t, $offset_a);
+                $_TOTAL = fn_uns_calc_progress ($a, $b, $c, $t);
                 if ($t > 0 and $_TOTAL["OSTALOS"]["a"] == 0 and $_TOTAL["OSTALOS"]["b"] == 0 and $_TOTAL["OSTALOS"]["c"] == 0){
                     $analisys[$ps_id]["total"] = fn_fvalue(100*($month_px * 3)/(3*$month_px), 2);
                 }else{
@@ -780,9 +771,20 @@ if ($mode == "manage") {
                     if (!is__more_0($analisys[$ps_id]["total"] + $analisys[$ps_id]["zadel"])){
                         $analisys[$ps_id]["zero"] = 1;
                     }
-                    $analisys[$ps_id]["none"] = 100-($analisys[$ps_id]["offset"]+$analisys[$ps_id]["total"]+$analisys[$ps_id]["zadel"]+$analisys[$ps_id]["zero"]);
+                    $analisys[$ps_id]["none"] = 100-($analisys[$ps_id]["total"]+$analisys[$ps_id]["zadel"]+$analisys[$ps_id]["zero"]);
                 }
 
+                // Для установки приоритета по кол-ву остатка насосов на СГП и ЗАДЕЛА
+                $max_day = floor($total_days*($analisys[$ps_id]["total"]+$analisys[$ps_id]["zadel"])/100);
+                $analisys[$ps_id]["priority"]["date"]   = date("d/m/Y", strtotime("$curr_y-$curr_m-1 +$max_day day"));
+                $analisys[$ps_id]["priority"]["left"]   = $max_day-$curr_d;
+                if ($max_day-$curr_d <= 14){
+                    $analisys[$ps_id]["priority"]["status"] = "R";
+                }elseif ($max_day-$curr_d > 14 and $max_day-$curr_d <= 28){
+                    $analisys[$ps_id]["priority"]["status"] = "Y";
+                }else{
+                    $analisys[$ps_id]["priority"]["status"] = "n";
+                }
             }
             $data["analisys"] = $analisys;
             $view->assign("analisys", $analisys);
@@ -1227,7 +1229,7 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
                 $priority_ps_id["R"][$id] = $id;
 
             // RED уровень - по фактическому наличию насосов на СГП и в заделе
-            }elseif($t < 15.4){                    // насосов хватит до 2-х недель
+            }elseif($v["priority"]["status"] == "R"){                    // насосов хватит до 2-х недель
                 $priority_ps_id["R"][$id] = $id;
 
             // YELLOW уровень - по принудительному приоритету указанному в плане продаж
@@ -1235,7 +1237,7 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
                     $priority_ps_id["Y"][$id] = $id;
 
             // YELLOW уровень - по фактическому наличию насосов на СГП и в заделе
-            }elseif($t >= 15.4 and $t < 30.8){     // насосов хватит от 2-х до 4-х недель
+            }elseif($v["priority"]["status"] == "Y"){     // насосов хватит от 2-х до 4-х недель
                 $priority_ps_id["Y"][$id] = $id;
             }
         }
@@ -1256,10 +1258,6 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
                         and (fn_fvalue($remaining_of_casts["curr_month"][$m_id],0) > 0 or fn_fvalue($remaining_of_casts["next_month"][$m_id],0) > 0)
                         and ($priority_materials__ps["R"][$m_id] != "Y")
                     ){
-//                            $w = fn_uns__get_accounting_item_weights("M", $m_id);
-//                            $w = $w[$m_id]["M"][0]['value'];
-//                            $priority_materials_w["R"] += $w*($remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id]);
-//                            $priority_materials_q["R"] +=     $remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id];
                             $priority_materials__ps["R"][$m_id] = "Y";
                     }
                 }
@@ -1279,10 +1277,6 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
                         and ($priority_materials__ps["R"][$m_id] != "Y")
                         and ($priority_materials__ps["Y"][$m_id] != "Y")
                     ){
-//                            $w = fn_uns__get_accounting_item_weights("M", $m_id);
-//                            $w = $w[$m_id]["M"][0]['value'];
-//                            $priority_materials_w["Y"] += $w*($remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id]);
-//                            $priority_materials_q["Y"] +=     $remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id];
                             $priority_materials__ps["Y"][$m_id] = "Y";
                     }
                 }
@@ -1310,16 +1304,6 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
     if (is__array(array_keys($priority_materials__details["R"])))   $materials = array_merge($materials, array_keys($priority_materials__details["R"]));
     if (is__array(array_keys($priority_materials__details["Y"])))   $materials = array_merge($materials, array_keys($priority_materials__details["Y"]));
 
-
-//    $materials = array_merge(array_keys($priority_materials__ps["R"]),
-//                             array_keys($priority_materials__ps["Y"]),
-//                             array_keys($priority_materials__details["R"]),
-//                             array_keys($priority_materials__details["Y"]));
-//    fn_print_r($priority_materials__ps["R"], count($priority_materials__ps["R"]));
-//    fn_print_r($priority_materials__ps["Y"], count($priority_materials__ps["Y"]));
-//    fn_print_r($priority_materials__details["R"], count($priority_materials__details["R"]));
-//    fn_print_r($priority_materials__details["Y"], count($priority_materials__details["Y"]));
-//    fn_print_r($materials, count($materials));
     if (is__array($materials) and fn_is_not_empty($materials)){
         foreach ($materials as $m_id){
             if ($remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id] > 0){
@@ -1362,11 +1346,6 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
         }
     }
 
-
-
-
-
-
     $view->assign("priority_materials__details",$priority_materials__details);
     $view->assign("priority_materials",         $priority_materials);
     $view->assign("priority_materials_w",       $priority_materials_w);
@@ -1407,8 +1386,6 @@ function fn_uns_calc_progress ($a=0, $b=0, $c=0, $t=0, $offset_a = 0){
         "OSTALOS"   =>array("a"=>0, "b"=>0, "c"=>0),
         "TOTAL"     =>array("a"=>0, "b"=>0, "c"=>0),
     );
-
-    $a = $a - $a*$offset_a;
 
     if ($a == 0 and $b == 0 and $c == 0 and $t == 0) return $res;
 

@@ -23,13 +23,13 @@ td.bar_available:hover{
 
 td.bar_available.p_r,
 td.bar_available.p_r:hover{
-    background-color: #bb474e !important;
+    background-color: #FF8888 !important;
     border-color: #bb474e !important;
 }
 
 td.bar_available.p_y,
 td.bar_available.p_y:hover{
-    background-color: #e3ad32 !important;
+    background-color: #FFE388 !important;
     border-color: #ccb055 !important;
 }
 

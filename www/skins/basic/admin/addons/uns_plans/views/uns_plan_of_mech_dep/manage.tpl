@@ -61,7 +61,7 @@
                         {if $search.type_of_production_plan == "actual"}
                             <th style="text-transform: none;"          rowspan="2" colspan="3" class="center b3_l b1_b">План<br>производства<br>ФАКТИЧЕСКИЙ</th>
                         {elseif $search.type_of_production_plan == "parties"}
-                            <th style="text-transform: none;"          rowspan="2" colspan="3" class="center b3_l b1_b">План<br>производства<br>ПО ПАРТИЯМ</th>
+                            <th style="text-transform: none;"          rowspan="2" colspan="3" class="center b3_l b1_b">План<br>производства{*<br>ПО ПАРТИЯМ*}</th>
                         {/if}
 
                         <th style="text-transform: uppercase;background-color:#B8C1FF; "                      colspan="5" class="center b3_l">Выполнение плана на 23:59 {$search.current_day|fn_parse_date|date_format:"%d/%m/%y"}</th>
@@ -117,15 +117,13 @@
                     {if $analysis_of_plan}
                         {assign var="analisys_rowspan" value=" rowspan='2' "}
                         {assign var="b_offset"    value="<td class='bar_space'        style='width:`$analisys.$ps_id.offset`%;'></td>"}
-                        {*// 30 дней = 33%*}
-                        {*// 14 дней = 15.4%  - 2 недели*}
-                        {*// 21 день = 23.1%  - 3 недели*}
-                        {*// 28 день = 30.8%  - 4 недели*}
-                        {*// 35 дней = 38.5%  - 5 недель*}
 
                         {assign var="warning" value=""}
                         {assign var="forced_status" value=""}
                         {assign var="forced_status_comment" value=""}
+                        {assign var="b_title" value=""}
+                        {assign var="b_class" value=""}
+
                         {*RED уровень - по принудительному приоритету указанному в плане продаж*}
                         {if $plan.group_by_item.S[$ps_id].forced_status == "R"}
                             {assign var="warning" value="p_r"}
@@ -133,8 +131,10 @@
                             {assign var="forced_status_comment" value="Этот насос принудительно переведен в 'красный' статус. Если будет собрано достаточное кол-во насосов необходимо снять этот статус."}
 
                         {*RED уровень - по фактическому наличию насосов на СГП и в заделе*}
-                        {elseif $analisys.$ps_id.total+$analisys.$ps_id.zadel<=15.4} {*23.1 - соответствует трем неделям, а 33 = 30 дней*}
+                        {elseif $analisys.$ps_id.priority.status == "R"}
                             {assign var="warning" value="p_r"}
+                            {assign var="b_title" value="`$ps.ps_name` хватит до `$analisys.$ps_id.priority.date` (`$analisys.$ps_id.priority.left` дн.)"}
+                            {assign var="b_class" value="hand"}
 
                         {*YELLOW уровень - по принудительному приоритету указанному в плане продаж*}
                         {elseif $plan.group_by_item.S[$ps_id].forced_status == "Y"}
@@ -143,8 +143,10 @@
                             {assign var="forced_status_comment" value="Этот насос принудительно переведен в 'желтый' статус. Если будет собрано достаточное кол-во насосов необходимо снять этот статус."}
 
                         {*YELLOW уровень - по фактическому наличию насосов на СГП и в заделе*}
-                        {elseif $analisys.$ps_id.total+$analisys.$ps_id.zadel>15.4 and $analisys.$ps_id.total+$analisys.$ps_id.zadel<30.8} {*38.5 - соответствует пяти неделям, а 33 = 30 дней*}
+                        {elseif $analisys.$ps_id.priority.status == "Y"}
                             {assign var="warning" value="p_y"}
+                            {assign var="b_title" value="`$ps.ps_name` хватит до `$analisys.$ps_id.priority.date` (`$analisys.$ps_id.priority.left` дн.)"}
+                            {assign var="b_class" value="hand"}
                         {/if}
 
                         {* насос с нулевым остатком*}
@@ -167,7 +169,7 @@
                         {/if}
 
                         {assign var="b_none"            value="<td class='bar_none'         style='width:`$analisys.$ps_id.none`%;'></td>"}
-                        {assign var="analisys_progress" value="<table style='margin:1px 0 1px 0;' cellpadding='0' cellspacing='0' border='0' width='100%'><thead><tr>`$b_offset``$b_zero``$b_available``$b_zadel``$b_none`</tr></thead></table>"}
+                        {assign var="analisys_progress" value="<table class='`$b_class`' title='`$b_title`' style='margin:1px 0 1px 0;' cellpadding='0' cellspacing='0' border='0' width='100%'><thead><tr>`$b_offset``$b_zero``$b_available``$b_zadel``$b_none`</tr></thead></table>"}
                         {assign var="analisys_add_rows" value="<tr><td valign='bottom' style='border-top:none;border-bottom:none;padding: 0;' class='b_l' colspan='3'>`$analisys_progress`</td></tr>"}
                     {/if}
 
@@ -511,12 +513,12 @@
                         {/if}
                     </tr>
                     <tr style="background-color: #D4D0C8;">
-                        <th rowspan="2" colspan="{if $analysis_of_plan}3{else}2{/if}" style="text-transform: none;" class="center b_l b1_b b1_t">План<br>продаж</th>
+                        <th rowspan="2" colspan="{if $analysis_of_plan}3{else}2{/if}" style="text-transform: none;" class="center b_l b1_t">План<br>продаж</th>
 
                         {if $search.type_of_production_plan == "actual"}
                             <th rowspan="2" colspan="3" style="text-transform: none;" class="center b3_l b1_t">План<br>производства<br>ФАКТИЧЕСКИЙ</th>
                         {elseif $search.type_of_production_plan == "parties"}
-                            <th rowspan="2" colspan="3" style="text-transform: none;" class="center b3_l b1_t">План<br>производства<br>ПО ПАРТИЯМ</th>
+                            <th rowspan="2" colspan="3" style="text-transform: none;" class="center b3_l b1_t">План<br>производства{*<br>ПО ПАРТИЯМ*}</th>
                         {/if}
 
                         <th colspan="3" style="background-color:#B8C1FF; text-transform: uppercase;" class="center b_l b1_t">Осталось</th>
