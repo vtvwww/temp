@@ -98,9 +98,15 @@ table.table.LC td.prh{ /* prohibition */
     background: url('../images/prohibition.png') no-repeat center center;
 }
 
-table.table.LC td.p_r, table.table.MC td.p_r{ /* priority materials RED*/
+table.table.MC td.p_r, table.table.LC td.p_r{ /* priority materials RED*/
+    background-color: #ff8888;
+    font-weight: bold;
+}
+
+table.table.MC td.p_r2, table.table.LC td.p_r2{ /* priority materials RED*/
     background-color: #ff8888;
 }
+
 table.table.LC td.p_y, table.table.MC td.p_y{ /* priority materials YELLOW*/
     background-color: #FFE388;
 }

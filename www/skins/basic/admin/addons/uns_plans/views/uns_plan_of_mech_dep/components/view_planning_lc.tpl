@@ -4,8 +4,8 @@
     <tbody>
         <tr>
             <td colspan="16" class="dg l">
-                <img width="14" category_items="{$id}" height="9" border="0" title="Расширить список" class="hand {$id} plus {if !$expand_all} hidden {/if}" alt="Расширить список" src="skins/basic/admin/images/plus.gif">
-                <img width="14" category_items="{$id}" height="9" border="0" title="Свернуть список" class="hand {$id} minus {if $expand_all} hidden {/if}" alt="Свернуть список" src="skins/basic/admin/images/minus.gif">
+                {*<img width="14" category_items="{$id}" height="9" border="0" title="Расширить список" class="hand {$id} plus {if !$expand_all} hidden {/if}" alt="Расширить список" src="skins/basic/admin/images/plus.gif">*}
+                {*<img width="14" category_items="{$id}" height="9" border="0" title="Свернуть список" class="hand {$id} minus {if $expand_all} hidden {/if}" alt="Свернуть список" src="skins/basic/admin/images/minus.gif">*}
                 &nbsp;<span class="category_name">{$item.group}</span>{if $item.group_comment} <span class="info_warning">({$item.group_comment})</span>{/if}</td>
         </tr>
         {foreach from=$item.items item=m key=k}
@@ -19,11 +19,13 @@
             {*Приоритет*}
             {elseif $priority_materials.R[$m.id] == "Y"}
                 {assign var="mark_priority" value="p_r"}
+            {elseif $priority_materials.R2[$m.id] == "Y"}
+                {assign var="mark_priority" value="p_r2"}
             {elseif $priority_materials.Y[$m.id] == "Y"}
                 {assign var="mark_priority" value="p_y"}
             {/if}
 
-            <tr class="category_items {$id} {if $expand_all or $mark_priority != "p_r"} hidden {/if} {if $mark_prohibition == "prh"}{$mark_prohibition}{/if} {$mark_priority}">
+            <tr class="category_items {$id} {if $expand_all} hidden {/if} {if $mark_prohibition == "prh"}{$mark_prohibition}{/if} {$mark_priority}">
                 {assign var="mark" value=""}
                 {assign var="mark_star" value=""}
                 {assign var="q" value=$remaining_of_casts.curr_month[$m.id]|fn_fvalue:0}

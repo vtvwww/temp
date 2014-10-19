@@ -135,6 +135,9 @@
                         {elseif $analisys.$ps_id.priority.status == "R"}
                             {assign var="warning" value="p_r"}
 
+                        {elseif $analisys.$ps_id.priority.status == "R2"}
+                            {assign var="warning" value="p_r2"}
+
                         {*YELLOW уровень - по принудительному приоритету указанному в плане продаж*}
                         {elseif $plan.group_by_item.S[$ps_id].forced_status == "Y"}
                             {assign var="warning" value="p_y"}
