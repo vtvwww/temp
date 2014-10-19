@@ -121,8 +121,9 @@
                         {assign var="warning" value=""}
                         {assign var="forced_status" value=""}
                         {assign var="forced_status_comment" value=""}
-                        {assign var="b_title" value=""}
-                        {assign var="b_class" value=""}
+
+                        {assign var="b_title" value="`$ps.ps_name` хватит до `$analisys.$ps_id.priority.date` (на `$analisys.$ps_id.priority.left` дн.)"}
+                        {assign var="b_class" value="hand"}
 
                         {*RED уровень - по принудительному приоритету указанному в плане продаж*}
                         {if $plan.group_by_item.S[$ps_id].forced_status == "R"}
@@ -133,8 +134,6 @@
                         {*RED уровень - по фактическому наличию насосов на СГП и в заделе*}
                         {elseif $analisys.$ps_id.priority.status == "R"}
                             {assign var="warning" value="p_r"}
-                            {assign var="b_title" value="`$ps.ps_name` хватит до `$analisys.$ps_id.priority.date` (`$analisys.$ps_id.priority.left` дн.)"}
-                            {assign var="b_class" value="hand"}
 
                         {*YELLOW уровень - по принудительному приоритету указанному в плане продаж*}
                         {elseif $plan.group_by_item.S[$ps_id].forced_status == "Y"}
@@ -145,8 +144,6 @@
                         {*YELLOW уровень - по фактическому наличию насосов на СГП и в заделе*}
                         {elseif $analisys.$ps_id.priority.status == "Y"}
                             {assign var="warning" value="p_y"}
-                            {assign var="b_title" value="`$ps.ps_name` хватит до `$analisys.$ps_id.priority.date` (`$analisys.$ps_id.priority.left` дн.)"}
-                            {assign var="b_class" value="hand"}
                         {/if}
 
                         {* насос с нулевым остатком*}
@@ -157,13 +154,15 @@
                         {/if}
 
                         {if $analisys.$ps_id.total>0}
-                            {assign var="b_available"   value="<td class='bar_available `$warning`'    style='width:`$analisys.$ps_id.total`%;'></td>"}
+                            {assign var="b_available"   value="<td class='bar_available'    style='width:`$analisys.$ps_id.total`%;'></td>"}
+                            {*{assign var="b_available"   value="<td class='bar_available `$warning`'    style='width:`$analisys.$ps_id.total`%;'></td>"}*}
                         {else}
                             {assign var="b_available"   value=""}
                         {/if}
 
                         {if $analisys.$ps_id.zadel>0}
-                            {assign var="b_zadel"       value="<td class='bar_zadel `$warning`'        style='width:`$analisys.$ps_id.zadel`%;'></td>"}
+                            {assign var="b_zadel"       value="<td class='bar_zadel'        style='width:`$analisys.$ps_id.zadel`%;'></td>"}
+                            {*{assign var="b_zadel"       value="<td class='bar_zadel `$warning`'        style='width:`$analisys.$ps_id.zadel`%;'></td>"}*}
                         {else}
                             {assign var="b_zadel"       value=""}
                         {/if}
@@ -529,15 +528,28 @@
                 </tbody>
             </table>
 
-            <ol style="color: red;">
-                <li style="font-weight: bold;">
-                    <span style="font-weight: normal;">
-                        <img src="skins/basic/admin/addons/uns_plans/images/total.png"/> - показывает на какой период времени хватит имеющихся насосов на СГП.<br>
-                        <img src="skins/basic/admin/addons/uns_plans/images/zadel.png"/> - показывает на какой период времени хватит насосов ожидающих сборку.<br>
-                    </span>
-                </li>
+            <ol style="color: #000000;">
                 <li style="font-weight: bold;">
                     <span style="font-weight: normal;">СГП - остатки по Складу готовой продукции только в Александрии (без учета склада в Днепропетровске).</span>
+                </li>
+                <li style="font-weight: bold;">
+                    <table width="800" border="0">
+                        <tr>
+                            <td class="center b1_l"><img src="skins/basic/admin/addons/uns_plans/images/info_p_r.png"/></td>
+                            <td class="center b1_l"><img src="skins/basic/admin/addons/uns_plans/images/info_p_y.png"/></td>
+                            <td class="center b1_l b1_r"><img src="skins/basic/admin/addons/uns_plans/images/info_p_g.png"/></td>
+                        </tr>
+                        <tr>
+                            <td class="center b1_l"><span style="font-weight: normal; color: red;">Полоса показывает, что план<br>продаж <b>Окт</b> обеспечен на <b>50%</b>.</span></td>
+                            <td class="center b1_l"><span style="font-weight: normal; color: red;">Полоса показывает, что план<br>продаж <b>Окт</b> обеспечен на <b>75%</b>.</span></td>
+                            <td class="center b1_l b1_r"><span style="font-weight: normal; color: red;">Полоса показывает, что планы<br>продаж <b>Окт</b> и <b>Ноя</b> обеспечены на <b>100%</b>.</span></td>
+                        </tr>
+                    </table>
+                </li>
+                <li style="font-weight: bold;">
+                    <span style="font-weight: normal;">
+                        <img src="skins/basic/admin/addons/uns_plans/images/total.png"/> - указывает на имеющиеся насосы на СГП. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="skins/basic/admin/addons/uns_plans/images/zadel.png"/> - указывает на насосы ожидающие сборку.<br>
+                    </span>
                 </li>
                 <li style="font-weight: bold;">
                     <span style="font-weight: normal;">В плане производства исключены данные по комплектам деталей: корпус насоса в сборе или ротор насоса в сборе.</span>

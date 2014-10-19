@@ -41,7 +41,7 @@
                     </select>
                 </div>
             </td>
-            <td class="nowrap search-field" style="border-left: 1px solid #808080;">
+            <td class="nowrap search-field b1_l">
                 <label>Текущий день:</label>
                 <div class="break">
                     {include file="addons/uns/views/components/get_form_field.tpl"
@@ -53,7 +53,7 @@
                     }
                 </div>
             </td>
-            <td class="nowrap search-field" style="border-left: 1px solid #808080;">
+            <td class="nowrap search-field b1_l">
                 <label>Запас продукции на складах<br>для расчета ограничений:</label>
                 <div class="break">
                     <select name="months_supply">
@@ -66,7 +66,7 @@
                     </select>
                 </div>
             </td>
-            <td class="nowrap search-field" style="border-left: 1px solid #808080;">
+            <td class="nowrap search-field b1_l">
                 <label for="type_of_production_plan">Тип плана производства:</label>
                 <div class="break">
                     <select name="type_of_production_plan" id="type_of_production_plan">
@@ -87,7 +87,7 @@
                     {*}*}
                 {*</div>*}
             {*</td>*}
-            <td class="nowrap search-field" style="border-left: 1px solid #808080;">
+            <td class="nowrap search-field b1_l">
                 <label style="cursor: pointer;" for="analisis_of_sales">Анализ продаж:</label>
                 <div class="break">
                     {include file="addons/uns/views/components/get_form_field.tpl"

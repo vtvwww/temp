@@ -15,7 +15,7 @@ td.bar_zero.p_r:hover{
 
 td.bar_available,
 td.bar_available:hover{
-    background-color:#f4f4f4 !important;
+    background-color:#d4d0c8 !important;
     border: 1px solid #999 !important;
     height:5px;
     padding: 0 !important;
@@ -35,10 +35,10 @@ td.bar_available.p_y:hover{
 
 td.bar_zadel,
 td.bar_zadel:hover{
-    background-color: #bfbfbf !important;
+    background-color: #999 !important;
     border-bottom: 3px solid #fff !important;
-    border-right: 2px solid #bfbfbf !important;
-    border-left: 2px solid #bfbfbf !important;
+    border-right: 2px solid #999 !important;
+    border-left: 2px solid #999 !important;
     border-top: 3px solid #fff !important;
     padding: 0 !important;
     height:3px;
