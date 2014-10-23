@@ -28,20 +28,20 @@
             {if $auth.usergroup_ids[0] == 6 or $auth.usergroup_ids[0] == 8}
             &nbsp;&nbsp;&nbsp;&nbsp;
             <span class="action-add">
-               <a target="_blank" href="{"uns_plan_of_sales.update&plan_id=`$plan.plan_id`"|fn_url}"><b>Редактировать План продаж</b></a>
+               <a target="_blank" href="{"uns_plan_of_sales.update&plan_id=`$plan.plan_id`"|fn_url}"><b>План продаж</b></a>
             </span>
             {/if}
-{*            *}{* АНАЛИЗ РАЗРЕШЕННЫХ НАСОСОВ *}{*
+            {* АНАЛИЗ РАЗРЕШЕННЫХ НАСОСОВ *}
             &nbsp;&nbsp;&nbsp;&nbsp;
             <span class="action-add">
                <a target="_blank" href="{"uns_plan_of_mech_dep.analysis_of_pumps.allowance"|fn_url}">Анализ <b>РАЗРЕШЕННЫХ</b> насосов</a>
             </span>
 
-            *}{* АНАЛИЗ ЗАПРЕЩЕННЫХ НАСОСОВ *}{*
+           {* АНАЛИЗ ВСЕХ НАСОСОВ *}
             &nbsp;&nbsp;&nbsp;&nbsp;
             <span class="action-add">
-               <a target="_blank" href="{"uns_plan_of_mech_dep.analysis_of_pumps.prohibition"|fn_url}">Анализ <b>ЗАПРЕЩЕННЫХ</b> насосов</a>
-            </span>*}
+               <a target="_blank" href="{"uns_plan_of_mech_dep.analysis_of_pumps.all"|fn_url}">Анализ <b>ВСЕХ</b> насосов</a>
+            </span>
             <table style="margin: 10px 0px" width="92%">
                 <tr>
                     <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_r.png"/> - запас насосов до 2-х недель</td>

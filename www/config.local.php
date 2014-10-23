@@ -26,7 +26,7 @@ if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
 }
 
 // Set maximum memory limit
-@ini_set('memory_limit', '48M');
+@ini_set('memory_limit', '256M');
 
 // Set maximum time limit for script execution
 @set_time_limit(3600);

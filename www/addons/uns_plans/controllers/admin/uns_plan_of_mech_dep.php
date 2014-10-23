@@ -1249,7 +1249,7 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
         }
     }
 
-    fn_print_r($priority_ps_id);
+//    fn_print_r($priority_ps_id);
 
     //--------------------------------------------------------------------------
     // ПРИОРИТЕТНОСТЬ ПО НАСОСАМ в плане продаж
@@ -1326,11 +1326,11 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
 
     // Собрать все material_id с приоритетами
     $materials = array();
-    if (is__array(array_keys($priority_materials__ps["R"])))        $materials = array_merge($materials, array_keys($priority_materials__ps["R"]));
-    if (is__array(array_keys($priority_materials__ps["R2"])))       $materials = array_merge($materials, array_keys($priority_materials__ps["R2"]));
-    if (is__array(array_keys($priority_materials__ps["Y"])))        $materials = array_merge($materials, array_keys($priority_materials__ps["Y"]));
-    if (is__array(array_keys($priority_materials__details["R"])))   $materials = array_merge($materials, array_keys($priority_materials__details["R"]));
-    if (is__array(array_keys($priority_materials__details["Y"])))   $materials = array_merge($materials, array_keys($priority_materials__details["Y"]));
+    if (is__array($priority_materials__ps["R"])     and is__array(array_keys($priority_materials__ps["R"])))        $materials = array_merge($materials, array_keys($priority_materials__ps["R"]));
+    if (is__array($priority_materials__ps["R2"])    and is__array(array_keys($priority_materials__ps["R2"])))       $materials = array_merge($materials, array_keys($priority_materials__ps["R2"]));
+    if (is__array($priority_materials__ps["Y"])     and is__array(array_keys($priority_materials__ps["Y"])))        $materials = array_merge($materials, array_keys($priority_materials__ps["Y"]));
+    if (is__array($priority_materials__details["R"])and is__array(array_keys($priority_materials__details["R"])))   $materials = array_merge($materials, array_keys($priority_materials__details["R"]));
+    if (is__array($priority_materials__details["Y"])and is__array(array_keys($priority_materials__details["Y"])))   $materials = array_merge($materials, array_keys($priority_materials__details["Y"]));
 
     if (is__array($materials) and fn_is_not_empty($materials)){
         foreach ($materials as $m_id){
