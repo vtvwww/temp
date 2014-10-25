@@ -95,18 +95,19 @@
                     {*************************************************************************************}
                     <td align="center" class="b3_l {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}" {if is__array($orders)}style="background-color: #D3D3D3;"{/if}>
                         <span class="{if $p.balances.P<0}info_warning_block{elseif $p.balances.P==0}zero{elseif $p.balances.P>0}bold{/if}">
-                            {$p.balances.P|fn_fvalue:2}
+                            {$p.balances.P}
                             {assign var="curr_q" value=$p.balances.P}
                             {assign var="total_q_P" value=$total_q_P+$curr_q}
                         </span>
                     </td>
                     {foreach from=$orders item="o" name="o"}
-                        {assign var="order_q" value=$p.orders[$o.order_id].P|default:0}
-                        {assign var="curr_q" value=$curr_q-$order_q}
+                        {assign var="order_q"               value=$p.orders[$o.order_id].P|default:0}
+                        {assign var="order_q_in_reserve"    value=$p.orders_in_reserve[$o.order_id].P|default:0}
+                        {assign var="curr_q"                value=$curr_q-$order_q}
                         <td align="center" class="{if $smarty.foreach.o.first}b3_l{else}b1_l_black{/if} {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}" style="min-width: 16px;">
                             {if $order_q!=0}
                                 <span class="{if $order_q<0}info_warning_block{elseif $order_q==0}zero bold{/if}">
-                                    {assign var="q" value=$order_q|fn_fvalue:2}
+                                    {assign var="q" value=$order_q}
                                     {if $o.data_for_tmp.P[$p.p_id].comment|strlen}
                                         {include file="common_templates/tooltip.tpl" tooltip=$o.data_for_tmp.P[$p.p_id].comment tooltip_mark="<b>`$q`</b>"}
                                     {else}
@@ -124,7 +125,7 @@
                                     {*{$curr_q}*}&nbsp;
                                 {else}
                                     <span class="{if $curr_q<0}info_warning_block{elseif $curr_q==0}zero bold{/if}">
-                                        {$curr_q|fn_fvalue:2}
+                                        {$curr_q}
                                     </span>
                                 {/if}
                             {else}

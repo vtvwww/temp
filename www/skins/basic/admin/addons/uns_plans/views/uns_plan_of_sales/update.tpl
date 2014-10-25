@@ -16,7 +16,7 @@
             <b>Продажи / Плановая потребность = {$p.sum_ukr_curr} / {$p.sum_ukr_next} / {$p.sum_exp_curr} / {$p.sum_exp_next} шт.</b>
             <hr>
             <span class="info_warning">
-                Для кажого насоса и детали можно установить приоритет. Если на деталь припадает и приоритет по насосу и приоритет по детали, то важнее приоритет детали.<br/>
+                Для каждого насоса и детали можно установить приоритет. Если на деталь припадает и приоритет по насосу и приоритет по детали, то важнее приоритет детали.<br/>
                 {literal}
                     <style>
                         table.simple td{
@@ -63,7 +63,7 @@
                     </tr>
                     <tr>
                         <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_y.png"></td>
-                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_y.png"></td>
+                        <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_r.png"></td>
                         <td class="center"><img src="skins/basic/admin/addons/uns_plans/images/p_r.png"></td>
                     </tr>
                     </tbody>

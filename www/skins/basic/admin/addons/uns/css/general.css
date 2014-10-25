@@ -477,6 +477,20 @@ input.q_changed{
     background-color: #FF9A9A !important;
 }
 
+select optgroup{
+    background-color: #d0d0d0;
+    border-top: 1px solid #343434;
+    font-style: normal;
+    font-size: 12px;
+}
+
+select optgroup option{
+    background-color: #ebebeb;
+    font-size: 13px;
+    padding: 0 0 0 7px;
+}
+
+
 /******************************************************************************/
 /* TOOLTIP*/
 /******************************************************************************/

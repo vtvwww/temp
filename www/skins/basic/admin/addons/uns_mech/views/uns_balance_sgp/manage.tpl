@@ -37,14 +37,14 @@
         {assign var="target_town" value="(Александрия)"}
     {/if}
 
-    {* БАЛАНС ПО НАСОСНОЙ ПРОДУКЦИИ *}
+    {* Информация о заказах *}
     {include file="addons/uns_mech/views/uns_balance_sgp/components/view_orders.tpl"}
 
     {* БАЛАНС ПО НАСОСНОЙ ПРОДУКЦИИ *}
     {include file="addons/uns_mech/views/uns_balance_sgp/components/view_pumps.tpl" balances=$balances}
 
-    {* БАЛАНС ПО ДЕТАЛЯМ НА СГП *}
-    {include file="addons/uns_mech/views/uns_balance_sgp/components/view_details.tpl" balances=$balances_D}
+    {* БАЛАНС ПО ДЕТАЛЯМ НА СГП *} {* todo - временно удалено 2014-10-25 --> сэкономлено 2секунды расчетов *}
+    {*{include file="addons/uns_mech/views/uns_balance_sgp/components/view_details.tpl" balances=$balances_D}*}
 {/capture}
 {assign var="last_date" value=$info_of_the_last_movement.date|fn_parse_date|date_format:"%d/%m/%Y"}
 {assign var="last_document_id" value=$info_of_the_last_movement.document_id}

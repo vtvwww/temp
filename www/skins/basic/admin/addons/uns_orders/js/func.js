@@ -6,14 +6,14 @@ $(function () {
     $('select[name^="order_data[document_items]"][name$="[item_type]"]').live('change', function (e) {
         var item_type        = $(this);
         var item_cat_id      = $(this).parent().parent().find('[name^="order_data[document_items]"][name$="[item_cat_id]"]');
-        var item_name_id     = $(this).parent().parent().find('[name^="order_data[document_items]"][name$="[item_id]"]');
+        var item_id          = $(this).parent().parent().find('[name^="order_data[document_items]"][name$="[item_id]"]');
         var item_quantity    = $(this).parent().parent().find('[name^="order_data[document_items]"][name$="[quantity]"]');
         var item_weight      = $(this).parent().parent().find('[name^="order_data[document_items]"][name$="[weight]"]');
         var item_weight_item    = $(this).parent().parent().find('span.weight');
         var item_weight_total   = $(this).parent().parent().find('span.total_weight');
 
         item_cat_id     .empty();
-        item_name_id    .empty();
+        item_id         .empty();
         item_quantity   .val(0);
         item_weight     .empty();
         item_weight_item.empty();
@@ -30,7 +30,7 @@ $(function () {
                         item_type       : item_type.val()
                     },
                     callback: function(data){
-                        item_cat_id.append(data.options);
+                        item_id.append(data.options);
                     }
                 }
             );
@@ -92,15 +92,15 @@ $(function () {
         item_weight_item.empty();
         item_weight_total.empty();
 
-        if (item_cat_id.val() > 0){
+        if (item_id.val() > 0){
             $.ajaxRequest(
                 fn_url('uns_orders.document_items'),
                 {
                     hidde: false,
                     method: 'post',
                     data: {
-                        event           : "change__item_id",
-                        item_type       : item_type.val(),
+                        event       : "change__item_id",
+                        item_type   : item_type.val(),
                         item_id     : item_id.val()
                     },
                     callback: function(data){

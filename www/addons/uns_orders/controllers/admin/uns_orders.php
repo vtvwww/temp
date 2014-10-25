@@ -37,67 +37,30 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                     $options = "<option value='0'>---</option>";
                     //ДЕТАЛЬ
                     if($_REQUEST['item_type'] == "D"){
-                        list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true, "view_in_reports" => true));
-                        $view->assign('f_type', 'dcategories_plain');
-                        $view->assign('f_options', $dcategories_plain);
-                        $view->assign('f_option_id', 'dcat_id');
-                        $view->assign('f_option_value', 'dcat_name');
-                        $view->assign('f_with_q_ty', false);
-                        $view->assign('f_simple_2', true);
-
-                    //НАСОС, НАСОС НА РАМЕ, НАСОСНЫЙ АГРЕГАТ
-                    } elseif(in_array($_REQUEST['item_type'], array("P", "PF", "PA"))){
                         $p = array(
                             'only_active' => true,
-                            'group_by_types'=>true,
+                            'group_by_categories'=>true,
+                            'use_short_name'=>true,
                         );
-                        list($pump_series) = fn_uns__get_pump_series($p);
+                        list($category_details) = fn_uns__get_details($p);
                         $view->assign("f_type", "select_by_group");
-                        $view->assign("f_options", "pump_series");
-                        $view->assign("f_option_id", "ps_id");
-                        $view->assign("f_option_value", "ps_name");
-                        $view->assign("f_optgroups", $pump_series);
-                        $view->assign("f_optgroup_label", "pt_name_short");
+                        $view->assign("f_options", "details");
+                        $view->assign("f_option_id", "detail_id");
+                        $view->assign("f_option_value", "detail_name");
+                        $view->assign("f_optgroups", $category_details);
+                        $view->assign("f_optgroup_label", "dcat_name");
                         $view->assign('f_simple_2', true);
-                        $ajax->assign('processing', "hide");
-                    }
-                    $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
-                    $ajax->assign('options', $options);
-                    exit;
-                }
-                break;
 
-            case "change__item_cat_id":
-                // Произошла смена категории//серии Детали/Материала//Насоса
-                if(in_array($_REQUEST['item_type'], array("D", "M", "P", "PF", "PA")) && is__more_0($_REQUEST['item_cat_id'])){
-                    $options = "<option value='0'>---</option>";
-
-                    //ДЕТАЛЬ
-                    if($_REQUEST['item_type'] == "D"){
-                        $p = array('dcat_id'            => $_REQUEST['item_cat_id'],
-                                   'with_accounting'    => true,
-                                   'with_materials'     => true,
-                                   'with_material_info' => true,
-                                   'only_active'        => true,
-                                   'format_name'        => true);
-                        list ($details) = fn_uns__get_details($p);
-                        $view->assign('f_type', 'select');
-                        $view->assign('f_options', $details);
-                        $view->assign('f_option_id', 'detail_id');
-                        $view->assign('f_option_value', 'format_name');
-                        $view->assign('f_add_value', 'material_no');
-                        $view->assign('f_simple_2', true);
 
                     //НАСОС, НАСОС НА РАМЕ, НАСОСНЫЙ АГРЕГАТ
                     } elseif(in_array($_REQUEST['item_type'], array("P", "PF", "PA"))){
-                        $p = array(
-                            'ps_id'         => $_REQUEST['item_cat_id'],
-                        );
-                        list ($pumps) = fn_uns__get_pumps($p);
-                        $view->assign('f_type', 'select');
-                        $view->assign('f_options', $pumps);
-                        $view->assign('f_option_id', 'p_id');
-                        $view->assign('f_option_value', 'p_name');
+                        list($pumps) = fn_uns__get_pumps(array("group_by_series"=>true));
+                        $view->assign("f_type", "select_by_group");
+                        $view->assign("f_options", "pumps");
+                        $view->assign("f_option_id", "p_id");
+                        $view->assign("f_option_value", "p_name");
+                        $view->assign("f_optgroups", $pumps);
+                        $view->assign("f_optgroup_label", "ps_name");
                         $view->assign('f_simple_2', true);
                     }
                     $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
@@ -195,11 +158,11 @@ if($mode == 'manage' or $mode == 'update' or $mode == 'add'){
 
     // только при редактировании
     if($mode == 'update' or $mode == 'add'){
-        fn_add_breadcrumb(fn_get_lang_var($controller), $controller . ".manage");
+        $anchor = (is__more_0($_REQUEST['order_id']))?"#".$_REQUEST['order_id']:"";
+        fn_add_breadcrumb(fn_get_lang_var($controller), $controller . ".manage" . $anchor);
         fn_uns_navigation_tabs(array('general' => fn_get_lang_var('general'),));
     }
 }
-
 
 if($mode == 'manage'){
     if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "M"; // Текущий месяц
@@ -224,19 +187,12 @@ if($mode == 'manage'){
     $view->assign("countries", $countries);
     $view->assign("regions", $regions);
     $view->assign("cities", $cities);
-
 }
-
-
 
 if($mode == 'add'){
     //PUMPS
     list($pumps) = fn_uns__get_pumps(array("group_by_series"=>true));
     $view->assign('pumps', $pumps);
-
-    // customerS
-//    list($customers) = fn_uns__get_customers();
-//    $view->assign('customers', $customers);
 
     $countries  = array_shift(fn_uns__get_countries());
     $regions    = array_shift(fn_uns__get_regions());
@@ -244,21 +200,14 @@ if($mode == 'add'){
     $view->assign("countries", $countries);
     $view->assign("regions", $regions);
     $view->assign("cities", $cities);
-
-    // PUMP_SERIES
-    $p = array(
-        'only_active' => true,
-        'group_by_types'=>true,
-    );
-    list($pump_series) = fn_uns__get_pump_series($p);
-    $view->assign('pump_series', $pump_series);
-
 }
 
 if($mode == 'update'){
     if(!is__more_0($_REQUEST['order_id']) or !is__more_0(db_get_field(UNS_DB_PREFIX . "SELECT order_id FROM ?:_acc_orders WHERE order_id = ?i", $_REQUEST['order_id']))){
         return array(CONTROLLER_STATUS_REDIRECT, $controller . ".manage");
     }
+
+    //--------------------------------------------------------------------------
     $p = array(
         "with_items"                => true,
         "full_info"                 => true,
@@ -276,21 +225,37 @@ if($mode == 'update'){
     $view->assign("regions", $regions);
     $view->assign("cities", $cities);
 
-    // CATEGORIES **************************************************************
-    list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true, "view_in_reports" => true));
-    $view->assign('dcategories_plain', $dcategories_plain);
-
+    //--------------------------------------------------------------------------
     // customerS
     list($customers) = fn_uns__get_customers(array("country_id"=>$order["country_id"],"region_id"=>$order["region_id"],"city_id"=>$order["city_id"],));
     $view->assign('customers', $customers);
 
-    // PUMP_SERIES
-    $p = array(
-        'only_active' => true,
-        'group_by_types'=>true,
-    );
-    list($pump_series) = fn_uns__get_pump_series($p);
-    $view->assign('pump_series', $pump_series);
+    //--------------------------------------------------------------------------
+    list($pumps_by_series) = fn_uns__get_pumps(array("group_by_series"=>true, "only_active" => true,));
+    $view->assign('pumps_by_series', $pumps_by_series);
+
+    //--------------------------------------------------------------------------
+    list($details_by_categories) = fn_uns__get_details(array('only_active' => true,'group_by_categories'=>true,"use_short_name"=>true,));
+    $view->assign('details_by_categories', $details_by_categories);
+
+
+
+//    $view->assign("f_type", "select_by_group");
+//    $view->assign("f_options", "pumps");
+//    $view->assign("f_option_id", "p_id");
+//    $view->assign("f_option_value", "p_name");
+//    $view->assign("f_optgroups", $pumps);
+//    $view->assign("f_optgroup_label", "ps_name");
+//    $view->assign('f_simple_2', true);
+
+
+    /*    // PUMP_SERIES
+        $p = array(
+            'only_active' => true,
+            'group_by_types'=>true,
+        );
+        list($pump_series) = fn_uns__get_pump_series($p);
+        $view->assign('pump_series', $pump_series);*/
 //    fn_print_r($pump_series);
 }
 

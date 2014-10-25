@@ -163,6 +163,12 @@ function fn_uns_mark_item($controller, $mode) {
                     $mark_item = $_REQUEST['kit_id'];
                 }
                 break;
+
+            case "uns_orders":
+                if(is__more_0($_REQUEST['order_id'])){
+                    $mark_item = $_REQUEST['order_id'];
+                }
+                break;
         }
         $_SESSION['mark_item'][$controller] = $mark_item;
     }

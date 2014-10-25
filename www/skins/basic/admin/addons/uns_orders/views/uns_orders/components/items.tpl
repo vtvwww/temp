@@ -11,24 +11,28 @@
 <table cellpadding="0" cellspacing="0" class="table order_items">
     <tfoot>
         <tr>
-            <td style="background-color: rgb(238,238,238);" colspan="4" class="bold" align="right">ИТОГО:</td>
-            <td style="background-color: rgb(238,238,238);" colspan="1" class="bold center b1_l b1_b"><span class="total">{$o.total_quantity}</span></td>
+            <td style="background-color: rgb(238,238,238);" colspan="3" class="bold" align="right">ИТОГО:</td>
+            <td style="background-color: rgb(238,238,238);" colspan="1" class="bold center b_l b1_b"><span class="total">{$o.total_quantity}</span></td>
             <td style="background-color: rgb(238,238,238);" colspan="2" class="bold center b1_l b1_b"><span class="total"><nobr>{$o.total_weight|number_format:1:".":" "}</nobr></span></td>
-            <td style="background-color: rgb(238,238,238);" colspan="2" class="b1_l">&nbsp;</td>
+            <td style="background-color: rgb(238,238,238);" colspan="4" class="b_l">&nbsp;</td>
         </tr>
     </tfoot>
-    <tbody>
-        <tr class="first-sibling">
-            <th width="10px" class="cm-non-cb b1_l center">№</th>
-            <th class="cm-non-cb b1_l center" width="10px">Тип</th>
-            <th class="cm-non-cb b1_l center" width="90px">Категория/Серия</th>
-            <th class="cm-non-cb b1_l center" width="140px">Наименование</th>
-            <th class="cm-non-cb b1_l center" width="110px">Кол-во, шт</th>
-            <th class="cm-non-cb b1_l center" colspan="2" style="text-transform: none;" width="100px">Вес, кг</th>
-            <th class="cm-non-cb b1_l center" width="220px">Комментарий</th>
-            <th class="cm-non-cb b1_l center">&nbsp;</th>
+    <thead>
+        <tr class="first-sibling" style="background-color: #eeeeee">
+            <th rowspan="2" width="10px" class="cm-non-cb center">№</th>
+            <th rowspan="2" class="cm-non-cb b1_l center" width="10px">Тип</th>
+            <th rowspan="2" class="cm-non-cb b1_l center" width="140px">Наименование</th>
+            <th colspan="3" class="cm-non-cb b_l center" style="text-transform: none;" width="140px">Предварительный заказ</th>
+            <th rowspan="2" class="cm-non-cb b_l center" style="text-transform: none;" width="100px">Кол-во<br>переданное<br>в производство<br><span style="padding: 0; font-size: 11px; font-style: normal; color: red; font-weight: normal;">после оплаты</span></th>
+            <th rowspan="2" class="cm-non-cb b_l center" style="text-transform: none;" width="100px">Кол-во<br>переданное<br>в резерв<br><span style="padding: 0; font-size: 11px; font-style: normal; color: red; font-weight: normal;">предпродажная<br>подготовка</span></th>
+            <th rowspan="2" class="cm-non-cb b_l center" width="">Комментарий</th>
+            <th rowspan="2" class="cm-non-cb b1_l center">&nbsp;</th>
         </tr>
-    </tbody>
+        <tr class="first-sibling" style="background-color: #eeeeee">
+            <th class="cm-non-cb b_l b1_t center" width="40px" style="text-transform: none;">кол-во, шт</th>
+            <th class="cm-non-cb b1_l b1_t center" colspan="2" style="text-transform: none;" width="40px">вес, кг</th>
+        </tr>
+    </thead>
 
     {if is__array($o.items)}
         {foreach from=$o.items item="i" name="d_i"}
@@ -64,53 +68,38 @@
                             }
                         </td>
 
-                        {*CATEGORY*}
-                        <td class="cm-non-cb b1_l">
-                            {if $i.item_type == "D"}
-                                {include file="addons/uns/views/components/get_form_field.tpl"
-                                    f_id=$id
-                                    f_type="dcategories_plain"
-                                    f_required=true f_integer=false
-                                    f_name="`$e_n`[item_cat_id]"
-                                    f_options=$dcategories_plain
-                                    f_option_id="dcat_id"
-                                    f_option_value="dcat_name"
-                                    f_option_target_id=$i.dcat_id|default:"0"
-                                    f_simple=true
-                                }
-                            {elseif $i.item_type == "P" or $i.item_type == "PF" or $i.item_type == "PA"}
-                                {include file="addons/uns/views/components/get_form_field.tpl"
-                                    f_id=$id
-                                    f_type="select_by_group"
-                                    f_required=true f_integer=false
-                                    f_name="`$e_n`[item_cat_id]"
-                                    f_options="pump_series"
-                                    f_option_id="ps_id"
-                                    f_option_value="ps_name"
-                                    f_optgroups=$pump_series
-                                    f_optgroup_label="pt_name_short"
-                                    f_with_q_ty=false
-                                    f_option_target_id=$i.ps_id|default:"0"
-                                    f_simple=true
-                                }
-                            {/if}
-                        </td>
-
                         {*ITEM_NAME*}
                         <td class="cm-non-cb b1_l">
                             {if $i.item_type == "D"}
-                                <select name="{$e_n}[item_id]">
-                                    <option value="{$i.detail_id}">{$i.detail_name}{if $i.detail_no|strlen} [{$i.detail_no}]{/if}</option>
-                                </select>
+                                {include file="addons/uns/views/components/get_form_field.tpl"
+                                    f_type="select_by_group"
+                                    f_name="`$e_n`[item_id]"
+                                    f_simple=true
+                                    f_options="details"
+                                    f_option_id="detail_id"
+                                    f_option_value="detail_name"
+                                    f_optgroups=$details_by_categories
+                                    f_optgroup_label="dcat_name"
+                                    f_option_target_id=$i.detail_id
+                                }
+
                             {elseif $i.item_type == "P" or $i.item_type == "PF" or $i.item_type == "PA"}
-                                <select name="{$e_n}[item_id]">
-                                    <option value="{$i.p_id}">{$i.p_name}{if $i.p_no|strlen} [{$i.p_no}]{/if}</option>
-                                </select>
+                                {include file="addons/uns/views/components/get_form_field.tpl"
+                                    f_type="select_by_group"
+                                    f_name="`$e_n`[item_id]"
+                                    f_simple=true
+                                    f_options="pumps"
+                                    f_option_id="p_id"
+                                    f_option_value="p_name"
+                                    f_optgroups=$pumps_by_series
+                                    f_optgroup_label="ps_name"
+                                    f_option_target_id=$i.p_id
+                                }
                             {/if}
                         </td>
 
                         {assign var="q" value=$i.quantity}
-                        <td class="cm-non-cb b1_l" align="left">
+                        <td class="cm-non-cb b_l" align="left">
                             {include file="addons/uns/views/components/get_form_field.tpl"
                                 f_type="select_range"
                                 f_name="`$e_n`[quantity]"
@@ -119,6 +108,7 @@
                                 f_value=$q|fn_fvalue
                                 f_simple=true
                                 f_plus_minus=true
+                                f_style="width:50px;"
                             }
                         </td>
 
@@ -135,15 +125,41 @@
                             <span class="total_weight">{$q*$i.weight|fn_fvalue}</span>
                         </td>
 
-                        <td class="cm-non-cb b1_l" align="left">
+                        <td class="cm-non-cb b_l" align="center">
+                            {include file="addons/uns/views/components/get_form_field.tpl"
+                                f_type="select_range"
+                                f_name="`$e_n`[quantity_in_production]"
+                                f_from=0
+                                f_to=$i.quantity
+                                f_value=200
+                                f_simple=true
+                                f_plus_minus=true
+                                f_style="width:50px;"
+                            }
+                        </td>
+
+                        <td class="cm-non-cb b_l" align="center">
+                            {include file="addons/uns/views/components/get_form_field.tpl"
+                                f_type="select_range"
+                                f_name="`$e_n`[quantity_in_reserve]"
+                                f_from=0
+                                f_to=200
+                                f_value=$i.quantity_in_reserve
+                                f_simple=true
+                                f_plus_minus=true
+                                f_style="width:50px;"
+                            }
+                        </td>
+
+                        <td class="cm-non-cb b_l" align="left">
                             {include file="addons/uns/views/components/get_form_field.tpl"
                                 f_type="textarea"
                                 f_row=1
-                                f_col=30
+                                f_col=20
                                 f_full_name="`$e_n`[comment]"
                                 f_value=$i.comment
                                 f_simple=true
-                                f_style="width:97%"
+                                f_style="width:80px; height:20px;"
                             }
                         </td>
 
@@ -180,14 +196,14 @@
                     f_short=true
                 }
             </td>
-            <td class="cm-non-cb b1_l">
+{*            <td class="cm-non-cb b1_l">
                 {include file="addons/uns/views/components/get_form_field.tpl"
                     f_type="select"
                     f_required=true f_integer=false
                     f_name="`$e_n`[item_cat_id]"
                     f_simple=true
                 }
-            </td>
+            </td>*}
             <td class="cm-non-cb b1_l">
                 {include file="addons/uns/views/components/get_form_field.tpl"
                     f_type="select"
@@ -195,7 +211,7 @@
                     f_simple=true
                 }
             </td>
-            <td class="cm-non-cb b1_l" align="left">
+            <td class="cm-non-cb b_l" align="left">
                 {include file="addons/uns/views/components/get_form_field.tpl"
                     f_type="select_range"
                     f_name="`$e_n`[quantity]"
@@ -204,6 +220,7 @@
                     f_value=0
                     f_simple=true
                     f_plus_minus=true
+                    f_style="width:50px;"
                 }
             </td>
 
@@ -220,7 +237,33 @@
                 <span class="total_weight">&nbsp;</span>
             </td>
 
-            <td class="cm-non-cb b1_l" align="left">
+            <td class="cm-non-cb b_l" align="center">
+                {include file="addons/uns/views/components/get_form_field.tpl"
+                    f_type="select_range"
+                    f_name="`$e_n`[quantity_in_production]"
+                    f_from=0
+                    f_to=200
+                    f_value=0
+                    f_simple=true
+                    f_plus_minus=true
+                    f_style="width:50px;"
+                }
+            </td>
+
+            <td class="cm-non-cb b_l" align="center">
+                {include file="addons/uns/views/components/get_form_field.tpl"
+                    f_type="select_range"
+                    f_name="`$e_n`[quantity_in_reserve]"
+                    f_from=0
+                    f_to=200
+                    f_value=0
+                    f_simple=true
+                    f_plus_minus=true
+                    f_style="width:50px;"
+                }
+            </td>
+
+            <td class="cm-non-cb b_l" align="left">
                 {include file="addons/uns/views/components/get_form_field.tpl"
                     f_type="textarea"
                     f_row=1
@@ -228,11 +271,11 @@
                     f_full_name="`$e_n`[comment]"
                     f_value=""
                     f_simple=true
-                    f_style="width:97%"
+                    f_style="width:80px; height:20px;"
                 }
             </td>
             <td class="right cm-non-cb b1_l">
-                {include file="buttons/multiple_buttons.tpl" item_id="add_`$num`" tag_level="2"}
+                {include file="buttons/multiple_buttons.tpl" item_id="add_`$num`" tag_level="2" hide_add=true}
             </td>
         </tr>
     </tbody>

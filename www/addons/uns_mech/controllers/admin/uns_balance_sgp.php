@@ -73,17 +73,17 @@ if($mode == 'manage' or $mode == 'dnepr'){
         $view->assign('orders_tpl', array_shift(fn_acc__get_orders($p)));
     }
 
-    $balances = array();
-    list($balances, $search) = fn_uns__get_balance_sgp($_REQUEST, true, true, true, true);
-    $view->assign('balances_D',    $balances["D"]);
 
+    $balances = array();
+    list($balances, $search) = fn_uns__get_balance_sgp($_REQUEST, true, true, true, false);
+//    $view->assign('balances_D',    $balances["D"]);  todo - временно удалено 2014-10-25 --> сэкономлено 2 секунды расчетов
+
+    // Подготовить данные для более простого отображения
     $balances = fn_uns_balance_sgp__format_for_tmpl($balances, $_REQUEST);
     $view->assign('balances',    $balances);
-//    fn_print_r($balances);
 
     $view->assign('search',     $_REQUEST);
     $view->assign('expand_all', false);
-//    fn_print_r($search);
 }
 
 
@@ -236,6 +236,7 @@ function fn_uns_balance_sgp__format_for_tmpl($b, $params) {
                         foreach ($v_o["items"] as $i){
                             if (in_array($i["item_type"], array("P", "PF", "PA")) and $i["p_id"] == $k_p){
                                 $res[$k_pt]["pump_series"][$k_ps]["pumps"][$k_p]["orders"][$k_o][$i["item_type"]] += $i["quantity"];
+                                $res[$k_pt]["pump_series"][$k_ps]["pumps"][$k_p]["orders_in_reserve"][$k_o][$i["item_type"]] += $i["quantity_in_reserve"];
                             }
                         }
                     }

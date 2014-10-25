@@ -106,6 +106,19 @@
     }
 </div>
 
+{* Номер счета в 1С *}
+<div class="form-field">
+    <label class="" for="no_1s">Номер счета в 1С:</label>
+    {include file="addons/uns/views/components/get_form_field.tpl"
+        f_id="_order_no_1s_`$order_id`"
+        f_type="input"
+        f_required=false
+        f_name="`$e_n`[no_1s]"
+        f_value=$o.no_1s
+        f_simple=true
+    }
+</div>
+
 {* СТАТУС *}
 <div class="form-field">
     <label class="cm-required" for="order_status">Состояние заказа:</label>

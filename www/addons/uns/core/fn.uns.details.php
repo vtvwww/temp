@@ -314,6 +314,69 @@ function fn_uns__get_details($params = array(), $items_per_page = 0){
         'sorting_schemas' => 'view',
     );
 
+    $replace_from = array(
+        "Втулка",
+        "Колесо рабочее",
+        "Корпус подшипников",
+        "Корпус улитки",
+        "Крышка подшипника",
+        "Крышка улитки",
+        "Кронштейн",
+        "Крышка патрубка",
+        "Крышка люка",
+        "Стакан подш. пяты",
+        "Стакан подш.",
+        "Крышка подш. пяты",
+        "Крышка подш.",
+        "Кольцо уплот.",
+        "Вт. направ.",
+        "Крышка корпуса",
+        "Корпус",
+        "Фонарь нижний",
+        "Фонарь верхний",
+        "Крышка сальника",
+        "Фланец верхний",
+        "Фланец нижний",
+        "Фланец сальника",
+        "Удлинитель вала",
+        "Стакан",
+        "Скоба",
+        "Патрубок",
+        "Кольцо сальника",
+        "Кольцо защитное",
+    );
+    $replace_to = array(
+        "Вт.",
+        "Кол.раб.",
+        "Корп.подш.",
+        "Корп.ул.",
+        "Кр.подш.",
+        "Кр.ул.",
+        "Крнш.",
+        "Кр.пат.",
+        "Кр.люка",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "Фланец",
+        "Удл.вала",
+        "Ст.",
+        "",
+        "Пат.",
+        "Кол.сал.",
+        "Кол.защ.",
+    );
+
     $params = array_merge($default_params, $params);
 
     $m_table = "?:details";
@@ -519,9 +582,11 @@ function fn_uns__get_details($params = array(), $items_per_page = 0){
         list($dcategories_plain) = fn_uns__get_details_categories(array('only_active' => true,"view_in_reports" => true));
         foreach ($data as $k=>$v){
             if (in_array($v["dcat_id"], array_keys($dcategories_plain))){
+                if ($params["use_short_name"]) $d_name = str_replace($replace_from, $replace_to, $v["detail_name"]);
+                else $d_name = $v["detail_name"];
                 $dcategories_plain[$v["dcat_id"]]["details"][$v["detail_id"]] = array(
                     "detail_id"     => $v["detail_id"],
-                    "detail_name"   => $v["detail_name"] . ((strlen($v["detail_no"]))?" [" . $v["detail_no"] . "]":""),
+                    "detail_name"   => $d_name . ((strlen($v["detail_no"]))?" [" . $v["detail_no"] . "]":""),
                 );
             }
         }

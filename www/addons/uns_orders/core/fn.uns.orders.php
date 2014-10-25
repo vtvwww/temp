@@ -27,6 +27,7 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
         "$m_tbl.country_id",
         "$m_tbl.region_id",
         "$m_tbl.city_id",
+        "$m_tbl.no_1s",
     );
 
     $sorting_schemas = array(
@@ -207,12 +208,14 @@ function fn_uns__upd_order_items($order_id, $data){
     foreach ($data as $i){
         if (is__more_0($i['item_id']) and  is_numeric($i['quantity']) and fn_check_type($i['item_type'], UNS_ITEM_TYPES)){
             $v = array(
-                'order_id'  => $order_id,
-                'item_type' => $i['item_type'],
-                'item_id'   => $i['item_id'],
-                'quantity'  => abs($i['quantity']),
-                'comment'   => $i['comment'],
-                'weight'   => (is__more_0(floatval($i['weight'])))?floatval($i['weight']):0,
+                'order_id'              => $order_id,
+                'item_type'             => $i['item_type'],
+                'item_id'               => $i['item_id'],
+                'quantity'              => abs($i['quantity']),
+                'quantity_in_production'=> abs($i['quantity_in_production']),
+                'quantity_in_reserve'   => abs($i['quantity_in_reserve']),
+                'comment'               => $i['comment'],
+                'weight'                => (is__more_0(floatval($i['weight'])))?floatval($i['weight']):0,
             );
 
             if (is__more_0($i['oi_id']) and is__more_0(db_get_field(UNS_DB_PREFIX . "SELECT oi_id FROM $m_table WHERE oi_id = ?i", $i['oi_id']))){
@@ -254,6 +257,7 @@ function fn_acc__upd_order_info($id, $data){
     $d["country_id"]    = $data["country_id"];
     $d["region_id"]     = $data["region_id"];
     $d["city_id"]       = $data["city_id"];
+    $d["no_1s"]         = $data["no_1s"];
     $d["date_updated"]  = fn_parse_date($data["date_updated"]);;
 
     if ($operation == "update"){
@@ -292,6 +296,8 @@ function fn_acc__get_order_items($params = array(), $items_per_page = 0){
         "$m_tbl.item_type",
         "$m_tbl.item_id",
         "$m_tbl.quantity",
+        "$m_tbl.quantity_in_production",
+        "$m_tbl.quantity_in_reserve",
         "$m_tbl.comment",
         "$m_tbl.weight",
         "$m_tbl.order_id",

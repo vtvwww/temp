@@ -421,7 +421,7 @@ function fn_uns__get_pumps($params = array(), $items_per_page = 0){
     }
 
     if ($params['group_by_series']){
-        list($pump_series) = fn_uns__get_pump_series();
+        list($pump_series) = fn_uns__get_pump_series(array("only_active"=>$params["only_active"]));
         if (is__array($pump_series)){
             foreach ($pump_series as $k_ps=>$v_ps){
                 foreach ($data as $k_p=>$v_p){

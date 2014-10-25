@@ -22,9 +22,9 @@
                <th width="30px">№</th>
                <th width="1px" class="b1_l center">&nbsp;</th>
                <th width="10px" class="center">Статус</th>
-               <th width="10px" class="b1_l center">Дата отгрузки</th>
+               <th width="10px" class="b1_l center">Отгрузка</th>
                <th width="10px" class="b1_l center">&nbsp;</th>
-               <th width="300px" class="center">Регион/Клиент</th>
+               <th width="300px" class="center">Клиент (Регион)</th>
                {*<th width="10px">Позиций</th>*}
                <th width="10px" class="b1_l center" style="text-transform: none;">Кол-во, шт</th>
                <th width="10px" class="b1_l center" style="text-transform: none;">Вес, кг</th>
@@ -34,12 +34,13 @@
                <tr class="{if  $i.status == "Close"}CL{else}OP{/if}">
                    {assign var="id" value=$i.order_id}
                    {assign var="value" value="order_id"}
-                   <td align="left">
+                   <td {if $id == "`$smarty.session.mark_item.$controller`"} class="mark_item" {else} class="mark_item_clear" {/if} align="right" >
+                   {*<td align="left">*}
                        {*{math equation="a-b" a=$orders|count b=$smarty.foreach.o.index}*}
                        {$id}
                    </td>
                    <td class="b1_l">
-                       {include file="addons/uns/views/components/tools.tpl" type="edit" href="`$controller`.update?`$value`=`$id`"}
+                       {include file="addons/uns/views/components/tools.tpl" type="edit" name=$id href="`$controller`.update?`$value`=`$id`"}
                    </td>
                    <td> {* Статус *}
                        {if      $i.status == "Hide"}
