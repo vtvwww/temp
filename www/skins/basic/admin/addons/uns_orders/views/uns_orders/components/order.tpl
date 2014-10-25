@@ -19,7 +19,52 @@
     f_name="order_id"
     f_value=$order_id}
 
-{*РЕГИОН*}
+{*Страна*}
+{include file="addons/uns/views/components/get_form_field.tpl"
+    f_id="country_id"
+    f_type="select"
+    f_required=true f_integer=true f_integer_more_0=true
+    f_name="`$e_n`[country_id]"
+    f_blank=true
+    f_full=true
+    f_options=$countries
+    f_option_id="id"
+    f_option_value="name"
+    f_option_target_id=$o.country_id
+    f_description="Страна"
+}
+
+{*Регион*}
+{include file="addons/uns/views/components/get_form_field.tpl"
+    f_id="region_id"
+    f_type="select"
+    f_required=true f_integer=true f_integer_more_0=true
+    f_name="`$e_n`[region_id]"
+    f_blank=true
+    f_full=true
+    f_options=$regions
+    f_option_id="id"
+    f_option_value="name"
+    f_option_target_id=$o.region_id
+    f_description="Регион/Область"
+}
+
+{*Город*}
+{include file="addons/uns/views/components/get_form_field.tpl"
+    f_id="city_id"
+    f_type="select"
+    f_required=true f_integer=true f_integer_more_0=true
+    f_name="`$e_n`[city_id]"
+    f_blank=true
+    f_full=true
+    f_options=$cities
+    f_option_id="id"
+    f_option_value="name"
+    f_option_target_id=$o.city_id
+    f_description="Город"
+}
+
+{*КЛИЕНТ*}
 {include file="addons/uns/views/components/get_form_field.tpl"
     f_id="customer_id"
     f_type="select"
@@ -31,7 +76,7 @@
     f_option_id="customer_id"
     f_option_value="name"
     f_option_target_id=$o.customer_id
-    f_description="Регион/Клиент"
+    f_description="Клиент"
 }
 
 {* ДАТА ОБНОВЛЕНИЯ ЗАКАЗА*}
@@ -48,28 +93,6 @@
     }
 </div>
 
-{*КОММЕНТАРИЙ*}
-{include file="addons/uns/views/components/get_form_field.tpl"
-    f_id="comment"
-    f_type="textarea"
-    f_row=1
-    f_required=false f_integer=false
-    f_full_name="`$e_n`[comment]"
-    f_value=$o.comment
-    f_description="Комментарий"
-}
-
-{* СТАТУС *}
-<div class="form-field">
-    <label class="cm-required" for="order_status">Состояние заказа:</label>
-    <select name="{$e_n}[status]" id="order_status">
-        <option value="">---</option>
-        <option value="Hide" {if $o.status == "Hide"}selected="selected"{/if} {if $mode == "add"}selected="selected"{/if}>Скрыт - предварительный заказ</option>
-        <option value="Open" {if $o.status == "Open"}selected="selected"{/if}>Открыт - заказ готов к выполнению</option>
-        <option value="Close" {if $o.status == "Close"}selected="selected"{/if}>Выполнен - заказ отгружен</option>
-    </select>
-</div>
-
 {* ДАТА ОТГРУЗКИ*}
 <div class="form-field">
     <label class="cm-required" for="order_dates">Дата отгрузки:</label>
@@ -82,3 +105,25 @@
         f_simple=true
     }
 </div>
+
+{* СТАТУС *}
+<div class="form-field">
+    <label class="cm-required" for="order_status">Состояние заказа:</label>
+    <select name="{$e_n}[status]" id="order_status">
+        <option value="">---</option>
+        <option value="Hide" {if $o.status == "Hide"}selected="selected"{/if} {if $mode == "add"}selected="selected"{/if}>Скрыт - предварительный заказ</option>
+        <option value="Open" {if $o.status == "Open"}selected="selected"{/if}>Открыт - заказ готов к выполнению</option>
+        <option value="Close" {if $o.status == "Close"}selected="selected"{/if}>Выполнен - заказ отгружен</option>
+    </select>
+</div>
+
+{*КОММЕНТАРИЙ*}
+{include file="addons/uns/views/components/get_form_field.tpl"
+    f_id="comment"
+    f_type="textarea"
+    f_row=1
+    f_required=false f_integer=false
+    f_full_name="`$e_n`[comment]"
+    f_value=$o.comment
+    f_description="Комментарий"
+}

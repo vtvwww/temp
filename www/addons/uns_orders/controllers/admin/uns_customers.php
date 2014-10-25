@@ -28,6 +28,36 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         fn_delete_notification('changes_saved');
         $suffix = "update&customer_id={$id}&selected_section={$_REQUEST['selected_section']}";
     }
+
+    // выбор страны, региона и города
+    if (defined('AJAX_REQUEST') and $mode == 'customer'){
+        switch ($_REQUEST['event']){
+            case "change__country_id": // Произошла смена СТРАНЫ
+                $regions    = array_shift(fn_uns__get_regions(array("country_id"=>$_REQUEST["country_id"], "only_used"=>false,)));
+                $view->assign("f_type", "select");
+                $view->assign("f_options", $regions);
+                $view->assign("f_option_id", "id");
+                $view->assign("f_option_value", "name");
+                $view->assign('f_simple_2', true);
+                $options = "<option value='0'>---</option>";
+                $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
+                $ajax->assign('options', $options);
+            break;
+            case "change__region_id": // Произошла смена РЕГИОНА
+                $cities    = array_shift(fn_uns__get_cities(array("region_id"=>$_REQUEST["region_id"], "only_used"=>false,)));
+                $view->assign("f_type", "select");
+                $view->assign("f_options", $cities);
+                $view->assign("f_option_id", "id");
+                $view->assign("f_option_value", "name");
+                $view->assign('f_simple_2', true);
+                $options = "<option value='0'>---</option>";
+                $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
+                $ajax->assign('options', $options);
+            break;
+        }
+        exit;
+    }
+
     return array(CONTROLLER_STATUS_OK, $controller . "." . $suffix);
 }
 
@@ -43,13 +73,37 @@ if($mode == 'manage'){
     list($customers, $search) = fn_uns__get_customers(array_merge($_REQUEST, array()), UNS_ITEMS_PER_PAGE);
     $view->assign('customers', $customers);
     $view->assign('search',    $search);
+
+    $countries  = array_shift(fn_uns__get_countries());
+    $regions    = array_shift(fn_uns__get_regions());
+    $cities     = array_shift(fn_uns__get_cities());
+    $view->assign("countries", $countries);
+    $view->assign("regions", $regions);
+    $view->assign("cities", $cities);
 }
 
 if($mode == 'update'){
     if (is__more_0($_REQUEST["customer_id"])){
         $customer = array_shift(array_shift(fn_uns__get_customers(array("customer_id"=>$_REQUEST["customer_id"]))));
         $view->assign("customer", $customer);
+
+        $countries  = array_shift(fn_uns__get_countries());
+        $regions    = array_shift(fn_uns__get_regions(array("country_id"=>$customer["country_id"])));
+        $cities     = array_shift(fn_uns__get_cities(array("region_id"=>$customer["region_id"], "country_id"=>$customer["country_id"])));
+        $view->assign("countries", $countries);
+        $view->assign("regions", $regions);
+        $view->assign("cities", $cities);
+
     }
+}
+
+if($mode == 'add'){
+    $countries  = array_shift(fn_uns__get_countries());
+//    $regions    = array_shift(fn_uns__get_regions(array("country_id"=>$customer["country_id"])));
+//    $cities     = array_shift(fn_uns__get_cities(array("region_id"=>$customer["region_id"], "country_id"=>$customer["country_id"])));
+    $view->assign("countries", $countries);
+//    $view->assign("regions", $regions);
+//    $view->assign("cities", $cities);
 }
 
 if($mode == 'delete'){

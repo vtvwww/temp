@@ -60,6 +60,7 @@
                                 f_name="`$e_n`[item_type]"
                                 f_value=$i.item_type
                                 f_simple=true
+                                f_short=true
                             }
                         </td>
 
@@ -176,6 +177,7 @@
                     f_pa  =     $item_type_pa
                     f_name="`$e_n`[item_type]"
                     f_simple=true
+                    f_short=true
                 }
             </td>
             <td class="cm-non-cb b1_l">

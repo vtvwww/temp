@@ -24,6 +24,9 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
         "$m_tbl.date_updated",
         "$m_tbl.date_finished",
         "$m_tbl.customer_id",
+        "$m_tbl.country_id",
+        "$m_tbl.region_id",
+        "$m_tbl.city_id",
     );
 
     $sorting_schemas = array(
@@ -248,6 +251,9 @@ function fn_acc__upd_order_info($id, $data){
     $d["date_finished"] = fn_parse_date($data["date_finished"]);
     $d["status"]        = (fn_check_type($data["status"], "|Open|Close|Hide|"))?$data["status"]:"Hide";
     $d["customer_id"]   = $data["customer_id"];
+    $d["country_id"]    = $data["country_id"];
+    $d["region_id"]     = $data["region_id"];
+    $d["city_id"]       = $data["city_id"];
     $d["date_updated"]  = fn_parse_date($data["date_updated"]);;
 
     if ($operation == "update"){

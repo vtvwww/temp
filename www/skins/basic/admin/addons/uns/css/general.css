@@ -464,7 +464,9 @@ div.data-block.top{
 
 table tr.CL td{
     background-color: rgba(0, 81, 255, 0.20);
-    text-decoration: line-through;
+    color: #6d6969;
+    /*text-decoration: line-through;*/
+
 }
 
 table tr.OP td{

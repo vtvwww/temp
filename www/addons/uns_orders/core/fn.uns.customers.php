@@ -55,13 +55,19 @@ function fn_uns__get_customers($params = array(), $items_per_page = 0){
         "$m_table.position",
         "$m_table.comment",
         "$m_table.to_export",
+        "$m_table.country_id",
+        "$m_table.region_id",
+        "$m_table.city_id",
+        "$m_table.tin",
     );
 
     $sorting_schemas = array(
         'view' => array(
+            "$m_table.country_id"   => 'asc',
             "$m_table.position"     => 'asc',
+//            "$m_table.region_id"    => 'asc',
             "$m_table.name"         => 'asc',
-            "$m_table.customer_id"  => 'asc',
+//            "$m_table.customer_id"  => 'asc',
         )
     );
 
@@ -75,6 +81,18 @@ function fn_uns__get_customers($params = array(), $items_per_page = 0){
 
     if ($params['customer_id_array'] = to__array($params['customer_id'])) {
         $condition .= db_quote(" AND $m_table.customer_id in (?n)", $params['customer_id_array']);
+    }
+
+    if ($params['country_id_array'] = to__array($params['country_id'])) {
+        $condition .= db_quote(" AND $m_table.country_id in (?n)", $params['country_id_array']);
+    }
+
+    if ($params['region_id_array'] = to__array($params['region_id'])) {
+        $condition .= db_quote(" AND $m_table.region_id in (?n)", $params['region_id_array']);
+    }
+
+    if ($params['city_id_array'] = to__array($params['city_id'])) {
+        $condition .= db_quote(" AND $m_table.city_id in (?n)", $params['city_id_array']);
     }
 
     if ($params['ps_id_array'] = to__array($params['ps_id'])) {
@@ -111,3 +129,191 @@ function fn_uns__get_customers($params = array(), $items_per_page = 0){
     return array($data, $params, $total);
 }
 
+
+// Получить информацию СТРАНЕ
+function fn_uns__get_countries($params = array()){
+    $default_params = array(
+        'country_id' => 0,
+        'only_active' => false,
+        'limit' => 0,
+        'page' => 1,
+        'sort_by' => '',
+        'sort_order' => 'desc',
+        'sorting_schemas' => 'view',
+    );
+
+    $params = array_merge($default_params, $params);
+
+    $m_table        = "?:_acc_customer_countries";
+
+    $fields = array(
+        "$m_table.id",
+        "$m_table.name",
+        "$m_table.code",
+        "$m_table.alpha2",
+    );
+
+    $sorting_schemas = array(
+        'view' => array(
+            "$m_table.position"     => 'asc',
+            "$m_table.name"         => 'asc',
+        )
+    );
+
+    //*********************
+    $total = 0;
+    $condition = $join = $limit = $sorting = '';
+
+    if (strlen(trim__data($params['name']))) {
+        $condition .= db_quote(" AND ($m_table.name LIKE ?l)", "%" . trim__data($params['name']) . "%" );
+    }
+
+    if ($params['country_id_array'] = to__array($params['country_id'])) {
+        $condition .= db_quote(" AND $m_table.id in (?n)", $params['country_id_array']);
+    }
+
+    if (is__array($sorting_schemas[$params['sorting_schemas']])) {
+        $s = array();
+        foreach ($sorting_schemas[$params['sorting_schemas']] as $k => $v) {
+            $s[] = " {$k} {$v} ";
+        }
+        $sorting = " ORDER BY " . implode(', ', $s);
+    }
+
+    $data = db_get_hash_array(UNS_DB_PREFIX . "SELECT " . implode(', ', $fields) . " FROM $m_table $join WHERE 1 $condition $sorting $limit", "id");
+
+    if (!is__array($data)) return false;
+
+    return array($data, $params, $total);
+}
+
+function fn_uns__get_regions($params = array()){
+    $default_params = array(
+        'region_id' => 0,
+        'country_id' => 0,
+        'only_active' => false,
+        'limit' => 0,
+        'page' => 1,
+        'sort_by' => '',
+        'sort_order' => 'desc',
+        'sorting_schemas' => 'view',
+        'only_used' => true,
+    );
+
+    $params = array_merge($default_params, $params);
+
+    $m_table        = "?:_acc_customer_regions";
+
+    $fields = array(
+        "$m_table.id",
+        "$m_table.name",
+        "$m_table.country_id",
+    );
+
+    $sorting_schemas = array(
+        'view' => array(
+            "$m_table.country_id"   => 'asc',
+            "$m_table.position"     => 'asc',
+            "$m_table.name"         => 'asc',
+        )
+    );
+
+    //*********************
+    $total = 0;
+    $condition = $join = $limit = $sorting = '';
+
+    if (strlen(trim__data($params['name']))) {
+        $condition .= db_quote(" AND ($m_table.name LIKE ?l)", "%" . trim__data($params['name']) . "%" );
+    }
+
+    if ($params['region_id_array'] = to__array($params['region_id'])) {
+        $condition .= db_quote(" AND $m_table.id in (?n)", $params['region_id_array']);
+    }
+
+    if ($params['country_id_array'] = to__array($params['country_id'])) {
+        $condition .= db_quote(" AND $m_table.country_id in (?n)", $params['country_id_array']);
+    }
+
+    if ($params["only_used"]){
+        $join .= db_quote(" RIGHT JOIN uns__acc_customers ON (uns__acc_customer_regions.id  = uns__acc_customers.region_id) ");
+    }
+
+    if (is__array($sorting_schemas[$params['sorting_schemas']])) {
+        $s = array();
+        foreach ($sorting_schemas[$params['sorting_schemas']] as $k => $v) {
+            $s[] = " {$k} {$v} ";
+        }
+        $sorting = " ORDER BY " . implode(', ', $s);
+    }
+
+    $data = db_get_hash_array(UNS_DB_PREFIX . "SELECT " . implode(', ', $fields) . " FROM $m_table $join WHERE 1 $condition $sorting $limit", "id");
+
+    if (!is__array($data)) return false;
+
+    return array($data, $params, $total);
+}
+
+function fn_uns__get_cities($params = array()){
+    $default_params = array(
+        'city_id' => 0,
+        'region_id' => 0,
+        'only_active' => false,
+        'limit' => 0,
+        'page' => 1,
+        'sort_by' => '',
+        'sort_order' => 'desc',
+        'sorting_schemas' => 'view',
+        "only_used"=>true,
+    );
+
+    $params = array_merge($default_params, $params);
+
+    $m_table        = "?:_acc_customer_cities";
+
+    $fields = array(
+        "$m_table.id",
+        "$m_table.name",
+        "$m_table.region_id",
+    );
+
+    $sorting_schemas = array(
+        'view' => array(
+            "$m_table.region_id"     => 'asc',
+            "$m_table.name"         => 'asc',
+        )
+    );
+
+    //*********************
+    $total = 0;
+    $condition = $join = $limit = $sorting = '';
+
+    if (strlen(trim__data($params['name']))) {
+        $condition .= db_quote(" AND ($m_table.name LIKE ?l)", "%" . trim__data($params['name']) . "%" );
+    }
+
+    if ($params['city_id_array'] = to__array($params['city_id'])) {
+        $condition .= db_quote(" AND $m_table.id in (?n)", $params['city_id_array']);
+    }
+
+    if ($params['region_id_array'] = to__array($params['region_id'])) {
+        $condition .= db_quote(" AND $m_table.region_id in (?n)", $params['region_id_array']);
+    }
+
+    if ($params["only_used"]){
+        $join .= db_quote(" RIGHT JOIN uns__acc_customers ON (uns__acc_customer_cities.id  = uns__acc_customers.city_id) ");
+    }
+
+    if (is__array($sorting_schemas[$params['sorting_schemas']])) {
+        $s = array();
+        foreach ($sorting_schemas[$params['sorting_schemas']] as $k => $v) {
+            $s[] = " {$k} {$v} ";
+        }
+        $sorting = " ORDER BY " . implode(', ', $s);
+    }
+
+    $data = db_get_hash_array(UNS_DB_PREFIX . "SELECT " . implode(', ', $fields) . " FROM $m_table $join WHERE 1 $condition $sorting $limit", "id");
+
+    if (!is__array($data)) return false;
+
+    return array($data, $params, $total);
+}

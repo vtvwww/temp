@@ -19,11 +19,12 @@
        {include file="common_templates/pagination.tpl"}
        <table cellpadding="0" cellspacing="0" border="0" width="100%" class="table">
            <tr>
-               <th width="30px">№ заказа</th>
+               <th width="30px">№</th>
                <th width="1px" class="b1_l center">&nbsp;</th>
                <th width="10px" class="center">Статус</th>
                <th width="10px" class="b1_l center">Дата отгрузки</th>
-               <th width="300px" class="b1_l center">Регион/Клиент</th>
+               <th width="10px" class="b1_l center">&nbsp;</th>
+               <th width="300px" class="center">Регион/Клиент</th>
                {*<th width="10px">Позиций</th>*}
                <th width="10px" class="b1_l center" style="text-transform: none;">Кол-во, шт</th>
                <th width="10px" class="b1_l center" style="text-transform: none;">Вес, кг</th>
@@ -53,6 +54,17 @@
                        {$i.date_finished|date_format:"%a %d/%m/%y"}
                    </td>
                    <td class="b1_l"> {*КЛИЕНТ*}
+                       {if $customers[$i.customer_id].country_id == 1}
+                           <img border="0" src="skins/basic/admin/addons/uns_orders/images/ua-24x24.png">
+                       {elseif $customers[$i.customer_id].country_id == 2}
+                           <img border="0" src="skins/basic/admin/addons/uns_orders/images/ru-24x24.png">
+                       {elseif $customers[$i.customer_id].country_id == 3}
+                           <img border="0" src="skins/basic/admin/addons/uns_orders/images/by-24x24.png">
+                       {elseif $customers[$i.customer_id].country_id == 4}
+                           <img border="0" src="skins/basic/admin/addons/uns_orders/images/ml-24x24.png">
+                       {/if}
+                   </td>
+                   <td class=""> {*КЛИЕНТ*}
                        {if      $i.status == "Hide"}
                            <i>{$customers[$i.customer_id].name}</i>
                        {elseif  $i.status == "Open"}
@@ -60,6 +72,7 @@
                        {elseif  $i.status == "Close"}
                            {$customers[$i.customer_id].name}
                        {/if}
+                       <br><span style="font-size: 11px;">({$countries[$i.country_id].name} : {$regions[$i.region_id].name} : г. {$cities[$i.city_id].name})</span>
                    </td>
                    {*<td> *}{*ПОЗИЦИЙ*}
                        {*{$i.count}*}

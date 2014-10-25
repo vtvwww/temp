@@ -143,6 +143,47 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         }
         exit;
     }
+
+    // выбор КЛИЕНТА по стране, региону и городу
+    if (defined('AJAX_REQUEST') and $mode == 'customer'){
+        switch ($_REQUEST['event']){
+            case "change__country_id": // Произошла смена СТРАНЫ
+                $regions    = array_shift(fn_uns__get_regions(array("country_id"=>$_REQUEST["country_id"], "only_used"=>true,)));
+                $view->assign("f_type", "select");
+                $view->assign("f_options", $regions);
+                $view->assign("f_option_id", "id");
+                $view->assign("f_option_value", "name");
+                $view->assign('f_simple_2', true);
+                $options = "<option value='0'>---</option>";
+                $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
+                $ajax->assign('options', $options);
+            break;
+            case "change__region_id": // Произошла смена РЕГИОНА
+                $cities    = array_shift(fn_uns__get_cities(array("region_id"=>$_REQUEST["region_id"], "only_used"=>true,)));
+                $view->assign("f_type", "select");
+                $view->assign("f_options", $cities);
+                $view->assign("f_option_id", "id");
+                $view->assign("f_option_value", "name");
+                $view->assign('f_simple_2', true);
+                $options = "<option value='0'>---</option>";
+                $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
+                $ajax->assign('options', $options);
+            break;
+            case "change__city_id": // Произошла смена ГОРОДА
+                $customers = array_shift(fn_uns__get_customers(array("country_id"=>$_REQUEST["country_id"],"region_id"=>$_REQUEST["region_id"],"city_id"=>$_REQUEST["city_id"],)));
+                $view->assign("f_type", "select");
+                $view->assign("f_options", $customers);
+                $view->assign("f_option_id", "customer_id");
+                $view->assign("f_option_value", "name");
+                $view->assign('f_simple_2', true);
+                $options = "<option value='0'>---</option>";
+                $options .= trim($view->display('addons/uns/views/components/get_form_field.tpl', false));
+                $ajax->assign('options', $options);
+            break;
+        }
+        exit;
+    }
+
     return array(CONTROLLER_STATUS_OK, $controller . "." . $suffix);
 }
 
@@ -176,6 +217,14 @@ if($mode == 'manage'){
     // CUSTOMERS
     list($customers) = fn_uns__get_customers();
     $view->assign('customers', $customers);
+
+    $countries  = array_shift(fn_uns__get_countries());
+    $regions    = array_shift(fn_uns__get_regions());
+    $cities     = array_shift(fn_uns__get_cities());
+    $view->assign("countries", $countries);
+    $view->assign("regions", $regions);
+    $view->assign("cities", $cities);
+
 }
 
 
@@ -186,8 +235,15 @@ if($mode == 'add'){
     $view->assign('pumps', $pumps);
 
     // customerS
-    list($customers) = fn_uns__get_customers();
-    $view->assign('customers', $customers);
+//    list($customers) = fn_uns__get_customers();
+//    $view->assign('customers', $customers);
+
+    $countries  = array_shift(fn_uns__get_countries());
+    $regions    = array_shift(fn_uns__get_regions());
+    $cities     = array_shift(fn_uns__get_cities());
+    $view->assign("countries", $countries);
+    $view->assign("regions", $regions);
+    $view->assign("cities", $cities);
 
     // PUMP_SERIES
     $p = array(
@@ -210,15 +266,22 @@ if($mode == 'update'){
     );
     $p = array_merge($_REQUEST, $p);
     $order = array_shift(array_shift(fn_acc__get_orders($p)));
-//    fn_print_r($order);
     $view->assign('order', $order);
+
+    //--------------------------------------------------------------------------
+    $countries  = array_shift(fn_uns__get_countries());
+    $regions    = array_shift(fn_uns__get_regions(array("country_id"=>$order["country_id"])));
+    $cities     = array_shift(fn_uns__get_cities(array("region_id"=>$order["region_id"])));
+    $view->assign("countries", $countries);
+    $view->assign("regions", $regions);
+    $view->assign("cities", $cities);
 
     // CATEGORIES **************************************************************
     list($dcategories_plain) = fn_uns__get_details_categories(array('plain' => true, "view_in_reports" => true));
     $view->assign('dcategories_plain', $dcategories_plain);
 
     // customerS
-    list($customers) = fn_uns__get_customers();
+    list($customers) = fn_uns__get_customers(array("country_id"=>$order["country_id"],"region_id"=>$order["region_id"],"city_id"=>$order["city_id"],));
     $view->assign('customers', $customers);
 
     // PUMP_SERIES

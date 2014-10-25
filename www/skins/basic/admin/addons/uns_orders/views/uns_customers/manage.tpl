@@ -1,10 +1,12 @@
 {script src="js/tabs.js"}
 {capture name="mainbox"}
+    {include file="addons/uns_orders/views/uns_customers/components/search_form.tpl" dispatch="`$controller`.manage" search_content=$smarty.capture.search_content}
    <form action="{""|fn_url}" method="post" name="{$controller}_form" class="{if ""|fn_check_form_permissions} cm-hide-inputs{/if}">
        {include file="common_templates/pagination.tpl"}
        <table cellpadding="0" cellspacing="0" border="0" width="100%" class="table">
            <tr>
                <th width="10px">№</th>
+               <th width="1px">&nbsp;</th>
                <th width="1px">&nbsp;</th>
                <th width="500px">Полное имя</th>
                <th width="30px">Аббревиатура</th>
@@ -21,7 +23,18 @@
                        {include file="addons/uns/views/components/tools.tpl" type="edit" href="`$controller`.update?`$value`=`$id`"}
                    </td>
                    <td> {*Полное имя*}
-                       {$i.name}&nbsp;
+                       {if $i.country_id == 1}
+                           <img border="0" src="skins/basic/admin/addons/uns_orders/images/ua-24x24.png">
+                       {elseif $i.country_id == 2}
+                           <img border="0" src="skins/basic/admin/addons/uns_orders/images/ru-24x24.png">
+                       {elseif $i.country_id == 3}
+                           <img border="0" src="skins/basic/admin/addons/uns_orders/images/by-24x24.png">
+                       {elseif $i.country_id == 4}
+                           <img border="0" src="skins/basic/admin/addons/uns_orders/images/ml-24x24.png">
+                       {/if}
+                   </td>
+                   <td> {*Полное имя*}
+                       <b>{$i.name}</b><br><span style="font-size: 11px;">({$countries[$i.country_id].name} : {$regions[$i.region_id].name} : г. {$cities[$i.city_id].name})</span>
                    </td>
                    <td> {*Аббревиатура*}
                        <b>{$i.name_short}</b>&nbsp;

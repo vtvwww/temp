@@ -19,6 +19,43 @@
             <div id="content_general">
                 {include file="addons/uns/views/components/get_form_field.tpl"
                     f_id=$id
+                    f_type="select"
+                    f_required=true f_integer=true
+                    f_name="country_id"
+                    f_options=$countries
+                    f_option_id="id"
+                    f_option_value="name"
+                    f_description="Страна"
+                    f_blank=true
+                    f_option_target_id=$i.country_id
+                }
+
+                {include file="addons/uns/views/components/get_form_field.tpl"
+                    f_id=$id
+                    f_type="select"
+                    f_required=true f_integer=true
+                    f_name="region_id"
+                    f_options=$regions
+                    f_option_id="id"
+                    f_option_value="name"
+                    f_description="Регион/Область"
+                    f_option_target_id=$i.region_id
+                }
+
+                {include file="addons/uns/views/components/get_form_field.tpl"
+                    f_id=$id
+                    f_type="select"
+                    f_required=true f_integer=true
+                    f_name="city_id"
+                    f_options=$cities
+                    f_option_id="id"
+                    f_option_value="name"
+                    f_description="Город"
+                    f_option_target_id=$i.city_id
+                }
+
+                {include file="addons/uns/views/components/get_form_field.tpl"
+                    f_id=$id
                     f_type="input"
                     f_required=true f_integer=false
                     f_name="name"
@@ -53,6 +90,16 @@
                     f_value=$i.position
                     f_default="0"
                     f_description="Позиция"
+                }
+
+                {include file="addons/uns/views/components/get_form_field.tpl"
+                    f_id=$id
+                    f_type="input"
+                    f_required=false f_integer=false
+                    f_name="tin"
+                    f_value=$i.tin
+                    f_description="ИИН"
+                    f_tooltip="Идентификационный номер налогоплательщика"
                 }
 
                 <div class="form-field">
