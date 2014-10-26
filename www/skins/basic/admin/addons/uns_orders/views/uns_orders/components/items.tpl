@@ -23,7 +23,7 @@
             <th rowspan="2" class="cm-non-cb b1_l center" width="10px">Тип</th>
             <th rowspan="2" class="cm-non-cb b1_l center" width="140px">Наименование</th>
             <th colspan="3" class="cm-non-cb b_l center" style="text-transform: none;" width="140px">Предварительный заказ</th>
-            <th rowspan="2" class="cm-non-cb b_l center" style="text-transform: none;" width="100px">Кол-во<br>переданное<br>в производство<br><span style="padding: 0; font-size: 11px; font-style: normal; color: red; font-weight: normal;">после оплаты</span></th>
+            <th rowspan="2" class="cm-non-cb b_l center" style="text-transform: none;" width="100px">Кол-во<br>переданное<br>в производство<br><span style="padding: 0; font-size: 11px; font-style: normal; color: red; font-weight: normal;">по факту<br>оплаты</span></th>
             <th rowspan="2" class="cm-non-cb b_l center" style="text-transform: none;" width="100px">Кол-во<br>переданное<br>в резерв<br><span style="padding: 0; font-size: 11px; font-style: normal; color: red; font-weight: normal;">предпродажная<br>подготовка</span></th>
             <th rowspan="2" class="cm-non-cb b_l center" width="">Комментарий</th>
             <th rowspan="2" class="cm-non-cb b1_l center">&nbsp;</th>
@@ -131,7 +131,7 @@
                                 f_name="`$e_n`[quantity_in_production]"
                                 f_from=0
                                 f_to=$i.quantity
-                                f_value=200
+                                f_value=$i.quantity_in_production
                                 f_simple=true
                                 f_plus_minus=true
                                 f_style="width:50px;"
@@ -143,7 +143,7 @@
                                 f_type="select_range"
                                 f_name="`$e_n`[quantity_in_reserve]"
                                 f_from=0
-                                f_to=200
+                                f_to=$i.quantity
                                 f_value=$i.quantity_in_reserve
                                 f_simple=true
                                 f_plus_minus=true

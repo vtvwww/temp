@@ -116,6 +116,7 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
                 foreach ($items as $k_o=>$v_o){
                     foreach ($v_o as $i){
                         $data[$k_o]["data_for_tmp"][$i["item_type"]][$i["item_id"]]["quantity"] += $i["quantity"];
+                        $data[$k_o]["data_for_tmp"][$i["item_type"]][$i["item_id"]]["comment"] = $i["comment"];
                     }
                 }
             }

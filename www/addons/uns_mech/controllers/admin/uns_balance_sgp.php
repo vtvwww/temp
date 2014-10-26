@@ -236,7 +236,9 @@ function fn_uns_balance_sgp__format_for_tmpl($b, $params) {
                         foreach ($v_o["items"] as $i){
                             if (in_array($i["item_type"], array("P", "PF", "PA")) and $i["p_id"] == $k_p){
                                 $res[$k_pt]["pump_series"][$k_ps]["pumps"][$k_p]["orders"][$k_o][$i["item_type"]] += $i["quantity"];
-                                $res[$k_pt]["pump_series"][$k_ps]["pumps"][$k_p]["orders_in_reserve"][$k_o][$i["item_type"]] += $i["quantity_in_reserve"];
+                                $res[$k_pt]["pump_series"][$k_ps]["pumps"][$k_p]["orders_in_production"][$k_o][$i["item_type"]] += $i["quantity_in_production"];
+                                $res[$k_pt]["pump_series"][$k_ps]["pumps"][$k_p]["orders_in_reserve"][$k_o][$i["item_type"]]    += $i["quantity_in_reserve"];
+                                $res[$k_pt]["pump_series"][$k_ps]["pumps"][$k_p][$i["item_type"]]["total_number_of_reserved"]   += $i["quantity_in_reserve"];
                             }
                         }
                     }
