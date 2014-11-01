@@ -499,6 +499,7 @@
                 date_name=$f_name
                 date_val=$f_value|default:$smarty.now
                 icon=$f_icon|default:true
+                date_style=$f_style
                 start_year="2000" end_year="2030"}
    {elseif $f_full}
        <div class="form-field {if $f_hidden} hidden {/if}">
