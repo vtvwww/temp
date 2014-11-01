@@ -28,7 +28,7 @@
             <td style="background-color: rgb(238,238,238);" colspan="4" class="bold" align="right">ИТОГО:</td>
             <td style="background-color: rgb(238,238,238);" colspan="1" class="bold center b_l b1_b"><span class="total">{$o.total_quantity}</span></td>
             <td style="background-color: rgb(238,238,238);" colspan="2" class="bold center b1_l b1_b"><span class="total"><nobr>{$o.total_weight|number_format:1:".":" "}</nobr></span></td>
-            <td style="background-color: rgb(238,238,238);" colspan="4" class="b_l">&nbsp;</td>
+            <td style="background-color: rgb(238,238,238);" colspan="3" class="b_l">&nbsp;</td>
         </tr>
     </tfoot>
     <thead>
@@ -40,7 +40,7 @@
             <th colspan="3" class="cm-non-cb b_l center" style="text-transform: none;" width="140px">Предварительный заказ</th>
             <th rowspan="2" class="cm-non-cb b_l center" style="text-transform: none;" width="100px">Кол-во<br>в произ.<br><span style="padding: 0; font-size: 11px; font-style: normal; color: red; font-weight: normal;">по факту<br>оплаты</span><br><span style="background-color: #ffffff;border: 1px solid gray;font-size: 12px;" class="hand all_in_production">Уст. все</span></th>
             <th rowspan="2" class="cm-non-cb b_l center" style="text-transform: none;" width="100px">Кол-во<br>в резерв<br><span style="padding: 0; font-size: 11px; font-style: normal; color: red; font-weight: normal;">предпродажная<br>подготовка</span></th>
-            <th rowspan="2" class="cm-non-cb b_l center" width="">Примеч.</th>
+            {*<th rowspan="2" class="cm-non-cb b_l center" width="">Примеч.</th>*}
             <th rowspan="2" class="cm-non-cb b1_l center">&nbsp;</th>
         </tr>
         <tr class="first-sibling" style="background-color: #eeeeee">
@@ -70,6 +70,7 @@
                                 f_name="`$e_n`[date]"
                                 f_value=$i.date
                                 f_icon=false
+                                f_style="width:65px;"
                                 f_simple=true
                             }
                         </td>
@@ -180,17 +181,17 @@
                             }
                         </td>
 
-                        <td class="cm-non-cb b_l" align="left">
-                            {include file="addons/uns/views/components/get_form_field.tpl"
-                                f_type="textarea"
-                                f_row=1
-                                f_col=20
-                                f_full_name="`$e_n`[comment]"
-                                f_value=$i.comment
-                                f_simple=true
-                                f_style="width:60px; height:20px;"
-                            }
-                        </td>
+                        {*<td class="cm-non-cb b_l" align="left">*}
+                            {*{include file="addons/uns/views/components/get_form_field.tpl"*}
+                                {*f_type="textarea"*}
+                                {*f_row=1*}
+                                {*f_col=20*}
+                                {*f_full_name="`$e_n`[comment]"*}
+                                {*f_value=$i.comment*}
+                                {*f_simple=true*}
+                                {*f_style="width:60px; height:20px;"*}
+                            {*}*}
+                        {*</td>*}
 
                         <td class="right cm-non-cb b1_l">
                             {include file="buttons/multiple_buttons.tpl" item_id="`$id`_`$num`" tag_level="3" only_delete="Y"}
@@ -215,6 +216,7 @@
                     f_required=true
                     f_name="`$e_n`[date]"
                     f_icon=false
+                    f_style="width:65px;"
                     f_simple=true
                 }
             </td>
@@ -299,17 +301,17 @@
                 }
             </td>
 
-            <td class="cm-non-cb b_l" align="left">
-                {include file="addons/uns/views/components/get_form_field.tpl"
-                    f_type="textarea"
-                    f_row=1
-                    f_col=30
-                    f_full_name="`$e_n`[comment]"
-                    f_value=""
-                    f_simple=true
-                    f_style="width:60px; height:20px;"
-                }
-            </td>
+            {*<td class="cm-non-cb b_l" align="left">*}
+                {*{include file="addons/uns/views/components/get_form_field.tpl"*}
+                    {*f_type="textarea"*}
+                    {*f_row=1*}
+                    {*f_col=30*}
+                    {*f_full_name="`$e_n`[comment]"*}
+                    {*f_value=""*}
+                    {*f_simple=true*}
+                    {*f_style="width:60px; height:20px;"*}
+                {*}*}
+            {*</td>*}
             <td class="right cm-non-cb b1_l">
                 {include file="buttons/multiple_buttons.tpl" item_id="add_`$num`" tag_level="2" hide_add=true}
             </td>
