@@ -36,7 +36,7 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
             "$m_tbl.date_finished"  => "desc",
         ),
         "view_in_sgp" => array(
-//            "$m_tbl.status"  => "asc",
+            "$m_tbl.country_id"  => "asc",
             "$m_tbl.date_finished"  => "asc",
         ),
     );
@@ -143,14 +143,16 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
         $data_temp["ukr"]["customer_id"]= "ukr";
         $data_temp["ukr"]["items"]      = array();
         foreach ($data as $k_d=>$v_d){
-            if (in_array($v_d["customer_id"], $customers_of_ukr_keys)){
-                // Клиент принадлежит Украине
-                $data_temp["ukr"]["items"] = array_merge($data_temp["ukr"]["items"], $v_d["items"]);
-                foreach ($v_d["items"] as $i){
-                    $data_temp["ukr"]["data_for_tmp"][$i["item_type"]][$i["item_id"]]["quantity"] += $i["quantity"];
+            if (fn_is_not_empty($v_d["items"])){
+                if (in_array($v_d["customer_id"], $customers_of_ukr_keys)/*  and count($v_d["items"])*/){
+                    // Клиент принадлежит Украине
+                    $data_temp["ukr"]["items"] = array_merge($data_temp["ukr"]["items"], $v_d["items"]);
+                    foreach ($v_d["items"] as $i){
+                        $data_temp["ukr"]["data_for_tmp"][$i["item_type"]][$i["item_id"]]["quantity"] += $i["quantity"];
+                    }
+                }else{
+                    $data_temp[$k_d] = $v_d;
                 }
-            }else{
-                $data_temp[$k_d] = $v_d;
             }
         }
         if (count($data_temp["ukr"]["items"])){
