@@ -1,0 +1,36 @@
+select.order_status > option{
+    border-top: 1px solid gray;
+    padding: 5px 0 5px 40px;
+}
+
+select.order_status > option.open{
+    background: url("../../uns_acc/images/circle_green.png") no-repeat left center;
+}
+
+select.order_status > option.close{
+
+}
+
+select.order_status > option.paid{
+    background: url("../images/paid_32x32.png") no-repeat left center;
+}
+
+select.order_status > option.shipped{
+    background: url("../images/shipped_32x32.png") no-repeat left center;
+}
+
+span#img_order_status{
+    display: inline-block;
+    height: 20px;
+    width: 32px;
+}
+span#img_order_status.Open{
+    background: url("../../uns_acc/images/circle_green.png") no-repeat left center;
+}
+span#img_order_status.Paid{
+    background: url("../images/paid_32x32.png") no-repeat left center;
+}
+span#img_order_status.Shipped{
+    background: url("../images/shipped_32x32.png") no-repeat left center;
+
+}

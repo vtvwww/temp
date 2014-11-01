@@ -214,14 +214,99 @@ $(function () {
         }
     });
 
+    //==========================================================================
+    // Выбор клиента в Расходном ордере
+    //==========================================================================
+    $('select[name^="data[document]"][name$="[country_id]"]').live('change', function (e) {
+        var country_id          = $(this);
+        var region_id           = $(this).parent().parent().find('select[name^="data[document]"][name$="[region_id]"]');
+        var city_id             = $(this).parent().parent().find('select[name^="data[document]"][name$="[city_id]"]');
+        var customer_id         = $(this).parent().parent().find('select[name^="data[document]"][name$="[customer_id]"]');
+
+        region_id.empty();
+        city_id.empty();
+        customer_id.empty();
+
+        if (country_id.val() > 0){
+            $.ajaxRequest(
+                fn_url('uns_orders.customer'),
+                {
+                    hidde: false,
+                    method: 'post',
+                    data: {
+                        event       : "change__country_id",
+                        country_id  : country_id.val(),
+                    },
+                    callback: function(data){
+                        region_id.append(data.options);
+                    }
+                }
+            );
+        }
+    });
+
+    $('select[name^="data[document]"][name$="[region_id]"]').live('change', function (e) {
+        var region_id           = $(this);
+        var city_id             = $(this).parent().parent().find('select[name^="data[document]"][name$="[city_id]"]');
+        var customer_id         = $(this).parent().parent().find('select[name^="data[document]"][name$="[customer_id]"]');
+
+        city_id.empty();
+        customer_id.empty();
+
+        if (region_id.val() > 0){
+            $.ajaxRequest(
+                fn_url('uns_orders.customer'),
+                {
+                    hidde: false,
+                    method: 'post',
+                    data: {
+                        event       : "change__region_id",
+                        region_id   : region_id.val(),
+                    },
+                    callback: function(data){
+                        city_id.append(data.options);
+                    }
+                }
+            );
+        }
+    });
+
+    $('select[name^="data[document]"][name$="[city_id]"]').live('change', function (e) {
+        var country_id          = $(this).parent().parent().find('select[name^="data[document]"][name$="[country_id]"]');
+        var region_id           = $(this).parent().parent().find('select[name^="data[document]"][name$="[region_id]"]');
+        var city_id             = $(this);
+        var customer_id         = $(this).parent().parent().find('select[name^="data[document]"][name$="[customer_id]"]');
+
+        customer_id.empty();
+
+        if (city_id.val() > 0){
+            $.ajaxRequest(
+                fn_url('uns_orders.customer'),
+                {
+                    hidde: false,
+                    method: 'post',
+                    data: {
+                        event       : "change__city_id",
+                        country_id  : country_id.val(),
+                        region_id   : region_id.val(),
+                        city_id     : city_id.val(),
+                    },
+                    callback: function(data){
+                        customer_id.append(data.options);
+                    }
+                }
+            );
+        }
+    });
+
 
     //==========================================================================
     // Выбор региона/города при создании нового клиента
     //==========================================================================
-    $('select[name^="data"][name$="[country_id]"]').live('change', function (e) {
+    $('select[name^="data[country_id]"]').live('change', function (e) {
         var country_id          = $(this);
-        var region_id           = $(this).parent().parent().find('select[name^="data"][name$="[region_id]"]');
-        var city_id             = $(this).parent().parent().find('select[name^="data"][name$="[city_id]"]');
+        var region_id           = $(this).parent().parent().find('select[name^="data[region_id]"]');
+        var city_id             = $(this).parent().parent().find('select[name^="data[city_id]"]');
 
         region_id.empty();
         city_id.empty();
@@ -244,9 +329,9 @@ $(function () {
         }
     });
 
-    $('select[name^="data"][name$="[region_id]"]').live('change', function (e) {
+    $('select[name^="data[region_id]"]').live('change', function (e) {
         var region_id           = $(this);
-        var city_id             = $(this).parent().parent().find('select[name^="data"][name$="[city_id]"]');
+        var city_id             = $(this).parent().parent().find('select[name^="data[city_id]"]');
 
         city_id.empty();
 

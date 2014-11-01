@@ -22,7 +22,7 @@
                         </select>
                     </div>
                 </td>
-                <td class="nowrap search-field">
+                <td class="nowrap search-field b1_l">
                     <label for="material_type">Тип:</label>
                     <div class="break">
                         <select name="material_type" id="material_type">
@@ -32,7 +32,7 @@
                         </select>
                     </div>
                 </td>
-                <td class="nowrap search-field">
+                <td class="nowrap search-field b1_l">
                     <label for="target_object">Цех:</label>
                     <div class="break">
                         <select name="target_object" id="target_object">
@@ -43,7 +43,7 @@
                         </select>
                     </div>
                 </td>
-                <td class="nowrap search-field">
+                <td class="nowrap search-field b1_l">
                     <label>{$lang.uns_material_categories}:</label>
                     <div class="break">
                         {include file="addons/uns/views/components/get_form_field.tpl"
@@ -62,7 +62,7 @@
                         }
                     </div>
                 </td>
-                <td class="nowrap search-field">
+                <td class="nowrap search-field b1_l">
                     <label>Клеймо отливки:</label>
                     <div class="break">
                         {include file="addons/uns/views/components/get_form_field.tpl"
@@ -74,7 +74,7 @@
                         }
                     </div>
                 </td>
-                <td class="nowrap search-field">
+                <td class="nowrap search-field b1_l">
                     <label>Насос:</label>
                     <div class="break">
                         {include file="addons/uns/views/components/get_form_field.tpl"
@@ -117,7 +117,7 @@
         <table cellpadding="10" cellspacing="0" border="0" class="search-header">
             <tr>
                 <td>
-                    {include file="buttons/button.tpl" but_text="П о и с к" but_name="dispatch[`$dispatch`]" but_role="big" but_input_css="width:888px;font-weight:bold;"}
+                    {include file="buttons/button.tpl" but_text="П О И С К" but_name="dispatch[`$dispatch`]" but_role="big" but_input_css="width:918px;font-weight:bold;"}
                 </td>
             </tr>
         </table>

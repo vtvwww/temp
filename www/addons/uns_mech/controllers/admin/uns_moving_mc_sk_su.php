@@ -274,12 +274,15 @@ if($mode == 'manage'){
     if ($_REQUEST["include_sheets"] == "Y") $p["packages"][] = UNS_PACKAGE_TYPE__SL;
     if ($_REQUEST["include_kits"] == "Y")   $p["packages"][] = UNS_PACKAGE_TYPE__PN;
 
+    if (!in_array($auth["usergroup_ids"][0], array(6,8,10))){
+        // Для всех кроме Нач.ПДО, зам.ПДО и Коммерческого отдела - заблокировать расходные ордера
+        $_REQUEST["exclude_type"] = 7;
+    }
+
     $p = array_merge($_REQUEST, $p);
     list($documents, $search) = fn_uns__get_documents($p, UNS_ITEMS_PER_PAGE);
-//    fn_print_r($documents);
     $view->assign('documents', $documents);
     $view->assign('search', $search);
-//    fn_print_r($documents);
 
     // OBJECTS *****************************************************************
     list($objects_plain, $search) = fn_uns__get_objects(array('plain' => true,
@@ -293,6 +296,12 @@ if($mode == 'manage'){
     // customerS
     list($customers) = fn_uns__get_customers(array('status'=>'A'));
     $view->assign('customers', $customers);
+
+    //--------------------------------------------------------------------------
+    $countries  = array_shift(fn_uns__get_countries());
+    $regions    = array_shift(fn_uns__get_regions());
+    $view->assign("countries", $countries);
+    $view->assign("regions", $regions);
 }
 
 
@@ -337,9 +346,24 @@ if($mode == 'update' or $mode == 'view'){
     list($pump_series) = fn_uns__get_pump_series($p);
     $view->assign('pump_series', $pump_series);
 
-    // customerS
-    list($customers) = fn_uns__get_customers(array('status'=>'A'));
-    $view->assign('customers', $customers);
+
+    //--------------------------------------------------------------------------
+    $countries  = array_shift(fn_uns__get_countries());
+    $view->assign("countries", $countries);
+    if (is__more_0($document["customer_id"])){
+        // Текущий клиент
+        $customer = array_shift(array_shift(fn_uns__get_customers(array("customer_id"=>$document["customer_id"]))));
+
+        // customerS
+        list($customers) = fn_uns__get_customers(array("country_id"=>$customer["country_id"],"region_id"=>$customer["region_id"],"city_id"=>$customer["city_id"],"status"=>"A"));
+        $view->assign('customers', $customers);
+
+        // regions/city
+        $regions    = array_shift(fn_uns__get_regions(array("country_id"=>$customers[$document["customer_id"]]["country_id"])));
+        $cities     = array_shift(fn_uns__get_cities(array("region_id"=>$customers[$document["customer_id"]]["region_id"])));
+        $view->assign("regions", $regions);
+        $view->assign("cities", $cities);
+    }
 }
 
 
@@ -385,6 +409,7 @@ function fn_uns_moving_mc_sk_su__search ($controller){
         'include_sheets',
         'include_kits',
         'type',
+        'exclude_type',
     );
     fn_uns_search_set_get_params($controller, $params);
     return true;

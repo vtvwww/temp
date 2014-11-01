@@ -299,7 +299,9 @@ if ($mode == 'get_report'){
                     if (in_array($item["item_type"], array("P", "PF", "PA")) and is__more_0($item["quantity"]) and is__array($pumps[$item["item_id"]])){
                         $ps_id          = $pumps[$item["item_id"]]["ps_id"];
                         $customer_id    = $doc["customer_id"];
-//                        $to_export      = ($customers[$customer_id]["to_export"]=="Y")?"EXP":"UKR";
+                        if ($customers[$customer_id]["to_export"]=="N"){
+                            $customer_id = 1; // Принудительно все продажи по Украине как Клиент id=1
+                        }
                         $object         = $doc["object_to"];
                         $weight         = ($item["item_type"] == "P")?$pumps[$item["item_id"]]["weight_p"]:$pumps[$item["item_id"]]["weight_pf"];
                         $sales_SGP_groups        [$object][$customer_id][$ps_id] += $item["quantity"];

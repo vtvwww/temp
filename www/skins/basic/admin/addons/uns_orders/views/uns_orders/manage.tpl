@@ -1,20 +1,22 @@
 {script src="js/tabs.js"}
 {capture name="mainbox"}
-    {*{capture name="search_content"}*}
-        {*{include file="addons/uns/views/components/search/s_time.tpl"}*}
-        {*{include file="addons/uns/views/components/search/s_materials.tpl" material_classes_as_input=true}*}
-        {*{include file="addons/uns/views/components/search/s_mode_report.tpl"}*}
-        {*{include file="addons/uns/views/components/search/s_view_all_position.tpl"}*}
-        {*{include file="addons/uns/views/components/search/s_accessory_pumps.tpl"}*}
-    {*{/capture}*}
-    {*{include file="addons/uns/views/components/search/search.tpl" dispatch="`$controller`.manage" search_content=$smarty.capture.search_content}*}
-    <div>
-        <ul>
-            <li><img class="hand" border="0" title="Скрыт - предварительный заказ" src="skins/basic/admin/addons/uns_acc/images/circle_yellow.png"> <b>Скрыт - предварительный заказ.</b> Заказ пока еще не будет отображаться на остатках Склада готовой продукции.</li>
-            <li><img class="hand" border="0" title="Скрыт - предварительный заказ" src="skins/basic/admin/addons/uns_acc/images/circle_green.png"> <b>Открыт - заказ готов к выполнению.</b> Заказ будет отображаться на остатках Склада готовой продукции.</li>
-            <li><img class="hand" border="0" title="Скрыт - предварительный заказ" src="skins/basic/admin/addons/uns_acc/images/done.png"> <b>Выполнен - заказ отгружен.</b> Так заказ выполнен, поэтому он не будет отображаться на остатках Склада готовой продукции.</li>
-        </ul>
-    </div>
+    {include file="addons/uns_orders/views/uns_orders/components/search_form.tpl" dispatch="`$controller`.manage" search_content=$smarty.capture.search_content}
+    <table>
+        <tbody>
+            <tr>
+                <td class=""><img border="0" title="Открыт" src="skins/basic/admin/addons/uns_acc/images/circle_green.png"></td>
+                <td class="" width="230" align="left"> - <b>заказ открыт</b>, предварительный</td>
+
+                <td class="b1_l"><img border="0" title="Открыт" width="24" height="24" src="skins/basic/admin/addons/uns_orders/images/paid_32x32.png"></td>
+                <td class="" width="300" align="left"> - <b>заказ оплачен</b>, постановка в производство</td>
+
+                <td class="b1_l"><img border="0" title="Открыт" width="24" height="24" src="skins/basic/admin/addons/uns_orders/images/shipped_32x32.png"></td>
+                <td class="" width="300" align="left"> - <b>заказ отгружен</b>, закрыт</td>
+            </tr>
+        </tbody>
+    </table>
+
+
    <form action="{""|fn_url}" method="post" name="{$controller}_form" class="{if ""|fn_check_form_permissions} cm-hide-inputs{/if}">
        {include file="common_templates/pagination.tpl"}
        <table cellpadding="0" cellspacing="0" border="0" width="100%" class="table">
@@ -22,16 +24,16 @@
                <th width="30px">№</th>
                <th width="1px" class="b1_l center">&nbsp;</th>
                <th width="10px" class="center">Статус</th>
-               <th width="10px" class="b1_l center">Отгрузка</th>
+               <th width="20px" class="b1_l center">Отгрузка</th>
                <th width="10px" class="b1_l center">&nbsp;</th>
-               <th width="300px" class="center">Клиент (Регион)</th>
+               <th width="450px" class="center">Клиент (Регион)</th>
                {*<th width="10px">Позиций</th>*}
-               <th width="10px" class="b1_l center" style="text-transform: none;">Кол-во, шт</th>
+               <th width="10px" class="b1_l center" style="text-transform: none;">Кол-во</th>
                <th width="10px" class="b1_l center" style="text-transform: none;">Вес, кг</th>
                <th class="b1_l">&nbsp;</th>
            </tr>
            {foreach from=$orders item="i" name="o"}
-               <tr class="{if  $i.status == "Close"}CL{else}OP{/if}">
+               <tr class="{if  $i.status == "Close" or $i.status == "Shipped"}CL{else}OP{/if}">
                    {assign var="id" value=$i.order_id}
                    {assign var="value" value="order_id"}
                    <td {if $id == "`$smarty.session.mark_item.$controller`"} class="mark_item" {else} class="mark_item_clear" {/if} align="right" >
@@ -42,13 +44,17 @@
                    <td class="b1_l">
                        {include file="addons/uns/views/components/tools.tpl" type="edit" name=$id href="`$controller`.update?`$value`=`$id`"}
                    </td>
-                   <td> {* Статус *}
+                   <td align="center"> {* Статус *}
                        {if      $i.status == "Hide"}
                            <img class="hand" border="0" title="Скрыт - предварительный заказ" src="skins/basic/admin/addons/uns_acc/images/circle_yellow.png">
                        {elseif  $i.status == "Open"}
-                           <img class="hand" border="0" title="Открыт - заказ готов к выполнению" src="skins/basic/admin/addons/uns_acc/images/circle_green.png">
+                           <img class="hand" border="0" title="Открыт" src="skins/basic/admin/addons/uns_acc/images/circle_green.png">
                        {elseif  $i.status == "Close"}
                            <img class="hand" border="0" title="Выполнен - заказ отгружен" src="skins/basic/admin/addons/uns_acc/images/done.png">
+                       {elseif  $i.status == "Paid"}
+                           <img class="hand" border="0" title="Оплачен" src="skins/basic/admin/addons/uns_orders/images/paid_32x32.png">
+                       {elseif  $i.status == "Shipped"}
+                           <img class="hand" border="0" title="Отгружен" src="skins/basic/admin/addons/uns_orders/images/shipped_32x32.png">
                        {/if}
                    </td>
                    <td class="b1_l"> {*ДАТА ОТГРУЗКИ*}
@@ -68,10 +74,10 @@
                    <td class=""> {*КЛИЕНТ*}
                        {if      $i.status == "Hide"}
                            <i>{$customers[$i.customer_id].name}</i>
-                       {elseif  $i.status == "Open"}
+                       {elseif  $i.status == "Open" or $i.status == "Paid"}
                            <b>{$customers[$i.customer_id].name}</b>
-                       {elseif  $i.status == "Close"}
-                           {$customers[$i.customer_id].name}
+                       {elseif  $i.status == "Close" or $i.status == "Shipped"}
+                           <b>{$customers[$i.customer_id].name}</b>
                        {/if}
                        <br><span style="font-size: 11px;">({$countries[$i.country_id].name} : {$regions[$i.region_id].name} : г. {$cities[$i.city_id].name})</span>
                    </td>

@@ -20,7 +20,7 @@
                             <img class="hand" border="0" title="Скрыт - предварительный заказ" src="skins/basic/admin/addons/uns_acc/images/circle_yellow.png">
                         {elseif  $o.status == "Open"}
                             <img class="hand" border="0" title="Открыт - заказ готов к выполнению" src="skins/basic/admin/addons/uns_acc/images/circle_green.png">
-                        {elseif  $o.status == "Close"}
+                        {elseif  $o.status == "Close" or "Shipped"}
                             <img class="hand" border="0" title="Выполнен - заказ отгружен" src="skins/basic/admin/addons/uns_acc/images/done.png">
                         {/if}
                     </td>

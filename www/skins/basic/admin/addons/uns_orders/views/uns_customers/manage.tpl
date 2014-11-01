@@ -1,6 +1,6 @@
 {script src="js/tabs.js"}
 {capture name="mainbox"}
-    {include file="addons/uns_orders/views/uns_customers/components/search_form.tpl" dispatch="`$controller`.manage" search_content=$smarty.capture.search_content}
+   {include file="addons/uns_orders/views/uns_customers/components/search_form.tpl" dispatch="`$controller`.manage" search_content=$smarty.capture.search_content}
    <form action="{""|fn_url}" method="post" name="{$controller}_form" class="{if ""|fn_check_form_permissions} cm-hide-inputs{/if}">
        {include file="common_templates/pagination.tpl"}
        <table cellpadding="0" cellspacing="0" border="0" width="100%" class="table">
@@ -15,14 +15,14 @@
                <th>&nbsp;</th>
            </tr>
            {foreach from=$customers item="i"}
-               <tr class="{if  $i.status == "Close"}CL{else}OP{/if}">
+               <tr class="{if  $i.status == "Close"}CL{else}{/if}">
                    {assign var="id" value=$i.customer_id}
                    {assign var="value" value="customer_id"}
                    <td>{$id}</td>
-                   <td>
+                   <td class="b1_l">
                        {include file="addons/uns/views/components/tools.tpl" type="edit" href="`$controller`.update?`$value`=`$id`"}
                    </td>
-                   <td> {*Полное имя*}
+                   <td class="b1_l"> {*Полное имя*}
                        {if $i.country_id == 1}
                            <img border="0" src="skins/basic/admin/addons/uns_orders/images/ua-24x24.png">
                        {elseif $i.country_id == 2}
@@ -33,19 +33,19 @@
                            <img border="0" src="skins/basic/admin/addons/uns_orders/images/ml-24x24.png">
                        {/if}
                    </td>
-                   <td> {*Полное имя*}
+                   <td class="b1_l"> {*Полное имя*}
                        <b>{$i.name}</b><br><span style="font-size: 11px;">({$countries[$i.country_id].name} : {$regions[$i.region_id].name} : г. {$cities[$i.city_id].name})</span>
                    </td>
-                   <td> {*Аббревиатура*}
+                   <td class="b1_l"> {*Аббревиатура*}
                        <b>{$i.name_short}</b>&nbsp;
                    </td>
-                   <td>{*Статус*}
+                   <td class="b1_l">{*Статус*}
                        {$i.status}
                    </td>
-                   <td>{*Позиция*}
+                   <td class="b1_l">{*Позиция*}
                        {$i.position}
                    </td>
-                   <td class="nowrap right">
+                   <td class="nowrap right b1_l">
                        {capture name="tools_items"}
                            <li><a class="cm-confirm" href="{"`$controller`.delete?`$value`=`$id`"|fn_url}">
                                    <img border="0" src="skins/basic/admin/addons/uns_acc/images/delete.png">

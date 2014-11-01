@@ -10,23 +10,16 @@
                         {include file="common_templates/period_selector.tpl" period=$search.period prefix=""}
                     </div>
                 </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <hr/>
-                </td>
-            </tr>
-            <tr>
-                <td rowspan="2" class="nowrap search-field" style="padding-right: 10px">
-                    <label>Выбор объекта:</label>
+                <td rowspan="2" class="nowrap search-field b1_l">
+                    <label>Выбор Склада:</label>
                     <div class="break">
                         <select name="o_id" id="">
                             <option value="0">---</option>
-                            <option selected="selected" value="6">Склад Метизов и Подшипников</option>
+                            <option selected="selected" value="6">Метизов и Подшипников</option>
                         </select>
                     </div>
                 </td>
-                <td class="nowrap search-field">
+                <td class="nowrap search-field b1_l">
                     <input type="hidden" name="mclass_id" value="1">
                     <input type="hidden" name="item_type" value="M">
                     <label>{$lang.uns_material_categories}:</label>
@@ -53,7 +46,7 @@
         <table cellpadding="10" cellspacing="0" border="0" class="search-header">
             <tr>
                 <td>
-                    {include file="buttons/button.tpl" but_text="П о и с к" but_name="dispatch[`$dispatch`]" but_role="big" but_input_css="width:888px;font-weight:bold;"}
+                    {include file="buttons/button.tpl" but_text="П О И С К" but_name="dispatch[`$dispatch`]" but_role="big" but_input_css="width:918px;font-weight:bold;"}
                 </td>
             </tr>
         </table>

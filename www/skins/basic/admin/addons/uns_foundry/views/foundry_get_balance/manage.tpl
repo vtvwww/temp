@@ -2,6 +2,7 @@
 {capture name="mainbox"}
     {capture name="search_content"}
         {include file="addons/uns/views/components/search/s_time.tpl"}
+        <hr/>
         {include file="addons/uns/views/components/search/s_materials.tpl" material_classes_as_input=true}
         {*{include file="addons/uns/views/components/search/s_mode_report.tpl"}*}
         {*{include file="addons/uns/views/components/search/s_view_all_position.tpl"}*}

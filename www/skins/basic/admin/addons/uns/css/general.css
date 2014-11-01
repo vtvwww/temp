@@ -144,7 +144,7 @@ tbody .cm-row-item.hide-row{
     background-color: #FFe388;
     border: 1px solid #FFc303;
     padding: 0 4px;
-    border-radius: 4px;
+    /*border-radius: 4px;*/
     color: #805d00;
 
 }
@@ -153,7 +153,7 @@ tbody .cm-row-item.hide-row{
     background-color: #b7ff8c;
     border: 1px solid #19B12B;
     padding: 0 4px;
-    border-radius: 4px;
+    /*border-radius: 4px;*/
     color: #014800;
 }
 
@@ -446,7 +446,7 @@ a.black:hover{
 }
 
 td.done, span.done{
-    background: url("../../uns_acc/images/ok.png") center center no-repeat !important;
+    background: url("../../uns_acc/images/ok-16x16.png") center center no-repeat !important;
 }
 
 hr.roman_dates{
@@ -501,18 +501,47 @@ input.q_changed{
 }
 
 select optgroup{
-    background-color: #d0d0d0;
+    background-color: #dcdcdc;
     border-top: 1px solid #343434;
     font-style: normal;
     font-size: 12px;
 }
 
 select optgroup option{
-    background-color: #ebebeb;
+    background-color: #fbfbfb;
     font-size: 13px;
     padding: 0 0 0 7px;
 }
 
+
+
+/******************************************************************************/
+/* TOOLTIP*/
+/******************************************************************************/
+fieldset.help{
+    background-color: #fcfcfc;
+    border: 1px solid #e2e2e2;
+    border-radius: 5px;
+    padding: 5px 15px;
+    overflow: hidden;
+}
+
+fieldset.help legend{
+    background-color: #f9f9f9;
+    border: 1px solid #e2e2e2;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 1px 10px;
+}
+
+fieldset.help.open{
+    height: auto;
+}
+
+fieldset.help.close{
+    height: 10px;
+}
 
 /******************************************************************************/
 /* TOOLTIP*/

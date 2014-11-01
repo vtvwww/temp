@@ -10,12 +10,7 @@
                         {include file="common_templates/period_selector.tpl" period=$search.period prefix=""}
                     </div>
                 </td>
-            </tr>
-        </table>
-
-        <table cellpadding="10" cellspacing="0" border="0" class="search-header">
-            <tr>
-                <td class="nowrap search-field">
+                <td class="nowrap search-field b1_l">
                     <label>Тип документа:</label>
                     <div class="break">
                         {include file="addons/uns/views/components/get_form_field.tpl"
@@ -36,7 +31,7 @@
         <table cellpadding="10" cellspacing="0" border="0" class="search-header">
             <tr>
                 <td>
-                    {include file="buttons/button.tpl" but_text="П о и с к" but_name="dispatch[`$dispatch`]" but_role="big" but_input_css="width:888px;font-weight:bold;"}
+                    {include file="buttons/button.tpl" but_text="П О И С К" but_name="dispatch[`$dispatch`]" but_role="big" but_input_css="width:918px;font-weight:bold;"}
                     {*{include file="buttons/button.tpl" but_text=$lang.search but_name="dispatch[`$dispatch`]" but_role="submit"}*}
                 </td>
             </tr>

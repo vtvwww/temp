@@ -14,6 +14,8 @@
             {include file="addons/uns_orders/views/uns_orders/components/order.tpl"}
             <hr>
             {include file="addons/uns_orders/views/uns_orders/components/items.tpl"}
+            <hr>
+            {include file="addons/uns_orders/views/uns_orders/components/shipments.tpl"}
 
             <div class="buttons-container cm-toggle-button buttons-bg">
                 {if $mode == "add"}

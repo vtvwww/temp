@@ -42,6 +42,8 @@
 
     {* БАЛАНС ПО НАСОСНОЙ ПРОДУКЦИИ *}
     {include file="addons/uns_mech/views/uns_balance_sgp/components/view_pumps.tpl" balances=$balances}
+    <hr/>
+    {include file="addons/uns_mech/views/uns_balance_sgp/components/info_view_pumps.tpl"}
 
     {* БАЛАНС ПО ДЕТАЛЯМ НА СГП *} {* todo - временно удалено 2014-10-25 --> сэкономлено 2секунды расчетов *}
     {*{include file="addons/uns_mech/views/uns_balance_sgp/components/view_details.tpl" balances=$balances_D}*}

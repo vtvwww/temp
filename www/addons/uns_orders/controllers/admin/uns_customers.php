@@ -113,3 +113,11 @@ if($mode == 'delete'){
     return array(CONTROLLER_STATUS_REDIRECT, $controller . ".manage");
 }
 
+function fn_uns_customers__search ($controller){
+    $params = array(
+        'country_id',
+        'region_id',
+    );
+    fn_uns_search_set_get_params($controller, $params);
+    return true;
+}

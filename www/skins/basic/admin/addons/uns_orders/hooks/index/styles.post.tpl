@@ -1,0 +1,1 @@
+<link href="{$smarty.const.UNS_ORDERS_DIR_CSS}/styles.css" rel="stylesheet" type="text/css" />

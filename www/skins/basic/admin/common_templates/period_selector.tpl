@@ -39,7 +39,8 @@
 {/if}
 
 	{if $display != "form"}&nbsp;&nbsp;{/if}
-	<label{if $display != "form"} class="label-html"{/if}>{$lang.select_dates}:</label>
+	<label{if $display != "form"} class="label-html"{/if}>{$lang.or}</label>
+	{*<label{if $display != "form"} class="label-html"{/if}>{$lang.select_dates}:</label>*}
 
 {if $display == "form"}
 	<div class="break nowrap">

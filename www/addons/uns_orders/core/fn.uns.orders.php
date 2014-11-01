@@ -56,12 +56,24 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
         $condition .= db_quote(" AND $m_tbl.customer_id in (?n)", $params["customer_id_array"]);
     }
 
+    if ($params['region_id_array'] = to__array($params['region_id'])) {
+        $condition .= db_quote(" AND $m_tbl.region_id in (?n)", $params['region_id_array']);
+    }
+
+    if ($params['country_id_array'] = to__array($params['country_id'])) {
+        $condition .= db_quote(" AND $m_tbl.country_id in (?n)", $params['country_id_array']);
+    }
+
     if (is__more_0($params["date_finished_begin"], $params["date_finished_end"])){
         $condition .= db_quote(" AND $m_tbl.date_finished between ?i AND ?i ", $params["date_finished_begin"], $params["date_finished_end"]);
     }
 
+    if ($params['status']) {
+        $condition .= db_quote(" AND $m_tbl.status = ?s ", $params['status']);
+    }
+
     if ($params['only_active']) {
-        $condition .= db_quote(" AND $m_tbl.status = 'Open' ");
+        $condition .= db_quote(" AND $m_tbl.status in ('Open','Paid') ");
     }
 
     // *************************************************************************
@@ -206,6 +218,24 @@ function fn_uns__upd_order_items($order_id, $data){
     $data = trim__data($data);
     $m_table = "?:_acc_order_items";
     $oi_ids = array();
+
+/*    // >>> Проверка на дубликаты позиций, если есть дубликат, то его необходимо сложить с уже существущим
+    $_data = array();
+    foreach ($data as $k=>$i){
+        $key = $i['item_type']."__".$i['item_id'];
+        if (is__array($_data[$key])){
+            $_data[$key]["quantity"]                += abs($i['quantity']);
+            $_data[$key]["quantity_in_production"]  += abs($i['quantity_in_production']);
+            $_data[$key]["quantity_in_reserve"]     += abs($i['quantity_in_reserve']);
+            $_data[$key]["comment"]                 .= " " . $i['comment'];
+        }else{
+            $_data[$key] = $i;
+        }
+    }
+    $data = $_data;
+    // <<< Проверка на дубликаты позиций, если есть дубликат, то его необходимо сложить с уже существущим*/
+
+
     foreach ($data as $i){
         if (is__more_0($i['item_id']) and  is_numeric($i['quantity']) and fn_check_type($i['item_type'], UNS_ITEM_TYPES)){
             $v = array(
@@ -216,6 +246,7 @@ function fn_uns__upd_order_items($order_id, $data){
                 'quantity_in_production'=> abs($i['quantity_in_production']),
                 'quantity_in_reserve'   => abs($i['quantity_in_reserve']),
                 'comment'               => $i['comment'],
+                'date'                  => fn_parse_date($i["date"]),
                 'weight'                => (is__more_0(floatval($i['weight'])))?floatval($i['weight']):0,
             );
 
@@ -253,7 +284,7 @@ function fn_acc__upd_order_info($id, $data){
     $d = array();
     $d["comment"]       = (strlen($data["comment"]))?$data["comment"]:"";
     $d["date_finished"] = fn_parse_date($data["date_finished"]);
-    $d["status"]        = (fn_check_type($data["status"], "|Open|Close|Hide|"))?$data["status"]:"Hide";
+    $d["status"]        = (fn_check_type($data["status"], "|Open|Close|Hide|Paid|Shipped|"))?$data["status"]:"Hide";
     $d["customer_id"]   = $data["customer_id"];
     $d["country_id"]    = $data["country_id"];
     $d["region_id"]     = $data["region_id"];
@@ -302,11 +333,13 @@ function fn_acc__get_order_items($params = array(), $items_per_page = 0){
         "$m_tbl.comment",
         "$m_tbl.weight",
         "$m_tbl.order_id",
+        "$m_tbl.date",
     );
 
     $sorting_schemas = array(
         "view" => array(
-            "$m_tbl.$m_key"  => "asc",
+            "$m_tbl.date"   => "asc",
+            "$m_tbl.$m_key" => "asc",
         )
     );
 

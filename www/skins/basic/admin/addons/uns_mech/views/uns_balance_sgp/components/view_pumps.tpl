@@ -102,8 +102,8 @@
                         {assign var="order_q"               value=$p.orders[$o.order_id].P|default:0}
                         {assign var="order_q_in_production" value=$p.orders_in_production[$o.order_id].P|default:0}
                         {assign var="order_q_in_reserve"    value=$p.orders_in_reserve[$o.order_id].P|default:0}
-                        {assign var="curr_q"                value=$curr_q-$order_q_in_production} {*Для того, чтобы последовательно вычитать из СГП имеющиеся заказы*}
-                        <td align="center" class="{if $smarty.foreach.o.first}b3_l{else}b1_l_black{/if} {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}" style="min-width: 26px;">
+                        {assign var="curr_q"                value=$curr_q-$order_q_in_production+$order_q_in_reserve} {*Для того, чтобы последовательно вычитать из СГП имеющиеся заказы*}
+                        <td align="center" class="{if $smarty.foreach.o.first}b3_l{else}b1_l_black{/if} {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}" style="min-width: 16px;">
                             {if $order_q_in_production!=0}
                                 <span class="{if $order_q_in_production<0}info_warning_block{elseif $order_q_in_production==0}zero bold{/if}">
                                     {if $o.data_for_tmp.P[$p.p_id].comment|strlen}
@@ -115,7 +115,7 @@
                             {/if}
                         </td>
 
-                        <td align="center" style="border-left: 1px dashed #808080; min-width: 26px;" class="{if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if} {*{if $curr_q>=0 and $order_q>0 }done{/if}*}">
+                        <td align="center" style="border-left: 1px dashed #808080; min-width: 16px;" class="{if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if} {*{if $curr_q>=0 and $order_q>0 }done{/if}*}">
                             {if $order_q_in_production>0}
                                 {if $order_q_in_reserve > 0}
                                     <span title="Зарезервировано {$order_q_in_reserve} шт. из {$order_q_in_production} шт." class="hand {if $order_q_in_reserve>=$order_q_in_production}info_green_block{else}info_yellow_block{/if} bold">
@@ -144,8 +144,8 @@
                         {assign var="order_q"               value=$p.orders[$o.order_id].PF|default:0}
                         {assign var="order_q_in_production" value=$p.orders_in_production[$o.order_id].PF|default:0}
                         {assign var="order_q_in_reserve"    value=$p.orders_in_reserve[$o.order_id].PF|default:0}
-                        {assign var="curr_q"                value=$curr_q-$order_q_in_production} {*Для того, чтобы последовательно вычитать из СГП имеющиеся заказы*}
-                        <td align="center" class="{if $smarty.foreach.o.first}b3_l{else}b1_l_black{/if} {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}" style="min-width: 26px;">
+                        {assign var="curr_q"                value=$curr_q-$order_q_in_production+$order_q_in_reserve} {*Для того, чтобы последовательно вычитать из СГП имеющиеся заказы*}
+                        <td align="center" class="{if $smarty.foreach.o.first}b3_l{else}b1_l_black{/if} {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}" style="min-width: 16px;">
                             {if $order_q_in_production!=0}
                                 <span class="{if $order_q_in_production<0}info_warning_block{elseif $order_q_in_production==0}zero bold{/if}">
                                     {if $o.data_for_tmp.PF[$p.p_id].comment|strlen}
@@ -157,7 +157,7 @@
                             {/if}
                         </td>
 
-                        <td align="center" style="border-left: 1px dashed #808080; min-width: 26px;" class="{if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if} {*{if $curr_q>=0 and $order_q>0 }done{/if}*}">
+                        <td align="center" style="border-left: 1px dashed #808080; min-width: 16px;" class="{if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if} {*{if $curr_q>=0 and $order_q>0 }done{/if}*}">
                             {if $order_q_in_production>0}
                                 {if $order_q_in_reserve > 0}
                                     <span title="Зарезервировано {$order_q_in_reserve} шт. из {$order_q_in_production} шт." class="hand {if $order_q_in_reserve>=$order_q_in_production}info_green_block{else}info_yellow_block{/if} bold">
@@ -186,8 +186,8 @@
                         {assign var="order_q"               value=$p.orders[$o.order_id].PA|default:0}
                         {assign var="order_q_in_production" value=$p.orders_in_production[$o.order_id].PA|default:0}
                         {assign var="order_q_in_reserve"    value=$p.orders_in_reserve[$o.order_id].PA|default:0}
-                        {assign var="curr_q"                value=$curr_q-$order_q_in_production} {*Для того, чтобы последовательно вычитать из СГП имеющиеся заказы*}
-                        <td align="center" class="{if $smarty.foreach.o.first}b3_l{else}b1_l_black{/if} {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}" style="min-width: 26px;">
+                        {assign var="curr_q"                value=$curr_q-$order_q_in_production+$order_q_in_reserve} {*Для того, чтобы последовательно вычитать из СГП имеющиеся заказы*}
+                        <td align="center" class="{if $smarty.foreach.o.first}b3_l{else}b1_l_black{/if} {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}" style="min-width: 16px;">
                             {if $order_q_in_production!=0}
                                 <span class="{if $order_q_in_production<0}info_warning_block{elseif $order_q_in_production==0}zero bold{/if}">
                                     {if $o.data_for_tmp.PA[$p.p_id].comment|strlen}
@@ -199,7 +199,7 @@
                             {/if}
                         </td>
 
-                        <td align="center" style="border-left: 1px dashed #808080; min-width: 26px;" class="{if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if} {*{if $curr_q>=0 and $order_q>0 }done{/if}*}">
+                        <td align="center" style="border-left: 1px dashed #808080; min-width: 16px;" class="{if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if} {*{if $curr_q>=0 and $order_q>0 }done{/if}*}">
                             {if $order_q_in_production>0}
                                 {if $order_q_in_reserve > 0}
                                     <span title="Зарезервировано {$order_q_in_reserve} шт. из {$order_q_in_production} шт." class="hand {if $order_q_in_reserve>=$order_q_in_production}info_green_block{else}info_yellow_block{/if} bold">

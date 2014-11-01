@@ -122,12 +122,15 @@
 {* СТАТУС *}
 <div class="form-field">
     <label class="cm-required" for="order_status">Состояние заказа:</label>
-    <select name="{$e_n}[status]" id="order_status">
+    <select class="order_status" name="{$e_n}[status]" id="order_status" onchange="$('#img_order_status').removeClass().addClass($(this).val())">
         <option value="">---</option>
-        <option value="Hide" {if $o.status == "Hide"}selected="selected"{/if} {if $mode == "add"}selected="selected"{/if}>Скрыт - предварительный заказ</option>
-        <option value="Open" {if $o.status == "Open"}selected="selected"{/if}>Открыт - заказ готов к выполнению</option>
-        <option value="Close" {if $o.status == "Close"}selected="selected"{/if}>Выполнен - заказ отгружен</option>
+        {*<option value="Hide" {if $o.status == "Hide"}selected="selected"{/if} {if $mode == "add"}selected="selected"{/if}>Скрыт - предварительный заказ</option>*}
+        <option value="Open"    class="open"    {if $o.status == "Open"}selected="selected"{/if}>Открыт</option>
+        <option value="Close"   class="close"   {if $o.status == "Close"}selected="selected"{/if}>Выполнен</option>
+        <option value="Paid"    class="paid"    {if $o.status == "Paid"}selected="selected"{/if}>Оплачен</option>
+        <option value="Shipped" class="shipped" {if $o.status == "Shipped"}selected="selected"{/if}>Отгружен</option>
     </select>
+    <span id="img_order_status" class="{$o.status}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 </div>
 
 {*КОММЕНТАРИЙ*}

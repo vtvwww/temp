@@ -1,3 +1,9 @@
+function help_box (e){
+    var fs = e.parent();
+    if (fs.hasClass('open')) fs.removeClass('open').addClass('close');
+    else fs.removeClass('close').addClass('open');
+}
+
 function mark_item (target){
     $('td.mark').removeClass('mark');
     target.parent().parent().find('td').addClass('mark');

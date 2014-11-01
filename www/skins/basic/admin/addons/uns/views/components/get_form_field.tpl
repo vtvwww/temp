@@ -193,7 +193,7 @@
     {else}
         <div class="form-field">
             <label class="" {if $f_full_name} for="{$f_id}" {else} for="{$f_name}_{$f_id}" {/if}>{$f_description}{if $f_tooltip|strlen} {include file="common_templates/tooltip.tpl" tooltip=$f_tooltip}{/if}:</label>
-            <textarea {if $f_full_name} id="{$f_id}" name="{$f_full_name}" {else} id="{$f_name}_{$f_id}" name="data[{$f_name}]" {/if} rows="{$f_row|default:"5"}" class="input-textarea-long">{if $f_value_prefix}{$f_value_prefix}{/if}{$f_value}{if $f_value_suffix}{$f_value_suffix}{/if}</textarea>
+            <textarea {if $f_style}style="{$f_style}"{/if} {if $f_full_name} id="{$f_id}" name="{$f_full_name}" {else} id="{$f_name}_{$f_id}" name="data[{$f_name}]" {/if} rows="{$f_row|default:"5"}" class="input-textarea-long">{if $f_value_prefix}{$f_value_prefix}{/if}{$f_value}{if $f_value_suffix}{$f_value_suffix}{/if}</textarea>
         </div>
     {/if}
 
@@ -498,6 +498,7 @@
                 date_id="date_`$r`__`$f_id`"
                 date_name=$f_name
                 date_val=$f_value|default:$smarty.now
+                icon=$f_icon|default:true
                 start_year="2000" end_year="2030"}
    {elseif $f_full}
        <div class="form-field {if $f_hidden} hidden {/if}">

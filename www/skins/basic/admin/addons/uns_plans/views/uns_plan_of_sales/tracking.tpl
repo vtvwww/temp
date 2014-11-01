@@ -24,7 +24,7 @@
 {/literal}
 {capture name="mainbox"}
     {capture name="add_cond"}
-        <td class="nowrap search-field">
+        <td class="nowrap search-field b1_l">
             <label for="select_sgp">Выбор СКЛАДА ГОТОВОЙ ПРОДУКЦИИ:</label>
             <div class="break">
                 <select name="select_sgp" id="select_sgp">

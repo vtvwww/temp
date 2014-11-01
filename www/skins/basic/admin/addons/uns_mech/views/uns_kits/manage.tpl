@@ -23,44 +23,45 @@
 {script src="js/tabs.js"}
 {capture name="mainbox"}
     {capture name="search_content"}
-        {include file="addons/uns/views/components/search/s_time.tpl"}
-        {strip}
-            <hr>
-            {*СЕРИИ НАСОСОВ*}
-            <table cellpadding="10" cellspacing="0" border="0" class="search-header materials" id="search_form_materials">
-                <tr>
-                    <td class="nowrap search-field">
-                        <label>{$lang.uns_pump_series}:</label>
-                        <div class="break">
-                            {include file="addons/uns/views/components/get_form_field.tpl"
-                                f_type="select_by_group"
-                                f_required=true f_integer=false
-                                f_name="ps_id"
-                                f_options="pump_series"
-                                f_option_id="ps_id"
-                                f_option_value="ps_name"
-                                f_optgroups=$pump_series
-                                f_optgroup_label="pt_name_short"
-                                f_option_target_id=$search.ps_id
-                                f_simple=true
-                                f_blank=true
-                            }
-                        </div>
-                    </td>
-                    <td class="nowrap search-field">
-                        <label for="status">Статус:</label>
-                        <div class="break">
-                            <select name="status" id="status">
-                              <option value="0">---</option>
-                              <option {if $search.status == "not_Z"}selected="selected"{/if}    value="not_Z">Партия комплектуется или укоплектована</option>
-                              <option {if $search.status == "Z"}selected="selected"{/if}        value="Z">Партия закрыта</option>
-                            </select>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-            <hr>
-        {/strip}
+        {*СЕРИИ НАСОСОВ*}
+        <table cellpadding="10" cellspacing="0" border="0" class="search-header materials" id="search_form_materials">
+            <tr>
+                <td class="nowrap search-field">
+                    <label>Период:</label>
+                    <div class="break">
+                        {include file="common_templates/period_selector.tpl" period=$search.period}
+                    </div>
+                </td>
+                <td class="nowrap search-field b1_l">
+                    <label>{$lang.uns_pump_series}:</label>
+                    <div class="break">
+                        {include file="addons/uns/views/components/get_form_field.tpl"
+                            f_type="select_by_group"
+                            f_required=true f_integer=false
+                            f_name="ps_id"
+                            f_options="pump_series"
+                            f_option_id="ps_id"
+                            f_option_value="ps_name"
+                            f_optgroups=$pump_series
+                            f_optgroup_label="pt_name_short"
+                            f_option_target_id=$search.ps_id
+                            f_simple=true
+                            f_blank=true
+                        }
+                    </div>
+                </td>
+                <td class="nowrap search-field b1_l">
+                    <label for="status">Статус Партии:</label>
+                    <div class="break">
+                        <select name="status" id="status">
+                          <option value="0">---</option>
+                          <option {if $search.status == "not_Z"}selected="selected"{/if}    value="not_Z">Комплектуется/укоплектована</option>
+                          <option {if $search.status == "Z"}selected="selected"{/if}        value="Z">Закрыта</option>
+                        </select>
+                    </div>
+                </td>
+            </tr>
+        </table>
     {/capture}
     {include file="addons/uns/views/components/search/search.tpl" dispatch="`$controller`.manage" search_content=$smarty.capture.search_content}
 

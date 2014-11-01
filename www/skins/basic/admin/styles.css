@@ -4845,7 +4845,7 @@ html .ui-widget-overlay {
 	padding: 0;
 	margin: 0;
 	overflow: hidden;
-	opacity: 0.9;
+	opacity: 0.6;
 	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=70)";
 }
 .ui-dialog .ui-dialog-title {

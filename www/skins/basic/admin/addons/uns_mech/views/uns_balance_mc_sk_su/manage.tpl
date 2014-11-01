@@ -2,6 +2,7 @@
 {capture name="mainbox"}
     {capture name="search_content"}
         {include file="addons/uns/views/components/search/s_time.tpl"}
+        <hr/>
         {include file="addons/uns/views/components/search/s_details.tpl"}
     {/capture}
     {include file="addons/uns/views/components/search/search.tpl" dispatch="`$controller`.manage" search_content=$smarty.capture.search_content}

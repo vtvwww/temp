@@ -61,7 +61,7 @@
                     f_name="name"
                     f_value=$i.name
                     f_description="Полное имя"
-                    f_tooltip="<страна> : <город> : <полное наименование>"
+                    f_tooltip=""
                 }
 
                 {include file="addons/uns/views/components/get_form_field.tpl"

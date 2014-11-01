@@ -125,6 +125,55 @@
     {/if}
 
     {if $mode == 'update' and $d.type == $smarty.const.DOC_TYPE__RO}
+    {*Отображать только для расходного ордера*}
+    <div class="form-field">
+        <label class="cm-required" for="city_id">Страна / Регион / Город:</label>
+        {*Страна*}
+        {include file="addons/uns/views/components/get_form_field.tpl"
+            f_id="country_id"
+            f_type="select"
+            f_required=true f_integer=true f_integer_more_0=true
+            f_name="`$e_n`[country_id]"
+            f_blank=true
+            f_full=true
+            f_options=$countries
+            f_option_id="id"
+            f_option_value="name"
+            f_option_target_id=$customers[$d.customer_id].country_id
+            f_simple=true
+        }
+        &nbsp;/&nbsp;
+        {*Регион*}
+        {include file="addons/uns/views/components/get_form_field.tpl"
+            f_id="region_id"
+            f_type="select"
+            f_required=true f_integer=true f_integer_more_0=true
+            f_name="`$e_n`[region_id]"
+            f_blank=true
+            f_full=true
+            f_options=$regions
+            f_option_id="id"
+            f_option_value="name"
+            f_option_target_id=$customers[$d.customer_id].region_id
+            f_simple=true
+        }
+        &nbsp;/&nbsp;
+        {*Город*}
+        {include file="addons/uns/views/components/get_form_field.tpl"
+            f_id="city_id"
+            f_type="select"
+            f_required=true f_integer=true f_integer_more_0=true
+            f_name="`$e_n`[city_id]"
+            f_blank=true
+            f_full=true
+            f_options=$cities
+            f_option_id="id"
+            f_option_value="name"
+            f_option_target_id=$customers[$d.customer_id].city_id
+            f_simple=true
+        }
+    </div>
+
     {include file="addons/uns/views/components/get_form_field.tpl"
         f_id="customer_id"
         f_type="select"
@@ -158,13 +207,13 @@
     }
 
     {* Автоматический выбор "Наименования" *}
-    <div class="form-field">
-        <label class="" for="auto_select_name">Автомат. выбор:{include file="common_templates/tooltip.tpl" tooltip="Автоматический выбор первого элемента НАИМЕНОВАНИЯ при выборе КАТЕГОРИИ/СЕРИИ"}</label>
-        <select id="auto_select_name">
-            <option value="N">Нет</option>
-            <option value="Y">Да</option>
-        </select>
-    </div>
+    {*<div class="form-field">*}
+        {*<label class="" for="auto_select_name">Автомат. выбор:{include file="common_templates/tooltip.tpl" tooltip="Автоматический выбор первого элемента НАИМЕНОВАНИЯ при выборе КАТЕГОРИИ/СЕРИИ"}</label>*}
+        {*<select id="auto_select_name">*}
+            {*<option value="N">Нет</option>*}
+            {*<option value="Y">Да</option>*}
+        {*</select>*}
+    {*</div>*}
 
 {/capture}
 

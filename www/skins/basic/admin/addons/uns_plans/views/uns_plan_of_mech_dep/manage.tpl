@@ -171,7 +171,7 @@
                         {/if}
 
                         {assign var="b_none"            value="<td class='bar_none'         style='width:`$analisys.$ps_id.none`%;'></td>"}
-                        {assign var="analisys_progress" value="<table class='`$b_class`' title='`$b_title`' style='margin:1px 0 1px 0;' cellpadding='0' cellspacing='0' border='0' width='100%'><thead><tr>`$b_offset``$b_zero``$b_available``$b_zadel``$b_none`</tr></thead></table>"}
+                        {assign var="analisys_progress" value="<table class='`$b_class`' title='`$b_title`' style='margin:-1px 0 1px 0;' cellpadding='0' cellspacing='0' border='0' width='100%'><thead><tr>`$b_offset``$b_zero``$b_available``$b_zadel``$b_none`</tr></thead></table>"}
                         {assign var="analisys_add_rows" value="<tr><td valign='bottom' style='border-top:none;border-bottom:none;padding: 0;' class='b_l' colspan='3'>`$analisys_progress`</td></tr>"}
                     {/if}
 

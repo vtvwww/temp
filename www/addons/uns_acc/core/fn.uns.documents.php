@@ -157,6 +157,8 @@ function fn_uns__get_documents($params = array(), $items_per_page = 0){
         "$m_tbl.package_id",
         "$m_tbl.package_type",
         "$m_tbl.customer_id",
+        "$m_tbl.order_id",
+        "$j_tbl_1.country_id",
         //        "$j_tbl_1.date_cast",
     );
 
@@ -192,9 +194,16 @@ function fn_uns__get_documents($params = array(), $items_per_page = 0){
 
     }
 
-//    if (is__more_0($params["type"])){
     if ($params["type_array"] = to__array($params["type"])){
         $condition .= db_quote(" AND $m_tbl.type in (?n)", $params['type_array']);
+    }
+
+    if ($params["order_id_array"] = to__array($params["order_id"])){
+        $condition .= db_quote(" AND $m_tbl.order_id in (?n)", $params['order_id_array']);
+    }
+
+    if ($params["exclude_type_array"] = to__array($params["exclude_type"])){
+        $condition .= db_quote(" AND $m_tbl.type not in (?n)", $params['exclude_type_array']);
     }
 
     if ($params['only_active']) {
@@ -230,6 +239,16 @@ function fn_uns__get_documents($params = array(), $items_per_page = 0){
     if ($params["customer_id_array"] = to__array($params["customer_id"])){
         $condition .= db_quote(" AND $m_tbl.customer_id in (?n) ", $params["customer_id_array"]);
     }
+
+    // По стране/регионам клиента
+    if ($params["country_id_array"] = to__array($params["country_id"])){
+        $condition .= db_quote(" AND $j_tbl_1.country_id in (?n) ", $params["country_id_array"]);
+    }
+
+    if ($params["region_id_array"] = to__array($params["region_id"])){
+        $condition .= db_quote(" AND $j_tbl_1.region_id in (?n) ", $params["region_id_array"]);
+    }
+
 
     // Если есть информация по ITEM_ID и ITEM_TYPE
     if (is__array($params["item_type"]) and ($params["item_id_array"] = to__array($params["item_id"]))){
@@ -766,6 +785,10 @@ function fn_uns__upd_document_info($id = 0, $doc){;
     // REGION
     if (is__more_0($doc["customer_id"])){
         $d["customer_id"]  = $doc["customer_id"];
+    }
+
+    if (is__more_0($doc["order_id"])){
+        $d["order_id"]  = $doc["order_id"];
     }
 
 

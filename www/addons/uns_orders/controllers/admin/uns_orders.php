@@ -30,6 +30,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         $suffix = "update&order_id={$id}&selected_section={$_REQUEST['selected_section']}";
     }
 
+    if ($mode == "shipment" and $action == "update"){
+//        fn_print_r($_REQUEST);
+        $document_id = $_REQUEST['document_id'];
+        $data = array("document"=> $_REQUEST["shipment"]["document"],
+                      "document_items"=> $_REQUEST["order_data"]["document_items"],
+        );
+        fn_uns__upd_document($document_id, $data);
+        $suffix = "update&order_id={$_REQUEST['order_id']}";
+    }
+
     if (defined('AJAX_REQUEST') and $mode == 'document_items'){
         switch ($_REQUEST['event']){
             case "change__item_type": // Произошла смена ТИПА ДЕТАЛИ
@@ -217,6 +227,21 @@ if($mode == 'update'){
     $order = array_shift(array_shift(fn_acc__get_orders($p)));
     $view->assign('order', $order);
 
+
+    //--------------------------------------------------------------------------
+    // Все Отгрузки по заказу
+    // DOCUMENTS ***************************************************************
+    $p = array();
+    $p["with_items"]                = true;
+    $p["info_category"]             = true;
+    $p["info_item"]                 = false;
+    $p["info_unit"]                 = false;
+    $p["order_id"]                  = $_REQUEST['order_id'];
+    list($documents) = fn_uns__get_documents($p);
+    $view->assign("documents", $documents);
+//    fn_print_r($documents);
+
+
     //--------------------------------------------------------------------------
     $countries  = array_shift(fn_uns__get_countries());
     $regions    = array_shift(fn_uns__get_regions(array("country_id"=>$order["country_id"])));
@@ -226,7 +251,6 @@ if($mode == 'update'){
     $view->assign("cities", $cities);
 
     //--------------------------------------------------------------------------
-    // customerS
     list($customers) = fn_uns__get_customers(array("country_id"=>$order["country_id"],"region_id"=>$order["region_id"],"city_id"=>$order["city_id"],));
     $view->assign('customers', $customers);
 
@@ -237,27 +261,53 @@ if($mode == 'update'){
     //--------------------------------------------------------------------------
     list($details_by_categories) = fn_uns__get_details(array('only_active' => true,'group_by_categories'=>true,"use_short_name"=>true,));
     $view->assign('details_by_categories', $details_by_categories);
-
-
-
-//    $view->assign("f_type", "select_by_group");
-//    $view->assign("f_options", "pumps");
-//    $view->assign("f_option_id", "p_id");
-//    $view->assign("f_option_value", "p_name");
-//    $view->assign("f_optgroups", $pumps);
-//    $view->assign("f_optgroup_label", "ps_name");
-//    $view->assign('f_simple_2', true);
-
-
-    /*    // PUMP_SERIES
-        $p = array(
-            'only_active' => true,
-            'group_by_types'=>true,
-        );
-        list($pump_series) = fn_uns__get_pump_series($p);
-        $view->assign('pump_series', $pump_series);*/
-//    fn_print_r($pump_series);
 }
+
+if ($mode == 'shipment'){
+    if ($action == "update"){
+        $p = array();
+        $p["with_items"]                = true;
+        $p["info_category"]             = true;
+        $p["info_item"]                 = false;
+        $p["info_unit"]                 = false;
+        $p["order_id"]                  = $_REQUEST["order_id"];
+        $p["document_id"]               = $_REQUEST["document_id"];
+        $shipment = array_shift(array_shift(fn_uns__get_documents($p)));
+        $view->assign("shipment", $shipment);
+//        fn_print_r($shipment);
+
+        //----------------------------------------------------------------------
+        $order = array_shift(array_shift(fn_acc__get_orders($_REQUEST)));
+        $view->assign('order', $order);
+
+        //----------------------------------------------------------------------
+        list($pumps_by_series) = fn_uns__get_pumps(array("group_by_series"=>true, "only_active" => true,));
+        $view->assign('pumps_by_series', $pumps_by_series);
+
+        //--------------------------------------------------------------------------
+        list($details_by_categories) = fn_uns__get_details(array('only_active' => true,'group_by_categories'=>true,"use_short_name"=>true,));
+        $view->assign('details_by_categories', $details_by_categories);
+
+    }
+
+    if ($action == "add"){
+//        //--------------------------------------------------------------------------
+//        $p = array(
+//            "with_items"                => true,
+//            "full_info"                 => true,
+//            "total_weight_and_quantity" => true,
+//        );
+//        $p = array_merge($_REQUEST, $p);
+//        $order = array_shift(array_shift(fn_acc__get_orders($p)));
+//        $view->assign('order', $order);
+    }
+
+    if ($action == "delete"){
+
+    }
+}
+
+
 
 
 if($mode == 'delete'){
@@ -270,9 +320,8 @@ if($mode == 'delete'){
 
 function fn_uns_orders__search ($controller){
     $params = array(
-        'period',
-        'time_from',
-        'time_to',
+        'country_id',
+        'region_id',
     );
     fn_uns_search_set_get_params($controller, $params);
     return true;
