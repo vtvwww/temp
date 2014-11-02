@@ -619,7 +619,7 @@
 {******************************************************************************}
 {elseif $f_type == "select_range"}
     {if $f_simple}
-        {if $f_plus_minus}<nobr><input type="button" value="–" class="select_plus_minus" onclick="var s = $(this).next(); var v = parseInt(s.val()); s.find('option').removeAttr('selected'); if (!s.attr('disabled')) s.find('option[value=' + (v-1) + ']').attr('selected', 'selected'); s.change();"/>{/if}
+        {if $f_plus_minus}<nobr><input {if $f_disabled}disabled="disabled"{/if} type="button" value="–" class="select_plus_minus" onclick="var s = $(this).next(); var v = parseInt(s.val()); s.find('option').removeAttr('selected'); if (!s.prop('disabled')) s.find('option[value=' + (v-1) + ']').attr('selected', 'selected'); s.change();"/>{/if}
         <select {if $f_track} default={$f_value} onchange="if (parseFloat($(this).attr('default')) == parseFloat($(this).val())) $(this).css('background-color','white'); else $(this).css('background-color','#FF8B8B');"{/if} {if strlen($f_add_attr)}add_attr="{$f_add_attr}"{/if} autocomplete="off" {if $f_name}name="{$f_name}"{/if} {if $f_id} id="{$f_id}"{/if} {if $f_disabled}disabled="disabled"{/if} {if $f_style}style="{$f_style}"{/if} {if $f_onchange}onchange="{$f_onchange}"{/if} >
             {if $f_blank}
                 <option {if $f_value == 0}  selected="selected" {/if} value="0">---</option>
@@ -628,7 +628,7 @@
                 <option {if $f_value == $i}selected="selected"{/if} value="{$i}">{$i}</option>
             {/foreach}
         </select>
-        {if $f_plus_minus}<input type="button" value="+" class="select_plus_minus" onclick="var s = $(this).prev(); var v = parseInt(s.val()); s.find('option').removeAttr('selected'); if (!s.attr('disabled')) s.find('option[value=' + (v+1) + ']').attr('selected', 'selected'); s.change();"/></nobr>{/if}
+        {if $f_plus_minus}<input {if $f_disabled}disabled="disabled"{/if} type="button" value="+" class="select_plus_minus" onclick="var s = $(this).prev(); var v = parseInt(s.val()); var v_max = parseInt(s.find('option:last').val()); if (!s.prop('disabled') && v<v_max) s.find('option').removeAttr('selected').parent().val(v+1);  s.change();"/></nobr>{/if}
     {elseif $f_simple_2}
         {foreach from=$f_from|range:$f_to item="i"}
             <option {if $f_value == $i} selected="selected" {/if} value="{$i}">{$i}</option>
@@ -645,7 +645,7 @@
                     <option {if $f_value == $i} selected="selected" {/if} value="{$i}">{$i}</option>
                 {/foreach}
             </select>
-            {if $f_plus_minus}<input type="button" value="+" class="select_plus_minus" onclick="var s = $(this).prev(); var v = parseInt(s.val()); s.find('option').removeAttr('selected'); if (!s.attr('disabled')) s.find('option[value=' + (v+1) + ']').attr('selected', 'selected'); s.change();"/>{/if}
+            {if $f_plus_minus}<input type="button" value="+" class="select_plus_minus" onclick="var s = $(this).prev(); var v = parseInt(s.val()); var v_max = parseInt(s.find('option:last').val()); if (!s.attr('disabled') && v<v_max) s.find('option').removeAttr('selected').parent().val(v+1);  s.change();"/>{/if}
         </div>
     {/if}
 

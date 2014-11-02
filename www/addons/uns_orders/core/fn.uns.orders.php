@@ -3,6 +3,8 @@
 function fn_acc__get_orders($params = array(), $items_per_page = 0){
     $default_params = array(
         'order_id' => 0,
+        'info_RO'     =>false,
+        'full_info'     =>false,
         'page' => 1,
         'only_active'=>false,
         'limit' => 0,
@@ -36,7 +38,7 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
             "$m_tbl.date_finished"  => "desc",
         ),
         "view_in_sgp" => array(
-            "$m_tbl.country_id"  => "asc",
+//            "$m_tbl.country_id"  => "asc",
             "$m_tbl.date_finished"  => "asc",
         ),
     );
@@ -112,8 +114,9 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
 
     if ($params['with_items']){
         $p = array(
-            'order_id'=>array_keys($data),
-            'full_info'=>true,
+            'order_id'  =>array_keys($data),
+            'full_info' =>$params["full_info"],
+            'info_RO'   =>$params["info_RO"],
         );
         list($items) = fn_acc__get_order_items($p);
         if (is__array($items)){
@@ -245,7 +248,6 @@ function fn_uns__upd_order_items($order_id, $data){
                 'item_type'             => $i['item_type'],
                 'item_id'               => $i['item_id'],
                 'quantity'              => abs($i['quantity']),
-                'quantity_in_production'=> abs($i['quantity_in_production']),
                 'quantity_in_reserve'   => abs($i['quantity_in_reserve']),
                 'comment'               => $i['comment'],
                 'date'                  => fn_parse_date($i["date"]),
@@ -325,12 +327,20 @@ function fn_acc__get_order_items($params = array(), $items_per_page = 0){
     $m_tbl      = "?:_acc_order_items";
     $m_key      = "oi_id";
 
+    $j_tbl_1    = "?:_acc_order_items__document_items";
+    $j_key_1    = "od_id";
+
+    $j_tbl_2    = "?:_acc_document_items";
+    $j_key_2    = "di_id";
+
+    $j_tbl_3    = "?:_acc_documents";
+    $j_key_3    = "document_id";
+
     $fields = array(
         "$m_tbl.$m_key",
         "$m_tbl.item_type",
         "$m_tbl.item_id",
         "$m_tbl.quantity",
-        "$m_tbl.quantity_in_production",
         "$m_tbl.quantity_in_reserve",
         "$m_tbl.comment",
         "$m_tbl.weight",
@@ -385,6 +395,42 @@ function fn_acc__get_order_items($params = array(), $items_per_page = 0){
     $data = db_get_hash_array($sql, $m_key);
 //      fn_print_r(str_replace(array(UNS_DB_PREFIX,"?:"), array("", "uns_"), $sql));
     if (!is__array($data)) return array(array(), $params);
+
+    // *************************************************************************
+    // 6. ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ
+    // *************************************************************************
+
+    if ($params["info_RO"]){
+        $oi_ids = array_keys($data);
+        $m_tbl = "?:_acc_order_items__document_items";
+        $cond = db_quote("$m_tbl.oi_id in (?n)", $oi_ids);
+
+        $sql = db_quote("SELECT
+                                $m_tbl.document_id,
+                                ?:_acc_documents.date,
+                                $m_tbl.di_id,
+                                CAST(?:_acc_document_items.quantity as UNSIGNED) as quantity,
+                                $m_tbl.od_id,
+                                $m_tbl.oi_id
+                         FROM $m_tbl
+                           LEFT JOIN ?:_acc_documents ON ($m_tbl.document_id = ?:_acc_documents.document_id)
+                           LEFT JOIN ?:_acc_document_items ON ($m_tbl.di_id = ?:_acc_document_items.di_id)
+                         WHERE $cond
+                         ORDER BY ?:_acc_documents.date asc, $m_tbl.document_id asc
+                         ");
+
+        $data_RO = db_get_array(UNS_DB_PREFIX.$sql);
+        if (is__array($data_RO)){
+            foreach ($data_RO as $v){
+                $data[$v["oi_id"]]["info_RO"]["total_q"] += $v["quantity"];
+                $data[$v["oi_id"]]["info_RO"]["items"][$v["od_id"]] = $v;
+            }
+        }
+
+    }
+
+
+
     if ($params["full_info"]){
         $i = array(
             "D" => array(),
@@ -443,11 +489,8 @@ function fn_acc__get_order_items($params = array(), $items_per_page = 0){
             }
         }
     }
+
     $data = fn_group_data_by_field($data, "order_id");
-    // *************************************************************************
-    // 6. ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ
-    // *************************************************************************
-    //foreach ($data as $k_data=>$v_data){}
 
     return array($data, $params);
 }

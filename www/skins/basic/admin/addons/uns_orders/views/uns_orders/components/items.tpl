@@ -27,25 +27,28 @@
         <tr>
             <td style="background-color: rgb(238,238,238);" colspan="4" class="bold" align="right">ИТОГО:</td>
             <td style="background-color: rgb(238,238,238);" colspan="1" class="bold center b_l b1_b"><span class="total">{$o.total_quantity}</span></td>
-            <td style="background-color: rgb(238,238,238);" colspan="2" class="bold center b1_l b1_b"><span class="total"><nobr>{$o.total_weight|number_format:1:".":" "}</nobr></span></td>
-            <td style="background-color: rgb(238,238,238);" colspan="3" class="b_l">&nbsp;</td>
+            <td style="background-color: rgb(238,238,238);" colspan="1" class="bold center b1_l b1_b"><span class="total"><nobr>{$o.total_weight|number_format:1:".":" "}</nobr></span></td>
+            <td style="background-color: rgb(238,238,238);" colspan="5" class="b_l">&nbsp;</td>
         </tr>
     </tfoot>
     <thead>
         <tr class="first-sibling" style="background-color: #eeeeee">
             <th rowspan="2" width="10px" class="cm-non-cb center">№</th>
-            <th rowspan="2" class="cm-non-cb b1_l center" width="10px">Дата</th>
-            <th rowspan="2" class="cm-non-cb b1_l center" width="10px">Тип</th>
-            <th rowspan="2" class="cm-non-cb b1_l center" width="140px">Наименование</th>
-            <th colspan="3" class="cm-non-cb b_l center" style="text-transform: none;" width="140px">Предварительный заказ</th>
-            <th rowspan="2" class="cm-non-cb b_l center" style="text-transform: none;" width="100px">Кол-во<br>в произ.<br><span style="padding: 0; font-size: 11px; font-style: normal; color: red; font-weight: normal;">по факту<br>оплаты</span><br><span style="background-color: #ffffff;border: 1px solid gray;font-size: 12px;" class="hand all_in_production">Уст. все</span></th>
-            <th rowspan="2" class="cm-non-cb b_l center" style="text-transform: none;" width="100px">Кол-во<br>в резерв<br><span style="padding: 0; font-size: 11px; font-style: normal; color: red; font-weight: normal;">предпродажная<br>подготовка</span></th>
-            {*<th rowspan="2" class="cm-non-cb b_l center" width="">Примеч.</th>*}
+            <th rowspan="2" class="cm-non-cb b1_l center" width="10px">ДАТА</th>
+            <th rowspan="2" class="cm-non-cb b1_l center" width="10px">ТИП</th>
+            <th rowspan="2" class="cm-non-cb b1_l center" width="140px">НАИМЕНОВАНИЕ</th>
+            <th colspan="2" class="cm-non-cb b_l center" style="text-transform: none;" width="140px">ЗАКАЗ</th>
+            <th             class="cm-non-cb b_l center" style="text-transform: none;">В РЕЗЕРВЕ</th>
+            <th colspan="3" class="cm-non-cb b_l center">ОТГРУЗКА</th>
             <th rowspan="2" class="cm-non-cb b1_l center">&nbsp;</th>
         </tr>
         <tr class="first-sibling" style="background-color: #eeeeee">
-            <th class="cm-non-cb b_l b1_t center" width="40px" style="text-transform: none;">кол-во, шт</th>
-            <th class="cm-non-cb b1_l b1_t center" colspan="2" style="text-transform: none;" width="40px">вес, кг</th>
+            <th class="cm-non-cb b_l b1_t center"  style="text-transform: none;">кол-во, шт</th>
+            <th class="cm-non-cb b1_l b1_t center" style="text-transform: none;">вес, кг</th>
+            <th class="cm-non-cb b_l b1_t center"  style="text-transform: none;">кол-во, шт</th>
+            <th class="cm-non-cb b_l b1_t center"  style="text-transform: none;">факт.</th>
+            <th class="cm-non-cb b1_l b1_t center" style="text-transform: none;">когда</th>
+            <th class="cm-non-cb b1_l b1_t center" style="text-transform: none;">след.</th>
         </tr>
     </thead>
 
@@ -85,11 +88,10 @@
                             {include file="addons/uns/views/components/get_form_field.tpl"
                                 f_type="item_type"
                                 f_required=true f_integer=false
-                                f_material= $item_type_material
-                                f_detail  = $item_type_detail
-                                f_p   =     $item_type_p
-                                f_pf  =     $item_type_pf
-                                f_pa  =     $item_type_pa
+                                f_detail  = true
+                                f_p   =     true
+                                f_pf  =     true
+                                f_pa  =     true
                                 f_name="`$e_n`[item_type]"
                                 f_value=$i.item_type
                                 f_simple=true
@@ -109,7 +111,7 @@
                                     f_option_value="detail_name"
                                     f_optgroups=$details_by_categories
                                     f_optgroup_label="dcat_name"
-                                    f_option_target_id=$i.detail_id
+                                    f_option_target_id=$i.item_id
                                 }
 
                             {elseif $i.item_type == "P" or $i.item_type == "PF" or $i.item_type == "PA"}
@@ -122,28 +124,31 @@
                                     f_option_value="p_name"
                                     f_optgroups=$pumps_by_series
                                     f_optgroup_label="ps_name"
-                                    f_option_target_id=$i.p_id
+                                    f_option_target_id=$i.item_id
                                 }
                             {/if}
                         </td>
 
-                        {assign var="q" value=$i.quantity}
+                        {*КОЛ-ВО*}
+                        {assign var="f_min" value=0}
+                        {if $i.RO_document_id>0}
+                            {assign var="f_min" value=$i.RO_q|intval}
+                        {/if}
+                        {assign var="q" value=$i.quantity|fn_fvalue}
                         <td class="cm-non-cb b_l" align="left">
                             {include file="addons/uns/views/components/get_form_field.tpl"
                                 f_type="select_range"
                                 f_id="q_`$num`"
                                 f_name="`$e_n`[quantity]"
-                                f_from=0
-                                f_to=200
-                                f_value=$q|fn_fvalue
+                                f_from=$f_min
+                                f_to=100
+                                f_value=$q
                                 f_simple=true
                                 f_plus_minus=true
+                                f_track=true
+                                f_default=$q
                                 f_style="width:50px;"
                             }
-                        </td>
-
-                        <td class="cm-non-cb b1_l" align="center">
-                            <span class="weight">{$i.weight|number_format:1:".":" "}</span>
                             {include file="addons/uns/views/components/get_form_field.tpl"
                                 f_type="hidden"
                                 f_name="`$e_n`[weight]"
@@ -151,32 +156,76 @@
                             }
                         </td>
 
-                        <td class="cm-non-cb b1_l bold" align="center">
+                        {*ОБЩИЙ ВЕС*}
+                        <td class="cm-non-cb b1_l bold" align="right">
                             <span class="total_weight"><nobr>{$q*$i.weight|number_format:1:".":" "}</nobr></span>
                         </td>
 
-                        <td class="cm-non-cb b_l" align="center">
+                        {*В РЕЗЕРВЕ*}
+                        <td class="cm-non-cb b_l" align="left">
                             {include file="addons/uns/views/components/get_form_field.tpl"
                                 f_type="select_range"
-                                f_id="q_`$num`_in_production"
-                                f_name="`$e_n`[quantity_in_production]"
+                                f_id="q_`$num`"
+                                f_name="`$e_n`[quantity_in_reserve]"
                                 f_from=0
-                                f_to=$i.quantity
-                                f_value=$i.quantity_in_production
+                                f_to=$i.quantity_in_reserve
+                                f_value=$i.quantity_in_reserve
                                 f_simple=true
                                 f_plus_minus=true
+                                f_track=true
+                                f_default=$i.quantity_in_reserve
                                 f_style="width:50px;"
                             }
                         </td>
 
-                        <td class="cm-non-cb b_l" align="center">
+                        {*ОТГРУЗКА*}
+                        {assign var="pos" value="-250"}
+                        {assign var="RO" value=false}
+                        {assign var="RO_q_disabled" value=false}
+                        {if $i.info_RO.items|is__array}
+                            {assign var="RO" value=true}
+                            {if $i.info_RO.total_q >= $i.quantity}
+                                {assign var="RO_q_disabled" value=true}
+                                {assign var="pos" value="-150"}
+                            {else}
+                                {math equation="-250+50*x/y" x=$i.info_RO.total_q y=$i.quantity assign="pos"}
+                            {/if}
+                        {/if}
+
+                        <td class="cm-non-cb b_l {if $i.info_RO.total_q}b{else}zero{/if}" align="center" style="width:44px; background: url('skins/basic/admin/addons/uns_orders/images/bar.png') {$pos}px center;">
+                            {$i.info_RO.total_q|default:0}
+                        </td>
+
+                        <td class="cm-non-cb b1_l" align="right">
+                            {capture name="ro"}
+                                {if $i.info_RO.items|is__array}
+                                    {foreach from=$i.info_RO.items item="d"}
+                                        <li><a title="{$d.date|fn_parse_date|date_format:"%d/%m/%y"} было отгружено {$d.quantity} шт." style="text-transform: none;" class="" href="#">{$d.date|fn_parse_date|date_format:"%d/%m/%y"}&nbsp;&nbsp;&nbsp;{$d.quantity}</a></li>
+                                    {/foreach}
+                                {/if}
+                                {*<li><a class="" href="{"`$controller`.update?`$value`=`$id`&copy=Y"|fn_url}">{$lang.copy}</a></li>*}
+                                {*<li><a class="cm-confirm" href="{"`$controller`.delete?`$value`=`$id`"|fn_url}">{$lang.delete}</a></li>*}
+                            {/capture}
+                            {include    file="common_templates/table_tools_list.tpl"
+                                        id="oi_id_`$id`"
+                                        text="sa"
+                                        act="edit"
+                                        prefix=$id
+                                        tools_list=$smarty.capture.ro}
+                        </td>
+
+                        <td class="cm-non-cb b1_l bold" align="right" width="25px">
                             {include file="addons/uns/views/components/get_form_field.tpl"
                                 f_type="select_range"
-                                f_name="`$e_n`[quantity_in_reserve]"
+                                f_id="RO_q_`$num`"
                                 f_from=0
-                                f_to=$i.quantity
-                                f_value=$i.quantity_in_reserve
+                                f_to=$i.quantity-$i.info_RO.total_q
+                                f_value=0
                                 f_simple=true
+                                f_plus_minus=true
+                                f_disabled=$RO_q_disabled
+                                f_track=true
+                                f_default=0
                                 f_style="width:50px;"
                             }
                         </td>
@@ -230,11 +279,10 @@
                 {include file="addons/uns/views/components/get_form_field.tpl"
                     f_type="item_type"
                     f_required=true f_integer=false
-                    f_material= $item_type_material
-                    f_detail  = $item_type_detail
-                    f_p   =     $item_type_p
-                    f_pf  =     $item_type_pf
-                    f_pa  =     $item_type_pa
+                    f_detail  = true
+                    f_p   =     true
+                    f_pf  =     true
+                    f_pa  =     true
                     f_name="`$e_n`[item_type]"
                     f_simple=true
                     f_short=true
@@ -255,38 +303,21 @@
                     f_id="q_`$num`"
                     f_name="`$e_n`[quantity]"
                     f_from=0
-                    f_to=200
+                    f_to=100
                     f_value=0
                     f_simple=true
                     f_plus_minus=true
                     f_style="width:50px;"
                 }
-            </td>
-
-            <td class="cm-non-cb b1_l" align="center">
-                <span class="weight">&nbsp;</span>
                 {include file="addons/uns/views/components/get_form_field.tpl"
                     f_type="hidden"
                     f_name="`$e_n`[weight]"
                     f_value=0
                 }
             </td>
-            <td class="cm-non-cb b1_l bold" align="center">
-                <span class="total_weight">&nbsp;</span>
-            </td>
 
-            <td class="cm-non-cb b_l" align="center">
-                {include file="addons/uns/views/components/get_form_field.tpl"
-                    f_type="select_range"
-                    f_id="q_`$num`_in_production"
-                    f_name="`$e_n`[quantity_in_production]"
-                    f_from=0
-                    f_to=200
-                    f_value=0
-                    f_simple=true
-                    f_plus_minus=true
-                    f_style="width:50px;"
-                }
+            <td class="cm-non-cb b1_l bold" align="right">
+                <span class="total_weight">&nbsp;</span>
             </td>
 
             <td class="cm-non-cb b_l" align="center">
@@ -294,9 +325,10 @@
                     f_type="select_range"
                     f_name="`$e_n`[quantity_in_reserve]"
                     f_from=0
-                    f_to=200
+                    f_to=100
                     f_value=0
                     f_simple=true
+                    f_plus_minus=true
                     f_style="width:50px;"
                 }
             </td>
@@ -312,11 +344,10 @@
                     {*f_style="width:60px; height:20px;"*}
                 {*}*}
             {*</td>*}
-            <td class="right cm-non-cb b1_l">
+            <td colspan="1" class="right cm-non-cb b1_l">
                 {include file="buttons/multiple_buttons.tpl" item_id="add_`$num`" tag_level="2" hide_add=true}
             </td>
         </tr>
     </tbody>
-
 </table>
 </div>

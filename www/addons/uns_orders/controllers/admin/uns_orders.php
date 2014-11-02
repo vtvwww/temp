@@ -220,12 +220,14 @@ if($mode == 'update'){
     //--------------------------------------------------------------------------
     $p = array(
         "with_items"                => true,
-        "full_info"                 => true,
+//        "full_info"                 => true,
         "total_weight_and_quantity" => true,
+        "info_RO"                   => true, /*Получить информацию свзяанную с Расходными ордерами*/
     );
     $p = array_merge($_REQUEST, $p);
     $order = array_shift(array_shift(fn_acc__get_orders($p)));
     $view->assign('order', $order);
+//    fn_print_r($order);
 
 
     //--------------------------------------------------------------------------
