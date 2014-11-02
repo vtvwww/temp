@@ -2235,7 +2235,7 @@ table .hidden-inputs .input-text-medium, table .hidden-inputs .input-text, table
 	padding: 0 10px 0;
 	height: 40px;
 	text-align: left;
-	text-transform: capitalize;
+	/*text-transform: capitalize;*/
 }
 .table th span {
 	padding: 0 11px;
@@ -2267,7 +2267,7 @@ table .hidden-inputs .input-text-medium, table .hidden-inputs .input-text, table
 .table tr.table-row td, .search-advanced table.table  tr.table-row td,  .table-tree tr td, .form-field .table td {
 	padding: 10px;
 }
-.table tr:hover td {
+.table :not(tfoot) tr:hover td {
 	padding: 10px;
 	border-color: #a47052;
 	/*border-right: 1px solid;*/
@@ -2275,7 +2275,7 @@ table .hidden-inputs .input-text-medium, table .hidden-inputs .input-text, table
 }
 
 
-.table tr:hover td .input-text-medium, .table tr:hover td .input-text, .table tr:hover td .input-text-short, .table tr:hover td .input-text-long, .table tr:hover td  .input-text-large {
+.table tr:hover td .input-text-medium:not(:disabled), .table tr:hover td .input-text:not(:disabled), .table tr:hover td .input-text-short:not(:disabled), .table tr:hover td .input-text-long:not(:disabled), .table tr:hover td  .input-text-large:not(:disabled) {
 	background: #ffffff url(images/input_bg.gif) repeat-x top;
 	border-color: #82c3d9;
 }
@@ -3607,7 +3607,7 @@ span.action-btn a:active {
 	border-left-color: #b3b3b3;
 	border-right-color: #b3b3b3;
 }
-.submit-button-big input:hover {
+.submit-button-big input:hover:not(:disabled) {
 	background: #8fc549 url(images/buttons_bg.png) no-repeat -40px -150px;
 	border: 1px solid #669900;
 	color: #fff;
@@ -3628,7 +3628,7 @@ span.action-btn a:active {
 	-webkit-box-shadow: none;
 	box-shadow: none;
 }
-.submit-button-big input:active {
+.submit-button-big input:active:not(:disabled) {
 	background: #8bbf47 url(images/buttons_bg.png) no-repeat -40px -210px;
 	text-shadow: none;
 	border: 1px solid #669900;

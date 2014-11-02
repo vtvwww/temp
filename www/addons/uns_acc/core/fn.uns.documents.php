@@ -157,7 +157,6 @@ function fn_uns__get_documents($params = array(), $items_per_page = 0){
         "$m_tbl.package_id",
         "$m_tbl.package_type",
         "$m_tbl.customer_id",
-        "$m_tbl.order_id",
         "$j_tbl_1.country_id",
         //        "$j_tbl_1.date_cast",
     );
@@ -198,9 +197,9 @@ function fn_uns__get_documents($params = array(), $items_per_page = 0){
         $condition .= db_quote(" AND $m_tbl.type in (?n)", $params['type_array']);
     }
 
-    if ($params["order_id_array"] = to__array($params["order_id"])){
-        $condition .= db_quote(" AND $m_tbl.order_id in (?n)", $params['order_id_array']);
-    }
+//    if ($params["order_id_array"] = to__array($params["order_id"])){
+//        $condition .= db_quote(" AND $m_tbl.order_id in (?n)", $params['order_id_array']);
+//    }
 
     if ($params["exclude_type_array"] = to__array($params["exclude_type"])){
         $condition .= db_quote(" AND $m_tbl.type not in (?n)", $params['exclude_type_array']);
@@ -300,6 +299,19 @@ function fn_uns__get_documents($params = array(), $items_per_page = 0){
         if (is__array($counts)){
             foreach ($data as $k_d=>$v_d){
                 $data[$k_d]["count"] = $counts[$k_d]["count"];
+            }
+        }
+    }
+
+    if ($params["with_total_quantity"]){
+        $t = "?:_acc_document_items";
+        $condition = $group_by = $sorting = $limit = "";
+        $condition = db_quote(" AND $t.document_id in (?n)", array_keys($data));
+        $group_by = "GROUP BY document_id ";
+        $counts = db_get_hash_array(UNS_DB_PREFIX . "SELECT document_id, SUM(quantity) as total_quantity FROM $t WHERE 1 $condition $group_by $sorting $limit", "document_id");
+        if (is__array($counts)){
+            foreach ($data as $k_d=>$v_d){
+                $data[$k_d]["total_quantity"] = $counts[$k_d]["total_quantity"];
             }
         }
     }

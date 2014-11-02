@@ -72,7 +72,7 @@ div.subheader_block{
     padding: 3px;
 }
 
-.table tr:hover td{
+.table :not(tfoot) tr:hover td{
     padding: 3px;
 }
 

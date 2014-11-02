@@ -9,6 +9,12 @@ function mark_item (target){
     target.parent().parent().find('td').addClass('mark');
 }
 
+function ms (id){ //mark_shipment
+    $("table.shipments tr td:first-child").removeClass("mark_item").removeClass("mark_item_clear").addClass("mark_item_clear");
+    $("table.shipments td#"+id).removeClass("mark_item").removeClass("mark_item_clear").addClass("mark_item");
+}
+
+
 function number_format(number, decimals, dec_point, thousands_sep) {
   //   example 1: number_format(1234.56);
   //   returns 1: '1,235'

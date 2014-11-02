@@ -327,9 +327,6 @@ function fn_acc__get_order_items($params = array(), $items_per_page = 0){
     $m_tbl      = "?:_acc_order_items";
     $m_key      = "oi_id";
 
-    $j_tbl_1    = "?:_acc_order_items__document_items";
-    $j_key_1    = "od_id";
-
     $j_tbl_2    = "?:_acc_document_items";
     $j_key_2    = "di_id";
 
@@ -525,5 +522,10 @@ function fn_acc__upd_order_items($kit_id, $data){
     return true;
 }
 
-
+function fn_uns__del_shipment ($order_id, $document_id){
+    fn_uns__del_document($document_id);
+    db_query(UNS_DB_PREFIX . "DELETE FROM ?:_acc_order_items__document_items
+                              WHERE order_id = ?i
+                                    AND document_id = ?i ", $order_id, $document_id);
+}
 

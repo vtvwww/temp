@@ -353,6 +353,26 @@ $(function () {
         }
     });
 
+
+    //==========================================================================
+    // Добавить новую отгрузку
+    //==========================================================================
+    $('select[name^="order_data[document_items]"][name$="[RO_q]"]').live('change', function (e) {
+        var sum = 0;
+        $('select[name^="order_data[document_items]"][name$="[RO_q]"][value!="0"]').each(function(){
+            sum += parseInt($(this).prop("value"));
+//            console.log($(this).prop("name") + " = " + $(this).prop("value"));
+        });
+
+        if (sum > 0){
+            $("input.shipment_add, input.shipment_add_date").prop("disabled", false);
+        }else{
+            $("input.shipment_add, input.shipment_add_date").prop("disabled", true);
+        }
+
+    });
+
+
 });
 
 
