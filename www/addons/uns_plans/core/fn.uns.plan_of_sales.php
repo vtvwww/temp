@@ -442,7 +442,7 @@ class plan_of_sales {
         }
 
         // Линия указывающая на текущий месяц
-        $myPicture->drawXThreshold($month_arab[$data["ref_month"]],array("ValueIsLabel"=>TRUE,"Alpha"=>100,"Ticks"=>2, "Weight"=>0.4,));
+        $myPicture->drawXThreshold($month_arab[$data["ref_month"]],array("ValueIsLabel"=>TRUE,"Alpha"=>100,"Ticks"=>2, "Weight"=>1,));
 
         // Добавить на график расчетное значение плана продаж на расчетный месяц
         $d = array(VOID, VOID, VOID, VOID, VOID, VOID, VOID, VOID, VOID, VOID, VOID, VOID);

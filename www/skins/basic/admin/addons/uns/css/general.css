@@ -15,7 +15,11 @@ body:before {
     background-color: #ffffff;
     max-width: 990px;
     min-width: 990px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 15px #5b5b5b;
+}
+
+.content-table.temp{
+    box-shadow: 0 4px 15px #ff0000;
 }
 
 #header{
@@ -490,10 +494,16 @@ div.data-block.top{
 }
 
 table tr.CL td{
-    background-color: rgba(0, 81, 255, 0.20);
+    background-color: #CCDCFF;
     color: #6d6969;
-    /*text-decoration: line-through;*/
+}
 
+table tr.CL td select, table tr.CL td input[type='text'],
+.table tr.CL:hover td .input-text-medium:not(:disabled), .table tr.CL:hover td .input-text:not(:disabled), .table tr.CL:hover td .input-text-short:not(:disabled), .table tr.CL:hover td .input-text-long:not(:disabled), .table tr.CL:hover td  .input-text-large:not(:disabled)
+{
+    background-image: none;
+    background-color: #a7bdeb !important;
+    color: #6d6969;
 }
 
 table tr.OP td{
@@ -545,6 +555,13 @@ fieldset.help.open{
 
 fieldset.help.close{
     height: 10px;
+}
+
+a.cm-cancel, a.close_without_save{
+    border: 1px solid;
+    border-radius: 5px;
+    padding: 4px 17px;
+    text-decoration: none;
 }
 
 /******************************************************************************/

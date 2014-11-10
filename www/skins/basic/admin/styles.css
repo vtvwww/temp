@@ -30,14 +30,14 @@ textarea {
 }
 .input-text, .input-textarea, .input-textarea-long, .input-text-short, .input-text-medium, .input-text-large, .input-text-long, .readonly-input, .input-text-100, .input-save-name, .search-input-text, .input-text-price, select {
 	border: 1px solid #cccccc;
-	background: #ffffff url(images/input_bg.gif) repeat-x top;
+	/*background: #ffffff url(images/input_bg.gif) repeat-x top;*/
 	padding: 2px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 }
 .input-text[disabled], .input-textarea[disabled], .input-textarea-long[disabled], .input-text-short[disabled], .input-text-medium[disabled], .input-text-large[disabled], .input-text-long[disabled], .input-text-100[disabled], .input-save-name[disabled], select[disabled] {
-	background: #ffffff url(images/input_disabled_bg.gif) repeat-x top;
+	/*background: #ffffff url(images/input_disabled_bg.gif) repeat-x top;*/
 	border: 1px solid #999;
 	background-color: #e3e3e3;
 }

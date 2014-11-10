@@ -189,7 +189,7 @@
 {******************************************************************************}
 {elseif $f_type == "textarea"}
     {if $f_simple}
-        <textarea {if $f_full_name} id="{$f_id}" name="{$f_full_name}" {else} id="{$f_name}_{$f_id}" name="data[{$f_name}]" {/if} rows="{$f_row|default:"5"}" cols="{$f_col|default:"30"}" class="input-textarea-long" {if $f_style}style="{$f_style}" {/if}>{if $f_value_prefix}{$f_value_prefix}{/if}{$f_value}{if $f_value_suffix}{$f_value_suffix}{/if}</textarea>
+        <textarea {if $f_disabled}disabled="disabled"{/if} {if $f_full_name} id="{$f_id}" name="{$f_full_name}" {else} id="{$f_name}_{$f_id}" name="data[{$f_name}]" {/if} rows="{$f_row|default:"5"}" cols="{$f_col|default:"30"}" class="input-textarea-long {if $f_class}{$f_class}{/if}" {if $f_style}style="{$f_style}" {/if}>{if $f_value_prefix}{$f_value_prefix}{/if}{$f_value}{if $f_value_suffix}{$f_value_suffix}{/if}</textarea>
     {else}
         <div class="form-field">
             <label class="" {if $f_full_name} for="{$f_id}" {else} for="{$f_name}_{$f_id}" {/if}>{$f_description}{if $f_tooltip|strlen} {include file="common_templates/tooltip.tpl" tooltip=$f_tooltip}{/if}:</label>

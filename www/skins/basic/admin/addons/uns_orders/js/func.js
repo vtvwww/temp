@@ -361,15 +361,25 @@ $(function () {
         var sum = 0;
         $('select[name^="order_data[document_items]"][name$="[RO_q]"][value!="0"]').each(function(){
             sum += parseInt($(this).prop("value"));
-//            console.log($(this).prop("name") + " = " + $(this).prop("value"));
         });
 
-        if (sum > 0){
-            $("input.shipment_add, input.shipment_add_date").prop("disabled", false);
-        }else{
-            $("input.shipment_add, input.shipment_add_date").prop("disabled", true);
-        }
+        if (sum > 0) $("input.shipment_add, input.shipment_add_date, textarea.shipment_comment").prop("disabled", false);
+        else $("input.shipment_add, input.shipment_add_date, textarea.shipment_comment").prop("disabled", true);
+    });
 
+    //==========================================================================
+    // Обновить резерв в заказе
+    //==========================================================================
+    $('select[name^="order_data[document_items]"][name$="[quantity_in_reserve]"]').live('change', function (e) {
+        var status = false;
+        $('select[name^="order_data[document_items]"][name$="[quantity_in_reserve]"]').each(function(){
+            if (parseInt($(this).prop("value")) != parseInt($(this).attr("default"))){
+                status = true;
+            }
+        });
+
+        if (status) $("input.reserve").prop("disabled", false);
+        else $("input.reserve").prop("disabled", true);
     });
 
 

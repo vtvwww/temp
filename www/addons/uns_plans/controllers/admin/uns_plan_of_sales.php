@@ -308,12 +308,39 @@ if ($mode == "edit_sales" and defined('AJAX_REQUEST')) {
     $view->assign("graphs_key",     $graphs_key);
 
     //--------------------------------------------------------------------------
-    // СПИСОК ИМЕЮЩИХСЯ ЗАКАЗОВ ПО ВЫБРАННОЙ СЕРИИ
+    // СПИСОК ИМЕЮЩИХСЯ ЗАКАЗОВ ПО ВЫБРАННОЙ СЕРИИ НАСОСОВ
     //--------------------------------------------------------------------------
     list($customers) = fn_uns__get_customers();
     $view->assign('customers', $customers);
 
-    $orders = null;
+    $p = array(
+        "sorting_schemas"   => "view_in_sgp",
+        "only_active"       => true,
+        "group_orders"      => "UKR",
+        "remaining_time"    => true,
+        "info_RO"           => true,
+        "full_info"         => true,
+        "with_items"        => true,
+        "item_type"         => array("P", "PF", "PA"),
+        "item_id"           => db_get_fields(UNS_DB_PREFIX."SELECT p_id FROM ?:pumps WHERE ps_id = ?i", $_REQUEST["item_id"]),
+    );
+    list($orders, $search) = fn_acc__get_orders(array_merge($_REQUEST, $p));
+
+    // Убираем пустые заказы
+    if (is__array($orders)){
+        foreach ($orders as $o_id=>$o){
+            if (!is__array($o["items"])) unset($orders[$o_id]);
+        }
+    }
+
+    // orders_ukr
+    $view->assign("orders_ukr", $orders["ukr"]);
+
+    // orders_exp
+    unset($orders["ukr"]);
+    $view->assign("orders_exp", $orders);
+
+/*    $orders = null;
     $p = array(
         "with_items"            =>true,
         "remaining_time"        =>true,
@@ -339,7 +366,8 @@ if ($mode == "edit_sales" and defined('AJAX_REQUEST')) {
                 }
             }
         }
-    }
+    }*/
+//    fn_print_r($orders);
     $view->assign('orders', $orders);
 
     //--------------------------------------------------------------------------

@@ -103,26 +103,9 @@
                             </td>
                             <td class="left b1_l">
                                 {if $i.item_type == "D"}
-                                    {include file="addons/uns/views/components/get_form_field.tpl"
-                                        f_type="select_by_group"
-                                        f_name="`$e_n`[item_id]"
-                                        f_simple=true
-                                        f_options="details"
-                                        f_option_id="detail_id"
-                                        f_option_value="detail_name"
-                                        f_optgroups=$details_by_categories
-                                        f_optgroup_label="dcat_name"
-                                        f_option_target_id=$i.item_id
-                                        f_blank=true
-                                    }
-
+                                    {$i.item_info.detail_name} {if $i.item_info.detail_no|strlen}[{$i.item_info.detail_no}]{/if}
                                 {elseif $i.item_type == "P" or $i.item_type == "PF" or $i.item_type == "PA"}
-                                    {$i.item_info.p_name}
-                                    {if $i.item_type == "PF"}
-                                        на раме
-                                    {elseif $i.item_type == "PA"}
-                                        агрегат
-                                    {/if}
+                                    {$i.item_info.p_name} {if $i.item_type == "PF"}на раме{elseif $i.item_type == "PA"}агрегат{/if}
                                 {/if}
                             </td>
                             <td class="center b1_l">

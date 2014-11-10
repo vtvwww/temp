@@ -31,14 +31,14 @@
             <td colspan="4" class="bold center">Предварительные заказы</td>
         </tr>
         <tr>
-            <td colspan="2" style="padding: 0 10px 10px 10px;">
-                {if $orders.UKR|is__array}
-                    {include file="addons/uns_plans/views/uns_plan_of_sales/edit_sales/pre-orders.tpl" pre_orders=$orders.UKR}
+            <td valign="top" colspan="2" style="padding: 0 10px 10px 10px;">
+                {if $orders_ukr|is__array}
+                    {include file="addons/uns_plans/views/uns_plan_of_sales/edit_sales/pre-orders_ukr.tpl" pre_orders=$orders_ukr}
                 {/if}
             </td>
-            <td colspan="2" style="padding: 0 10px 10px 10px;">
-                {if $orders.EXP|is__array}
-                    {include file="addons/uns_plans/views/uns_plan_of_sales/edit_sales/pre-orders.tpl" pre_orders=$orders.EXP}
+            <td valign="top" colspan="2" style="padding: 0 10px 10px 10px;">
+                {if $orders_exp|is__array}
+                    {include file="addons/uns_plans/views/uns_plan_of_sales/edit_sales/pre-orders_exp.tpl" pre_orders=$orders_exp}
                 {/if}
             </td>
         </tr>
@@ -46,15 +46,15 @@
 
         {* ------ ФАКТИЧЕСКИЕ ПРОДАЖИ ------ *}
         <tr style="background-color: #D1D1D1;">
-            <td colspan="4" class="bold center">Фактические продажи со Склада готовой продукции (Александрия)</td>
+            <td colspan="4" class="bold center">Фактические отгрузки со Склада готовой продукции (Александрия)</td>
         </tr>
         <tr>
-            <td colspan="2" style="padding: 0 10px 10px 10px;">
+            <td valign="top" colspan="2" style="padding: 0 10px 10px 10px;">
                 {if $sales.UKR|is__array}
                     {include file="addons/uns_plans/views/uns_plan_of_sales/edit_sales/sales.tpl" actual_sales=$sales.UKR}
                 {/if}
             </td>
-            <td colspan="2" style="padding: 0 10px 10px 10px;">
+            <td valign="top" colspan="2" style="padding: 0 10px 10px 10px;">
                 {if $sales.EXP|is__array}
                     {include file="addons/uns_plans/views/uns_plan_of_sales/edit_sales/sales.tpl" actual_sales=$sales.EXP}
                 {/if}

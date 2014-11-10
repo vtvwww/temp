@@ -21,6 +21,7 @@ fn_uns_defaul_functions($controller, $mode);
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $suffix = '';
 
+    // Обновить заказ
     if($mode == 'update'){
         $id = fn_acc__upd_order($_REQUEST['order_id'], $_REQUEST['order_data']);
         if($id !== false){
@@ -30,13 +31,21 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         $suffix = "update&order_id={$id}&selected_section={$_REQUEST['selected_section']}";
     }
 
-    if ($mode == "shipment" and $action == "update"){
-        fn_print_r($_REQUEST);
-//        $document_id = $_REQUEST['document_id'];
-//        $data = array("document"=> $_REQUEST["shipment"]["document"],
-//                      "document_items"=> $_REQUEST["order_data"]["document_items"],
-//        );
-//        fn_uns__upd_document($document_id, $data);
+    // Добавить отгрузку
+    if ($mode == "shipment" and $action == "add"){
+        if (is__more_0($_REQUEST['order_id']) and is__array($_REQUEST["order_data"]["document_items"])){
+            fn_uns__add_shipment_by_order($_REQUEST['order_id'], $_REQUEST);
+            fn_set_notification("N", "Добавлена отгрузка", "");
+        }
+        $suffix = "update&order_id={$_REQUEST['order_id']}";
+    }
+
+    // Резервирование насосной продукции
+    if ($mode == "reserve" and $action == "update"){
+        if (is__more_0($_REQUEST['order_id']) and is__array($_REQUEST["order_data"]["document_items"])){
+            fn_uns__upd_reserve_by_order($_REQUEST['order_id'], $_REQUEST["order_data"]["document_items"]);
+            fn_set_notification("N", "Резервирование насосной продукции", UNS_DATA_UPDATED);
+        }
         $suffix = "update&order_id={$_REQUEST['order_id']}";
     }
 
@@ -234,9 +243,10 @@ if($mode == 'update'){
     // Все Отгрузки по заказу
     //--------------------------------------------------------------------------
     $document_ids = db_get_fields(UNS_DB_PREFIX . "
-                                        SELECT DISTINCT document_id
-                                        FROM ?:_acc_order_items__document_items
-                                        WHERE order_id = ?i", $_REQUEST['order_id']);
+        SELECT DISTINCT document_id
+        FROM ?:_acc_document_items
+        WHERE oi_id>0 AND oi_id in (SELECT oi_id FROM ?:_acc_order_items WHERE order_id = ?i)", $_REQUEST['order_id']);
+
     if (is__array($document_ids)){
         $p = array(
             "with_items"    => true,
@@ -284,7 +294,6 @@ if ($mode == 'shipment'){
         $p["document_id"]               = $_REQUEST["document_id"];
         $shipment = array_shift(array_shift(fn_uns__get_documents($p)));
         $view->assign("shipment", $shipment);
-//        fn_print_r($shipment);
 
         //----------------------------------------------------------------------
         $order = array_shift(array_shift(fn_acc__get_orders($_REQUEST)));
@@ -300,21 +309,9 @@ if ($mode == 'shipment'){
 
     }
 
-    if ($action == "add"){
-//        //--------------------------------------------------------------------------
-//        $p = array(
-//            "with_items"                => true,
-//            "full_info"                 => true,
-//            "total_weight_and_quantity" => true,
-//        );
-//        $p = array_merge($_REQUEST, $p);
-//        $order = array_shift(array_shift(fn_acc__get_orders($p)));
-//        $view->assign('order', $order);
-    }
-
     if ($action == "delete"){
         if (is__more_0($_REQUEST["order_id"], $_REQUEST["document_id"])){
-            fn_uns__del_shipment($_REQUEST["order_id"], $_REQUEST["document_id"]);
+            fn_uns__del_shipment_by_order($_REQUEST["document_id"]);
         }
         return array(CONTROLLER_STATUS_REDIRECT, $controller . ".update&order_id=" . $_REQUEST["order_id"] . "#shipments");
     }

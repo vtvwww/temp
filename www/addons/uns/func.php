@@ -42,6 +42,10 @@ function is__array($i) {
     } else return false;
 }
 
+function in__range($val, $min, $max) {
+    return ($val >= $min && $val <= $max);
+}
+
 function trim__data($data) {
     if(!is__array($data)){
         $data = trim($data);

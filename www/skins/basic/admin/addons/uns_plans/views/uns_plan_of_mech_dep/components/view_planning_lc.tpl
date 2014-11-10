@@ -30,16 +30,13 @@
                 {assign var="mark_star" value=""}
                 {assign var="q" value=$remaining_of_casts.curr_month[$m.id]|fn_fvalue:0}
                 {if $q>0}
-                    {if $requirement_of_casts_for_min_rest[$m.id] == "Y"
-                        and ($priority_materials__details.R[$m.id] == "Y" or $priority_materials__details.Y[$m.id] == "Y")}
+                    {if (isset($requirement_of_casts_for_min_rest[$m.id]) and $requirement_of_casts_for_min_rest[$m.id] == "Y") and ((isset($priority_materials__details.R[$m.id]) and $priority_materials__details.R[$m.id] == "Y") or (isset($priority_materials__details.Y[$m.id]) and $priority_materials__details.Y[$m.id] == "Y"))}
                         {assign var="mark" value="<sup title='Минимальный остаток + На продажу'>МО+НП</sup>"}
                         {assign var="mark_star" value="<span class='info_warning'>*</span>"}
-
-                    {elseif $requirement_of_casts_for_min_rest[$m.id] == "Y"}
+                    {elseif (isset($requirement_of_casts_for_min_rest[$m.id]) and $requirement_of_casts_for_min_rest[$m.id] == "Y")}
                         {assign var="mark" value="<sup title='Минимальный остаток'>МО</sup>"}
                         {assign var="mark_star" value="<span class='info_warning'>*</span>"}
-
-                    {elseif $priority_materials__details.R[$m.id] == "Y" or $priority_materials__details.Y[$m.id] == "Y"}
+                    {elseif ((isset($priority_materials__details.R[$m.id]) and $priority_materials__details.R[$m.id] == "Y") or (isset($priority_materials__details.Y[$m.id]) and $priority_materials__details.Y[$m.id] == "Y"))}
                         {assign var="mark" value="<sup title='На продажу'>НП</sup>"}
                         {assign var="mark_star" value="<span class='info_warning'>*</span>"}
                     {/if}
