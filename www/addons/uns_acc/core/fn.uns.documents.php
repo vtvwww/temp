@@ -157,7 +157,6 @@ function fn_uns__get_documents($params = array(), $items_per_page = 0){
         "$m_tbl.package_id",
         "$m_tbl.package_type",
         "$m_tbl.customer_id",
-        "$m_tbl.order_id",
         "$j_tbl_1.country_id",
         //        "$j_tbl_1.date_cast",
     );
@@ -198,8 +197,10 @@ function fn_uns__get_documents($params = array(), $items_per_page = 0){
         $condition .= db_quote(" AND $m_tbl.type in (?n)", $params['type_array']);
     }
 
-    if ($params["order_id_array"] = to__array($params["order_id"])){
-        $condition .= db_quote(" AND $m_tbl.order_id in (?n)", $params['order_id_array']);
+    if ($params["hide_RO_by_order"]){
+        $fields[] = "?:_acc_orders_documents.order_id";
+        $join .= db_quote(" LEFT JOIN ?:_acc_orders_documents ON (?:_acc_orders_documents.document_id  = $m_tbl.document_id) ");
+        $condition .= db_quote(" AND ?:_acc_orders_documents.order_id is null");
     }
 
     if ($params["exclude_type_array"] = to__array($params["exclude_type"])){
@@ -300,6 +301,19 @@ function fn_uns__get_documents($params = array(), $items_per_page = 0){
         if (is__array($counts)){
             foreach ($data as $k_d=>$v_d){
                 $data[$k_d]["count"] = $counts[$k_d]["count"];
+            }
+        }
+    }
+
+    if ($params["with_total_quantity"]){
+        $t = "?:_acc_document_items";
+        $condition = $group_by = $sorting = $limit = "";
+        $condition = db_quote(" AND $t.document_id in (?n)", array_keys($data));
+        $group_by = "GROUP BY document_id ";
+        $counts = db_get_hash_array(UNS_DB_PREFIX . "SELECT document_id, SUM(quantity) as total_quantity FROM $t WHERE 1 $condition $group_by $sorting $limit", "document_id");
+        if (is__array($counts)){
+            foreach ($data as $k_d=>$v_d){
+                $data[$k_d]["total_quantity"] = $counts[$k_d]["total_quantity"];
             }
         }
     }
@@ -787,11 +801,6 @@ function fn_uns__upd_document_info($id = 0, $doc){;
         $d["customer_id"]  = $doc["customer_id"];
     }
 
-    if (is__more_0($doc["order_id"])){
-        $d["order_id"]  = $doc["order_id"];
-    }
-
-
     switch($type){
         case DOC_TYPE__VLC: // Выпуск Лит. цеха
             if ($operation == 'add'){
@@ -949,6 +958,9 @@ function fn_uns__upd_document_items($document_id, $data){
             if ($document['type'] == DOC_TYPE__AIO){
                 $v['change_type'] = ($i['quantity']>0)?'POZ':'NEG';
             }
+
+            //*** Отслеживание по заказу ***************************************
+            $v['oi_id'] = ($i['oi_id']>0)?$i['oi_id']:0;
 
             if (is__more_0($i['di_id']) and is__more_0(db_get_field(UNS_DB_PREFIX . "SELECT di_id FROM $m_table WHERE di_id = ?i", $i['di_id']))){
                 // ОБНОВИТЬ

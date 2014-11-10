@@ -10,7 +10,7 @@
 {/capture}
 {notes assign="notes"}{/notes}
 
-<table cellpadding="0" cellspacing="0" border="0" class="content-table">
+<table cellpadding="0" cellspacing="0" border="0" class="content-table {$smarty.const.UNS_DB}">
 <tr valign="top">
 	<td width="" class="side-menu">
 	<div id="right_column">

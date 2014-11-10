@@ -32,7 +32,7 @@
 	{foreach from=$breadcrumbs item="b" name="fe_b"}
 	{if ($b.link|strpos:'last_view' || $smarty.foreach.fe_b.last) && !$c_link_is_showed}
 	{assign var="c_link_is_showed" value=true}
-	<a href="{$b.link|fn_url}" class="underlined tool-link">{*{$lang.cancel}*}Закрыть без сохранения</a>
+	<a href="{$b.link|fn_url}" class="underlined tool-link close_without_save">{*{$lang.cancel}*}Закрыть без сохранения</a>
 	{/if}
 	{/foreach}
 {/if}

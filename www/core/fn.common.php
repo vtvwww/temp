@@ -237,7 +237,7 @@ function fn_redirect($location, $no_delay = false, $allow_external_redirect = fa
 		header('Location: ' . $location);
 		exit;
 	} else {
-		$delay = (Registry::get('runtime.comet') == true || $no_delay == true) ? 0 : 10;
+		$delay = (Registry::get('runtime.comet') == true || $no_delay == true) ? 0 : 20;
 		if ($delay != 0) {
 			fn_echo('<a href="' . htmlspecialchars($location) . '" style="text-transform: lowercase;">' . fn_get_lang_var('continue') . '</a>');
 		}

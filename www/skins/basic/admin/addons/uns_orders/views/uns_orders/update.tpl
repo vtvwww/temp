@@ -14,9 +14,6 @@
             {include file="addons/uns_orders/views/uns_orders/components/order.tpl"}
             <hr>
             {include file="addons/uns_orders/views/uns_orders/components/items.tpl"}
-            <hr>
-            {include file="addons/uns_orders/views/uns_orders/components/shipments.tpl"}
-
             <div class="buttons-container cm-toggle-button buttons-bg">
                 {if $mode == "add"}
                     {include file="buttons/save_cancel.tpl" but_name="dispatch[`$controller`.update]" hide_second_button=true}
@@ -25,6 +22,9 @@
                 {/if}
             </div>
         </form>
+        <br>
+        <br>
+        {include file="addons/uns_orders/views/uns_orders/components/shipments.tpl"}
         <br>
     </div>
 {/capture}

@@ -1,7 +1,7 @@
 {script src="js/node_cloning.js"}
 
 {assign var="tag_level" value=$tag_level|default:"1"}
-{strip}
+{strip}<nobr>
 {if $only_delete != "Y"}
 <span class="nowrap">{if !$hide_add}&nbsp;{include file="buttons/add_empty_item.tpl" but_onclick="$('#box_' + this.id).cloneNode($tag_level); `$on_add`" item_id=$item_id}&nbsp;{/if}
 
@@ -10,4 +10,4 @@
 &nbsp;{include file="buttons/remove_item.tpl" only_delete=$only_delete but_class="cm-delete-row"}
 
 &nbsp;</span>
-{/strip}
+</nobr>{/strip}

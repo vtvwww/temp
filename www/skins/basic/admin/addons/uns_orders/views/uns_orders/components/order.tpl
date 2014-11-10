@@ -141,5 +141,6 @@
     f_required=false f_integer=false
     f_full_name="`$e_n`[comment]"
     f_value=$o.comment
+    f_style="height:17px;"
     f_description="Комментарий"
 }

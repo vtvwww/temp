@@ -3,6 +3,8 @@
 function fn_acc__get_orders($params = array(), $items_per_page = 0){
     $default_params = array(
         'order_id' => 0,
+        'info_RO'     =>false,
+        'full_info'     =>false,
         'page' => 1,
         'only_active'=>false,
         'limit' => 0,
@@ -36,7 +38,7 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
             "$m_tbl.date_finished"  => "desc",
         ),
         "view_in_sgp" => array(
-//            "$m_tbl.status"  => "asc",
+//            "$m_tbl.country_id"  => "asc",
             "$m_tbl.date_finished"  => "asc",
         ),
     );
@@ -112,8 +114,11 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
 
     if ($params['with_items']){
         $p = array(
-            'order_id'=>array_keys($data),
-            'full_info'=>true,
+            "order_id"  =>array_keys($data),
+            "full_info" =>$params["full_info"],
+            "info_RO"   =>$params["info_RO"],
+            "item_type" =>$params["item_type"],
+            "item_id"   =>$params["item_id"],
         );
         list($items) = fn_acc__get_order_items($p);
         if (is__array($items)){
@@ -143,14 +148,22 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
         $data_temp["ukr"]["customer_id"]= "ukr";
         $data_temp["ukr"]["items"]      = array();
         foreach ($data as $k_d=>$v_d){
-            if (in_array($v_d["customer_id"], $customers_of_ukr_keys)){
-                // Клиент принадлежит Украине
-                $data_temp["ukr"]["items"] = array_merge($data_temp["ukr"]["items"], $v_d["items"]);
-                foreach ($v_d["items"] as $i){
-                    $data_temp["ukr"]["data_for_tmp"][$i["item_type"]][$i["item_id"]]["quantity"] += $i["quantity"];
+            if (fn_is_not_empty($v_d["items"])){
+                if (in_array($v_d["customer_id"], $customers_of_ukr_keys)/*  and count($v_d["items"])*/){
+                    // Клиент принадлежит Украине
+                    $data_temp["ukr"]["items"] = array_merge($data_temp["ukr"]["items"], $v_d["items"]);
+                    foreach ($v_d["items"] as $i){
+                        $data_temp["ukr"]["data_for_tmp"][$i["item_type"]][$i["item_id"]]["quantity"] += $i["quantity"];
+                    }
+                    $data_temp["ukr"]["order_list"][$k_d] =  array(
+                        "order_id"      => $k_d,
+                        "status"        => $v_d["status"],
+                        "comment"       => $v_d["comment"],
+                        "customer_id"   => $v_d["customer_id"],
+                    );
+                }else{
+                    $data_temp[$k_d] = $v_d;
                 }
-            }else{
-                $data_temp[$k_d] = $v_d;
             }
         }
         if (count($data_temp["ukr"]["items"])){
@@ -219,23 +232,6 @@ function fn_uns__upd_order_items($order_id, $data){
     $m_table = "?:_acc_order_items";
     $oi_ids = array();
 
-/*    // >>> Проверка на дубликаты позиций, если есть дубликат, то его необходимо сложить с уже существущим
-    $_data = array();
-    foreach ($data as $k=>$i){
-        $key = $i['item_type']."__".$i['item_id'];
-        if (is__array($_data[$key])){
-            $_data[$key]["quantity"]                += abs($i['quantity']);
-            $_data[$key]["quantity_in_production"]  += abs($i['quantity_in_production']);
-            $_data[$key]["quantity_in_reserve"]     += abs($i['quantity_in_reserve']);
-            $_data[$key]["comment"]                 .= " " . $i['comment'];
-        }else{
-            $_data[$key] = $i;
-        }
-    }
-    $data = $_data;
-    // <<< Проверка на дубликаты позиций, если есть дубликат, то его необходимо сложить с уже существущим*/
-
-
     foreach ($data as $i){
         if (is__more_0($i['item_id']) and  is_numeric($i['quantity']) and fn_check_type($i['item_type'], UNS_ITEM_TYPES)){
             $v = array(
@@ -243,8 +239,6 @@ function fn_uns__upd_order_items($order_id, $data){
                 'item_type'             => $i['item_type'],
                 'item_id'               => $i['item_id'],
                 'quantity'              => abs($i['quantity']),
-                'quantity_in_production'=> abs($i['quantity_in_production']),
-                'quantity_in_reserve'   => abs($i['quantity_in_reserve']),
                 'comment'               => $i['comment'],
                 'date'                  => fn_parse_date($i["date"]),
                 'weight'                => (is__more_0(floatval($i['weight'])))?floatval($i['weight']):0,
@@ -323,12 +317,17 @@ function fn_acc__get_order_items($params = array(), $items_per_page = 0){
     $m_tbl      = "?:_acc_order_items";
     $m_key      = "oi_id";
 
+    $j_tbl_2    = "?:_acc_document_items";
+    $j_key_2    = "di_id";
+
+    $j_tbl_3    = "?:_acc_documents";
+    $j_key_3    = "document_id";
+
     $fields = array(
         "$m_tbl.$m_key",
         "$m_tbl.item_type",
         "$m_tbl.item_id",
         "$m_tbl.quantity",
-        "$m_tbl.quantity_in_production",
         "$m_tbl.quantity_in_reserve",
         "$m_tbl.comment",
         "$m_tbl.weight",
@@ -358,6 +357,17 @@ function fn_acc__get_order_items($params = array(), $items_per_page = 0){
         $condition .= db_quote(" AND $m_tbl.order_id in (?n)", $params["order_id_array"]);
     }
 
+    // По item_id
+    if ($params["item_id_array"] = to__array($params["item_id"])){
+        $condition .= db_quote(" AND $m_tbl.item_id in (?n)", $params["item_id_array"]);
+    }
+
+    // По item_type
+    if (is__array($params["item_type"])){
+        $condition .= db_quote(" AND $m_tbl.item_type in (?a)", $params["item_type"]);
+    }
+
+
     // *************************************************************************
     // 2. ПРИСОЕДИНИТЬ ТАБЛИЦЫ
     // *************************************************************************
@@ -383,6 +393,45 @@ function fn_acc__get_order_items($params = array(), $items_per_page = 0){
     $data = db_get_hash_array($sql, $m_key);
 //      fn_print_r(str_replace(array(UNS_DB_PREFIX,"?:"), array("", "uns_"), $sql));
     if (!is__array($data)) return array(array(), $params);
+
+    // *************************************************************************
+    // 6. ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ
+    // *************************************************************************
+    if ($params["info_RO"]){
+        // Проверить все отгрузки по каждой позиции каждого заказа - возможен вариант нескольких отгрузок по одной позиции
+        $m_tbl = "?:_acc_document_items";
+        $sql = db_quote("SELECT $m_tbl.document_id,
+                                ?:_acc_documents.date,
+                                $m_tbl.di_id,
+                                $m_tbl.quantity,
+                                $m_tbl.oi_id
+                         FROM $m_tbl
+                           LEFT JOIN ?:_acc_documents ON ($m_tbl.document_id = ?:_acc_documents.document_id)
+                         WHERE $m_tbl.oi_id in (?n)
+                         ORDER BY ?:_acc_documents.date asc, $m_tbl.document_id asc
+                         ", array_keys($data));
+
+        $data_RO = db_get_array(UNS_DB_PREFIX.$sql);
+        if (is__array($data_RO)){
+            foreach ($data_RO as $v){
+                $data[$v["oi_id"]]["info_RO"]["total_q"] += $v["quantity"];
+                $data[$v["oi_id"]]["info_RO"]["items"][$v["di_id"]] = $v;
+            }
+        }
+
+        foreach ($data as $k_data=>$v_data){
+            if ($v_data["info_RO"]["total_q"]>0){
+                if ($v_data["info_RO"]["total_q"] >= $v_data["quantity"]){
+                    $data[$k_data]["shipped"] = "full";        // Полная отгрузка
+                }else{
+                    $data[$k_data]["shipped"] = "partially";   // Частичная отгрузка
+                }
+            }else{
+                $data[$k_data]["shipped"] = "no";              // Отгрузок небыло
+            }
+        }
+    }
+
     if ($params["full_info"]){
         $i = array(
             "D" => array(),
@@ -441,11 +490,8 @@ function fn_acc__get_order_items($params = array(), $items_per_page = 0){
             }
         }
     }
+
     $data = fn_group_data_by_field($data, "order_id");
-    // *************************************************************************
-    // 6. ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ
-    // *************************************************************************
-    //foreach ($data as $k_data=>$v_data){}
 
     return array($data, $params);
 }
@@ -480,5 +526,97 @@ function fn_acc__upd_order_items($kit_id, $data){
     return true;
 }
 
+
+//==============================================================================
+// ОТГРУЗКИ и РЕЗЕРВИРОВАНИЯ по заказу
+//==============================================================================
+/**
+ * ДОБАВИТЬ ОТГРУЗКУ по заказу
+ *
+ */
+function fn_uns__add_shipment_by_order ($order_id, $order_data){
+    // DOCUMENT ----------------------------------------------------------------
+    $document = array(
+        "type"          => 7, // Расходный ордер
+        "date"          => $order_data["shipment_add"]["date"],
+        "object_from"   => 0,
+        "object_to"     => 19, // СГП Александрия
+        "status"        => "A",
+        "comment"       => $order_data["shipment_add"]["comment"],
+        "customer_id"   => $order_data["order_data"]["order"]["customer_id"],
+    );
+
+    $document_items = null;
+    if (is__array($order_data["order_data"]["document_items"])){
+        foreach ($order_data["order_data"]["document_items"] as $i){
+            if (is__more_0($i["RO_q"])){
+                $document_items[] = array(
+                    "oi_id"     => $i["oi_id"],
+                    "item_type" => $i["item_type"],
+                    "item_id"   => $i["item_id"],
+                    "quantity"  => $i["RO_q"],
+                    "weight"    => $i["weight"],
+                );
+            }
+        }
+    }
+    if (!is__array($document) or !is__array($document_items)) return false;
+    $document_id = fn_uns__upd_document(0, array(
+            "document"          => $document,
+            "document_items"    => $document_items,
+        )
+    );
+    if (!is__more_0($document_id)) return false;
+    //--------------------------------------------------------------------------
+
+    // Сохранить в таблице ORDERS_DOCUMENTS ------------------------------------
+    if (!db_get_field(UNS_DB_PREFIX . "SELECT od_id FROM ?:_acc_orders_documents WHERE document_id = ?i and order_id = ?i", $document_id, $order_id)){
+        $v = array(
+            "order_id" => $order_id,
+            "document_id" => $document_id,
+        );
+        db_query(UNS_DB_PREFIX . "INSERT INTO ?:_acc_orders_documents ?e", $v);
+    }
+    //--------------------------------------------------------------------------
+
+    // ОБНОВИТЬ РЕЗЕРВ ---------------------------------------------------------
+    // при отгрузке, сначала отгружаются зарезервированные позиции
+    foreach ($document_items as $i){
+        db_query(UNS_DB_PREFIX . "UPDATE ?:_acc_order_items
+                                  SET quantity_in_reserve=IF(quantity_in_reserve-?i<0,0,quantity_in_reserve-?i)
+                                  WHERE oi_id = ?i", $i['quantity'], $i['quantity'], $i['oi_id']);
+    }
+    //--------------------------------------------------------------------------
+}
+
+
+/**
+ * УДАЛИТЬ ОТГРУЗКУ ПО ЗАКАЗУ
+ * @param $document_id
+ */
+function fn_uns__del_shipment_by_order($document_id){
+    fn_uns__del_document($document_id);
+    db_query(UNS_DB_PREFIX . "DELETE FROM ?:_acc_orders_documents WHERE document_id = ?i ", $document_id);
+}
+
+/**
+ * ОБНОВИТЬ РЕЗЕРВ ПО ЗАКАЗУ
+ * @param $order_id
+ * @param $data
+ */
+function fn_uns__upd_reserve_by_order ($order_id, $data){
+    if (is__more_0($order_id) and is__array($data)){
+        $d = null;
+        foreach ($data as $v){
+            if (    $v["quantity"]>$v["RO_total_q"]
+                and $v["quantity_in_reserve"]>=0
+                and $v["quantity_in_reserve"] != $v["quantity_in_reserve_old"]){ // Произошла смена резерва
+                if (in__range($v["quantity_in_reserve"], 0, $v["quantity"]-$v["RO_total_q"])){
+                    db_query(UNS_DB_PREFIX . "UPDATE ?:_acc_order_items SET ?u WHERE oi_id = ?i", array("quantity_in_reserve" => $v["quantity_in_reserve"]), $v["oi_id"]);
+                }
+            }
+        }
+    }
+}
 
 
