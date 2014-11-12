@@ -394,8 +394,6 @@ function fn_uns__get_details($params = array(), $items_per_page = 0){
         "$m_table.accessory_view",
         "$m_table.accessory_manual",
         "$m_table.checked",
-        "$m_table.min_rest_state",
-        "$m_table.min_rest_value",
 
         "$j_table_detail_categories.dcat_name",
         "$j_table_detail_categories.dcat_status",

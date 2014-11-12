@@ -948,47 +948,53 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
     $data = $_SESSION["uns_plan_of_mech_dep"];
     $view->assign("data", $data);
 
-    //-----------------------------------------------------------------------------
-    // -1. ПОЛУЧИТЬ ВСЕ ДЕТАЛИ которые заложены в план продаж
-    //-----------------------------------------------------------------------------
-    $sales_plan_of_details = null;
-    foreach ($data["plan"]["group_by_item"]["D"] as $id=>$v){ // Отбор только по деталям
-        // +0 мес. = тек. мес. - план продаж
-        $sales_plan_of_details["curr_month"][$id]  = $v["ukr_curr"]+$v["exp_curr"];
-
-        // +1 мес. = след. мес. - план продаж
-        $sales_plan_of_details["next_month"][$id]  = $v["ukr_next"]+$v["exp_next"];
-
-        // +2 мес. = след. след. мес. - среднее (тек. мес. и след. мес.)
-        $sales_plan_of_details["next2_month"][$id] = 0;
-//        $sales_plan_of_details["next2_month"][$id] = floor(($sales_plan_of_details["curr_month"][$id]+$sales_plan_of_details["next_month"][$id])/2);
-
-        // +3 мес. = 50% от +2 мес.
-        $sales_plan_of_details["next3_month"][$id] = 0;
-//        $sales_plan_of_details["next3_month"][$id] = floor(0.5*$sales_plan_of_details["next2_month"][$id]);
-    }
-
-
-    //-----------------------------------------------------------------------------
-    // 0. ПОЛУЧИТЬ ВСЕ ДЕТАЛИ, по которым необходимо отслеживать минимальный остаток - это значение указывается в настройках детали
-    //-----------------------------------------------------------------------------
-    $min_rest_of_details = db_get_hash_array(UNS_DB_PREFIX . "SELECT detail_id, min_rest_value FROM ?:details WHERE detail_status = 'A' and min_rest_state = 'Y' and min_rest_value > 0 ", "detail_id");
-
+    $details_requirement = null; // детали, которые необходимо изготовить
     //--------------------------------------------------------------------------
-    // 1. ПЛАН ПОТРЕБНОСТИ В ДЕТАЛЯХ на тек., след. и след.след. месяца по плану производства
+    // 1. ПЛАН ПОТРЕБНОСТИ В ДЕТАЛЯХ по партийному плану производства насосов
     //--------------------------------------------------------------------------
-    $details_requirement = null;
     $pumps_requirement = $data["remaining_production_plan_parties"]; // Осталось план производства по партиям
     foreach ($pumps_requirement as $month=>$pump_series){
         foreach ($pump_series as $ps_id=>$pump_quantity){
-            if (is__more_0($ps_id)){
+            if ($ps_id > 0){
                 // Комплектация насоса
                 $pump = array_shift(array_shift(fn_uns__get_pumps(array("ps_id"=>$ps_id))));
                 $set = fn_uns__get_packing_list_by_pump($pump["p_id"], "D", true);
                 foreach ($set as $k=>$v){
-                    $details_requirement[$month][$k] += $v["quantity"]*$pump_quantity + $sales_plan_of_details[$month][$k];
+                    $details_requirement[$month][$k] += $v["quantity"]*$pump_quantity;
                 }
             }
+        }
+    }
+
+    //-----------------------------------------------------------------------------
+    // 1. ПОЛУЧИТЬ ВСЕ ДЕТАЛИ по плану продаж
+    //-----------------------------------------------------------------------------
+    $sales_plan_of_details = null;
+    foreach ($data["plan"]["group_by_item"]["D"] as $id=>$v){ // Отбор только по деталям
+        $sales_plan_of_details["curr_month"][$id]  = $v["ukr_curr"]+$v["exp_curr"];
+        $sales_plan_of_details["next_month"][$id]  = $v["ukr_next"]+$v["exp_next"];
+        $sales_plan_of_details["next2_month"][$id] = 0;
+        $sales_plan_of_details["next3_month"][$id] = 0;
+    }
+    if (is__array($sales_plan_of_details)){
+        foreach ($sales_plan_of_details as $month=>$details){
+            foreach ($details as $id=>$q){
+                $details_requirement[$month][$id] += $q;
+            }
+        }
+    }
+
+    //-----------------------------------------------------------------------------
+    // 1. ПОЛУЧИТЬ ВСЕ ДЕТАЛИ по заказам
+    // ЧАСТЬ 1: все детали за предыдущие месяца по "открытым" или "отгруженным" заказам
+    //          Осталось = Заказ - Резерв - Отгрузка
+    // ЧАСТЬ 2: все детали за текущий месяц по "открытым" или "отгруженным" заказам
+    //          Осталось = Заказ
+    //-----------------------------------------------------------------------------
+    $details_of_orders = fn_uns__get_details_of_orders($data["month"], $data["year"]);
+    if (is__array($details_of_orders)){
+        foreach ($details_of_orders as $id=>$v){
+            $details_requirement["curr_month"][$id] += $v["remain"];
         }
     }
 
@@ -1042,11 +1048,6 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
         $deficit_next3 = ($details_requirement["curr_month"][$detail_id]+$details_requirement["next_month"][$detail_id]+$details_requirement["next2_month"][$detail_id]+$details_requirement["next3_month"][$detail_id]) - $balance - $deficit_curr - $deficit_next - $deficit_next2;
         $deficit_of_details["next3_month"][$detail_id] = $deficit_next3;
         if ($deficit_next3 < 0) $deficit_next3 = 0;
-
-//        $deficit_of_details["curr_month"][$detail_id] = $deficit_curr;
-//        $deficit_of_details["next_month"][$detail_id] = $deficit_next;
-//        $deficit_of_details["next2_month"][$detail_id] = $deficit_next2;
-//        $deficit_of_details["next3_month"][$detail_id] = $deficit_next3;
     }
 
     //--------------------------------------------------------------------------
@@ -1071,17 +1072,6 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
     $balance_of_casts = array_shift(fn_uns__get_balance($p));
     $view->assign("balance_of_casts", $balance_of_casts);
 
-    $balance_of_casts_simple = null;
-    if (is__array($balance_of_casts)){
-        foreach ($balance_of_casts as $group){
-            if (is__array($group["items"])){
-                foreach ($group["items"] as $m_id=>$m){
-                    $balance_of_casts_simple[$m_id] = $m["konech"];
-                }
-            }
-        }
-    }
-
     //--------------------------------------------------------------------------
     // 5. ПОМЕСЯЧНАЯ ПЛАНОВАЯ ПОТРЕБНОСТЬ В ЗАГОТОВКАХ
     //--------------------------------------------------------------------------
@@ -1090,24 +1080,13 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
     $requirement_of_casts_for_min_rest = null;
     if (is__array($deficit_of_details)){
         foreach ($deficit_of_details as $month=>$items){
-            list($details) = fn_uns__get_details(array("detail_id"=>array_keys($items), "with_material_info" => true, "with_material_info" => true,));
+            list($details) = fn_uns__get_details(array("detail_id"=>array_keys($items), "with_material_info" => true,));
             if (is__array($details)){
                 foreach ($details as $detail_id=>$d){
                     if ($d["mclass_id"] == 1 and $d["material_u_id"] == 9) { // Отливка, в штуках
-                        $deficit = $items[$detail_id];
-                        if ($month == "curr_month" and is__more_0($min_rest_of_details[$detail_id]["min_rest_value"])){
-                            $deficit = $items[$detail_id]+$min_rest_of_details[$detail_id]["min_rest_value"];
-                            $requirement_of_casts_for_min_rest[$d["material_id"]] = "Y";
+                        if (is__more_0($items[$detail_id])) {
+                            $requirement_of_casts[$month][$d["material_id"]] += $d["material_quantity"]*$items[$detail_id];
                         }
-                        if (is__more_0($deficit)) {
-                            $requirement_of_casts[$month][$d["material_id"]] += $d["material_quantity"]*$deficit;
-                        }
-//                        if ($items[$detail_id]>0) {
-//                            $requirement_of_casts[$month][$d["material_id"]] += $d["material_quantity"]*$items[$detail_id];
-//                            if ($month == "curr_month" and is__more_0($min_rest_of_details[$detail_id]["min_rest_value"])){
-//                                $requirement_of_casts_for_min_rest[$d["material_id"]] = "Y";
-//                            }
-//                        }
                     }
                 }
             }
@@ -1144,14 +1123,6 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
                         $deficit_next3 = ($requirement_of_casts["curr_month"][$m_id] + $requirement_of_casts["next_month"][$m_id] + $requirement_of_casts["next2_month"][$m_id] + $requirement_of_casts["next3_month"][$m_id]) - $balance - $deficit_curr - $deficit_next - $deficit_next2;
                         if ($deficit_next3 < 0) $deficit_next3 = 0;
 
-                        //------------------------------------------------------
-                        // Расчет на минимально необходимый остаток
-//                        if (($m["konech"]+$deficit_curr) < $min_necessary_rest_of_materials[$m_id]["min_necessary_rest"]){
-//                            $deficit_curr = $min_necessary_rest_of_materials[$m_id]["min_necessary_rest"]-($m["konech"]+$deficit_curr);
-//                            $min_necessary_rest_of_materials[$m_id]["status"] = true;
-//                        }
-                        //------------------------------------------------------
-
                         $remaining_of_casts["curr_month"][$m_id]    = $deficit_curr;
                         $remaining_of_casts["next_month"][$m_id]    = $deficit_next;
                         $remaining_of_casts["next2_month"][$m_id]   = $deficit_next2;
@@ -1174,7 +1145,7 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
                             $prohibition_of_casts[$m_id] = "Y";
                         }
 
-                        // РАСЧЕТ ВЕСА по тем категориям, которые разрешены для отображения в планах
+                        // РАСЧЕТ ВЕСА
                         // Потребность
                         $requirement_of_casts["curr_month"]["total_weight"] += $m["weight"]*$requirement_of_casts["curr_month"][$m_id];
                         $requirement_of_casts["next_month"]["total_weight"] += $m["weight"]*$requirement_of_casts["next_month"][$m_id];
@@ -1252,7 +1223,7 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
 //    fn_print_r($priority_ps_id);
 
     //--------------------------------------------------------------------------
-    // ПРИОРИТЕТНОСТЬ ПО НАСОСАМ в плане продаж
+    // ПРИОРИТЕТНОСТЬ ПО НАСОСАМ В ПЛАНЕ ПРОДАЖ
     //--------------------------------------------------------------------------
     // 2. получить список отливок, которые в них входят
     // КРАСНЫЙ УРОВЕНЬ
@@ -1263,7 +1234,8 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
             if (is__array($pump_materials)){
                 foreach (array_keys($pump_materials) as $m_id){
                     if (    ($prohibition_of_casts[$m_id] != "Y")
-                        and (fn_fvalue($remaining_of_casts["curr_month"][$m_id],0) > 0 or fn_fvalue($remaining_of_casts["next_month"][$m_id],0) > 0)
+                        and ($remaining_of_casts["curr_month"][$m_id] > 0 or $remaining_of_casts["next_month"][$m_id] > 0)
+//                        and (fn_fvalue($remaining_of_casts["curr_month"][$m_id],0) > 0 or fn_fvalue($remaining_of_casts["next_month"][$m_id],0) > 0)
                         and ($priority_materials__ps["R"][$m_id]    != "Y")
                     ){
                             $priority_materials__ps["R"][$m_id] = "Y";
@@ -1280,7 +1252,8 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
             if (is__array($pump_materials)){
                 foreach (array_keys($pump_materials) as $m_id){
                     if (    ($prohibition_of_casts[$m_id] != "Y")
-                        and (fn_fvalue($remaining_of_casts["curr_month"][$m_id],0) > 0 or fn_fvalue($remaining_of_casts["next_month"][$m_id],0) > 0)
+                        and ($remaining_of_casts["curr_month"][$m_id] > 0 or $remaining_of_casts["next_month"][$m_id] > 0)
+//                        and (fn_fvalue($remaining_of_casts["curr_month"][$m_id],0) > 0 or fn_fvalue($remaining_of_casts["next_month"][$m_id],0) > 0)
                         and ($priority_materials__ps["R"][$m_id]    != "Y")
                         and ($priority_materials__ps["R2"][$m_id]   != "Y")
                     ){
@@ -1299,7 +1272,7 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
             if (is__array($pump_materials)){
                 foreach (array_keys($pump_materials) as $m_id){
                     if (    ($prohibition_of_casts[$m_id] != "Y")
-                        and (fn_fvalue($remaining_of_casts["curr_month"][$m_id],0) > 0 or fn_fvalue($remaining_of_casts["next_month"][$m_id],0) > 0)
+                        and ($remaining_of_casts["curr_month"][$m_id] > 0 or $remaining_of_casts["next_month"][$m_id] > 0)
                         and ($priority_materials__ps["R"][$m_id]    != "Y")
                         and ($priority_materials__ps["R2"][$m_id]   != "Y")
                         and ($priority_materials__ps["Y"][$m_id]    != "Y")
@@ -1312,91 +1285,94 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
     }
 
     //---------------------------------------------------------------------------------
-    // ПРИОРИТЕТНОСТЬ ПО ДЕТАЛЯМ в плане продаж (детали необходимо перевести в отливки)
+    // ПРИОРИТЕТНОСТЬ ПО ДЕТАЛЯМ В ПЛАНЕ ПРОДАЖ
     //---------------------------------------------------------------------------------
     // 0. Список "красных" и "желтых" деталей по плану продаж
     if ($data["plan"]["group_by_item"]["D"]){
         foreach ($data["plan"]["group_by_item"]["D"] as $d){
-            if (in_array($d["forced_status"], array("R", "Y"))){
-                $m_id = db_get_field(UNS_DB_PREFIX . "SELECT material_id FROM ?:detail__and__items WHERE detail_id = ?i", $d["item_id"]);
-                $priority_materials__details[$d["forced_status"]][$m_id] = "Y";
-            }
+            $m_id = db_get_field(UNS_DB_PREFIX . "SELECT material_id FROM ?:detail__and__items WHERE detail_id = ?i", $d["item_id"]);
+            $priority_materials__details[$d["forced_status"]][$m_id] = "Y";
         }
     }
 
-    // Собрать все material_id с приоритетами
-    $materials = array();
-    if (is__array($priority_materials__ps["R"])     and is__array(array_keys($priority_materials__ps["R"])))        $materials = array_merge($materials, array_keys($priority_materials__ps["R"]));
-    if (is__array($priority_materials__ps["R2"])    and is__array(array_keys($priority_materials__ps["R2"])))       $materials = array_merge($materials, array_keys($priority_materials__ps["R2"]));
-    if (is__array($priority_materials__ps["Y"])     and is__array(array_keys($priority_materials__ps["Y"])))        $materials = array_merge($materials, array_keys($priority_materials__ps["Y"]));
-    if (is__array($priority_materials__details["R"])and is__array(array_keys($priority_materials__details["R"])))   $materials = array_merge($materials, array_keys($priority_materials__details["R"]));
-    if (is__array($priority_materials__details["Y"])and is__array(array_keys($priority_materials__details["Y"])))   $materials = array_merge($materials, array_keys($priority_materials__details["Y"]));
+    //------------------------------------------------------------------------------------
+    // ПРИОРИТЕТНОСТЬ ПО ДЕТАЛЯМ В ЗАКАЗАХ - принудительно переводить в R2 приоритет
+    //------------------------------------------------------------------------------------
+    if (is__array($details_of_orders)){
+        foreach ($details_of_orders as $id=>$v){
+            $m_id = db_get_field(UNS_DB_PREFIX . "SELECT material_id FROM ?:detail__and__items WHERE detail_id = ?i", $v["item_id"]);
+            $priority_materials__order_details["R2"][$m_id] = "Y";
+        }
+    }
 
-    if (is__array($materials) and fn_is_not_empty($materials)){
-        foreach ($materials as $m_id){
-            if ($remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id] > 0){
-                $w = fn_uns__get_accounting_item_weights("M", $m_id);
-                $w = $w[$m_id]["M"][0]['value'];
-                if (//ps_RED + det_RED
-                    ($priority_materials__ps["R"][$m_id] == "Y" and $priority_materials__details["R"][$m_id] == "Y")
-                    or
-                    //ps_RED + det_YEL
-                    ($priority_materials__ps["R"][$m_id] == "Y" and $priority_materials__details["Y"][$m_id] == "Y")
-                    or
-                    //ps_RED + det_GRAY
-                    ($priority_materials__ps["R"][$m_id] == "Y" and ($priority_materials__details["R"][$m_id] != "Y" and $priority_materials__details["Y"][$m_id] != "Y"))
-                    or
-                    //ps_YEL + det_RED
-                    ($priority_materials__ps["Y"][$m_id] == "Y" and $priority_materials__details["R"][$m_id] == "Y")
-                    or
-                    //ps_GRAY + det_RED
-                    (($priority_materials__ps["R"][$m_id] != "Y" and $priority_materials__ps["Y"][$m_id] != "Y") and $priority_materials__details["R"][$m_id] == "Y")
-                ){
-                    $priority_materials_w["R"] += $w*($remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id]);
-                    $priority_materials_q["R"] +=     $remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id];
-                    $priority_materials  ["R"][$m_id] = "Y";
+    $destination_material = null;
+    // ППН - План Производства Насосов;
+    // ППД - План Производства Деталей;
+    // ЗД  - Заказ Деталей;
+    if (is__array($balance_of_casts)){
+        foreach ($balance_of_casts as $group){
+            if (is__array($group["items"])){
+                foreach ($group["items"] as $m_id=>$m){
+                    $t = $remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id];
+                    if ($t>0){
+                        $w = fn_uns__get_accounting_item_weights("M", $m_id);
 
-                }elseif (//ps_RED + det_RED
-                    ($priority_materials__ps["R2"][$m_id] == "Y" and $priority_materials__details["R"][$m_id] == "Y")
-                    or
-                    //ps_RED + det_YEL
-                    ($priority_materials__ps["R2"][$m_id] == "Y" and $priority_materials__details["Y"][$m_id] == "Y")
-                    or
-                    //ps_RED + det_GRAY
-                    ($priority_materials__ps["R2"][$m_id] == "Y" and ($priority_materials__details["R"][$m_id] != "Y" and $priority_materials__details["Y"][$m_id] != "Y"))
-                    or
-                    //ps_YEL + det_RED
-                    ($priority_materials__ps["Y"][$m_id] == "Y" and $priority_materials__details["R"][$m_id] == "Y")
-                    or
-                    //ps_GRAY + det_RED
-                    (($priority_materials__ps["R2"][$m_id] != "Y" and $priority_materials__ps["Y"][$m_id] != "Y") and $priority_materials__details["R"][$m_id] == "Y")
-                ){
-                    $priority_materials_w["R2"] += $w*($remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id]);
-                    $priority_materials_q["R2"] +=     $remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id];
-                    $priority_materials  ["R2"][$m_id] = "Y";
+                        $priority = "N";
 
-                }elseif (
-                    //ps_YEL + det_YEL
-                    ($priority_materials__ps["Y"][$m_id] == "Y" and $priority_materials__details["Y"][$m_id] == "Y")
-                    or
-                    //ps_YEL + det_YEL
-                    ($priority_materials__ps["Y"][$m_id] == "Y" and ($priority_materials__details["R"][$m_id] != "Y" and $priority_materials__details["Y"][$m_id] != "Y"))
-                    or
-                    //ps_GRAY + det_YEL
-                    (($priority_materials__ps["R"][$m_id] != "Y" and $priority_materials__ps["Y"][$m_id] != "Y") and $priority_materials__details["Y"][$m_id] == "Y")
-                ){
-                    $priority_materials_w["Y"] += $w*($remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id]);
-                    $priority_materials_q["Y"] +=     $remaining_of_casts["curr_month"][$m_id] + $remaining_of_casts["next_month"][$m_id];
-                    $priority_materials  ["Y"][$m_id] = "Y";
+                        // "N" по деталям плана продаж
+                        if ($priority_materials__details["N"][$m_id] == "Y"){
+                            $destination_material[$m_id] .= "-ППД-";
+                        }
+
+                        // "Y" по насосам плана продаж
+                        if ($priority_materials__ps["Y"][$m_id] == "Y"){
+                            $priority = "Y";
+                        }
+
+                        // "Y" по деталям плана продаж
+                        if ($priority_materials__details["Y"][$m_id] == "Y"){
+                            $destination_material[$m_id] .= "-ППД-";
+                            $priority = "Y";
+                        }
+
+                        // "R2" по насосам плана продаж
+                        if ($priority_materials__ps["R2"][$m_id] == "Y"){
+                            $priority = "R2";
+                        }
+
+                        // "R2" по деталям заказов
+                        if ($priority_materials__order_details["R2"][$m_id] == "Y"){
+                            $destination_material[$m_id] .= "-ЗД-";
+                            $priority = "R2";
+                        }
+
+                        // "R" по насосам плана продаж
+                        if ($priority_materials__ps["R"][$m_id] == "Y"){
+                            $priority = "R";
+                        }
+
+                        // "R" по деталям плана продаж
+                        if ($priority_materials__details["R"][$m_id] == "Y"){
+                            $destination_material[$m_id] .= "-ППД-";
+                            $priority = "R";
+                        }
+
+
+                        $priority_materials  [$m_id] = $priority;
+                        $priority_materials_q[$priority] += $t;
+                        $priority_materials_w[$priority] += $t*$w[$m_id]["M"][0]['value'];
+                    }
                 }
             }
         }
     }
 
-    $view->assign("priority_materials__details",$priority_materials__details);
-    $view->assign("priority_materials",         $priority_materials);
-    $view->assign("priority_materials_w",       $priority_materials_w);
-    $view->assign("priority_materials_q",       $priority_materials_q);
+//    $view->assign("priority_materials__order_details",  $priority_materials__order_details);
+//    $view->assign("priority_materials__details",        $priority_materials__details);
+    $view->assign("destination_material",               $destination_material);
+    $view->assign("priority_materials",                 $priority_materials);
+    $view->assign("priority_materials_w",               $priority_materials_w);
+    $view->assign("priority_materials_q",               $priority_materials_q);
 }
 
 

@@ -1,1 +1,1 @@
-{*<link href="{$smarty.const.UNS_ACC_DIR_CSS}/general.css" rel="stylesheet" type="text/css" />*}
+<link href="{$smarty.const.UNS_MECH_DIR_CSS}/styles.css" rel="stylesheet" type="text/css" />

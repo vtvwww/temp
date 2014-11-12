@@ -126,7 +126,7 @@
         <option value="">---</option>
         {*<option value="Hide" {if $o.status == "Hide"}selected="selected"{/if} {if $mode == "add"}selected="selected"{/if}>Скрыт - предварительный заказ</option>*}
         <option value="Open"    class="open"    {if $o.status == "Open"}selected="selected"{/if}>Открыт</option>
-        <option value="Close"   class="close"   {if $o.status == "Close"}selected="selected"{/if}>Выполнен</option>
+        {*<option value="Close"   class="close"   {if $o.status == "Close"}selected="selected"{/if}>Выполнен</option>*}
         <option value="Paid"    class="paid"    {if $o.status == "Paid"}selected="selected"{/if}>Оплачен</option>
         <option value="Shipped" class="shipped" {if $o.status == "Shipped"}selected="selected"{/if}>Отгружен</option>
     </select>
