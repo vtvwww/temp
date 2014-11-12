@@ -102,27 +102,6 @@
                         f_description="Применяемость в насосах вручную"
                         f_tooltip="Текст, который будет отображен как применяемость в насосах, если в качестве <Режима отображения принадлежности> был выбран <указать вручную>.<br><img src='skins/basic/admin/images/tooltips/details_accessory_view_m_1.png'><br><br><img src='skins/basic/admin/images/tooltips/details_accessory_view_m.png'>"
                     }
-
-                    {*ОТСЛЕЖИВАТЬ МИНИМАЛЬНЫЙ ОСТАТОК*}
-                    <hr/>
-                    {include file="addons/uns/views/components/get_form_field.tpl"
-                        f_type="checkbox"
-                        f_id=$id
-                        f_value=$i.min_rest_state
-                        f_name="min_rest_state"
-                        f_description="Следить за минимальным остатком детали?"
-                        f_tooltip="Если птичка установлена, то по этой детали происходит слежение за остатком."
-                    }
-                    {include file="addons/uns/views/components/get_form_field.tpl"
-                        f_id=$id
-                        f_type="input"
-                        f_required=false f_integer=true
-                        f_name="min_rest_value"
-                        f_value=$i.min_rest_value
-                        f_default="0"
-                        f_description="Значение минимального остатка детали на МЦ1 + МЦ2 + Скл. КМП"
-                    }
-
                     <hr/>
                     {include file="addons/uns/views/components/get_form_field.tpl"
                         f_id=$id

@@ -26,6 +26,13 @@
                         </select>
                     </div>
                 </td>
+                <td class="b1_l nowrap search-field">
+                    <label for="view_backlog">Показать задел:</label>
+                    <div class="break">
+                        <input type="hidden" value="N" name="view_backlog"/>
+                        <input id="view_backlog" type="checkbox" value="Y" name="view_backlog" {if $search.view_backlog == "Y"}checked="checked"{/if} />
+                    </div>
+                </td>
             </tr>
         </table>
     {/capture}

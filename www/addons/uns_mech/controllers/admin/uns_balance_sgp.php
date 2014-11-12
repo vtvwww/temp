@@ -28,6 +28,7 @@ if($mode == 'manage' or $mode == 'dnepr'){
         $_REQUEST["o_id"] = 25;
         $_REQUEST["mode"] = $mode;
     }else{
+        $_REQUEST["view_backlog"] = "Y";
         $_REQUEST["o_id"] = 19; // СГП Александрия
         // Запрос ЗАКАЗОВ
         $p = array(
@@ -71,6 +72,31 @@ if($mode == 'manage' or $mode == 'dnepr'){
             "total_weight_and_quantity" => true,
         );
         $view->assign('orders_tpl', array_shift(fn_acc__get_orders($p)));
+
+
+        if ($_REQUEST["view_backlog"] == "Y"){
+            //----------------------------------------------------------------------
+            // Расчет задела на текущую дату
+            // НА тек. ЧИСЛО МЕСЯЦА
+            //----------------------------------------------------------------------
+            $p1 = array(
+                "tracking_type"             => "zadel",
+                "tracking_time_begin"       => strtotime(date("Y-m",   fn_parse_date($_REQUEST['time_to'])) . "-1 00:00:00"),
+                "tracking_time_end"         => strtotime(date("Y-m-d", fn_parse_date($_REQUEST['time_to'])) . " 23:59:59"),
+                "with_doc_type_VN"          => true,
+            );
+            $kits_zadel = array_shift(fn_acc__get_kits($p1));
+            $zadel = array();
+            foreach ($kits_zadel as $kit_id=>$v){
+                $zadel[$v["p_id"]] += $v["p_quantity"];
+                if (is__array(($v["VN"]))){
+                    foreach ($v["VN"] as $pump_item){
+                        $zadel[$v["p_id"]] -= $pump_item["quantity"];
+                    }
+                }
+            }
+            $view->assign("zadel", $zadel);
+        }
     }
 
 
@@ -79,7 +105,7 @@ if($mode == 'manage' or $mode == 'dnepr'){
 //    $view->assign('balances_D',    $balances["D"]);  todo - временно удалено 2014-10-25 --> сэкономлено 2 секунды расчетов
 
     // Подготовить данные для более простого отображения
-    $balances = fn_uns_balance_sgp__format_for_tmpl($balances, $_REQUEST);
+    $balances = fn_uns_balance_sgp__format_for_tmpl($balances, $_REQUEST, $zadel);
     $view->assign('balances',    $balances);
 
     $view->assign('search',     $_REQUEST);
@@ -167,7 +193,7 @@ function fn_uns_balance_sgp__search($controller) {
 }
 
 // переформатирование данных для простого отобраджения view
-function fn_uns_balance_sgp__format_for_tmpl($b, $params) {
+function fn_uns_balance_sgp__format_for_tmpl($b, $params, $zadel=null) {
     $res = null;
 //    fn_print_r($res);
 
@@ -257,7 +283,7 @@ function fn_uns_balance_sgp__format_for_tmpl($b, $params) {
             foreach ($v_pt["pump_series"] as $k_ps=>$v_ps){
                 foreach ($v_ps["pumps"] as $k_p=>$v_p){
                     $sum_orders = fn_uns_balance_sgp__sum_orders($v_p["orders"]);
-                    if (!array_sum(array_map('abs', $v_p["balances"])) and !$sum_orders){
+                    if (!array_sum(array_map('abs', $v_p["balances"])) and !$sum_orders and !is__more_0($zadel[$k_p])){
                         unset($res[$k_pt]["pump_series"][$k_ps]["pumps"][$k_p]);
                     }
                 }

@@ -81,7 +81,7 @@ ul {
 h4 {
 	margin:	0px;
 }
-.hand {
+.hand, .h{
 	cursor: pointer;
 }
 .nowrap {

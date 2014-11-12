@@ -620,3 +620,46 @@ function fn_uns__upd_reserve_by_order ($order_id, $data){
 }
 
 
+function fn_uns__get_details_of_orders ($month, $year){
+    if (!is__more_0($month, $year)) return false;
+    $day = strtotime($year . "-" . $month . "-" . "1" . " 00:00:00");
+    $sql = db_quote(" SELECT
+                         a.m
+                        ,a.item_id
+                        ,sum(a.remain) as remain
+                      FROM (
+                             SELECT
+                               uns__acc_order_items.item_id
+                              ,uns__acc_order_items.order_id
+                              ,uns__acc_order_items.quantity-uns__acc_order_items.quantity_in_reserve-ifnull(sum(uns__acc_document_items.quantity), 0) as remain
+                              ,'before' as m
+                             FROM uns__acc_order_items
+                               INNER JOIN uns__acc_orders          on (uns__acc_orders.order_id      = uns__acc_order_items.order_id)
+                               LEFT JOIN  uns__acc_document_items  on (uns__acc_document_items.oi_id = uns__acc_order_items.oi_id and uns__acc_document_items.item_type = 'D')
+                             WHERE uns__acc_orders.status in ('Open', 'Paid')
+                               AND uns__acc_order_items.item_type = 'D'
+                               AND uns__acc_order_items.date < ?i
+                             GROUP BY uns__acc_order_items.oi_id
+
+                             UNION
+
+                             SELECT
+                                 uns__acc_order_items.item_id
+                                ,uns__acc_order_items.order_id
+                                ,uns__acc_order_items.quantity as remain
+                                ,'current' as m
+                              FROM uns__acc_order_items
+                                INNER JOIN uns__acc_orders         on (uns__acc_orders.order_id      = uns__acc_order_items.order_id)
+                              WHERE uns__acc_orders.status in ('Open', 'Paid', 'Shipped')
+                                AND uns__acc_order_items.item_type = 'D'
+                                AND uns__acc_order_items.date >= ?i
+                                GROUP BY uns__acc_order_items.oi_id
+                             ) as a
+                      WHERE a.remain > 0
+                      GROUP BY a.item_id,a.m
+                      ORDER BY a.m
+    ", $day, $day);
+    $details = db_get_hash_array(UNS_DB_PREFIX . $sql, "item_id");
+    return $details;
+}
+

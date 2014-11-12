@@ -12,32 +12,36 @@
             {assign var="mark_prohibition"  value=""}
             {assign var="mark_priority"     value="p_n"} {*priority none*}
             {*Запрет*}
-            {if $prohibition_of_casts[$m.id] == "Y"}
+            {if $prohibition_of_casts[$k] == "Y"}
                 {assign var="mark_prohibition"  value="prh"}
                 {assign var="mark_priority"     value=""}
 
-            {*Приоритет*}
-            {elseif $priority_materials.R[$m.id] == "Y"}
+            {*Приоритет R*}
+            {elseif $priority_materials[$k] == "R"}
                 {assign var="mark_priority" value="p_r"}
-            {elseif $priority_materials.R2[$m.id] == "Y"}
+
+            {*Приоритет R2*}
+            {elseif $priority_materials[$k] == "R2"}
                 {assign var="mark_priority" value="p_r2"}
-            {elseif $priority_materials.Y[$m.id] == "Y"}
+
+            {*Приоритет Y*}
+            {elseif $priority_materials[$k] == "Y"}
                 {assign var="mark_priority" value="p_y"}
+
             {/if}
 
-            <tr class="category_items {$id} {if $expand_all or ($mark_priority != "p_r" and $mark_priority != "p_r2" and $mark_priority != "p_y" )} hidden {/if} {if $mark_prohibition == "prh"}{$mark_prohibition}{/if} {$mark_priority}">
+            <tr class="category_items {$id} {if $expand_all or ($mark_priority != "p_r" and $mark_priority != "p_r2" and $mark_priority != "p_y" )} hidden {/if} {$mark_prohibition} {$mark_priority}">
                 {assign var="mark" value=""}
                 {assign var="mark_star" value=""}
-                {assign var="q" value=$remaining_of_casts.curr_month[$m.id]|fn_fvalue:0}
+                {assign var="q" value=$remaining_of_casts.curr_month[$k]|fn_fvalue:0}
                 {if $q>0}
-                    {if (isset($requirement_of_casts_for_min_rest[$m.id]) and $requirement_of_casts_for_min_rest[$m.id] == "Y") and ((isset($priority_materials__details.R[$m.id]) and $priority_materials__details.R[$m.id] == "Y") or (isset($priority_materials__details.Y[$m.id]) and $priority_materials__details.Y[$m.id] == "Y"))}
-                        {assign var="mark" value="<sup title='Минимальный остаток + На продажу'>МО+НП</sup>"}
+                    {if $destination_material[$k]|strpos:"-ППД-" !== false}
+                        {assign var="mark" value="`$mark` <sup title='План производства деталей'>ППД</sup>"}
                         {assign var="mark_star" value="<span class='info_warning'>*</span>"}
-                    {elseif (isset($requirement_of_casts_for_min_rest[$m.id]) and $requirement_of_casts_for_min_rest[$m.id] == "Y")}
-                        {assign var="mark" value="<sup title='Минимальный остаток'>МО</sup>"}
-                        {assign var="mark_star" value="<span class='info_warning'>*</span>"}
-                    {elseif ((isset($priority_materials__details.R[$m.id]) and $priority_materials__details.R[$m.id] == "Y") or (isset($priority_materials__details.Y[$m.id]) and $priority_materials__details.Y[$m.id] == "Y"))}
-                        {assign var="mark" value="<sup title='На продажу'>НП</sup>"}
+                    {/if}
+
+                    {if $destination_material[$k]|strpos:"-ЗД-" !== false}
+                        {assign var="mark" value="`$mark` <sup title='На продажу'>НП</sup>"}
                         {assign var="mark_star" value="<span class='info_warning'>*</span>"}
                     {/if}
                 {/if}
@@ -48,20 +52,20 @@
                     {if $m.no != ""}
                         {assign var="n" value="`$n` [`$m.no`]"}
                     {/if}
-                    {assign var="href" value="uns_plan_of_mech_dep.planning.balance_of_details?m_id=`$m.id`"}
-                    <a  rev="ci_{$m.id}" href="{$href|fn_url}" class="cm-dialog-opener cm-dialog-auto-size black" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$n}{$mark}</a>
-                    <div id="ci_{$m.id}" class="hidden" title="Остаток деталей {$n|upper}"></div>
+                    {assign var="href" value="uns_plan_of_mech_dep.planning.balance_of_details?m_id=`$k`"}
+                    <a  rev="ci_{$k}" href="{$href|fn_url}" class="cm-dialog-opener cm-dialog-auto-size black" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$n}{$mark}</a>
+                    <div id="ci_{$k}" class="hidden" title="Остаток деталей {$n|upper}"></div>
                 </td>
 
                 {*ВЕС*}
                 <td class="b1_l w">{$m.weight}</td>
 
                 {*ПЛАН ПОТРЕБНОСТЬ*}
-                {assign var="q" value=$requirement_of_casts.curr_month[$m.id]|fn_fvalue:1}
+                {assign var="q" value=$requirement_of_casts.curr_month[$k]|fn_fvalue:1}
                 <td class="b3_l {if $q < 0}info_warning_block{elseif $q==0}{/if}">{if !$q}{else}{$q}{/if}</td>
-                {assign var="q" value=$requirement_of_casts.next_month[$m.id]|fn_fvalue:1}
+                {assign var="q" value=$requirement_of_casts.next_month[$k]|fn_fvalue:1}
                 <td class="b1_l {if $q < 0}info_warning_block{elseif $q==0}{/if}">{if !$q}{else}{$q}{/if}</td>
-                {assign var="q" value=$requirement_of_casts.next2_month[$m.id]|fn_fvalue:1}
+                {assign var="q" value=$requirement_of_casts.next2_month[$k]|fn_fvalue:1}
                 <td class="b1_l {if $q < 0}info_warning_block{elseif $q==0}{/if}">{if !$q}{else}{$q}{/if}</td>
 
                 {*СКЛАДА ЛИТЬЯ*}
@@ -75,17 +79,15 @@
                 <td class="b2_l dg {if $q < 0}info_warning_block{elseif $q==0}{else}b{/if}">{if !$q}{else}{$q}{/if}</td>
 
                 {*ОСТАЛОСЬ ОТЛИТЬ ПО ПЛАНУ ПОТРЕБНОСТИ В ЗАГОТОВКАХ*}
-                {assign var="q" value=$remaining_of_casts.curr_month[$m.id]|fn_fvalue:0}
+                {assign var="q" value=$remaining_of_casts.curr_month[$k]|fn_fvalue:0}
                 <td class="b3_l r {if $q > 0}b{else}{/if}">{if !$q}{else}{$q}{/if}{$mark_star}</td>
-                {assign var="q" value=$remaining_of_casts.next_month[$m.id]|fn_fvalue:0}
+                {assign var="q" value=$remaining_of_casts.next_month[$k]|fn_fvalue:0}
                 <td class="b1_l r {if $q > 0}b{else}{/if}">{if !$q}{else}{$q}{/if}</td>
-                {assign var="q" value=$remaining_of_casts.next2_month[$m.id]|fn_fvalue:0}
+                {assign var="q" value=$remaining_of_casts.next2_month[$k]|fn_fvalue:0}
                 <td class="b1_l r {if $q > 0}b{else}{/if}">{if !$q}{else}{$q}{/if}</td>
 
                 {*ЗАПРЕТ*}
-                <td class="b3_l {$mark_prohibition} {$mark_priority}">
-                    &nbsp;
-                </td>
+                <td class="b3_l {$mark_prohibition} {$mark_priority}">&nbsp;</td>
 
                 {*ПРИМЕНЯЕМОСТЬ В НАСОСАХ*}
                 <td class="l {$mark_priority}">
