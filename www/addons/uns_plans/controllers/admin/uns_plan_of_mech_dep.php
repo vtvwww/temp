@@ -1108,19 +1108,19 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
                     if ($group["group_view_in_plans"] == "Y"){
                         $balance = $m["nach"] + $m["current__in"];
                         // тек.
-                        $deficit_curr = -($balance - $requirement_of_casts["curr_month"][$m_id]);
+                        $deficit_curr = -($balance - ceil($requirement_of_casts["curr_month"][$m_id]));
                         if ($deficit_curr < 0) $deficit_curr = 0;
 
                         // след. мес.
-                        $deficit_next = ($requirement_of_casts["curr_month"][$m_id]+$requirement_of_casts["next_month"][$m_id]) - $balance - $deficit_curr;
+                        $deficit_next = (ceil($requirement_of_casts["curr_month"][$m_id])+ceil($requirement_of_casts["next_month"][$m_id])) - $balance - $deficit_curr;
                         if ($deficit_next < 0) $deficit_next = 0;
 
                         // след. след. мес.
-                        $deficit_next2 = ($requirement_of_casts["curr_month"][$m_id] + $requirement_of_casts["next_month"][$m_id] + $requirement_of_casts["next2_month"][$m_id]) - $balance - $deficit_curr - $deficit_next;
+                        $deficit_next2 = (ceil($requirement_of_casts["curr_month"][$m_id])+ceil($requirement_of_casts["next_month"][$m_id])+ceil($requirement_of_casts["next2_month"][$m_id])) - $balance - $deficit_curr - $deficit_next;
                         if ($deficit_next2 < 0) $deficit_next2 = 0;
 
                         // след. след. след. мес.
-                        $deficit_next3 = ($requirement_of_casts["curr_month"][$m_id] + $requirement_of_casts["next_month"][$m_id] + $requirement_of_casts["next2_month"][$m_id] + $requirement_of_casts["next3_month"][$m_id]) - $balance - $deficit_curr - $deficit_next - $deficit_next2;
+                        $deficit_next3 = (ceil($requirement_of_casts["curr_month"][$m_id])+ceil($requirement_of_casts["next_month"][$m_id])+ceil($requirement_of_casts["next2_month"][$m_id])+ceil($requirement_of_casts["next3_month"][$m_id])) - $balance - $deficit_curr - $deficit_next - $deficit_next2;
                         if ($deficit_next3 < 0) $deficit_next3 = 0;
 
                         $remaining_of_casts["curr_month"][$m_id]    = $deficit_curr;
@@ -1147,10 +1147,10 @@ if ($mode == "planning" and $action == "LC"){ // План для литейно�
 
                         // РАСЧЕТ ВЕСА
                         // Потребность
-                        $requirement_of_casts["curr_month"]["total_weight"] += $m["weight"]*$requirement_of_casts["curr_month"][$m_id];
-                        $requirement_of_casts["next_month"]["total_weight"] += $m["weight"]*$requirement_of_casts["next_month"][$m_id];
-                        $requirement_of_casts["next2_month"]["total_weight"]+= $m["weight"]*$requirement_of_casts["next2_month"][$m_id];
-                        $requirement_of_casts["next3_month"]["total_weight"]+= $m["weight"]*$requirement_of_casts["next3_month"][$m_id];
+                        $requirement_of_casts["curr_month"]["total_weight"] += $m["weight"]*ceil($requirement_of_casts["curr_month"][$m_id]);
+                        $requirement_of_casts["next_month"]["total_weight"] += $m["weight"]*ceil($requirement_of_casts["next_month"][$m_id]);
+                        $requirement_of_casts["next2_month"]["total_weight"]+= $m["weight"]*ceil($requirement_of_casts["next2_month"][$m_id]);
+                        $requirement_of_casts["next3_month"]["total_weight"]+= $m["weight"]*ceil($requirement_of_casts["next3_month"][$m_id]);
 
                         // Движение по складу
                         $movement_of_casts["nach"]                          += $m["weight"]*$m["nach"];

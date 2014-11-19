@@ -226,8 +226,8 @@ $(function () {
     });
 
     // дублирование строки через клавиатуру
-    $(document).keypress(function (e) {
-        if (e.keyCode == 45){ // кнопка @INSERT@
+    $(document).keydown(function (e) {
+        if (e.keyCode == "45" || e.keyCode == 45){ // кнопка @INSERT@
             $("img[name='clone']").last().click();
         }
     });

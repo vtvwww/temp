@@ -35,11 +35,12 @@
             <tr style="background-color: #EDEDED;">
                 <th class="center b1_r" rowspan="3">&nbsp;</th>
                 <th class="center b1_r" rowspan="3">Наименование</th>
-                <th class="center b1_r" rowspan="3">Клм</th>
+                <th class="center b_r" rowspan="3">Клм</th>
                 <th class="center b1_r b1_b" rowspan="2" colspan="2">Требуемое<br>количество</th>
-                <th class="center b1_r" rowspan="3" width="70px" style="padding: 0px; margin: 0px;">Отложено<br>на Сб. уч.</th>
+                <th class="center b_r" rowspan="3" width="70px" style="padding: 0px; margin: 0px;">Отложено<br>на Сб. уч.</th>
+                <th class="center b_r" rowspan="3">Сопровод.<br>листы</th>
                 <th class="center b1_r b1_b" colspan="4">Мех. цех</th>
-                <th class="center b1_r" rowspan="3">Скл.<br>КМП.</th>
+                <th class="center b_r" rowspan="3">Скл.<br>КМП.</th>
                 <th class="center" rowspan="3">&nbsp;</th>
             </tr>
             <tr style="background-color: #EDEDED;">
@@ -81,7 +82,7 @@
                 </td>
 
                 {*Клеймо*}
-                <td class="b1_r" align="center">{if $d.material_no}<span class="info_warning">{$d.material_no}</span>{else}&nbsp;{/if}</label></td>
+                <td class="b_r" align="center">{if $d.material_no}<span class="info_warning">{$d.material_no}</span>{else}&nbsp;{/if}</label></td>
 
                 {*Кол-во на 1 ед.*}
                 <td class="b1_r" align="center">{$d_q}</td>
@@ -105,12 +106,18 @@
                     {foreach from=$b_group.items item="b_item"}
                         {if $b_item.detail_id == $d.detail_id}
                             {math equation="-140+70*x/y" x=$b_item.konech y=$k_q assign="pos"}
-                            <td class="b1_r" align="center" style="font-weight: bold; background-image: url('images/uns/bar.png'); background-position: {$pos}px center;">
+                            <td class="b_r" align="center" style="font-weight: bold; background-image: url('images/uns/bar.png'); background-position: {$pos}px center;">
                                 {$b_item.konech}
                             </td>
                         {/if}
                     {/foreach}
                 {/foreach}
+
+                {*Сопроводительные листы*}
+                <td class="b_r" align="center">
+                    {assign var="time_to" value=$smarty.now|date_format:"%d/%m/%Y"}
+                    <a target="_blank" href="{"uns_sheets.manage?period=A&time_from=&time_to=`$time_to`&detail_id=`$d.detail_id`"|fn_url}">Все листы</a>
+                </td>
 
                 {*-------------------------------------------------------------*}
                 {foreach from=$balances[10] item="b_group"}
@@ -187,7 +194,7 @@
                     {foreach from=$b_group.items item="b_item"}
                         {if $b_item.detail_id == $d.detail_id}
                             {*Склад КМП*}
-                            <td class="center b1_r">
+                            <td class="center b_r">
                                 {*{if $b_item.konech|fn_fvalue:0:0 > 0}*}
                                     {*<form action="{""|fn_url}" method="post">*}
                                         {*<input type="hidden" name="kit_id"      value="{$kit.kit_id}"/>*}

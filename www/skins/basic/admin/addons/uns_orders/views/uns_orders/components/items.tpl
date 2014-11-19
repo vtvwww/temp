@@ -1,3 +1,4 @@
+<a name="items"></a>
 <h3 style="border-bottom: 3px double gray;margin-bottom: 6px;padding-bottom: 2px;">Позиции заказа</h3>
 <table>
     <tr>
@@ -8,7 +9,7 @@
         <td rowspan="2" width="25%" class="center"><img src="skins/basic/admin/addons/uns_orders/images/shipment_green.png"> - полная отгрузка</td>
         <td rowspan="2" class="b1_l"></td>
         {*<td width="25%" class="center"><img src="skins/basic/admin/addons/uns_orders/images/shipment_red.png"> - отгрузка превышает заказ</td>*}
-        <td width="10px" class="center"><input type="checkbox" checked="checked" id="checkbox_shipped" onchange="if ($(this).prop('checked')) $('table.order_items tr.CL').removeClass('hidden'); else $('table.order_items tr.CL').addClass('hidden')"></td>
+        <td width="10px" class="center"><input type="checkbox" {*checked="checked"*} id="checkbox_shipped" onchange="if ($(this).prop('checked')) $('table.order_items tr.CL').removeClass('hidden'); else $('table.order_items tr.CL').addClass('hidden')"></td>
         <td width="10px" class="center"><label class="hand" for="checkbox_shipped"><img border="0" src="skins/basic/admin/addons/uns_orders/images/shipped_24x24.png" class="hand"></label></td>
         <td width="24%" class="left"><label class="hand" for="checkbox_shipped"> - отгруженные позиции</label></td>
     </tr>
@@ -99,10 +100,10 @@
                         {assign var="RO_q" value=$i.info_RO.total_q}
                         {if $i.info_RO.total_q == $i.quantity}
                             {assign var="RO_q_disabled" value=true}
-                            {assign var="tr_class" value="class='CL'"}
+                            {assign var="tr_class" value="class='CL hidden'"}
                             {assign var="pos" value="-50"}
                         {elseif $i.info_RO.total_q > $i.quantity}
-                            {assign var="tr_class" value="class='CL'"}
+                            {assign var="tr_class" value="class='CL hidden'"}
                             {assign var="RO_q_disabled" value=true}
                             {assign var="pos" value="-200"}
                         {else}
@@ -117,7 +118,11 @@
                         </td>
 
                         {*DATE*}
-                        <td class="cm-non-cb b1_l">
+                        <td class="cm-non-cb b1_l c">
+                            {if $i.shipped == "full"}
+                                {$i.date|fn_parse_date|date_format:"%d/%m/%Y"}
+                                <input type="hidden" value="{$i.date|fn_parse_date|date_format:"%d/%m/%Y"}" name="{$e_n}[date]"/>
+                            {else}
                             {include file="addons/uns/views/components/get_form_field.tpl"
                                 f_id="_oi_`$num`"
                                 f_type="date"
@@ -128,11 +133,16 @@
                                 f_style="width:65px;"
                                 f_simple=true
                             }
+                            {/if}
                         </td>
 
                         {*ITEM_TYPE*}
-                        <td class="cm-non-cb b1_l">
+                        <td class="cm-non-cb b1_l c">
                             <input type="hidden" value="{$id}" name="{$e_n}[oi_id]"/>
+                            {if $i.shipped == "full"}
+                                {if $i.item_type == "D"}Д{elseif $i.item_type == "P"}Н{elseif $i.item_type == "PF"}НР{elseif $i.item_type == "PA"}НА{/if}
+                                <input type="hidden" value="{$i.item_type}" name="{$e_n}[item_type]"/>
+                            {else}
                             {include file="addons/uns/views/components/get_form_field.tpl"
                                 f_type="item_type"
                                 f_required=true f_integer=false
@@ -145,11 +155,16 @@
                                 f_simple=true
                                 f_short=true
                             }
+                            {/if}
                         </td>
 
                         {*ITEM_NAME*}
                         <td class="cm-non-cb b1_l">
                             {if $i.item_type == "D"}
+                                {if $i.shipped == "full"}
+                                    {$details[$i.item_id].format_name}
+                                    <input type="hidden" value="{$i.item_id}" name="{$e_n}[item_id]"/>
+                                {else}
                                 {include file="addons/uns/views/components/get_form_field.tpl"
                                     f_type="select_by_group"
                                     f_name="`$e_n`[item_id]"
@@ -161,8 +176,13 @@
                                     f_optgroup_label="dcat_name"
                                     f_option_target_id=$i.item_id
                                 }
+                                {/if}
 
                             {elseif $i.item_type == "P" or $i.item_type == "PF" or $i.item_type == "PA"}
+                                {if $i.shipped == "full"}
+                                    {$pumps[$i.item_id].p_name}
+                                    <input type="hidden" value="{$i.item_id}" name="{$e_n}[item_id]"/>
+                                {else}
                                 {include file="addons/uns/views/components/get_form_field.tpl"
                                     f_type="select_by_group"
                                     f_name="`$e_n`[item_id]"
@@ -174,6 +194,7 @@
                                     f_optgroup_label="ps_name"
                                     f_option_target_id=$i.item_id
                                 }
+                                {/if}
                             {/if}
                         </td>
 
@@ -182,7 +203,11 @@
                         {if $RO_q>0}
                             {assign var="f_min" value=$RO_q}
                         {/if}
-                        <td class="cm-non-cb b_l" align="left">
+                        <td class="cm-non-cb b_l c">
+                            {if $i.shipped == "full"}
+                                {$i.quantity|intval}
+                                <input type="hidden" value="{$i.quantity|intval}" name="{$e_n}[quantity]"/>
+                            {else}
                             {include file="addons/uns/views/components/get_form_field.tpl"
                                 f_type="select_range"
                                 f_id="q_`$num`"
@@ -196,6 +221,7 @@
                                 f_default=$q
                                 f_style="width:50px;"
                             }
+                            {/if}
                             <input type="hidden" value="{$i.weight}" name="{$e_n}[weight]"/>
                         </td>
 
@@ -205,7 +231,11 @@
                         </td>
 
                         {*В РЕЗЕРВЕ*}
-                        <td class="cm-non-cb b_l" align="left">
+                        <td class="cm-non-cb b_l c">
+                            {if $i.shipped == "full"}
+                                {$i.quantity_in_reserve|intval}
+                                <input type="hidden" value="{$i.quantity_in_reserve|intval}" name="{$e_n}[quantity_in_reserve]"/>
+                            {else}
                             {include file="addons/uns/views/components/get_form_field.tpl"
                                 f_type="select_range"
                                 f_id="q_`$num`"
@@ -220,6 +250,7 @@
                                 f_default=$i.quantity_in_reserve|default:0
                                 f_style="width:50px;"
                             }
+                            {/if}
                             <input type="hidden" value="{$i.quantity_in_reserve|default:0}" name="{$e_n}[quantity_in_reserve_old]"/>
                         </td>
 
@@ -254,6 +285,9 @@
                         </td>
 
                         <td class="cm-non-cb b1_l bold" align="right" width="25px">
+                            {if $i.shipped == "full"}
+                                <input type="hidden" value="0" name="{$e_n}[RO_q]"/>
+                            {else}
                             {include file="addons/uns/views/components/get_form_field.tpl"
                                 f_type="select_range"
                                 f_id="RO_q_`$num`"
@@ -268,6 +302,7 @@
                                 f_default=0
                                 f_style="width:50px;"
                             }
+                            {/if}
                         </td>
 
                         {*<td class="cm-non-cb b_l" align="left">*}

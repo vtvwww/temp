@@ -80,7 +80,7 @@
                 <tr>
                     {assign var="curr_q" value=0}
                     {if $smarty.foreach.p.first}
-                    <td class="{if !$smarty.foreach.ps.first}b2_t{/if} m-w_100" {if $ps.pumps|count > 1}rowspan="{$ps.pumps|count}"{/if}>&nbsp;
+                    <td class="{if !$smarty.foreach.ps.first}b2_t{/if} mw100" {if $ps.pumps|count > 1}rowspan="{$ps.pumps|count}"{/if}>&nbsp;
                         {assign var="n" value=$ps.ps_name}
                         {assign var="href" value="uns_balance_sgp.motion?item_id=`$p.p_id`&period=`$search.period`&time_from=`$search.time_from`&time_to=`$search.time_to`&o_id=`$search.o_id`"}
                         <a  rev="content_item_{$p.p_id}" id="opener_item_{$m_id}" href="{$href|fn_url}" class="cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$n}</a>
@@ -88,7 +88,7 @@
                     </td>
                     {/if}
 
-                    <td class="b1_l {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if} m-w_50">{*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*}
+                    <td class="b1_l {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if} mw50">{*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*}
                         {assign var="n" value=$p.p_name|replace:"`$ps.ps_name`":""}
                         {assign var="href" value="uns_balance_sgp.motion?item_id=`$p.p_id`&period=`$search.period`&time_from=`$search.time_from`&time_to=`$search.time_to`&o_id=`$search.o_id`"}
                         <a  rev="content_item_{$p.p_id}" id="opener_item_{$m_id}" href="{$href|fn_url}" class="block cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$n|trim}</a>
@@ -116,7 +116,7 @@
                         {assign var="order_q"               value=$p.orders[$o.order_id].P-$p.orders_total_shipped[$o.order_id].P}
                         {assign var="order_q_in_reserve"    value=$p.orders_in_reserve[$o.order_id].P|default:0}
                         {assign var="curr_q"                value=$curr_q-$order_q+$order_q_in_reserve} {*Для того, чтобы последовательно вычитать из СГП имеющиеся заказы*}
-                        <td class="m-w_16 c {if $smarty.foreach.o.first}b_l{else}b1_l_b{/if} {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}">
+                        <td class="mw16 c {if $smarty.foreach.o.first}b_l{else}b1_l_b{/if} {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}">
                             {if $order_q!=0}
                                 <span class="{if $order_q<0}i_w_b{elseif $order_q==0}z b{/if}">
                                     {if $o.data_for_tmp.P[$p.p_id].comment|strlen}
@@ -128,7 +128,7 @@
                             {/if}
                         </td>
 
-                        <td class="m-w_16 c bd_l {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}">
+                        <td class="mw16 c bd_l {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}">
                             {if $order_q>0}
                                 {if $order_q_in_reserve > 0}
                                     <span title="Зарезервировано {$order_q_in_reserve} шт. из {$order_q} шт." class="h {if $order_q_in_reserve>=$order_q}i_g_b{else}i_y_b{/if} b">
@@ -157,7 +157,7 @@
                         {assign var="order_q"               value=$p.orders[$o.order_id].PF-$p.orders_total_shipped[$o.order_id].PF}
                         {assign var="order_q_in_reserve"    value=$p.orders_in_reserve[$o.order_id].PF|default:0}
                         {assign var="curr_q"                value=$curr_q-$order_q+$order_q_in_reserve} {*Для того, чтобы последовательно вычитать из СГП имеющиеся заказы*}
-                        <td class="m-w_16 c {if $smarty.foreach.o.first}b_l{else}b1_l_b{/if} {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}">
+                        <td class="mw16 c {if $smarty.foreach.o.first}b_l{else}b1_l_b{/if} {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}">
                             {if $order_q!=0}
                                 <span class="{if $order_q<0}i_w_b{elseif $order_q==0}z b{/if}">
                                     {if $o.data_for_tmp.PF[$p.p_id].comment|strlen}
@@ -169,7 +169,7 @@
                             {/if}
                         </td>
 
-                        <td class="m-w_16 c bd_l {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}">
+                        <td class="mw16 c bd_l {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}">
                             {if $order_q>0}
                                 {if $order_q_in_reserve > 0}
                                     <span title="Зарезервировано {$order_q_in_reserve} шт. из {$order_q} шт." class="h {if $order_q_in_reserve>=$order_q}i_g_b{else}i_y_b{/if} b">
@@ -198,7 +198,7 @@
                         {assign var="order_q"               value=$p.orders[$o.order_id].PA-$p.orders_total_shipped[$o.order_id].PA}
                         {assign var="order_q_in_reserve"    value=$p.orders_in_reserve[$o.order_id].PA|default:0}
                         {assign var="curr_q"                value=$curr_q-$order_q+$order_q_in_reserve} {*Для того, чтобы последовательно вычитать из СГП имеющиеся заказы*}
-                        <td class="m-w_16 c {if $smarty.foreach.o.first}b_l{else}b1_l_b{/if} {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}">
+                        <td class="mw16 c {if $smarty.foreach.o.first}b_l{else}b1_l_b{/if} {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}">
                             {if $order_q!=0}
                                 <span class="{if $order_q<0}i_w_b{elseif $order_q==0}z b{/if}">
                                     {if $o.data_for_tmp.PA[$p.p_id].comment|strlen}
@@ -210,7 +210,7 @@
                             {/if}
                         </td>
 
-                        <td class="m-w_16 c bd_l {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}">
+                        <td class="mw16 c bd_l {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}">
                             {if $order_q>0}
                                 {if $order_q_in_reserve > 0}
                                     <span title="Зарезервировано {$order_q_in_reserve} шт. из {$order_q} шт." class="h {if $order_q_in_reserve>=$order_q}i_g_b{else}i_y_b{/if} b">

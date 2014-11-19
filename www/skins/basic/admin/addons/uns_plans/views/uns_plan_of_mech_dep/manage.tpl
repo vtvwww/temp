@@ -101,9 +101,9 @@
                     {foreach from=$pt.pump_series item="ps" key="ps_id" name="ps"}
                     {*МАРКИРОВАТЬ ПОЗИЦИЮ*}
                     {if $smarty.request.mark_id>0 and $smarty.request.mark_id == $ps_id}
-                        {assign var="mark" value=" mark "}
+                        {assign var="mark" value=" mark_item "}
                     {else}
-                        {assign var="mark" value=""}
+                        {assign var="mark" value=" mark_item_clear "}
                     {/if}
 
                     {*АНАЛИЗ ПЛАНА ПРОДАЖ*}
@@ -178,11 +178,11 @@
                     <tr>
                         {*Наименование*}
                         <td {$analisys_rowspan} class="b2_t {$mark} {$warning}">
-                            <a  rev="content_item_name_{$ps_id}" id="opener_item_name_{$ps_id}" href="{"uns_plan_of_mech_dep.analysis_of_pumps.pump?ps_id=`$ps_id`"|fn_url}" class="block cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$ps.ps_name}</a>
+                            <a name="{$ps_id}" rev="content_item_name_{$ps_id}" id="opener_item_name_{$ps_id}" href="{"uns_plan_of_mech_dep.analysis_of_pumps.pump?ps_id=`$ps_id`"|fn_url}" class="block cm-dialog-opener cm-dialog-auto-size text-button-edit cm-ajax-update black" {if $is_mark===false}{else}onclick="mark_item($(this));"{/if}>{$ps.ps_name}</a>
                             <div id="content_item_name_{$ps_id}" class="hidden" title="Анализ насоса <u>{$ps.ps_name}</u> на 23:59 {$search.current_day}"></div>
                         </td>
 
-                        <td {$analisys_rowspan} align="right" class="b2_t {$mark} {if $analisis_of_sales != "Y"}{$warning}{/if}">
+                        <td {$analisys_rowspan} align="right" class="b2_t  {if $analisis_of_sales != "Y"}{$warning}{/if}">
                             {*<nobr>*}
                             {if $prohibition.$ps_id == "Y"}<img src="skins/basic/admin/addons/uns_plans/images/prohibition.png" alt="X"/>{else}&nbsp;{/if}
                             {* Редактировать может только vtv@uns.ua *}
@@ -198,71 +198,71 @@
 
                         {*Склад Готовой Продукции*}
                         {assign var="q" value=$sgp.$ps_id|default:0}
-                        <td {$analisys_rowspan} class="b_l b2_t center {$mark} {if !$q}zero{/if}">{if $q>=0}{$q}{else}<span class="info_warning_block">{$q}</span>{/if}</td>
+                        <td {$analisys_rowspan} class="b_l b2_t center  {if !$q}zero{/if}">{if $q>=0}{$q}{else}<span class="info_warning_block">{$q}</span>{/if}</td>
 
                         {*План продаж*}
                         {assign var="q" value=$requirement.curr_month.$ps_id|default:0}
-                        <td {$sale_progressbar} class="b_l b2_t center {$mark} {if $analysis_of_plan || $analisis_of_sales} bold {/if}{if !$q and !$sale_value}zero{/if}">{$sale_tpl}{$q}</td>
+                        <td {$sale_progressbar} class="b_l b2_t center  {if $analysis_of_plan || $analisis_of_sales} bold {/if}{if !$q and !$sale_value}zero{/if}">{$sale_tpl}{$q}</td>
                         {assign var="q" value=$requirement.next_month.$ps_id|default:0}
-                        <td class="b1_l b2_t center {$mark} {if $analysis_of_plan || $analisis_of_sales} bold {/if} {if !$q}zero{/if}">{$q}</td>
+                        <td class="b1_l b2_t center  {if $analysis_of_plan || $analisis_of_sales} bold {/if} {if !$q}zero{/if}">{$q}</td>
                         {if $analysis_of_plan}
                         {assign var="q" value=$requirement.next2_month.$ps_id|default:0}
-                        <td class="b1_l b2_t center bold {$mark} {if !$q}zero{/if}">{$q}</td>
+                        <td class="b1_l b2_t center bold  {if !$q}zero{/if}">{$q}</td>
                         {/if}
 
                         {if $search.type_of_production_plan == "actual"}
                             {*План производства*}
                             {assign var="q" value=$initial_production_plan.curr_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} class="b3_l b2_t center {$mark}">{if !$q}&nbsp;{else}{$q}{/if}</td>
+                            <td {$analisys_rowspan} class="b3_l b2_t center ">{if !$q}&nbsp;{else}{$q}{/if}</td>
                             {assign var="q" value=$initial_production_plan.next_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} class="b1_l b2_t center {$mark}">{if !$q}&nbsp;{else}{$q}{/if}</td>
+                            <td {$analisys_rowspan} class="b1_l b2_t center ">{if !$q}&nbsp;{else}{$q}{/if}</td>
                             {assign var="q" value=$initial_production_plan.next2_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} class="b1_l b2_t center {$mark}">{if !$q}&nbsp;{else}{$q}{/if}</td>
+                            <td {$analisys_rowspan} class="b1_l b2_t center ">{if !$q}&nbsp;{else}{$q}{/if}</td>
 
                         {elseif $search.type_of_production_plan == "parties"}
                             {*Плановая сдача партий насосов на СГП*}
                             {assign var="q" value=$initial_production_plan_parties.curr_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} class="b3_l b2_t center {$mark}">{if !$q}&nbsp;{else}{$q}{/if}</td>
+                            <td {$analisys_rowspan} class="b3_l b2_t center ">{if !$q}&nbsp;{else}{$q}{/if}</td>
                             {assign var="q" value=$initial_production_plan_parties.next_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} class="b1_l b2_t center {$mark}">{if !$q}&nbsp;{else}{$q}{/if}</td>
+                            <td {$analisys_rowspan} class="b1_l b2_t center ">{if !$q}&nbsp;{else}{$q}{/if}</td>
                             {assign var="q" value=$initial_production_plan_parties.next2_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} class="b1_l b2_t center {$mark}">{if !$q}&nbsp;{else}{$q}{/if}</td>
+                            <td {$analisys_rowspan} class="b1_l b2_t center ">{if !$q}&nbsp;{else}{$q}{/if}</td>
                         {/if}
 
                         {*ЗАДЕЛ*}
                         {assign var="q" value=$zadel_current_day.$ps_id|default:0}
-                        <td {$analisys_rowspan} style="background-color: #FFEF8C;" class="b3_l b2_t center {$mark} bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
+                        <td {$analisys_rowspan} style="background-color: #FFEF8C;" class="b3_l b2_t center  bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
 
                         {*ВЫПОЛНЕНО*}
                         {assign var="q" value=$done_current_day.$ps_id|default:0}
-                        <td {$analisys_rowspan} style="background-color: #C0FF9A;" class="b2_l b2_t center {$mark} bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
+                        <td {$analisys_rowspan} style="background-color: #C0FF9A;" class="b2_l b2_t center  bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
 
                         {*ОСТАЛОСЬ*}
                         {if $search.type_of_production_plan == "actual"}
                             {assign var="q" value=$remaining_production_plan_current_day.curr_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b_l b2_t center {$mark} bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
+                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b_l b2_t center  bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
                             {assign var="q" value=$remaining_production_plan_current_day.next_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b1_l b2_t center {$mark} bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
+                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b1_l b2_t center  bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
                             {assign var="q" value=$remaining_production_plan_current_day.next2_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b1_l b2_t center {$mark} bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
+                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b1_l b2_t center  bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
 
                         {elseif $search.type_of_production_plan == "parties"}
                             {assign var="q" value=$remaining_production_plan_parties_current_day.curr_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b_l b2_t center {$mark} bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
+                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b_l b2_t center  bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
                             {assign var="q" value=$remaining_production_plan_parties_current_day.next_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b1_l b2_t center {$mark} bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
+                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b1_l b2_t center  bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
                             {assign var="q" value=$remaining_production_plan_parties_current_day.next2_month.$ps_id|default:0}
-                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b1_l b2_t center {$mark} bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
+                            <td {$analisys_rowspan} style="background-color: #B8C1FF;" class="b1_l b2_t center  bold">{if !$q}&nbsp;{else}{$q}{/if}</td>
                         {/if}
 
                         {*Склад Готовой Продукции*}
                         {assign var="q" value=$sgp_current_day.$ps_id|default:0}
-                        {*<td {$analisys_rowspan} class="b3_l b2_t center {$mark} {if !$q}zero{else}bold{/if}">{if $q>=0}{$q}{else}<span class="info_warning_block">{$q}</span>{/if}</td>*}
-                        <td {$analisys_rowspan} class="b3_l b2_t center {$mark} {if $q}bold{/if}">{if $q>0}{$q}{elseif ($requirement.curr_month.$ps_id>0 or $requirement.next_month.$ps_id>0) and $prohibition.$ps_id != "Y" and $q<=0}<span class="info_warning_block">&nbsp;&nbsp;{$q}&nbsp;&nbsp;</span>{/if}</td>
+                        {*<td {$analisys_rowspan} class="b3_l b2_t center  {if !$q}zero{else}bold{/if}">{if $q>=0}{$q}{else}<span class="info_warning_block">{$q}</span>{/if}</td>*}
+                        <td {$analisys_rowspan} class="b3_l b2_t center  {if $q}bold{/if}">{if $q>0}{$q}{elseif ($requirement.curr_month.$ps_id>0 or $requirement.next_month.$ps_id>0) and $prohibition.$ps_id != "Y" and $q<=0}<span class="info_warning_block">&nbsp;&nbsp;{$q}&nbsp;&nbsp;</span>{/if}</td>
 
                         {*КРАТНОСТЬ ПАРТИИ НАСОСОВ*}
                         {if $analisis_of_sales}
-                            <td {$analisys_rowspan} class="b3_l b2_t center {$mark}">
+                            <td {$analisys_rowspan} class="b3_l b2_t center ">
                                 {$ps.party_size_min}-{$ps.party_size_max}{*,{$ps.party_size_step}*}
                             </td>
                         {/if}

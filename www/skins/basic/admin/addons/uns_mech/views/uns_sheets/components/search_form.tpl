@@ -4,15 +4,12 @@
         <table cellpadding="10" cellspacing="0" border="0" class="search-header">
             <tr>
                 <td class="nowrap search-field">
-                    {include file="common_templates/period_selector.tpl" period=$search.period}
+                    <label>Период:</label>
+                    <div class="break">
+                        {include file="common_templates/period_selector.tpl" period=$search.period}
+                    </div>
                 </td>
-            </tr>
-        </table>
-        <hr>
-        {* МАТЕРИАЛЫ *}
-        <table cellpadding="10" cellspacing="0" border="0" class="search-header materials" id="search_form_materials">
-            <tr>
-                <td class="nowrap search-field">
+                <td class="nowrap search-field b1_l">
                     <label for="status">Статус:</label>
                     <div class="break">
                         <select name="status" id="status">
@@ -43,7 +40,13 @@
                         </select>
                     </div>
                 </td>
-                <td class="nowrap search-field b1_l">
+            </tr>
+        </table>
+        <hr>
+        {* МАТЕРИАЛЫ *}
+        <table cellpadding="10" cellspacing="0" border="0" class="search-header materials" id="search_form_materials">
+            <tr>
+                <td class="nowrap search-field">
                     <label>{$lang.uns_material_categories}:</label>
                     <div class="break">
                         {include file="addons/uns/views/components/get_form_field.tpl"
@@ -93,24 +96,24 @@
                         {*<input type="reset" value="Сбросить"/>*}
                     {*</div>*}
                 {*</td>*}
-                {*<td class="nowrap search-field">*}
-                    {*<label>{$lang.uns_detail_categories}:</label>*}
-                    {*<div class="break">*}
-                        {*{include file="addons/uns/views/components/get_form_field.tpl"*}
-                            {*f_type="dcategories_plain"*}
-                            {*f_required=true f_integer=false*}
-                            {*f_name="dcat_id"*}
-                            {*f_options=$dcategories_plain*}
-                            {*f_option_id="dcat_id"*}
-                            {*f_option_value="dcat_name"*}
-                            {*f_option_target_id=$search.dcat_id*}
-                            {*f_simple=true*}
-                            {*f_blank=true*}
-                            {*f_with_q_ty=false*}
-                            {*f_blank_name="---"*}
-                        {*}*}
-                    {*</div>*}
-                {*</td>*}
+                <td class="nowrap search-field b1_l">
+                    <label for="detail_id">Деталь:</label>
+                    <div class="break">
+                        <select name="detail_id" id="detail_id">
+                            {include file="addons/uns/views/components/get_form_field.tpl"
+                                f_type="select_by_group"
+                                f_options="details"
+                                f_option_id="detail_id"
+                                f_option_value="detail_name"
+                                f_optgroups=$category_details
+                                f_optgroup_label="dcat_name"
+                                f_option_target_id=$search.detail_id
+                                f_simple_2=true
+                                f_blank=true
+                            }
+                        </select>
+                    </div>
+                </td>
             </tr>
         </table>
         <hr>

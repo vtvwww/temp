@@ -114,11 +114,12 @@ function fn_acc__get_orders($params = array(), $items_per_page = 0){
 
     if ($params['with_items']){
         $p = array(
-            "order_id"  =>array_keys($data),
-            "full_info" =>$params["full_info"],
-            "info_RO"   =>$params["info_RO"],
-            "item_type" =>$params["item_type"],
-            "item_id"   =>$params["item_id"],
+            "order_id"                 =>array_keys($data),
+            "full_info"                =>$params["full_info"],
+            "info_RO"                  =>$params["info_RO"],
+            "item_type"                =>$params["item_type"],
+            "item_id"                  =>$params["item_id"],
+            "without_shipped_items"    =>$params["without_shipped_items"],
         );
         list($items) = fn_acc__get_order_items($p);
         if (is__array($items)){
@@ -414,6 +415,9 @@ function fn_acc__get_order_items($params = array(), $items_per_page = 0){
         $data_RO = db_get_array(UNS_DB_PREFIX.$sql);
         if (is__array($data_RO)){
             foreach ($data_RO as $v){
+                if ($params["without_shipped_items"]){
+                    $data[$v["oi_id"]]["quantity"] -= $v["quantity"];
+                }
                 $data[$v["oi_id"]]["info_RO"]["total_q"] += $v["quantity"];
                 $data[$v["oi_id"]]["info_RO"]["items"][$v["di_id"]] = $v;
             }

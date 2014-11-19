@@ -28,7 +28,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             fn_set_notification("N", $_REQUEST['data']['o_name'], UNS_DATA_UPDATED);
         }
         fn_delete_notification('changes_saved');
-        $suffix = "update&order_id={$id}&selected_section={$_REQUEST['selected_section']}";
+        $suffix = "update&order_id={$id}#items";
     }
 
     // Добавить отгрузку
@@ -37,7 +37,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             fn_uns__add_shipment_by_order($_REQUEST['order_id'], $_REQUEST);
             fn_set_notification("N", "Добавлена отгрузка", "");
         }
-        $suffix = "update&order_id={$_REQUEST['order_id']}";
+        $suffix = "update&order_id={$_REQUEST['order_id']}#items";
     }
 
     // Резервирование насосной продукции
@@ -46,7 +46,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             fn_uns__upd_reserve_by_order($_REQUEST['order_id'], $_REQUEST["order_data"]["document_items"]);
             fn_set_notification("N", "Резервирование насосной продукции", UNS_DATA_UPDATED);
         }
-        $suffix = "update&order_id={$_REQUEST['order_id']}";
+        $suffix = "update&order_id={$_REQUEST['order_id']}#items";
     }
 
     if (defined('AJAX_REQUEST') and $mode == 'document_items'){
@@ -278,10 +278,14 @@ if($mode == 'update'){
     //--------------------------------------------------------------------------
     list($pumps_by_series) = fn_uns__get_pumps(array("group_by_series"=>true, "only_active" => true,));
     $view->assign('pumps_by_series', $pumps_by_series);
+    list($pumps) = fn_uns__get_pumps(array("only_active" => true,));
+    $view->assign('pumps', $pumps);
 
     //--------------------------------------------------------------------------
     list($details_by_categories) = fn_uns__get_details(array('only_active' => true,'group_by_categories'=>true,"use_short_name"=>true,));
     $view->assign('details_by_categories', $details_by_categories);
+    list($details) = fn_uns__get_details(array('only_active' => true, "use_short_name"=>true, "format_name"=>true,));
+    $view->assign('details', $details);
 }
 
 if ($mode == 'shipment'){

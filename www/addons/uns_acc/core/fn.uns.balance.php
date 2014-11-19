@@ -39,6 +39,7 @@ function fn_uns__get_type_balance_for_object($o_id){
 }
 
 function fn_uns__get_balance($params = array(), $time=false){
+    $l = new uns_log();
     if ($time) $start_time = microtime_float();
     $default_params = array(
         'time_from' =>'',
@@ -163,18 +164,18 @@ function fn_uns__get_balance($params = array(), $time=false){
 
     // Категории деталей
     if (is__array($params['dcat_id_array'] = to__array($params['dcat_id']))){
-        $cond__tables = " , uns_details ";
+        $cond__tables = ", uns_details ";
         $cond__items .= db_quote(" AND uns__acc_document_items.item_id = uns_details.detail_id ");
         $cond__items .= db_quote(" AND uns_details.dcat_id in (?n) ", $params['dcat_id_array']);
     }
 
     // Категории материалов (Добавить или Исключить)
     if (is__array($params['mcat_id_array'] = to__array($params['mcat_id']))){
-        $cond__tables = " , uns_materials ";
+        $cond__tables = ", uns_materials ";
         $cond__items .= db_quote(" AND uns__acc_document_items.item_id = uns_materials.material_id ");
         $cond__items .= db_quote(" AND uns_materials.mcat_id in (?n) ", $params['mcat_id_array']);
     }elseif (is__array($params['exclude_mcat_id_array'] = to__array($params['exclude_mcat_id']))){
-        $cond__tables = " , uns_materials ";
+        $cond__tables = ", uns_materials ";
         $cond__items .= db_quote(" AND uns__acc_document_items.item_id = uns_materials.material_id ");
         $cond__items .= db_quote(" AND uns_materials.mcat_id not in (?n) ", $params['exclude_mcat_id_array']);
     }
@@ -314,7 +315,9 @@ function fn_uns__get_balance($params = array(), $time=false){
 
     $sql = UNS_DB_PREFIX . "SELECT DISTINCT " . implode(", ", $fields) . " FROM $m_tbl $join WHERE 1 $condition $sorting $limit";
 //    fn_print_r(str_replace(array(UNS_DB_PREFIX,"?:"), array("", "uns_"), $sql));
+    $l->p(__FILE__, __LINE__);
     $data = db_get_hash_array($sql, $m_key);
+    $l->p(__FILE__, __LINE__);
 //    fn_print_r($data);
 //    if (!is__array($data)) return array(array(), $params);
 

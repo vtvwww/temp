@@ -126,7 +126,6 @@ if($mode == 'manage' or $mode == 'update' or $mode == 'add'){
 
 
 if($mode == 'manage'){
-
     if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "M"; // Текущий месяц
     list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
     $p = array(
@@ -139,12 +138,9 @@ if($mode == 'manage'){
         $_REQUEST["pump_name"] = mb_convert_case ($_REQUEST["pump_name"], MB_CASE_UPPER, "UTF-8");
         $view->assign('pump_name', $_REQUEST["pump_name"]);
     }
-
-
     $p = array_merge($_REQUEST, $p);
 
     list($sheets, $search) = fn_acc__get_sheets($p, UNS_ITEMS_PER_PAGE);
-//    fn_print_r($sheets);
     $view->assign('sheets', $sheets);
     $view->assign('search', $search);
 
@@ -152,8 +148,17 @@ if($mode == 'manage'){
     list($mcategories_plain) = fn_uns__get_materials_categories(array('plain' => true, "with_q_ty"=>false));
     $view->assign('mcategories_plain', $mcategories_plain);
 
-    list($dcategories_plain) = fn_uns__get_details_categories(array("plain" => true, "with_q_ty"=>false, "view_in_reports" => true));
-    $view->assign('dcategories_plain', $dcategories_plain);
+    $p = array('only_active' => true,'group_by_categories'=>true,'use_short_name'=>true,);
+    list($category_details) = fn_uns__get_details($p);
+    $view->assign('category_details', $category_details);
+
+//    $view->assign("f_type", "select_by_group");
+//    $view->assign("f_options", "details");
+//    $view->assign("f_option_id", "detail_id");
+//    $view->assign("f_option_value", "detail_name");
+//    $view->assign("f_optgroups", $category_details);
+//    $view->assign("f_optgroup_label", "dcat_name");
+//    $view->assign('f_simple_2', true);
 }
 
 

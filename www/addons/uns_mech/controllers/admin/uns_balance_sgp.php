@@ -32,15 +32,17 @@ if($mode == 'manage' or $mode == 'dnepr'){
         $_REQUEST["o_id"] = 19; // СГП Александрия
         // Запрос ЗАКАЗОВ
         $p = array(
-            "with_items"                => true,
-            "full_info"                 => true,
-            "with_count"                => true,
-            "only_active"               => true,
-            "data_for_tmp"              => true,
-            "remaining_time"            => true,
-            "sorting_schemas"           => "view_in_sgp",
-            "total_weight_and_quantity" => true,
-            "group_orders"              => (in_array($_REQUEST["group_orders"], array("UKR", "UKR_EXP")))?$_REQUEST["group_orders"]:null,
+            "with_items"                 => true,
+            "without_shipped_items"      => true,
+            "info_RO"                    => true,
+            "full_info"                  => true,
+            "with_count"                 => true,
+            "only_active"                => true,
+            "data_for_tmp"               => true,
+            "remaining_time"             => true,
+            "sorting_schemas"            => "view_in_sgp",
+            "total_weight_and_quantity"  => true,
+            "group_orders"               => (in_array($_REQUEST["group_orders"], array("UKR", "UKR_EXP")))?$_REQUEST["group_orders"]:null,
         );
         list($orders, $search) = fn_acc__get_orders(array_merge($_REQUEST, $p));
         $view->assign('orders', $orders);
@@ -63,6 +65,8 @@ if($mode == 'manage' or $mode == 'dnepr'){
         $view->assign('customers_tpl', array_shift(fn_uns__get_customers()));
         $p = array(
             "with_items"                => true,
+            "without_shipped_items"     => true,
+            "info_RO"                   => true,
             "full_info"                 => true,
             "with_count"                => true,
             "only_active"               => true,
@@ -232,13 +236,12 @@ function fn_uns_balance_sgp__format_for_tmpl($b, $params, $zadel=null) {
     // Получить заказы
     // Запрос ЗАКАЗОВ
     $p = array(
-        "with_items"        => true,
-        "only_active"       => true,
-        "group_orders"      => (in_array($params["group_orders"], array("UKR", "UKR_EXP")))?$params["group_orders"]:null,
-        "info_RO"           => true,
+        "with_items"            => true,
+        "only_active"           => true,
+        "group_orders"          => (in_array($params["group_orders"], array("UKR", "UKR_EXP")))?$params["group_orders"]:null,
+        "info_RO"               => true,
     );
     list($orders, $search) = fn_acc__get_orders(array_merge($_REQUEST, $p));
-//    fn_print_r($orders);
 
     // Скомпоновать остатки и заказы
     foreach ($res as $k_pt=>$v_pt){

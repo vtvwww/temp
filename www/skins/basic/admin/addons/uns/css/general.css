@@ -388,7 +388,8 @@ table.table tr td.mark_item{
 }
 
 table.table tr td.mark_item_clear{
-    border-left: 10px solid white;
+    border-left: 10px solid transparent;
+    /*border-left: 10px solid white;*/
 }
 
 td.mark{
@@ -558,7 +559,7 @@ fieldset.help.close{
 a.cm-cancel, a.close_without_save{
     border: 1px solid;
     border-radius: 5px;
-    padding: 4px 17px;
+    padding: 4px;
     text-decoration: none;
 }
 

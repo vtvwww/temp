@@ -219,6 +219,12 @@ function fn_acc__get_sheets($params = array(), $items_per_page = 0){
         $condition .= db_quote(" AND ($j_tbl_1.material_no like ?l) ", "{$params['material_no']}");
     }
 
+    // Категория исходного материала
+    if (is__array($params["detail_id_array"] = to__array($params["detail_id"]))){
+        $join .= db_quote(" LEFT JOIN ?:_acc_sheet_details ON (?:_acc_sheet_details.$m_key = $m_tbl.$m_key) ");
+        $condition .= db_quote(" AND (?:_acc_sheet_details.detail_id in (?n)) ", $params['detail_id_array']);
+    }
+
     // *************************************************************************
     // 2. ПРИСОЕДИНИТЬ ТАБЛИЦЫ
     // *************************************************************************
@@ -255,8 +261,9 @@ function fn_acc__get_sheets($params = array(), $items_per_page = 0){
 
     if ($params['with_details']){
         $tmp_p = array(
-            'sheet_id'=>array_keys($data),
-            'with_weight' => true,
+            "sheet_id"    => array_keys($data),
+            "with_weight" => true,
+            "detail_id"   => $params["detail_id"],
         );
         list($details) = fn_acc__get_sheet_details($tmp_p);
         if (is__array($details)){
@@ -357,6 +364,11 @@ function fn_acc__get_sheet_details($params = array(), $items_per_page = 0){
     // По ID
     if ($params["sheet_id_array"] = to__array($params["sheet_id"])){
         $condition .= db_quote(" AND $m_tbl.sheet_id in (?n)", $params["sheet_id_array"]);
+    }
+
+    // По detail_id
+    if ($params["detail_id_array"] = to__array($params["detail_id"])){
+        $condition .= db_quote(" AND $m_tbl.detail_id in (?n)", $params["detail_id_array"]);
     }
 
     // *************************************************************************

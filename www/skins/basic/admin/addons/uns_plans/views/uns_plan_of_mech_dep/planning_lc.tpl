@@ -4,12 +4,12 @@
             <td class="center"><label class="hand" for="p_r"><img src="skins/basic/admin/addons/uns_plans/images/p_r.png"/> <b>- потребность в ближайшую неделю</b></label></td>
             <td class="left"><input title="Отобразить/Скрыть 'красные' отливки" type="checkbox" name="p_r" checked="checked" id="p_r" onchange="if ($(this).prop('checked')) $('table.LC tr.p_r').removeClass('hidden'); else $('table.LC tr.p_r').addClass('hidden')"></td>
 
-            <td class="b2_l"></td>
+            <td class="b1_l"></td>
 
             <td class="center"><label class="hand" for="p_r2"><img src="skins/basic/admin/addons/uns_plans/images/p_r.png"/> - потребность на 2-й недели</label></td>
             <td class="left"><input title="Отобразить/Скрыть 'красные' отливки" type="checkbox" name="p_r2" checked="checked" id="p_r2" onchange="if ($(this).prop('checked')) $('table.LC tr.p_r2').removeClass('hidden'); else $('table.LC tr.p_r2').addClass('hidden')"></td>
 
-            <td class="b2_l"></td>
+            <td class="b1_l"></td>
 
             <td class="right"><label class="hand" for="p_y"><img src="skins/basic/admin/addons/uns_plans/images/p_y.png"/></label></td>
             <td class="left"><label class="hand" for="p_y"> - потребность на 3-й и 4-й неделях</label></td>
@@ -19,12 +19,12 @@
             <td class="center bold">{$priority_materials_q.R|fn_fvalue:0} шт.; {$priority_materials_w.R/1000|fn_fvalue:1} т</td>
             <td class=""></td>
 
-            <td class="b2_l"></td>
+            <td class="b1_l"></td>
 
             <td class="center bold">{$priority_materials_q.R2|fn_fvalue:0} шт.; {$priority_materials_w.R2/1000|fn_fvalue:1} т</td>
             <td class=""></td>
 
-            <td class="b2_l"></td>
+            <td class="b1_l"></td>
 
             <td class="right"><label class="hand" for="p_n"><img src="skins/basic/admin/addons/uns_plans/images/p_g.png"/></label></td>
             <td class="left"><label class="hand" for="p_n"> - потребность с 5-й недели</label></td>
@@ -34,15 +34,15 @@
             <td class=""></td>
             <td class=""></td>
 
-            <td class="b2_l"></td>
+            <td class="b1_l"></td>
 
             <td class=""></td>
             <td class=""></td>
 
-            <td class="b2_l"></td>
+            <td class="b1_l"></td>
 
             <td class="right"><label class="hand" for="prh"><img src="skins/basic/admin/addons/uns_plans/images/prohibition.png"/></label></td>
-            <td class="left"><label class="hand" for="prh"> - под запретом</label></td>
+            <td class="left"><label class="hand" for="prh"> - под запретом {$prohibition_of_casts|sizeof} вида(-ов)</label></td>
             <td class="left"><input title="Отобразить/Скрыть 'под запретом' отливки" type="checkbox" name="prh" {*checked="checked"*} id="prh" onchange="if ($(this).prop('checked')) $('table.LC tr.prh').removeClass('hidden'); else $('table.LC tr.prh').addClass('hidden')"></td>
         </tr>
     </table>

@@ -27,7 +27,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 //        }
 //        fn_delete_notification('changes_saved');
 //        $suffix = "update&plan_id={$id}&selected_section={$_REQUEST['selected_section']}";
-        return array(CONTROLLER_STATUS_REDIRECT, "uns_plan_of_mech_dep" . "." . "manage"."?mark_id=".$_REQUEST["data"]["item_id"]);
+        return array(CONTROLLER_STATUS_REDIRECT, "uns_plan_of_mech_dep" . "." . "manage"."?mark_id=".$_REQUEST["data"]["item_id"]."#".$_REQUEST["data"]["item_id"]);
 
     }
 

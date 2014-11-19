@@ -561,7 +561,10 @@ function fn_uns__get_details($params = array(), $items_per_page = 0){
                 $fn .= " ({$v['options_as_string']})";
             }
 
-            $data[$k]["format_name"] = $v["detail_name"] . $fn;
+            if ($params["use_short_name"]) $d_name = str_replace($replace_from, $replace_to, $v["detail_name"]);
+            else $d_name = $v["detail_name"];
+
+            $data[$k]["format_name"] = $d_name . $fn;
         }
     }
 

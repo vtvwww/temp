@@ -1,7 +1,7 @@
 <hr>
+<a name="shipments"></a>
 <h3 style="border-bottom: 3px double gray;margin-bottom: 6px;padding-bottom: 2px;">Отгрузки по заказу</h3>
 <div style="margin: 10px;">
-    <a name="shipments"></a>
     {if $documents|is__array}
         <table class="table shipments" cellspacing="0" cellpadding="0" border="0">
         <thead>
