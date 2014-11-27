@@ -254,7 +254,7 @@ if($mode == 'update'){
             "info_item"     => false,
             "info_unit"     => false,
             "document_id"           => $document_ids,
-            "sorting_schemas"       => "view_asc",
+//            "sorting_schemas"       => "view_asc",
         );
         list($documents) = fn_uns__get_documents($p);
         $view->assign("documents", $documents);

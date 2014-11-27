@@ -63,9 +63,10 @@
 
     </thead>
     {if is__array($balances)}
-        {assign var="total_q_P"     value=0}
-        {assign var="total_q_PF"    value=0}
-        {assign var="total_q_PA"    value=0}
+        {assign var="total_q_P"             value=0}
+        {assign var="total_q_PF"            value=0}
+        {assign var="total_q_PA"            value=0}
+        {assign var="total_q_in_reserve"    value=0}
         {foreach from=$balances key="pt_id" item="pt"}
             <tbody>
                 <tr>
@@ -115,6 +116,7 @@
                     {foreach from=$orders item="o" name="o"}
                         {assign var="order_q"               value=$p.orders[$o.order_id].P-$p.orders_total_shipped[$o.order_id].P}
                         {assign var="order_q_in_reserve"    value=$p.orders_in_reserve[$o.order_id].P|default:0}
+                        {assign var="total_q_in_reserve"    value=$total_q_in_reserve+$order_q_in_reserve}
                         {assign var="curr_q"                value=$curr_q-$order_q+$order_q_in_reserve} {*Для того, чтобы последовательно вычитать из СГП имеющиеся заказы*}
                         <td class="mw16 c {if $smarty.foreach.o.first}b_l{else}b1_l_b{/if} {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}">
                             {if $order_q!=0}
@@ -156,6 +158,7 @@
                     {foreach from=$orders item="o" name="o"}
                         {assign var="order_q"               value=$p.orders[$o.order_id].PF-$p.orders_total_shipped[$o.order_id].PF}
                         {assign var="order_q_in_reserve"    value=$p.orders_in_reserve[$o.order_id].PF|default:0}
+                        {assign var="total_q_in_reserve"    value=$total_q_in_reserve+$order_q_in_reserve}
                         {assign var="curr_q"                value=$curr_q-$order_q+$order_q_in_reserve} {*Для того, чтобы последовательно вычитать из СГП имеющиеся заказы*}
                         <td class="mw16 c {if $smarty.foreach.o.first}b_l{else}b1_l_b{/if} {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}">
                             {if $order_q!=0}
@@ -197,6 +200,7 @@
                     {foreach from=$orders item="o" name="o"}
                         {assign var="order_q"               value=$p.orders[$o.order_id].PA-$p.orders_total_shipped[$o.order_id].PA}
                         {assign var="order_q_in_reserve"    value=$p.orders_in_reserve[$o.order_id].PA|default:0}
+                        {assign var="total_q_in_reserve"    value=$total_q_in_reserve+$order_q_in_reserve}
                         {assign var="curr_q"                value=$curr_q-$order_q+$order_q_in_reserve} {*Для того, чтобы последовательно вычитать из СГП имеющиеся заказы*}
                         <td class="mw16 c {if $smarty.foreach.o.first}b_l{else}b1_l_b{/if} {if !$smarty.foreach.ps.first and $smarty.foreach.p.first }b2_t{/if}">
                             {if $order_q!=0}
@@ -353,7 +357,11 @@
             <td class="c b_l b_b b_r gr_d" colspan="{math equation="3*(1+2*x)" x=$orders|count}" style="border-top-width: 0px;">
                 {assign var="total_q" value=$total_q_P+$total_q_PF+$total_q_PA}
                 <span class="b {if $total_q<0}i_w_b{elseif $total_q==0}z{/if}">
-                    <span style="font-size: 15px;">{$total_q}</span>
+                    {if $total_q_in_reserve>0}
+                        <span style="font-size: 15px;">{$total_q} + <span class="h i_g_b b">{$total_q_in_reserve}</span> = {$total_q+$total_q_in_reserve}</span>
+                    {else}
+                        <span style="font-size: 15px;">{$total_q}</span>
+                    {/if}
                 </span>
             </td>
         </tr>

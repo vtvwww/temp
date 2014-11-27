@@ -19,7 +19,7 @@
             <tr>
                 {assign var="id" value=$d.document_id}
                 {assign var="value" value="document_id"}
-                <td id="{$id}" class="center mark_item_clear"><b>{$smarty.foreach.doc.iteration}</b></td>
+                <td id="{$id}" class="center mark_item_clear"><b>{$smarty.foreach.doc.total-$smarty.foreach.doc.iteration+1}</b></td>
 
                 {* Дата *}
                 <td class="b1_l"><a name="doc_{$id}"></a>

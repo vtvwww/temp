@@ -74,7 +74,7 @@ if ($mode == 'motions' /*and  defined('AJAX_REQUEST')*/){
     if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "M"; // Текущий месяц
     list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
     $balances = array();
-    list($balances, $search) = fn_uns__get_balance_mc_sk_su($_REQUEST, true, true, true);
+    list($balances, $search) = fn_uns__get_balance_mc_sk_su($_REQUEST, true, true);
     fn_print_r($balances);
     $view->assign('balances', $_REQUEST);
 /*    // ДВИЖЕНИЯ

@@ -129,6 +129,7 @@ if($mode == 'manage'){
     if (!isset($_REQUEST['period'])) $_REQUEST['period'] = "M"; // Текущий месяц
     list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
     $p = array(
+        "with_weight"                   => false,
         "with_details"                  => true,
         "with_material_quantity_PVP"    => true, // Кол*во выданного литья по СЛ
         "with_material_quantity_BRAK"   => true, // Кол*во выданного литья по СЛ
@@ -230,13 +231,18 @@ if($mode == 'update'){
     }
 
     // ОСТАТКИ по деталям
-    $p_D['period'] = "M";
+    $p_D['period']          = "M";
     $p_D['accessory_pumps'] = "Y";
-    $p_D['item_id'] = array_keys($sheet["details"]);
+    $p_D['item_id']         = null;
+    if (is__array($sheet["details"])){
+        foreach ($sheet["details"] as $d){
+            $p_D['item_id'][] = $d["detail_id"];
+        }
+    }
 
     list ($p_D['time_from'], $p_D['time_to']) = fn_create_periods($p_D);
 
-    list($balances_D, $search_D) = fn_uns__get_balance_mc_sk_su($p_D, true, true, true);
+    list($balances_D, $search_D) = fn_uns__get_balance_mc_sk_su($p_D, true, true);
     $view->assign('balances_D',    $balances_D);
     $view->assign('search_D', $search_D);
 }

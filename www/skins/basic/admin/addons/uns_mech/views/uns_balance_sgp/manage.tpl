@@ -10,7 +10,7 @@
                     </div>
                 </td>
                 <td class="b1_l nowrap search-field">
-                    <label for="view_all_pumps">Показать все насосы:</label>
+                    <label for="view_all_pumps">Все насосы:</label>
                     <div class="break">
                         <input type="hidden" value="N" name="view_all_pumps"/>
                         <input id="view_all_pumps" type="checkbox" value="Y" name="view_all_pumps" {if $search.view_all_pumps == "Y"}checked="checked"{/if} />
@@ -27,6 +27,15 @@
                     </div>
                 </td>
                 <td class="b1_l nowrap search-field">
+                    <label for="view_pumps_or_details">Насосы или детали:</label>
+                    <div class="break">
+                        <select id="view_pumps_or_details" name="view_pumps_or_details">
+                            <option {if $search.view_pumps_or_details == "p"}selected="selected"{/if} value="p">Насосы</option>
+                            <option {if $search.view_pumps_or_details == "d"}selected="selected"{/if} value="d">Детали</option>
+                        </select>
+                    </div>
+                </td>
+                <td class="b1_l nowrap search-field hidden">
                     <label for="view_backlog">Показать задел:</label>
                     <div class="break">
                         <input type="hidden" value="N" name="view_backlog"/>
@@ -50,11 +59,14 @@
     {* БАЛАНС ПО НАСОСНОЙ ПРОДУКЦИИ *}
     {include file="addons/uns_mech/views/uns_balance_sgp/components/view_pumps.tpl" balances=$balances}
     <hr/>
-    {include file="addons/uns_mech/views/uns_balance_sgp/components/info_view_pumps.tpl"}
+    {if $mode != 'dnepr'}
+        {include file="addons/uns_mech/views/uns_balance_sgp/components/info_view_pumps.tpl"}
+    {/if}
+
 
     {* БАЛАНС ПО ДЕТАЛЯМ НА СГП *} {* todo - временно удалено 2014-10-25 --> сэкономлено 2секунды расчетов *}
-    {*{include file="addons/uns_mech/views/uns_balance_sgp/components/view_details.tpl" balances=$balances_D}*}
+    {include file="addons/uns_mech/views/uns_balance_sgp/components/view_details.tpl" balances=$balances_D}
 {/capture}
 {assign var="last_date" value=$info_of_the_last_movement.date|fn_parse_date|date_format:"%d/%m/%Y"}
 {assign var="last_document_id" value=$info_of_the_last_movement.document_id}
-{include file="common_templates/mainbox.tpl" title="Баланс СКЛАДА ГОТОВОЙ ПРОДУКЦИИ `$target_town` `$last_date`" content=$smarty.capture.mainbox tools=$smarty.capture.tools}
+{include file="common_templates/mainbox.tpl" title="Баланс СКЛАДА ГОТОВОЙ ПРОДУКЦИИ `$target_town` на `$last_date`" content=$smarty.capture.mainbox tools=$smarty.capture.tools}

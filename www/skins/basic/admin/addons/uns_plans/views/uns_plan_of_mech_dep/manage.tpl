@@ -538,14 +538,107 @@
                 <li style="font-weight: bold;">
                     <table width="800" border="0">
                         <tr>
-                            <td class="center b1_l"><img src="skins/basic/admin/addons/uns_plans/images/info_p_r.png"/></td>
-                            <td class="center b1_l"><img src="skins/basic/admin/addons/uns_plans/images/info_p_y.png"/></td>
-                            <td class="center b1_l b1_r"><img src="skins/basic/admin/addons/uns_plans/images/info_p_g.png"/></td>
+                            <td class="center b1_l">
+                                <table cellpadding="0" cellspacing="0" border="0" class="table" style="border: none; margin: auto;">
+                                    <thead>
+                                        <tr style="background-color: #D4D0C8;">
+                                            <th colspan="3" class="b b_l b1_b b_t b_r center" style="height: 20px;">План продаж</th>
+                                        </tr>
+                                        <tr style="background-color: #D4D0C8; height: 20px;">
+                                            <th class="center b_l"  style="width: 40px; height: 20px;"      >{$tpl_curr_month_roman.month}</th>
+                                            <th class="center b1_l" style="width: 40px; height: 20px;">{$tpl_next_month_roman.month}</th>
+                                            <th class="center b1_l b_r" style="width: 40px; height: 20px;">{$tpl_next2_month_roman.month}</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="center b_l b2_t"  style="height: 25px;">20</th>
+                                            <th class="center b1_l b2_t" style="height: 25px;">20</th>
+                                            <th class="center b1_l b_r b2_t" style="height: 25px;">20</th>
+                                        </tr>
+                                        <tr>
+                                            <td valign="bottom" colspan="3" class="b_l b_r b_b" style="border-top:none;none;padding: 0;">
+                                                <table cellspacing="0" cellpadding="0" width="100%" border="0" style="margin:-1px 0 1px 0;">
+                                                    <thead>
+                                                    <tr>
+                                                        <td class="bar_space"></td>
+                                                        <td style="width:16%;" class="bar_available p_r"></td>
+                                                        <td style="width:84%;" class="bar_none"></td>
+                                                    </tr>
+                                                    </thead>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </td>
+                            <td class="center b1_l">
+                                <table cellpadding="0" cellspacing="0" border="0" class="table" style="border: none; margin: auto;">
+                                    <thead>
+                                        <tr style="background-color: #D4D0C8;">
+                                            <th colspan="3" class="b b_l b1_b b_t b_r center" style="height: 20px;">План продаж</th>
+                                        </tr>
+                                        <tr style="background-color: #D4D0C8; height: 20px;">
+                                            <th class="center b_l"  style="width: 40px; height: 20px;"      >{$tpl_curr_month_roman.month}</th>
+                                            <th class="center b1_l" style="width: 40px; height: 20px;">{$tpl_next_month_roman.month}</th>
+                                            <th class="center b1_l b_r" style="width: 40px; height: 20px;">{$tpl_next2_month_roman.month}</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="center b_l b2_t"  style="height: 25px;">20</th>
+                                            <th class="center b1_l b2_t" style="height: 25px;">20</th>
+                                            <th class="center b1_l b_r b2_t" style="height: 25px;">20</th>
+                                        </tr>
+                                        <tr>
+                                            <td valign="bottom" colspan="3" class="b_l b_r b_b" style="border-top:none;none;padding: 0;">
+                                                <table cellspacing="0" cellpadding="0" width="100%" border="0" style="margin:-1px 0 1px 0;">
+                                                    <thead>
+                                                    <tr>
+                                                        <td class="bar_space"></td>
+                                                        <td style="width:25%;" class="bar_available p_y"></td>
+                                                        <td style="width:75%;" class="bar_none"></td>
+                                                    </tr>
+                                                    </thead>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </td>
+                            <td class="center b1_l b1_r">
+                                <table cellpadding="0" cellspacing="0" border="0" class="table" style="border: none; margin: auto;">
+                                    <thead>
+                                        <tr style="background-color: #D4D0C8;">
+                                            <th colspan="3" class="b b_l b1_b b_t b_r center" style="height: 20px;">План продаж</th>
+                                        </tr>
+                                        <tr style="background-color: #D4D0C8; height: 20px;">
+                                            <th class="center b_l"  style="width: 40px; height: 20px;"      >{$tpl_curr_month_roman.month}</th>
+                                            <th class="center b1_l" style="width: 40px; height: 20px;">{$tpl_next_month_roman.month}</th>
+                                            <th class="center b1_l b_r" style="width: 40px; height: 20px;">{$tpl_next2_month_roman.month}</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="center b_l b2_t"  style="height: 25px;">20</th>
+                                            <th class="center b1_l b2_t" style="height: 25px;">20</th>
+                                            <th class="center b1_l b_r b2_t" style="height: 25px;">20</th>
+                                        </tr>
+                                        <tr>
+                                            <td valign="bottom" colspan="3" class="b_l b_r b_b" style="border-top:none;none;padding: 0;">
+                                                <table cellspacing="0" cellpadding="0" width="100%" border="0" style="margin:-1px 0 1px 0;">
+                                                    <thead>
+                                                    <tr>
+                                                        <td class="bar_space"></td>
+                                                        <td style="width:66%;" class="bar_available"></td>
+                                                        <td style="width:33%;" class="bar_none"></td>
+                                                    </tr>
+                                                    </thead>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </td>
                         </tr>
                         <tr>
-                            <td class="center b1_l"><span style="font-weight: normal; color: red;">Полоса показывает, что план<br>продаж <b>Окт</b> обеспечен на <b>50%</b>.</span></td>
-                            <td class="center b1_l"><span style="font-weight: normal; color: red;">Полоса показывает, что план<br>продаж <b>Окт</b> обеспечен на <b>75%</b>.</span></td>
-                            <td class="center b1_l b1_r"><span style="font-weight: normal; color: red;">Полоса показывает, что планы<br>продаж <b>Окт</b> и <b>Ноя</b> обеспечены на <b>100%</b>.</span></td>
+                            <td class="center b1_l"><span style="font-weight: normal; color: red;">Полоса показывает, что план<br>продаж <b style="text-transform: capitalize;">{$tpl_curr_month_roman.month}</b> обеспечен на <b>50%</b>.</span></td>
+                            <td class="center b1_l"><span style="font-weight: normal; color: red;">Полоса показывает, что план<br>продаж <b style="text-transform: capitalize;">{$tpl_curr_month_roman.month}</b> обеспечен на <b>75%</b>.</span></td>
+                            <td class="center b1_l b1_r"><span style="font-weight: normal; color: red;">Полоса показывает, что планы<br>продаж <b style="text-transform: capitalize;">{$tpl_curr_month_roman.month}</b> и <b style="text-transform: capitalize;">{$tpl_next_month_roman.month}</b> обеспечены на <b>100%</b>.</span></td>
                         </tr>
                     </table>
                 </li>

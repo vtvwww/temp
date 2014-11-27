@@ -39,7 +39,7 @@ function fn_uns__get_type_balance_for_object($o_id){
 }
 
 function fn_uns__get_balance($params = array(), $time=false){
-    $l = new uns_log();
+//    $l = new uns_log(true);
     if ($time) $start_time = microtime_float();
     $default_params = array(
         'time_from' =>'',
@@ -85,7 +85,7 @@ function fn_uns__get_balance($params = array(), $time=false){
     );
 
 
-    $condition = $limit = $join = $group_by = $sorting = '';
+    $condition = $limit = $join = $union = $group_by = $sorting = '';
 
 
     // =========================================================================
@@ -183,10 +183,13 @@ function fn_uns__get_balance($params = array(), $time=false){
     // =========================================================================
     // JOINS
     // =========================================================================
-    $join .= db_quote("
-      LEFT JOIN (SELECT
+    $union .= db_quote("
+      (SELECT
                    uns__acc_document_items.item_id,
-                   ifnull(sum(uns__acc_document_items.quantity), 0) AS total
+                   ifnull(sum(uns__acc_document_items.quantity), 0) as total_nach_prih,
+                                                                 0  as total_nach_rash,
+                                                                 0  as total_tek_prih,
+                                                                 0  as total_tek_rash
                  FROM uns__acc_document_items
                    , uns__acc_documents
                    , uns__acc_motions
@@ -198,6 +201,7 @@ function fn_uns__get_balance($params = array(), $time=false){
                        AND uns__acc_documents.document_id = uns__acc_document_items.document_id
                        AND uns__acc_documents.status = 'A'
                        AND uns__acc_documents.date < {$params['time_from']}
+                       AND (uns__acc_documents.object_from in (". implode(', ', $cond__objects) .") or uns__acc_documents.object_to in (". implode(', ', $cond__objects) ."))
 
                        #UNS__ACC_DOCUMENT_TYPES
                        AND uns__acc_document_types.dt_id = uns__acc_documents.type
@@ -209,11 +213,14 @@ function fn_uns__get_balance($params = array(), $time=false){
                        AND uns__acc_document_items.motion_type like  '%I%'
                        AND uns__acc_motions.object_id IN (". implode(", ", $cond__objects) .")
                  GROUP BY uns__acc_document_items.item_id
-      ) as nach_prih ON (uns__acc_document_items.item_id = nach_prih.item_id)
-
-      LEFT JOIN (SELECT
+      )
+      UNION
+      (SELECT
                    uns__acc_document_items.item_id,
-                   ifnull(sum(uns__acc_document_items.quantity), 0) AS total
+                                                                 0  as total_nach_prih,
+                   ifnull(sum(uns__acc_document_items.quantity), 0) as total_nach_rash,
+                                                                 0  as total_tek_prih,
+                                                                 0  as total_tek_rash
                  FROM uns__acc_document_items
                    , uns__acc_documents
                    , uns__acc_motions
@@ -225,6 +232,7 @@ function fn_uns__get_balance($params = array(), $time=false){
                        AND uns__acc_documents.document_id = uns__acc_document_items.document_id
                        AND uns__acc_documents.status = 'A'
                        AND uns__acc_documents.date < {$params['time_from']}
+                       AND (uns__acc_documents.object_from in (". implode(', ', $cond__objects) .") or uns__acc_documents.object_to in (". implode(', ', $cond__objects) ."))
 
                        #UNS__ACC_DOCUMENT_TYPES
                        AND uns__acc_document_types.dt_id = uns__acc_documents.type
@@ -237,11 +245,14 @@ function fn_uns__get_balance($params = array(), $time=false){
 
                        AND uns__acc_motions.object_id IN (". implode(", ", $cond__objects) .")
                  GROUP BY uns__acc_document_items.item_id
-      ) as nach_rash ON (uns__acc_document_items.item_id = nach_rash.item_id)
-
-      LEFT JOIN (SELECT
+      )
+      UNION
+      (SELECT
                    uns__acc_document_items.item_id,
-                   ifnull(sum(uns__acc_document_items.quantity), 0) AS total
+                                                                 0  as total_nach_prih,
+                                                                 0  as total_nach_rash,
+                   ifnull(sum(uns__acc_document_items.quantity), 0) as total_tek_prih,
+                                                                 0  as total_tek_rash
                  FROM uns__acc_document_items
                    , uns__acc_documents
                    , uns__acc_motions
@@ -252,7 +263,8 @@ function fn_uns__get_balance($params = array(), $time=false){
                        #UNS__ACC_DOCUMENTS
                        AND uns__acc_documents.document_id = uns__acc_document_items.document_id
                        AND uns__acc_documents.status = 'A'
-                         AND uns__acc_documents.date BETWEEN {$params['time_from']} AND {$params['time_to']}
+                       AND uns__acc_documents.date BETWEEN {$params['time_from']} AND {$params['time_to']}
+                       AND (uns__acc_documents.object_from in (". implode(', ', $cond__objects) .") or uns__acc_documents.object_to in (". implode(', ', $cond__objects) ."))
 
                        #UNS__ACC_DOCUMENT_TYPES
                        AND uns__acc_document_types.dt_id = uns__acc_documents.type
@@ -264,11 +276,14 @@ function fn_uns__get_balance($params = array(), $time=false){
                        AND uns__acc_document_items.motion_type like  '%I%'
                        AND uns__acc_motions.object_id IN (". implode(", ", $cond__objects) .")
                  GROUP BY uns__acc_document_items.item_id
-      ) as tek_prih ON (uns__acc_document_items.item_id = tek_prih.item_id)
-
-      LEFT JOIN (SELECT
+      )
+      UNION
+      (SELECT
                    uns__acc_document_items.item_id,
-                   ifnull(sum(uns__acc_document_items.quantity), 0) AS total
+                                                                 0  as total_nach_prih,
+                                                                 0  as total_nach_rash,
+                                                                 0  as total_tek_prih,
+                   ifnull(sum(uns__acc_document_items.quantity), 0) AS total_tek_rash
                  FROM uns__acc_document_items
                    , uns__acc_documents
                    , uns__acc_motions
@@ -279,7 +294,8 @@ function fn_uns__get_balance($params = array(), $time=false){
                        #UNS__ACC_DOCUMENTS
                        AND uns__acc_documents.document_id = uns__acc_document_items.document_id
                        AND uns__acc_documents.status = 'A'
-                         AND uns__acc_documents.date BETWEEN {$params['time_from']} AND {$params['time_to']}
+                       AND uns__acc_documents.date BETWEEN {$params['time_from']} AND {$params['time_to']}
+                       AND (uns__acc_documents.object_from in (". implode(', ', $cond__objects) .") or uns__acc_documents.object_to in (". implode(', ', $cond__objects) ."))
 
                        #UNS__ACC_DOCUMENT_TYPES
                        AND uns__acc_document_types.dt_id = uns__acc_documents.type
@@ -291,33 +307,43 @@ function fn_uns__get_balance($params = array(), $time=false){
                        AND uns__acc_document_items.motion_type like  '%O%'
                        AND uns__acc_motions.object_id IN (". implode(", ", $cond__objects) .")
                  GROUP BY uns__acc_document_items.item_id
-      ) as tek_rash ON (uns__acc_document_items.item_id = tek_rash.item_id)
+      )
       ");
 
     // =========================================================================
     // УСЛОВИЯ
     // =========================================================================
-    $condition .= db_quote(" AND nach_prih.total or nach_rash.total or tek_prih.total or tek_rash.total ");
+//    $condition .= db_quote(" AND nach_prih.total or nach_rash.total or tek_prih.total or tek_rash.total ");
 
     //**************************************************************************
 
-    if (!empty($params['limit'])) {
-        $limit = db_quote(' LIMIT 0, ?i', $params['limit']);
-    }
+    //if (!empty($params['limit'])) {
+    //    $limit = db_quote(' LIMIT 0, ?i', $params['limit']);
+    //}
+    //if (is__array($sorting_schemas[$params['sorting_schemas']])){
+    //    $s = array();
+    //    foreach ($sorting_schemas[$params['sorting_schemas']] as $k=>$v){
+    //        $s[] = " {$k} {$v} ";
+    //    }
+    //    $sorting = " ORDER BY " . implode(', ', $s);
+    //}
 
-    if (is__array($sorting_schemas[$params['sorting_schemas']])){
-        $s = array();
-        foreach ($sorting_schemas[$params['sorting_schemas']] as $k=>$v){
-            $s[] = " {$k} {$v} ";
-        }
-        $sorting = " ORDER BY " . implode(', ', $s);
-    }
+//    $sql = UNS_DB_PREFIX . "SELECT DISTINCT " . implode(", ", $fields) . " FROM $m_tbl $join WHERE 1 $condition $group $sorting";
+    $sql = UNS_DB_PREFIX .
+        "SELECT
+          t.item_id
+         ,(sum(t.total_nach_prih) - sum(t.total_nach_rash))                                                 as no
+         ,(sum(t.total_tek_prih))                                                                           as prih
+         ,(sum(t.total_tek_rash))                                                                           as rash
+         ,(sum(t.total_nach_prih) - sum(t.total_nach_rash) + sum(t.total_tek_prih) - sum(t.total_tek_rash)) as ko
 
-    $sql = UNS_DB_PREFIX . "SELECT DISTINCT " . implode(", ", $fields) . " FROM $m_tbl $join WHERE 1 $condition $sorting $limit";
+         FROM (" . $union . ") as t
+         GROUP BY t.item_id
+         ";
 //    fn_print_r(str_replace(array(UNS_DB_PREFIX,"?:"), array("", "uns_"), $sql));
-    $l->p(__FILE__, __LINE__);
-    $data = db_get_hash_array($sql, $m_key);
-    $l->p(__FILE__, __LINE__);
+//    $l->p(__FILE__, __LINE__);
+    $data = db_get_hash_array($sql, "item_id");
+//    $l->p(__FILE__, __LINE__);
 //    fn_print_r($data);
 //    if (!is__array($data)) return array(array(), $params);
 
@@ -830,7 +856,7 @@ function fn_uns__get_balance_mc_sk_su($params, $mc=true, $sk=true, $su=false, $p
                                             and uns__acc_document_items.processing  = 'P'
                                          )
                                     )";
-            list($mc_processing[$o_id], , $time) = fn_uns__get_balance($p, true);
+            list($mc_processing[$o_id], , $time) = fn_uns__get_balance($p);
             if ($print) fn_print_r($o_id . " (processing) = " . fn_fvalue($time, 3));
             if (is__array($mc_processing[$o_id])){
                 foreach ($mc_processing[$o_id] as $k_gr=>$v_gr){
@@ -906,7 +932,7 @@ function fn_uns__get_balance_mc_sk_su($params, $mc=true, $sk=true, $su=false, $p
                                             and uns__acc_document_items.processing  = 'C'
                                          )
                                     )";
-            list($mc_complete[$o_id], , $time) = fn_uns__get_balance($p, true);
+            list($mc_complete[$o_id], , $time) = fn_uns__get_balance($p);
             if ($print) fn_print_r($o_id . " (complete) = " . fn_fvalue($time, 3));
             if (is__array($mc_complete[$o_id])){
                 foreach ($mc_complete[$o_id] as $k_gr=>$v_gr){
@@ -961,7 +987,7 @@ function fn_uns__get_balance_mc_sk_su($params, $mc=true, $sk=true, $su=false, $p
                                         and uns__acc_document_items.motion_type like '%O%'
                                      )
                                 )";
-        list($res[$o_id], , $time) = fn_uns__get_balance($p, true);
+        list($res[$o_id], , $time) = fn_uns__get_balance($p);
         if ($print) fn_print_r($o_id . " = " . fn_fvalue($time, 3));
     }
 
@@ -1075,7 +1101,7 @@ function fn_uns__get_balance_store($params){
                                     and uns__acc_document_items.motion_type like '%O%'
                                  )
                             )";
-    list($res, , $time) = fn_uns__get_balance($p, true);
+    list($res, , $time) = fn_uns__get_balance($p);
 
     return array($res, $p);
 }

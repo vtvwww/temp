@@ -22,6 +22,7 @@ if($mode == 'manage' or $mode == 'dnepr'){
     list ($_REQUEST['time_from'], $_REQUEST['time_to']) = fn_create_periods($_REQUEST);
     if (!isset($_REQUEST["total_balance_of_details"]))  $_REQUEST["total_balance_of_details"] = "Y";
     if (!isset($_REQUEST["group_orders"]))              $_REQUEST["group_orders"] = "UKR";
+    if (!isset($_REQUEST["view_pumps_or_details"]))     $_REQUEST["view_pumps_or_details"] = "p";
 
 
     if ($mode == "dnepr"){ // Склад готовой продукции в Днепропетровске
@@ -78,11 +79,11 @@ if($mode == 'manage' or $mode == 'dnepr'){
         $view->assign('orders_tpl', array_shift(fn_acc__get_orders($p)));
 
 
+        //----------------------------------------------------------------------
+        // Расчет задела на текущую дату
+        // НА тек. ЧИСЛО МЕСЯЦА
+        //----------------------------------------------------------------------
         if ($_REQUEST["view_backlog"] == "Y"){
-            //----------------------------------------------------------------------
-            // Расчет задела на текущую дату
-            // НА тек. ЧИСЛО МЕСЯЦА
-            //----------------------------------------------------------------------
             $p1 = array(
                 "tracking_type"             => "zadel",
                 "tracking_time_begin"       => strtotime(date("Y-m",   fn_parse_date($_REQUEST['time_to'])) . "-1 00:00:00"),
@@ -105,12 +106,12 @@ if($mode == 'manage' or $mode == 'dnepr'){
 
 
     $balances = array();
-    list($balances, $search) = fn_uns__get_balance_sgp($_REQUEST, true, true, true, false);
-//    $view->assign('balances_D',    $balances["D"]);  todo - временно удалено 2014-10-25 --> сэкономлено 2 секунды расчетов
+    list($balances, $search) = fn_uns__get_balance_sgp($_REQUEST, ($_REQUEST["view_pumps_or_details"]=="p")?true:false, ($_REQUEST["view_pumps_or_details"]=="p")?true:false, ($_REQUEST["view_pumps_or_details"]=="p")?true:false, ($_REQUEST["view_pumps_or_details"]=="p")?false:true);
+    $view->assign('balances_D',    $balances["D"]);  //todo - временно удалено 2014-10-25 --> сэкономлено 2 секунды расчетов
 
     // Подготовить данные для более простого отображения
-    $balances = fn_uns_balance_sgp__format_for_tmpl($balances, $_REQUEST, $zadel);
-    $view->assign('balances',    $balances);
+//    $balances = fn_uns_balance_sgp__format_for_tmpl($balances, $_REQUEST, $zadel);
+//    $view->assign('balances',    $balances);
 
     $view->assign('search',     $_REQUEST);
     $view->assign('expand_all', false);

@@ -4,7 +4,12 @@
 class uns_log {
     private $time = 0;
     private $delta = 0;
-    public function __construct(){
+    private $show = true;
+    private $mark = "";
+    public function __construct($show=true, $mark=""){
+        $this->show = $show;
+        if (strlen($mark)) $this->mark = $mark;
+        else $this->mark = substr(str_shuffle(str_repeat("0123456789", 5)), 0, 3);
         $this->upd_time();
     }
 
@@ -25,11 +30,13 @@ class uns_log {
     }
 
 
-    public function p ($file, $line){
+    public function p ($file, $line, $label=""){
         $t = $this->get_mctime();
         $time = number_format($t-$this->time, 6, ".", " ");
         $d    = number_format($t-$this->delta, 6, ".", " ");
         $this->delta = $t;
-        print( basename($file).  "; Line: " . $line . "; time: " . $time . " (+" . $d . ")<br>");
+        if ($this->show){
+            print( $this->mark . " " . (strlen($label)?$label:"") . " :: " . basename($file).  "; Line: " . $line . "; time: " . $time . " (+" . $d . ")<br>");
+        }
     }
 }

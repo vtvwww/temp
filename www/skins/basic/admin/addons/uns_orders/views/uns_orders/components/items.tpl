@@ -236,6 +236,10 @@
                                 {$i.quantity_in_reserve|intval}
                                 <input type="hidden" value="{$i.quantity_in_reserve|intval}" name="{$e_n}[quantity_in_reserve]"/>
                             {else}
+                            {assign var="full_reserve" value=""}
+                            {if $i.quantity|intval == $i.quantity_in_reserve|intval}
+                                {assign var="full_reserve" value="background-color: #73ff94;"}
+                            {/if}
                             {include file="addons/uns/views/components/get_form_field.tpl"
                                 f_type="select_range"
                                 f_id="q_`$num`"
@@ -248,7 +252,7 @@
                                 f_track=true
                                 f_disabled=$RO_q_disabled
                                 f_default=$i.quantity_in_reserve|default:0
-                                f_style="width:50px;"
+                                f_style="width:50px;`$full_reserve`"
                             }
                             {/if}
                             <input type="hidden" value="{$i.quantity_in_reserve|default:0}" name="{$e_n}[quantity_in_reserve_old]"/>

@@ -262,7 +262,7 @@ function fn_acc__get_sheets($params = array(), $items_per_page = 0){
     if ($params['with_details']){
         $tmp_p = array(
             "sheet_id"    => array_keys($data),
-            "with_weight" => true,
+            "with_weight" => $params["with_weight"],
             "detail_id"   => $params["detail_id"],
         );
         list($details) = fn_acc__get_sheet_details($tmp_p);
